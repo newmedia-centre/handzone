@@ -173,11 +173,10 @@
       "url": "https://packages.unity.com"
     },
     "systems.speckle.speckle-unity": {
-      "version": "https://github.com/specklesystems/speckle-unity.git?path=/Packages/systems.speckle.speckle-unity",
+      "version": "file:systems.speckle.speckle-unity",
       "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "d8d46be6b3a9b5f0292ba74b8b2b11ea9a9405d1"
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
