@@ -9,11 +9,10 @@ public class GrassHopperObject : MonoBehaviour
     {
         if (transform.hasChanged)
         {
-            UnityInGrasshopper.instance.SendPosition(
-                transform.position.x, 
-                transform.position.y, 
-                transform.position.z, name);
-            
+            UnityInGrasshopper.instance.SendPositionRotation(
+                transform.position, 
+                transform.eulerAngles, name);
+
             transform.hasChanged = false;
         }
     }

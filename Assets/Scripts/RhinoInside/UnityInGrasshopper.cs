@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Rhino;
+using Rhino.Geometry;
 using UnityEngine;
 using RhinoInside.Unity;
 
@@ -49,6 +50,7 @@ public class UnityInGrasshopper : MonoBehaviour
             {
                 args.TryGetString("data", out data);
 
+                
                 var go = new GameObject(id);
                 go.AddComponent<GrassHopperObject>();
                 
@@ -79,15 +81,30 @@ public class UnityInGrasshopper : MonoBehaviour
         }
     }
 
-    public void SendPosition(float x, float y, float z, string id)
+    public void SendPosition(Vector3 position, string id)
     {
         using (var args = new Rhino.Runtime.NamedParametersEventArgs())
         {
-            args.Set("x", x);
-            args.Set("y", y);
-            args.Set("z", z);
+            Vector3d vector3d = new Vector3d(position.x, position.y, position.z);
+            args.Set("position", vector3d);
             Rhino.Runtime.HostUtils.ExecuteNamedCallback("ToGH_Position_" + id, args);
         }
+    }
+    
+    public void SendRotation(Vector3 rotation, string id)
+    {
+        using (var args = new Rhino.Runtime.NamedParametersEventArgs())
+        {
+            Vector3d vector3d = new Vector3d(rotation.x, rotation.y, rotation.z);
+            args.Set("rotation", vector3d);
+            Rhino.Runtime.HostUtils.ExecuteNamedCallback("ToGH_Rotation_" + id, args);
+        }
+    }
+
+    public void SendPositionRotation(Vector3 position, Vector3 rotation, string id)
+    {
+        SendPosition(position, id);
+        SendRotation(rotation, id);
     }
 
     #endregion
