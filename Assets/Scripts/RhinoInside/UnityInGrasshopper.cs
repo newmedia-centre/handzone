@@ -1,9 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
 using Rhino;
+using Rhino.DocObjects;
 using Rhino.Geometry;
 using UnityEngine;
 using RhinoInside.Unity;
+using Mesh = Rhino.Geometry.Mesh;
 
 public class UnityInGrasshopper : MonoBehaviour
 {
@@ -31,30 +33,30 @@ public class UnityInGrasshopper : MonoBehaviour
     #endregion
     
     #region To GH functions
-
-    // public void SendMeshValue()
-    // {
-    //     using (var args = new Rhino.Runtime.NamedParametersEventArgs())
-    //     {
-    //         args.Set("mesh", val);
-    //     }
-    // }
-
+    
     void FromGHData(object sender, Rhino.Runtime.NamedParametersEventArgs args)
     {
         if (Application.isPlaying)
         {
             string id = "";
             string data = "";
+            string T = "";
             if (args.TryGetString("id", out id))
             {
                 args.TryGetString("data", out data);
-
+                args.TryGetString("T", out T);
+    
                 
                 var go = new GameObject(id);
                 go.AddComponent<GrassHopperObject>();
+                string targetString = "";
+                foreach (var c in T)
+                {
+                    targetString += c;
+                }
+                Debug.Log(targetString);
                 
-                SendData("hellow world from Unity", id);
+                SendData("Send data from Unity", id);
             }
         }
     }
