@@ -7,10 +7,10 @@ namespace Robots.Samples.Unity
     public class Robot : MonoBehaviour
     {
         [SerializeField]
-        
         #nullable enable
-        Material? _material;
-        Program? _program;
+        private Material? _material;
+        private Program? _program;
+        private UnityMeshPoser? _meshPoser;
 
         void Update()
         {
@@ -28,7 +28,10 @@ namespace Robots.Samples.Unity
             if (_material == null)
                 throw new ArgumentNullException(nameof(_material));
 
-            _program.MeshPoser = new UnityMeshPoser(_program.RobotSystem, _material);
+            if(_meshPoser == null)
+                _meshPoser = new UnityMeshPoser(_program.RobotSystem, _material);
+            
+            _program.MeshPoser = _meshPoser;
         }
     }
 }

@@ -14,7 +14,7 @@ public class GrasshopperSyncProgram
     {
         var robot = await GetRobotAsync();
 
-        var toolpaths = GetToolpathsAsync(json);
+        var toolpaths = GetToolpaths(json);
 
         return new Program("GrasshopperSyncProgram", robot, toolpaths);
     }
@@ -38,7 +38,7 @@ public class GrasshopperSyncProgram
         }
     }
 
-    static List<IToolpath> GetToolpathsAsync(string json)
+    static List<IToolpath> GetToolpaths(string json)
     {
         var toolpathsJson = JObject.Parse(json).SelectToken("Toolpaths");
         var serializer = new JsonSerializerSettings
@@ -52,7 +52,6 @@ public class GrasshopperSyncProgram
         
         Debug.Assert(toolpathsJson != null, nameof(toolpathsJson) + " != null");
         var toolpaths = JsonConvert.DeserializeObject<List<IToolpath>>(toolpathsJson.ToString(), serializer);
-
         return toolpaths;
     }
 

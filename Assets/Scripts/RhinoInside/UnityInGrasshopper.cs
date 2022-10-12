@@ -41,42 +41,25 @@ public class UnityInGrasshopper : MonoBehaviour
             string json = "";
             if (args.TryGetString("id", out id))
             {
-                args.TryGetString("json", out json);
-                
-                var go = new GameObject(id);
-                go.AddComponent<GrassHopperObject>();
+                if (!GameObject.Find(id))
+                {
+                    var go = new GameObject(id);
+                    go.AddComponent<GrassHopperObject>();
+                }
+            }
+
+            if (args.TryGetString("json", out json))
+            {
+                // // DEBUG TIMER START
+                // Stopwatch st = new Stopwatch();
+                // st.Start();
+
                 var robot = GameObject.Find("Robot").GetComponent<Robot>();
                 robot.CreateProgramFromJSON(json);
 
-                // string targetString = "";
-                // foreach (var c in T)
-                // {
-                //     targetString += c;
-                // }
-                //
-                // // DEBUG TIMER 
-                // Stopwatch st = new Stopwatch();
-                // st.Start();
-                //
-                // Regex regex = new Regex(@"(\w*) \((\w*) \((-?\d*.\d*),(-?\d*.\d*),(-?\d*.\d*)\), ");
-                // var match = regex.Match(targetString);
-                //
-                // while (match.Success)
-                // {
-                //     for (int groupIndex = 1; groupIndex <= match.Groups.Count - 1; groupIndex++)
-                //     {
-                //         Group g = match.Groups[groupIndex];
-                //         Debug.Log(g);
-                //     }
-                //     match = match.NextMatch();
-                // }
-                //
-                // // DEBUG TIMER
+                // // DEBUG TIMER STOP
                 // st.Stop();
                 // Debug.Log(string.Format("MyMethod took {0} ms to complete", st.ElapsedMilliseconds));
-
-
-                SendData("Send data from Unity", id);
             }
         }
     }
@@ -91,15 +74,6 @@ public class UnityInGrasshopper : MonoBehaviour
             {
                 Destroy(gb);
             }
-        }
-    }
-
-    public void SendData(string data, string id)
-    {
-        using (var args = new Rhino.Runtime.NamedParametersEventArgs())
-        {
-            args.Set("data", data);
-            Rhino.Runtime.HostUtils.ExecuteNamedCallback("ToGH_Data_" + id, args);
         }
     }
 
