@@ -172,12 +172,6 @@
       },
       "url": "https://packages.unity.com"
     },
-    "systems.speckle.speckle-unity": {
-      "version": "file:systems.speckle.speckle-unity",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
