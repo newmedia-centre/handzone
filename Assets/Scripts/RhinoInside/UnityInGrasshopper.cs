@@ -1,11 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
 using Rhino;
-using Rhino.DocObjects;
 using Rhino.Geometry;
 using UnityEngine;
 using RhinoInside.Unity;
-using Mesh = Rhino.Geometry.Mesh;
+using Robots.Samples.Unity;
 
 public class UnityInGrasshopper : MonoBehaviour
 {
@@ -39,23 +38,44 @@ public class UnityInGrasshopper : MonoBehaviour
         if (Application.isPlaying)
         {
             string id = "";
-            string data = "";
-            string T = "";
+            string json = "";
             if (args.TryGetString("id", out id))
             {
-                args.TryGetString("data", out data);
-                args.TryGetString("T", out T);
-    
+                args.TryGetString("json", out json);
                 
                 var go = new GameObject(id);
                 go.AddComponent<GrassHopperObject>();
-                string targetString = "";
-                foreach (var c in T)
-                {
-                    targetString += c;
-                }
-                Debug.Log(targetString);
-                
+                var robot = GameObject.Find("Robot").GetComponent<Robot>();
+                robot.CreateProgramFromJSON(json);
+
+                // string targetString = "";
+                // foreach (var c in T)
+                // {
+                //     targetString += c;
+                // }
+                //
+                // // DEBUG TIMER 
+                // Stopwatch st = new Stopwatch();
+                // st.Start();
+                //
+                // Regex regex = new Regex(@"(\w*) \((\w*) \((-?\d*.\d*),(-?\d*.\d*),(-?\d*.\d*)\), ");
+                // var match = regex.Match(targetString);
+                //
+                // while (match.Success)
+                // {
+                //     for (int groupIndex = 1; groupIndex <= match.Groups.Count - 1; groupIndex++)
+                //     {
+                //         Group g = match.Groups[groupIndex];
+                //         Debug.Log(g);
+                //     }
+                //     match = match.NextMatch();
+                // }
+                //
+                // // DEBUG TIMER
+                // st.Stop();
+                // Debug.Log(string.Format("MyMethod took {0} ms to complete", st.ElapsedMilliseconds));
+
+
                 SendData("Send data from Unity", id);
             }
         }
@@ -118,6 +138,18 @@ public class UnityInGrasshopper : MonoBehaviour
         string script = "!_-Grasshopper _W _S ENTER";
         Rhino.RhinoApp.RunScript(script, false);
     }
+
+    public void OpenRhino()
+    {
+        ShowWindow(RhinoApp.MainWindowHandle(), 1);
+        BringWindowToTop(RhinoApp.MainWindowHandle());
+    }
+
+    [DllImport("USER32", SetLastError = true)]
+    static extern IntPtr BringWindowToTop(IntPtr hWnd);
     
+    [DllImport("USER32", SetLastError = true)]
+    static extern int ShowWindow(IntPtr hWnd, int nCmdShow);
+
     #endregion
 }
