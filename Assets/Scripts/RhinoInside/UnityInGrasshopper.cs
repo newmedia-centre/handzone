@@ -9,6 +9,7 @@ using Robots.Samples.Unity;
 public class UnityInGrasshopper : MonoBehaviour
 {
     public static UnityInGrasshopper instance;
+    public GameObject grasshopperObjectPrefab;
     
     #region MonoBehaviour
 
@@ -25,7 +26,7 @@ public class UnityInGrasshopper : MonoBehaviour
         }
         
         Rhino.Runtime.HostUtils.RegisterNamedCallback("FromGHData", FromGHData);
-        
+        Rhino.Runtime.HostUtils.RegisterNamedCallback("FromGHTransform", FromGHTransform);
         Rhino.Runtime.HostUtils.RegisterNamedCallback("FromGHClearUI", FromGHClearUI);
     }
 
@@ -43,8 +44,14 @@ public class UnityInGrasshopper : MonoBehaviour
             {
                 if (!GameObject.Find(id))
                 {
-                    var go = new GameObject(id);
-                    go.AddComponent<GrassHopperObject>();
+                    // if (grasshopperObjectPrefab == null)
+                    // {
+                    //     Debug.LogWarning("GrasshopperObjectPrefab not selected!");
+                    //     return;
+                    // }
+                    //     
+                    // var go = Instantiate(grasshopperObjectPrefab);
+                    // go.name = id;
                 }
             }
 
@@ -63,6 +70,28 @@ public class UnityInGrasshopper : MonoBehaviour
             }
         }
     }
+
+    void FromGHTransform(object sender, Rhino.Runtime.NamedParametersEventArgs args)
+    {
+        if (Application.isPlaying)
+        {
+            string id = "";
+            if (args.TryGetString("id", out id))
+            {
+                if (!GameObject.Find(id))
+                {
+                    if (grasshopperObjectPrefab == null)
+                    {
+                        Debug.LogWarning("GrasshopperObjectPrefab not selected!");
+                        return;
+                    }
+                        
+                    var go = Instantiate(grasshopperObjectPrefab);
+                    go.name = id;
+                }
+            }
+        }
+    }
     
     void FromGHClearUI(object sender, Rhino.Runtime.NamedParametersEventArgs args)
     {
@@ -77,6 +106,12 @@ public class UnityInGrasshopper : MonoBehaviour
         }
     }
 
+    
+    /// <summary>
+    /// Send position as a Vector3d to a callback event with a scaling property to match Grasshopper virtual space.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="id"></param>
     public void SendPosition(Vector3 position, string id)
     {
         using (var args = new Rhino.Runtime.NamedParametersEventArgs())

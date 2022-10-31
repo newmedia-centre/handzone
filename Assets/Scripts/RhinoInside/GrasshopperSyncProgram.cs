@@ -40,6 +40,7 @@ public class GrasshopperSyncProgram
 
     static List<IToolpath> GetToolpaths(string json)
     {
+        List<IToolpath> toolpaths = new List<IToolpath>();
         var toolpathsJson = JObject.Parse(json).SelectToken("Toolpaths");
         var serializer = new JsonSerializerSettings
         {
@@ -49,9 +50,12 @@ public class GrasshopperSyncProgram
             TypeNameHandling = TypeNameHandling.Auto,
             TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
         };
-        
-        Debug.Assert(toolpathsJson != null, nameof(toolpathsJson) + " != null");
-        var toolpaths = JsonConvert.DeserializeObject<List<IToolpath>>(toolpathsJson.ToString(), serializer);
+
+
+        if (toolpathsJson != null)
+        {
+            toolpaths = JsonConvert.DeserializeObject<List<IToolpath>>(toolpathsJson.ToString(), serializer);
+        }
         return toolpaths;
     }
 

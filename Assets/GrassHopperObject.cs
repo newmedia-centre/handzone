@@ -1,17 +1,31 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 public class GrassHopperObject : MonoBehaviour
 {
+    public bool SendPosition = true;
+    public bool SendRotation = true;
+
+    private const int SCALE = 1000;
+
     private void Update()
     {
         if (transform.hasChanged)
         {
-            UnityInGrasshopper.instance.SendPositionRotation(
-                transform.position, 
-                transform.eulerAngles, name);
+            if (!SendPosition && !SendRotation)
+                return;
+             
+            if (SendPosition)
+            {
+                UnityInGrasshopper.instance.SendPosition(transform.position * SCALE, name);
+            }
+            if (SendRotation)
+            {
+                UnityInGrasshopper.instance.SendRotation(transform.eulerAngles, name);
+            }
 
             transform.hasChanged = false;
         }
