@@ -2526,6 +2526,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grasshopperObjectPrefab: {fileID: 947022030510488528, guid: d45d1cb9b14b43a418ea8c62f2ed7ba8,
     type: 3}
+  uiParent: {fileID: 992605163}
+  sliderPanelPrefab: {fileID: 7970024997855630462, guid: 84e77ee8868c20c4cbb7890daf807a52,
+    type: 3}
+  togglePanelPrefab: {fileID: 4051750483564722588, guid: ffc99e6a9083ed84eb0a54b8c471c78f,
+    type: 3}
 --- !u!4 &736205775
 Transform:
   m_ObjectHideFlags: 0
@@ -4339,7 +4344,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 736205774}
         m_TargetAssemblyTypeName: UnityInGrasshopper, Assembly-CSharp
-        m_MethodName: OpenGH
+        m_MethodName: OpenGrasshopper
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4724,7 +4729,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 736205774}
         m_TargetAssemblyTypeName: UnityInGrasshopper, Assembly-CSharp
-        m_MethodName: OpenGH
+        m_MethodName: OpenGrasshopper
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

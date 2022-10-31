@@ -20,11 +20,11 @@ public class GrassHopperObject : MonoBehaviour
              
             if (SendPosition)
             {
-                UnityInGrasshopper.instance.SendPosition(transform.position * SCALE, name);
+                UnityInGrasshopper.Instance.SendPosition(transform.position * SCALE, name);
             }
             if (SendRotation)
             {
-                UnityInGrasshopper.instance.SendRotation(transform.eulerAngles, name);
+                UnityInGrasshopper.Instance.SendRotation(transform.eulerAngles, name);
             }
 
             transform.hasChanged = false;
