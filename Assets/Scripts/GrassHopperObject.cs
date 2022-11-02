@@ -24,7 +24,7 @@ public class GrassHopperObject : MonoBehaviour
             }
             if (SendRotation)
             {
-                UnityInGrasshopper.Instance.SendRotation(transform.eulerAngles, name);
+                UnityInGrasshopper.Instance.SendRotationQuaternion(transform.rotation, name);
             }
 
             transform.hasChanged = false;

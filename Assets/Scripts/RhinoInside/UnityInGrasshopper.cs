@@ -6,6 +6,7 @@ using Rhino.Geometry;
 using UnityEngine;
 using RhinoInside.Unity;
 using Robots.Samples.Unity;
+using Quaternion = UnityEngine.Quaternion;
 
 public class UnityInGrasshopper : MonoBehaviour
 {
@@ -191,20 +192,32 @@ public class UnityInGrasshopper : MonoBehaviour
         }
     }
     
-    public void SendRotation(Vector3 rotation, string id)
+    public void SendRotationEuler(UnityEngine.Quaternion rotation, string id)
     {
         using (var args = new Rhino.Runtime.NamedParametersEventArgs())
         {
-            Vector3d vector3d = new Vector3d(rotation.x, rotation.y, rotation.z);
-            args.Set("rotation", vector3d);
+            Vector3 eulerAngles = rotation.eulerAngles;
+            Vector3d vector3d = new Vector3d(eulerAngles.x, eulerAngles.y, eulerAngles.z);
+            args.Set("rotationEuler", vector3d);
             Rhino.Runtime.HostUtils.ExecuteNamedCallback("ToGH_Rotation_" + id, args);
         }
     }
 
-    public void SendPositionRotation(Vector3 position, Vector3 rotation, string id)
+    public void SendRotationQuaternion(UnityEngine.Quaternion rotation, string id)
+    {
+        using (var args = new Rhino.Runtime.NamedParametersEventArgs())
+        {
+            Quaternion quaternion = new Quaternion(rotation.y, -rotation.z, rotation.x, rotation.w);
+            string quatValue = quaternion.ToString();
+            args.Set("rotationQuaternion", quatValue);
+            Rhino.Runtime.HostUtils.ExecuteNamedCallback("ToGH_Rotation_" + id, args);
+        }
+    }
+
+    public void SendPositionRotation(Vector3 position, Quaternion rotation, string id)
     {
         SendPosition(position, id);
-        SendRotation(rotation, id);
+        SendRotationEuler(rotation, id);
     }
     
     public void SendSliderValue(float val, string id)
