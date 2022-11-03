@@ -7,16 +7,6 @@ public class SliderPanel : MonoBehaviour
 {
     public Slider slider;
     public Text text;
+    public Text value;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

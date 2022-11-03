@@ -7,21 +7,33 @@ namespace Robots.Samples.Unity
 {
     public class Robot : MonoBehaviour
     {
-        public PlaybackPanel playbackPanel;
+        public PlaybackPanel[] playbackPanels;
         
         [SerializeField]
         #nullable enable
         private Material? _material;
         private Program? _program;
         private UnityMeshPoser? _meshPoser;
-        private bool isPlaying = false;
+        private bool _isPlaying;
+        private int _programDuration;
+
+        private void Start()
+        {
+            foreach (var playbackPanel in playbackPanels)
+            {
+                playbackPanel.playButton.onClick.AddListener(PlayPlayback);
+                playbackPanel.pauseButton.onClick.AddListener(PausePlayback);
+                playbackPanel.sliderPanel.slider.onValueChanged.AddListener(value => SetPlaybackTime(value));
+                
+            }
+        }
 
         void Update()
         {
             if (_program is null)
                 return;
 
-            if (isPlaying)
+            if (_isPlaying)
             {
                 var time = Mathf.PingPong(Time.time, (float)_program.Duration);
                 _program.Animate(time, false);
@@ -40,24 +52,34 @@ namespace Robots.Samples.Unity
             
             _program.MeshPoser = _meshPoser;
 
-            playbackPanel.playButton.onClick.AddListener(delegate { SetPlayback(true); });
-            playbackPanel.pauseButton.onClick.AddListener(delegate { SetPlayback(false); });
-            playbackPanel.slider.onValueChanged.AddListener(value => SetPlaybackTime(value));
-            playbackPanel.slider.maxValue = (float)_program.Duration;
+            foreach (var playbackPanel in playbackPanels)
+            {
+                _programDuration = (int)_program.Duration;
+                playbackPanel.sliderPanel.slider.maxValue = _programDuration;
+                playbackPanel.sliderPanel.value.text = "0:" + _programDuration.ToString();
+            }
         }
 
-        void SetPlayback(bool value)
+        void PlayPlayback()
         {
-            isPlaying = value;
-            Debug.Log("blup");
+            _isPlaying = true;
+        }
+        void PausePlayback()
+        {
+            _isPlaying = false;
         }
 
         void SetPlaybackTime(float time)
         {
             if (_program is null)
                 return;
-            
+
             _program.Animate(time, false);
+            
+            foreach (var playbackPanel in playbackPanels)
+            {
+                playbackPanel.sliderPanel.value.text = (int)time + ":" + _programDuration;
+            }
         }
     }
 }

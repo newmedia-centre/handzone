@@ -7,5 +7,5 @@ public class PlaybackPanel : MonoBehaviour
 {
     public Button playButton;
     public Button pauseButton;
-    public Slider slider;
+    public SliderPanel sliderPanel;
 }

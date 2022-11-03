@@ -13,7 +13,7 @@ public class UnityInGrasshopper : MonoBehaviour
     public static UnityInGrasshopper Instance;
     
     public GameObject grasshopperObjectPrefab;
-    public GameObject uiParent;
+    public GameObject[] uiParents;
     public GameObject sliderPanelPrefab;
     public GameObject togglePanelPrefab;
     
@@ -126,24 +126,27 @@ public class UnityInGrasshopper : MonoBehaviour
                 args.TryGetDouble("value", out val);
                 args.TryGetInt("type", out type);
 
-                var sliderPanelObj = (GameObject)Instantiate(sliderPanelPrefab, uiParent.transform);
-                sliderPanelObj.name = id;
-                SliderPanel sliderPanel = sliderPanelObj.GetComponent<SliderPanel>();
-                sliderPanel.text.text = sliderName;
-                sliderPanel.slider.minValue = (float)minVal;
-                sliderPanel.slider.maxValue = (float)maxVal;
-                sliderPanel.slider.value = (float)val;
-                if (type > 0) {
-                    sliderPanel.slider.wholeNumbers = true;
-                }
-                else
+                foreach (var uiParent in uiParents)
                 {
-                    sliderPanel.slider.wholeNumbers = false;
+                    var sliderPanelObj = (GameObject)Instantiate(sliderPanelPrefab, uiParent.transform);
+                    sliderPanelObj.name = id;
+                    SliderPanel sliderPanel = sliderPanelObj.GetComponent<SliderPanel>();
+                    sliderPanel.text.text = sliderName;
+                    sliderPanel.slider.minValue = (float)minVal;
+                    sliderPanel.slider.maxValue = (float)maxVal;
+                    sliderPanel.slider.value = (float)val;
+                    if (type > 0) {
+                        sliderPanel.slider.wholeNumbers = true;
+                    }
+                    else
+                    {
+                        sliderPanel.slider.wholeNumbers = false;
+                    }
+                    sliderPanel.slider.onValueChanged.AddListener(value =>
+                    {
+                        SendSliderValue(value, id);
+                    });
                 }
-                sliderPanel.slider.onValueChanged.AddListener(value =>
-                {
-                    SendSliderValue(value, id);
-                });
 
             }
         }
@@ -161,14 +164,16 @@ public class UnityInGrasshopper : MonoBehaviour
                 args.TryGetString("name", out toggleName);
                 args.TryGetBool("value", out val);
 
-                var togglePanelObj = (GameObject)Instantiate(togglePanelPrefab, uiParent.transform);
-                togglePanelObj.name = id;
-                TogglePanel togglePanel = togglePanelObj.GetComponent<TogglePanel>();
-                togglePanel.text.text = toggleName;
-                togglePanel.toggle.isOn = val;
+                foreach (var uiParent in uiParents)
+                {
+                    var togglePanelObj = (GameObject)Instantiate(togglePanelPrefab, uiParent.transform);
+                    togglePanelObj.name = id;
+                    TogglePanel togglePanel = togglePanelObj.GetComponent<TogglePanel>();
+                    togglePanel.text.text = toggleName;
+                    togglePanel.toggle.isOn = val;
 
-                togglePanel.toggle.onValueChanged.AddListener(value => { SendToggleValue(value, id); });
-
+                    togglePanel.toggle.onValueChanged.AddListener(value => { SendToggleValue(value, id); });
+                }
             }
         }
     }
