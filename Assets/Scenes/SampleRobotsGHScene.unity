@@ -775,6 +775,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1435320819}
     m_Modifications:
+    - target: {fileID: 1439687180267762517, guid: b470a71241fdca0418d6ce7c1eea092f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1439687180905239388, guid: b470a71241fdca0418d6ce7c1eea092f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4051750483564722588, guid: b470a71241fdca0418d6ce7c1eea092f,
         type: 3}
       propertyPath: m_Name
@@ -894,6 +904,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1880387590}
     m_Modifications:
+    - target: {fileID: 1439687180267762517, guid: b470a71241fdca0418d6ce7c1eea092f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1439687180905239388, guid: b470a71241fdca0418d6ce7c1eea092f,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4051750483564722588, guid: b470a71241fdca0418d6ce7c1eea092f,
         type: 3}
       propertyPath: m_Name
@@ -1619,6 +1639,8 @@ MonoBehaviour:
   playbackPanels:
   - {fileID: 1691959230}
   - {fileID: 555224382}
+  gripperLoadedName: GripperLoaded
+  gripperUnloadedName: GripperUnloaded
   _material: {fileID: 2100000, guid: 1a0ed05928e15d440a26ef2c513c9f3d, type: 2}
 --- !u!4 &1344725814
 Transform:

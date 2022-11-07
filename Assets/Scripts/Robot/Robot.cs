@@ -9,6 +9,9 @@ namespace Robots.Samples.Unity
     {
         public PlaybackPanel[] playbackPanels;
         
+        public string gripperLoadedName;
+        public string gripperUnloadedName;
+
         [SerializeField]
         #nullable enable
         private Material? _material;
@@ -16,6 +19,20 @@ namespace Robots.Samples.Unity
         private UnityMeshPoser? _meshPoser;
         private bool _isPlaying;
         private int _programDuration;
+        private int _currentTargetIndex;
+        private bool isLoaded;
+
+        private void OnEnable()
+        {
+            RobotActions.OnGripperLoaded += LoadGripper;
+            RobotActions.OnGripperUnloaded += UnloadGripper;
+        }
+        
+        private void OnDisable()
+        {
+            RobotActions.OnGripperLoaded -= LoadGripper;
+            RobotActions.OnGripperUnloaded -= UnloadGripper;
+        }
 
         private void Start()
         {
@@ -24,7 +41,6 @@ namespace Robots.Samples.Unity
                 playbackPanel.playButton.onClick.AddListener(PlayPlayback);
                 playbackPanel.pauseButton.onClick.AddListener(PausePlayback);
                 playbackPanel.sliderPanel.slider.onValueChanged.AddListener(value => SetPlaybackTime(value));
-                
             }
         }
 
@@ -37,6 +53,7 @@ namespace Robots.Samples.Unity
             {
                 var time = Mathf.PingPong(Time.time, (float)_program.Duration);
                 _program.Animate(time, false);
+                UpdateProgramTargetState(_program.CurrentSimulationPose.TargetIndex);
             }
         }
 
@@ -71,15 +88,60 @@ namespace Robots.Samples.Unity
 
         void SetPlaybackTime(float time)
         {
-            if (_program is null)
+            if (_program is null || _isPlaying)
                 return;
 
             _program.Animate(time, false);
-            
+            UpdateProgramTargetState(_program.CurrentSimulationPose.TargetIndex);
+
             foreach (var playbackPanel in playbackPanels)
             {
                 playbackPanel.sliderPanel.value.text = (int)time + ":" + _programDuration;
             }
+        }
+
+        void UpdateProgramTargetState(int targetIndex)
+        {
+            if (targetIndex != _currentTargetIndex)
+            {
+                _currentTargetIndex = targetIndex;
+                UpdateLoadedState();
+            }
+        }
+
+        void UpdateLoadedState()
+        {
+            if (_program is null)
+                return;
+            
+            // If the current state of a tool contains the name of the defined gripperLoadedName, then it's current state is loaded
+            if (_program.Targets[_currentTargetIndex].ProgramTargets[0].Target.Tool.Name.Contains(gripperLoadedName))
+            {
+                if (isLoaded == false)
+                {
+                    RobotActions.OnGripperLoaded();
+                }
+            }
+            
+            if (_program.Targets[_currentTargetIndex].ProgramTargets[0].Target.Tool.Name.Contains(gripperUnloadedName))
+            {
+                if (isLoaded)
+                {
+                    RobotActions.OnGripperUnloaded();
+                }
+            }
+        }
+
+        void LoadGripper()
+        {
+            isLoaded = true;
+            Debug.Log("Loaded");
+        }
+
+        void UnloadGripper()
+        {
+            isLoaded = false;
+            Debug.Log("Unloaded");
         }
     }
 }
