@@ -17,6 +17,7 @@ namespace Robots.Samples.Unity
         private Material? _material;
         private Program? _program;
         private UnityMeshPoser? _meshPoser;
+        private UnityMeshPoser? _toolMeshPoser;
         private bool _isPlaying;
         private int _programDuration;
         private int _currentTargetIndex;
@@ -66,14 +67,14 @@ namespace Robots.Samples.Unity
 
             if(_meshPoser == null)
                 _meshPoser = new UnityMeshPoser(_program.RobotSystem, _material);
-            
+
             _program.MeshPoser = _meshPoser;
 
             foreach (var playbackPanel in playbackPanels)
             {
                 _programDuration = (int)_program.Duration;
                 playbackPanel.sliderPanel.slider.maxValue = _programDuration;
-                playbackPanel.sliderPanel.value.text = "0:" + _programDuration.ToString();
+                playbackPanel.sliderPanel.value.text = "0-" + _programDuration.ToString();
             }
         }
 
@@ -96,7 +97,7 @@ namespace Robots.Samples.Unity
 
             foreach (var playbackPanel in playbackPanels)
             {
-                playbackPanel.sliderPanel.value.text = (int)time + ":" + _programDuration;
+                playbackPanel.sliderPanel.value.text = (int)time + "-" + _programDuration;
             }
         }
 

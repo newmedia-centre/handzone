@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rhino.Geometry;
 using UnityEngine;
+using Mesh = UnityEngine.Mesh;
+using Plane = Rhino.Geometry.Plane;
+using Transform = UnityEngine.Transform;
 
 namespace Robots.Samples.Unity
 {
@@ -9,10 +13,13 @@ namespace Robots.Samples.Unity
     {
         readonly DefaultPose _default;
         readonly Transform[] _joints;
+        private List<Transform> _tools;
+        private Material _material;
 
         public UnityMeshPoser(RobotSystem robot, Material material)
         {
             _default = robot.DefaultPose;
+            _material = material;
 
             var allMeshes = _default.Meshes.SelectMany(m => m).ToList();
             _joints = new Transform[allMeshes.Count];
@@ -28,7 +35,7 @@ namespace Robots.Samples.Unity
                 filter.mesh = ToMesh(allMeshes[i], name);
 
                 var renderer = go.GetComponent<MeshRenderer>();
-                renderer.material = material;
+                renderer.material = _material;
 
                 var transform = go.transform;
                 transform.SetParent(parent);
@@ -36,11 +43,47 @@ namespace Robots.Samples.Unity
             }
         }
 
+        void CreateToolObjects(Tool[] tools)
+        {
+            var parent = GameObject.Find("Robot").transform;
+            var allMeshes = new List<Rhino.Geometry.Mesh>();
+            _tools = new List<Transform>();
+
+            for (int i = 0; i < tools.Length; i++)
+            {
+                allMeshes.Add(tools[i].Mesh);
+                    
+                string name = $"Tool {i}";
+                var go = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
+                go.AddComponent<GripperObject>();
+
+                _tools.Add(go.transform);
+
+                var filter = go.GetComponent<MeshFilter>();
+                filter.mesh = ToMesh(allMeshes[i], name);
+
+                var renderer = go.GetComponent<MeshRenderer>();
+                renderer.material = _material;
+                
+                var collider = go.AddComponent<BoxCollider>();
+                collider.isTrigger = true;
+                collider.size = filter.mesh.bounds.size;
+                    
+                var transform = go.transform;
+                transform.SetParent(parent);
+                _tools[i] = transform;
+                
+            }
+        }
+
         public void Pose(List<KinematicSolution> solutions, Tool[] tools)
         {
-            // TODO: tool display not implemented
-
-            int count = 0;
+            if (_tools == null)
+            {
+                CreateToolObjects(tools);
+            }
+            
+            int jcount = 0;
 
             for (int i = 0; i < solutions.Count; i++)
             {
@@ -51,7 +94,16 @@ namespace Robots.Samples.Unity
                 {
                     var transform = Rhino.Geometry.Transform.PlaneToPlane(defaultPlanes[j], planes[j]);
                     var matrix = ToMatrix(ref transform);
-                    _joints[count++].SetPositionAndRotation(matrix.GetPosition(), matrix.rotation);
+                    _joints[jcount++].SetPositionAndRotation(matrix.GetPosition(), matrix.rotation);
+                }
+                
+                int tcount = 0;
+
+                for (int k = 0; k < tools.Length; k++)
+                {
+                    var transform = Rhino.Geometry.Transform.PlaneToPlane(tools[k].Tcp, planes.Last());
+                    var matrix = ToMatrix(ref transform);
+                    _tools[tcount++].SetPositionAndRotation(matrix.GetPosition(), matrix.rotation);
                 }
             }
         }
