@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rhino.Geometry;
 using UnityEngine;
 using Mesh = UnityEngine.Mesh;
-using Plane = Rhino.Geometry.Plane;
+using Object = UnityEngine.Object;
 using Transform = UnityEngine.Transform;
 
 namespace Robots.Samples.Unity
 {
     class UnityMeshPoser : IMeshPoser
     {
+        public GameObject ToolPrefab;
+        
         readonly DefaultPose _default;
         readonly Transform[] _joints;
         private List<Transform> _tools;
         private Material _material;
+        private GameObject _toolPrefab;
 
-        public UnityMeshPoser(RobotSystem robot, Material material)
+        public UnityMeshPoser(RobotSystem robot, Material material, GameObject toolPrefab)
         {
             _default = robot.DefaultPose;
             _material = material;
+            _toolPrefab = toolPrefab;
 
             var allMeshes = _default.Meshes.SelectMany(m => m).ToList();
             _joints = new Transform[allMeshes.Count];
@@ -54,10 +57,8 @@ namespace Robots.Samples.Unity
                 allMeshes.Add(tools[i].Mesh);
                     
                 string name = $"Tool {i}";
-                var go = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
-                go.AddComponent<GripperObject>();
-
-                _tools.Add(go.transform);
+                var go = Object.Instantiate(_toolPrefab);
+                go.name = name;
 
                 var filter = go.GetComponent<MeshFilter>();
                 filter.mesh = ToMesh(allMeshes[i], name);
@@ -65,9 +66,15 @@ namespace Robots.Samples.Unity
                 var renderer = go.GetComponent<MeshRenderer>();
                 renderer.material = _material;
                 
-                var collider = go.AddComponent<BoxCollider>();
-                collider.isTrigger = true;
-                collider.size = filter.mesh.bounds.size;
+                var collider = go.GetComponent<BoxCollider>();
+
+                var bounds = filter.mesh.bounds;
+                collider.size = bounds.size;
+                collider.center = bounds.center;
+                
+                go.GetComponent<Gripper>().SetAnchorPosition(new Vector3(0, bounds.size.y, 0));
+
+                _tools.Add(go.transform);
                     
                 var transform = go.transform;
                 transform.SetParent(parent);

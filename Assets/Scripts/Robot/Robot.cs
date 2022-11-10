@@ -11,6 +11,7 @@ namespace Robots.Samples.Unity
         
         public string gripperLoadedName;
         public string gripperUnloadedName;
+        public GameObject toolPrefab;
 
         [SerializeField]
         #nullable enable
@@ -66,7 +67,7 @@ namespace Robots.Samples.Unity
                 throw new ArgumentNullException(nameof(_material));
 
             if(_meshPoser == null)
-                _meshPoser = new UnityMeshPoser(_program.RobotSystem, _material);
+                _meshPoser = new UnityMeshPoser(_program.RobotSystem, _material, toolPrefab);
 
             _program.MeshPoser = _meshPoser;
 
