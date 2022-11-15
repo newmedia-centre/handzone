@@ -101,3 +101,30 @@ MonoBehaviour:
   - {fileID: -928152172933784707}
   - {fileID: -222463535148198348}
   - {fileID: -8980283016153311291}
+  - {fileID: 3746932813761904224}
+--- !u!114 &3746932813761904224
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c13d52dae4cccf448ad2b0795662b015, type: 3}
+  m_Name: OutlineEffectComponent
+  m_EditorClassIdentifier: 
+  active: 1
+  thickness:
+    m_OverrideState: 1
+    m_Value: 1
+  depthMin:
+    m_OverrideState: 1
+    m_Value: 0
+  depthMax:
+    m_OverrideState: 1
+    m_Value: 1
+  overlayColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 0.12164397, b: 0, a: 1}
+    hdr: 0

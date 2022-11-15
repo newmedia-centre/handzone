@@ -61,6 +61,7 @@ namespace Robots.Samples.Unity
 
         public async void CreateProgramFromJSON(string json)
         {
+            
             _program = await GrasshopperSyncProgram.CreateAsync(json);
 
             if (_material == null)

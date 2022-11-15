@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Runtime.InteropServices;
 using Rhino;
 using Rhino.Geometry;
@@ -65,6 +64,7 @@ public class UnityInGrasshopper : MonoBehaviour
 
                 var robot = GameObject.Find("Robot").GetComponent<Robot>();
                 robot.CreateProgramFromJSON(json);
+
 
                 // // DEBUG TIMER STOP
                 // st.Stop();

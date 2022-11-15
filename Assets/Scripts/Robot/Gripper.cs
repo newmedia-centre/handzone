@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class Gripper : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class Gripper : MonoBehaviour
     private bool _isGrabbing;
     private GameObject _attachAnchor;
     private bool previousKinematicSetting;
+    private InteractionLayerMask oldInteractionLayerMask;
 
     private void Awake()
     {
@@ -47,6 +49,7 @@ public class Gripper : MonoBehaviour
         if (currentGrabbedObject)
         {
             currentGrabbedObject.GetComponent<Rigidbody>().isKinematic = previousKinematicSetting;
+            currentGrabbedObject.GetComponent<XRGrabInteractable>().interactionLayers = oldInteractionLayerMask;
             currentGrabbedObject = null;
         }
     }
@@ -66,6 +69,11 @@ public class Gripper : MonoBehaviour
                 previousKinematicSetting = false;
                 grabbedObjectRigidbody.isKinematic = true;
             }
+
+            oldInteractionLayerMask = currentGrabbedObject.GetComponent<XRGrabInteractable>().interactionLayers;
+            currentGrabbedObject.GetComponent<XRGrabInteractable>().interactionLayers = new InteractionLayerMask();
+            
+            currentGrabbedObject.GetComponent<GrassHopperObject>()?.ShouldUpdate(false);
       
             grabbableObject = null;
             _isGrabbing = true;
