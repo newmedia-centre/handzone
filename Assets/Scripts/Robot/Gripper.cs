@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class Gripper : MonoBehaviour
 {
@@ -8,8 +7,7 @@ public class Gripper : MonoBehaviour
 
     private bool _isGrabbing;
     private GameObject _attachAnchor;
-    private bool previousKinematicSetting;
-    private InteractionLayerMask oldInteractionLayerMask;
+    private bool _previousKinematicSetting;
 
     private void Awake()
     {
@@ -19,14 +17,14 @@ public class Gripper : MonoBehaviour
 
     private void OnEnable()
     {
-        RobotActions.OnGripperLoaded += OnGripperLoaded;
-        RobotActions.OnGripperUnloaded += OnGripperUnloaded;
+        RobotActions.OnToolLoaded += Grab;
+        RobotActions.OnToolUnloaded += UnGrab;
     }
 
     private void OnDisable()
     {
-        RobotActions.OnGripperLoaded -= OnGripperLoaded;
-        RobotActions.OnGripperUnloaded -= OnGripperUnloaded;
+        RobotActions.OnToolLoaded -= Grab;
+        RobotActions.OnToolUnloaded -= UnGrab;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -42,39 +40,24 @@ public class Gripper : MonoBehaviour
         }
     }
 
-    private void OnGripperUnloaded()
+    private void UnGrab()
     {
         _isGrabbing = false;
 
         if (currentGrabbedObject)
         {
-            currentGrabbedObject.GetComponent<Rigidbody>().isKinematic = previousKinematicSetting;
-            currentGrabbedObject.GetComponent<XRGrabInteractable>().interactionLayers = oldInteractionLayerMask;
+            RobotActions.OnToolUngrabbed(currentGrabbedObject);
             currentGrabbedObject = null;
         }
     }
 
-    void OnGripperLoaded()
+    void Grab()
     {
         if (grabbableObject)
         {
             currentGrabbedObject = grabbableObject;
-            var grabbedObjectRigidbody = currentGrabbedObject.GetComponent<Rigidbody>();
-            if (grabbedObjectRigidbody.isKinematic)
-            {
-                previousKinematicSetting = true;
-            }
-            else
-            {
-                previousKinematicSetting = false;
-                grabbedObjectRigidbody.isKinematic = true;
-            }
+            RobotActions.OnToolGrabbed(currentGrabbedObject);
 
-            oldInteractionLayerMask = currentGrabbedObject.GetComponent<XRGrabInteractable>().interactionLayers;
-            currentGrabbedObject.GetComponent<XRGrabInteractable>().interactionLayers = new InteractionLayerMask();
-            
-            currentGrabbedObject.GetComponent<GrassHopperObject>()?.ShouldUpdate(false);
-      
             grabbableObject = null;
             _isGrabbing = true;
         }

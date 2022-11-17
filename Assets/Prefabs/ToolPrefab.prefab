@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2453090056805718570}
   - component: {fileID: 5023261317996159487}
   - component: {fileID: 1363558058231775081}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ToolPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}

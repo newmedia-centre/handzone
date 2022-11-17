@@ -1,7 +1,5 @@
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Robots.Samples.Unity
 {
@@ -22,18 +20,19 @@ namespace Robots.Samples.Unity
         private bool _isPlaying;
         private int _programDuration;
         private int _currentTargetIndex;
-        private bool isLoaded;
+        private bool _isLoaded;
+        private float _currentTime;
 
         private void OnEnable()
         {
-            RobotActions.OnGripperLoaded += LoadGripper;
-            RobotActions.OnGripperUnloaded += UnloadGripper;
+            RobotActions.OnToolLoaded += LoadTool;
+            RobotActions.OnToolUnloaded += UnloadTool;
         }
         
         private void OnDisable()
         {
-            RobotActions.OnGripperLoaded -= LoadGripper;
-            RobotActions.OnGripperUnloaded -= UnloadGripper;
+            RobotActions.OnToolLoaded -= LoadTool;
+            RobotActions.OnToolUnloaded -= UnloadTool;
         }
 
         private void Start()
@@ -54,8 +53,8 @@ namespace Robots.Samples.Unity
             if (_isPlaying)
             {
                 var time = Mathf.PingPong(Time.time, (float)_program.Duration);
-                _program.Animate(time, false);
-                UpdateProgramTargetState(_program.CurrentSimulationPose.TargetIndex);
+                
+                SetPlaybackTime(time);
             }
         }
 
@@ -72,12 +71,14 @@ namespace Robots.Samples.Unity
 
             _program.MeshPoser = _meshPoser;
 
-            foreach (var playbackPanel in playbackPanels)
-            {
-                _programDuration = (int)_program.Duration;
-                playbackPanel.sliderPanel.slider.maxValue = _programDuration;
-                playbackPanel.sliderPanel.value.text = "0-" + _programDuration.ToString();
-            }
+            RobotActions.OnProgramDurationUpdated((int)_program.Duration);
+            RobotActions.OnTimeUpdated(0);
+            // foreach (var playbackPanel in playbackPanels)
+            // {
+            //     _programDuration = (int)_program.Duration;
+            //     playbackPanel.sliderPanel.slider.maxValue = _programDuration;
+            //     playbackPanel.sliderPanel.value.text = "0-" + _programDuration.ToString();
+            // }
         }
 
         void PlayPlayback()
@@ -89,19 +90,32 @@ namespace Robots.Samples.Unity
             _isPlaying = false;
         }
 
+        /// <summary>
+        /// Set's the program current playback time, and alters the target state which can trigger robot events.
+        /// </summary>
+        /// <param name="time"></param>
         void SetPlaybackTime(float time)
         {
-            if (_program is null || _isPlaying)
+            if (_program is null)
                 return;
 
-            _program.Animate(time, false);
-            UpdateProgramTargetState(_program.CurrentSimulationPose.TargetIndex);
 
-            foreach (var playbackPanel in playbackPanels)
-            {
-                playbackPanel.sliderPanel.value.text = (int)time + "-" + _programDuration;
-            }
+            _currentTime = time;
+            _program.Animate(_currentTime, false);
+            RobotActions.OnTimeUpdated(_currentTime);
+            // UpdatePlaybackTimeUI(_currentTime);
+            
+            UpdateProgramTargetState(_program.CurrentSimulationPose.TargetIndex);
         }
+
+        // void UpdatePlaybackTimeUI(float time)
+        // {
+        //     foreach (var playbackPanel in playbackPanels)
+        //     {
+        //         playbackPanel.sliderPanel.value.text = (int)time + "-" + _programDuration;
+        //         playbackPanel.sliderPanel.slider.value = time;
+        //     }
+        // }
 
         void UpdateProgramTargetState(int targetIndex)
         {
@@ -120,30 +134,30 @@ namespace Robots.Samples.Unity
             // If the current state of a tool contains the name of the defined gripperLoadedName, then it's current state is loaded
             if (_program.Targets[_currentTargetIndex].ProgramTargets[0].Target.Tool.Name.Contains(gripperLoadedName))
             {
-                if (isLoaded == false)
+                if (_isLoaded == false)
                 {
-                    RobotActions.OnGripperLoaded();
+                    RobotActions.OnToolLoaded();
                 }
             }
             
             if (_program.Targets[_currentTargetIndex].ProgramTargets[0].Target.Tool.Name.Contains(gripperUnloadedName))
             {
-                if (isLoaded)
+                if (_isLoaded)
                 {
-                    RobotActions.OnGripperUnloaded();
+                    RobotActions.OnToolUnloaded();
                 }
             }
         }
 
-        void LoadGripper()
+        void LoadTool()
         {
-            isLoaded = true;
+            _isLoaded = true;
             Debug.Log("Loaded");
         }
 
-        void UnloadGripper()
+        void UnloadTool()
         {
-            isLoaded = false;
+            _isLoaded = false;
             Debug.Log("Unloaded");
         }
     }

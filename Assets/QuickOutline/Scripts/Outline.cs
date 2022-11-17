@@ -68,6 +68,9 @@ public class Outline : MonoBehaviour {
   + "Precompute disabled: Per-vertex calculations are performed at runtime in Awake(). This may cause a pause for large meshes.")]
   private bool precomputeOutline;
 
+  [SerializeField] 
+  private bool includeChildren = false;
+
   [SerializeField, HideInInspector]
   private List<Mesh> bakeKeys = new List<Mesh>();
 
@@ -82,8 +85,15 @@ public class Outline : MonoBehaviour {
 
   void Awake() {
 
-    // Cache renderers
-    renderers = GetComponentsInChildren<Renderer>();
+    if (includeChildren)
+    {
+      // Cache renderers
+      renderers = GetComponentsInChildren<Renderer>();
+    }
+    else
+    {
+      renderers = new[] { GetComponent<Renderer>() };
+    }
 
     // Instantiate outline materials
     outlineMaskMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineMask"));
@@ -174,6 +184,9 @@ public class Outline : MonoBehaviour {
 
       bakeKeys.Add(meshFilter.sharedMesh);
       bakeValues.Add(new ListVector3() { data = smoothNormals });
+
+      if (!includeChildren)
+        break;
     }
   }
 
@@ -200,6 +213,9 @@ public class Outline : MonoBehaviour {
       if (renderer != null) {
         CombineSubmeshes(meshFilter.sharedMesh, renderer.sharedMaterials);
       }
+
+      if (!includeChildren)
+        break;
     }
 
     // Clear UV3 on skinned mesh renderers
@@ -215,6 +231,9 @@ public class Outline : MonoBehaviour {
 
       // Combine submeshes
       CombineSubmeshes(skinnedMeshRenderer.sharedMesh, skinnedMeshRenderer.sharedMaterials);
+
+      if (!includeChildren)
+        break;
     }
   }
 
