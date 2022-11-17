@@ -42,7 +42,15 @@ public class GrassHopperObject : MonoBehaviour
     {
         RobotActions.OnToolGrabbed += MeshUnselectable;
         RobotActions.OnToolUngrabbed += MeshSelectable;
-        _xrInteractable.selectEntered.AddListener(delegate { ResetMesh(); });
+        _xrInteractable.selectEntered.AddListener(delegate
+        {
+            ResetMesh(); 
+            ShouldUpdate(true);
+        });
+        _xrInteractable.selectExited.AddListener(delegate
+        {
+            ShouldUpdate(false);
+        });
     }
 
     private void Update()
