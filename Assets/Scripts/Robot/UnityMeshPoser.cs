@@ -23,27 +23,30 @@ namespace Robots.Samples.Unity
             _default = robot.DefaultPose;
             _material = material;
             _toolPrefab = toolPrefab;
+            
+            var parent = GameObject.Find("HDRobot").transform;
+            _joints = new Transform[parent.childCount];
 
-            var allMeshes = _default.Meshes.SelectMany(m => m).ToList();
-            _joints = new Transform[allMeshes.Count];
-
-            var parent = GameObject.Find("Robot").transform;
-
-            for (int i = 0; i < allMeshes.Count; i++)
+            for (int i = 0; i < parent.childCount; i++)
             {
-                string name = $"Joint {i}";
-                var go = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
-
-                var filter = go.GetComponent<MeshFilter>();
-                filter.mesh = ToMesh(allMeshes[i], name);
-
-                var renderer = go.GetComponent<MeshRenderer>();
-                renderer.material = _material;
-
-                var transform = go.transform;
-                transform.SetParent(parent);
-                _joints[i] = transform;
+                _joints[i] = parent.GetChild(i);
             }
+            
+            // This used to create meshes from Robot Library
+            // for (int i = 0; i < allMeshes.Count; i++)
+            //     string name = $"Joint {i}";
+            //     var go = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
+            //
+            //     var filter = go.GetComponent<MeshFilter>();
+            //     filter.mesh = ToMesh(allMeshes[i], name);
+            //
+            //     var renderer = go.GetComponent<MeshRenderer>();
+            //     renderer.material = _material;
+            //
+            //     var transform = go.transform;
+            //     transform.SetParent(parent);
+            //     _joints[i] = transform;
+            // }
         }
 
         void CreateToolObjects(Tool[] tools)

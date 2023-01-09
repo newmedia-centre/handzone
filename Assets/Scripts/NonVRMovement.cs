@@ -40,7 +40,7 @@ public class NonVRMovement : MonoBehaviour
         // Input
         if (Focused)
             UpdateInput();
-        else if (Input.GetMouseButtonDown(0))
+        else if (Input.GetKeyDown(KeyCode.E))
             Focused = true;
 
         // Physics
@@ -61,7 +61,7 @@ public class NonVRMovement : MonoBehaviour
         transform.rotation = horiz * rotation * vert;
 
         // Leave cursor lock
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.E))
             Focused = false;
     }
 
