@@ -4,18 +4,18 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
 public class CheckVRDevice : MonoBehaviour
 {
-    // Start is called before the first frame update
+    // Check for a VR Device at startup, if none is found activate the movement model
+    bool VRCheck;
     void Start()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        var VRCheck = UnityEngine.XR.InputDevices.GetDeviceAtXRNode(UnityEngine.XR.XRNode.Head).isValid;
-        Debug.Log(VRCheck);
+        VRCheck = UnityEngine.XR.InputDevices.GetDeviceAtXRNode(UnityEngine.XR.XRNode.Head).isValid;
+        Debug.Log("VR Device: " + VRCheck);
+        if (VRCheck == true)
+        {
+            Destroy(gameObject);
+        }
     }
 }
