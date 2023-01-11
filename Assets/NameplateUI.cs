@@ -16,6 +16,8 @@ public class NameplateUI : MonoBehaviour
     private TextMeshProUGUI _textLabel;
     private Vector3 _centerPosition;
     private Renderer _renderer;
+    private bool _isShowing = true;
+    
     
     void Start()
     {
@@ -27,8 +29,26 @@ public class NameplateUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _centerPosition = _renderer.bounds.center;
+        if (_isShowing == false)
+            return;
+        
+        if (_renderer != null)
+            _centerPosition = _renderer.bounds.center;
+        else
+            _centerPosition = transform.position;
         _uiNameplate.transform.position = _centerPosition + offset;
         _uiNameplate.transform.rotation = Quaternion.LookRotation(_uiNameplate.transform.position - Camera.main.transform.position);
+    }
+
+    public void Show()
+    {
+        _uiNameplate.SetActive(true);
+        _isShowing = true;
+    }
+
+    public void Hide()
+    {
+        _uiNameplate.SetActive(false);
+        _isShowing = false;
     }
 }
