@@ -52,9 +52,12 @@ namespace Robots.Samples.Unity
 
             if (_isPlaying)
             {
-                var time = Mathf.PingPong(Time.time, (float)_program.Duration);
+                _currentTime += Time.deltaTime;
+                if (_currentTime > (float)_program.Duration)
+                    _currentTime -= (float)_program.Duration;
+                // var time = Mathf.PingPong(Time.time, (float)_program.Duration);
                 
-                SetPlaybackTime(time);
+                SetPlaybackTime(_currentTime);
             }
         }
 
@@ -73,12 +76,6 @@ namespace Robots.Samples.Unity
 
             RobotActions.OnProgramDurationUpdated((int)_program.Duration);
             RobotActions.OnTimeUpdated(0);
-            // foreach (var playbackPanel in playbackPanels)
-            // {
-            //     _programDuration = (int)_program.Duration;
-            //     playbackPanel.sliderPanel.slider.maxValue = _programDuration;
-            //     playbackPanel.sliderPanel.value.text = "0-" + _programDuration.ToString();
-            // }
         }
 
         void PlayPlayback()
@@ -103,19 +100,8 @@ namespace Robots.Samples.Unity
             _currentTime = time;
             _program.Animate(_currentTime, false);
             RobotActions.OnTimeUpdated(_currentTime);
-            // UpdatePlaybackTimeUI(_currentTime);
-            
             UpdateProgramTargetState(_program.CurrentSimulationPose.TargetIndex);
         }
-
-        // void UpdatePlaybackTimeUI(float time)
-        // {
-        //     foreach (var playbackPanel in playbackPanels)
-        //     {
-        //         playbackPanel.sliderPanel.value.text = (int)time + "-" + _programDuration;
-        //         playbackPanel.sliderPanel.slider.value = time;
-        //     }
-        // }
 
         void UpdateProgramTargetState(int targetIndex)
         {
