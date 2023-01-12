@@ -13,7 +13,7 @@ namespace Robots.Samples.Unity
 
         [SerializeField]
         #nullable enable
-        private Material? _material;
+        private Material? _toolMaterial;
         private Program? _program;
         private UnityMeshPoser? _meshPoser;
         private UnityMeshPoser? _toolMeshPoser;
@@ -66,11 +66,11 @@ namespace Robots.Samples.Unity
             
             _program = await GrasshopperSyncProgram.CreateAsync(json);
 
-            if (_material == null)
-                throw new ArgumentNullException(nameof(_material));
+            if (_toolMaterial == null)
+                throw new ArgumentNullException(nameof(_toolMaterial));
 
             if(_meshPoser == null)
-                _meshPoser = new UnityMeshPoser(_program.RobotSystem, _material, toolPrefab);
+                _meshPoser = new UnityMeshPoser(_program.RobotSystem, _toolMaterial, toolPrefab);
 
             _program.MeshPoser = _meshPoser;
 

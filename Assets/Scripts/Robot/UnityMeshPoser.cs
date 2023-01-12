@@ -15,16 +15,16 @@ namespace Robots.Samples.Unity
         readonly DefaultPose _default;
         readonly Transform[] _joints;
         private List<Transform> _tools;
-        private Material _material;
+        private Material _toolMaterial;
         private GameObject _toolPrefab;
         
         // For adding a slight offset of the collision box size
         private float _toolBoundsOffset = 0.01f;
 
-        public UnityMeshPoser(RobotSystem robot, Material material, GameObject toolPrefab)
+        public UnityMeshPoser(RobotSystem robot, Material toolMaterial, GameObject toolPrefab)
         {
             _default = robot.DefaultPose;
-            _material = material;
+            _toolMaterial = toolMaterial;
             _toolPrefab = toolPrefab;
             
             var parent = GameObject.Find("HDRobot").transform;
@@ -70,7 +70,7 @@ namespace Robots.Samples.Unity
                 filter.mesh = ToMesh(allMeshes[i], name);
 
                 var renderer = go.GetComponent<MeshRenderer>();
-                renderer.material = _material;
+                renderer.material = _toolMaterial;
                 
                 var collider = go.GetComponent<BoxCollider>();
 
