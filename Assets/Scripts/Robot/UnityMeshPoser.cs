@@ -17,6 +17,9 @@ namespace Robots.Samples.Unity
         private List<Transform> _tools;
         private Material _material;
         private GameObject _toolPrefab;
+        
+        // For adding a slight offset of the collision box size
+        private float _toolBoundsOffset = 0.01f;
 
         public UnityMeshPoser(RobotSystem robot, Material material, GameObject toolPrefab)
         {
@@ -75,7 +78,7 @@ namespace Robots.Samples.Unity
                 collider.size = bounds.size;
                 collider.center = bounds.center;
                 
-                go.GetComponent<Gripper>().SetAnchorPosition(new Vector3(0, bounds.size.y, 0));
+                go.GetComponent<Gripper>().SetAnchorPosition(new Vector3(0, bounds.size.y + _toolBoundsOffset, 0));
 
                 _tools.Add(go.transform);
                     

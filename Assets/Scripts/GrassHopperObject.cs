@@ -1,3 +1,4 @@
+using Robots.Samples.Unity;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -52,6 +53,7 @@ public class GrassHopperObject : MonoBehaviour
         {
             ShouldUpdate(false);
             EnablePhysics();
+            UnityInGrasshopper.Instance.SendPosition(transform.position * SCALE, name);
         });
     }
 
@@ -93,6 +95,8 @@ public class GrassHopperObject : MonoBehaviour
 
     public void MeshUnselectable(GameObject go)
     {
+        DisablePhysics();
+        
         if (go == _meshTransform.gameObject)
         {
             _meshOutline.OutlineColor = unselectableColor;
@@ -103,20 +107,22 @@ public class GrassHopperObject : MonoBehaviour
 
     public void MeshSelectable(GameObject go)
     {
+        EnablePhysics();
+        
         if (go == _meshTransform.gameObject)
         {
             _meshOutline.OutlineColor = selectableColor;
             _selectableOutline.OutlineColor = selectableColor;
-            _meshRigidbody.isKinematic = _previousMeshKinematicSetting;
-            if (_meshRigidbody.isKinematic)
-            {
-                _previousMeshKinematicSetting = true;
-            }
-            else
-            {
-                _previousMeshKinematicSetting = false;
-                _meshRigidbody.isKinematic = true;
-            }
+            // _meshRigidbody.isKinematic = _previousMeshKinematicSetting;
+            // if (_meshRigidbody.isKinematic)
+            // {
+            //     _previousMeshKinematicSetting = true;
+            // }
+            // else
+            // {
+            //     _previousMeshKinematicSetting = false;
+            //     _meshRigidbody.isKinematic = true;
+            // }
         }
     }
     
