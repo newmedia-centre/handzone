@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
+[RequireComponent(typeof(Canvas))]
 public class NameplateUIManager : MonoBehaviour
 {
     [Serializable]
