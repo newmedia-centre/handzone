@@ -1,3 +1,4 @@
+using Robots.Samples.Unity;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -21,20 +22,20 @@ public class GrassHopperObject : MonoBehaviour
     private Outline _selectableOutline;
     private Outline _meshOutline;
     private Transform _meshTransform;
-    private Rigidbody _rigidbody;
-    private bool _previousKinematicSetting;
+    private Rigidbody _meshRigidbody;
+    private bool _previousMeshKinematicSetting;
 
     private void Awake()
     {
         _timer = GetComponent<Timer>();
         _timer.SetTimerDuration(updateDuration);
         _xrInteractable = GetComponent<XRGrabInteractable>();
-        _rigidbody = GetComponent<Rigidbody>();
         _selectableOutline = GetComponent<Outline>();
         _selectableOutline.OutlineColor = selectableColor;
         
         _meshTransform = transform.GetChild(0);
         _meshOutline = _meshTransform.GetComponent<Outline>();
+        _meshRigidbody = _meshTransform.GetComponent<Rigidbody>();
         _meshOutline.OutlineColor = selectableColor;
     }
 
@@ -44,13 +45,26 @@ public class GrassHopperObject : MonoBehaviour
         RobotActions.OnToolUngrabbed += MeshSelectable;
         _xrInteractable.selectEntered.AddListener(delegate
         {
+            DisablePhysics();
             ResetMesh(); 
             ShouldUpdate(true);
         });
         _xrInteractable.selectExited.AddListener(delegate
         {
             ShouldUpdate(false);
+            EnablePhysics();
+            UnityInGrasshopper.Instance.SendPosition(transform.position * SCALE, name);
         });
+    }
+
+    private void EnablePhysics()
+    {
+        _meshRigidbody.isKinematic = false;
+    }
+
+    private void DisablePhysics()
+    {
+        _meshRigidbody.isKinematic = true;
     }
 
     private void Update()
@@ -81,30 +95,34 @@ public class GrassHopperObject : MonoBehaviour
 
     public void MeshUnselectable(GameObject go)
     {
+        DisablePhysics();
+        
         if (go == _meshTransform.gameObject)
         {
             _meshOutline.OutlineColor = unselectableColor;
             _selectableOutline.OutlineColor = interactedColor;
-            _rigidbody.isKinematic = _previousKinematicSetting;
+            _meshRigidbody.isKinematic = _previousMeshKinematicSetting;
         }
     }
 
     public void MeshSelectable(GameObject go)
     {
+        EnablePhysics();
+        
         if (go == _meshTransform.gameObject)
         {
             _meshOutline.OutlineColor = selectableColor;
             _selectableOutline.OutlineColor = selectableColor;
-            _rigidbody.isKinematic = _previousKinematicSetting;
-            if (_rigidbody.isKinematic)
-            {
-                _previousKinematicSetting = true;
-            }
-            else
-            {
-                _previousKinematicSetting = false;
-                _rigidbody.isKinematic = true;
-            }
+            // _meshRigidbody.isKinematic = _previousMeshKinematicSetting;
+            // if (_meshRigidbody.isKinematic)
+            // {
+            //     _previousMeshKinematicSetting = true;
+            // }
+            // else
+            // {
+            //     _previousMeshKinematicSetting = false;
+            //     _meshRigidbody.isKinematic = true;
+            // }
         }
     }
     

@@ -80,6 +80,10 @@ public class UnityInGrasshopper : MonoBehaviour
             string id = "";
             if (args.TryGetString("id", out id))
             {
+                Point3d pos;
+                args.TryGetPoint("pos", out pos);
+                Vector3 position = pos.ToHost();
+                
                 if (!GameObject.Find(id))
                 {
                     if (grasshopperObjectPrefab == null)
@@ -87,11 +91,12 @@ public class UnityInGrasshopper : MonoBehaviour
                         Debug.LogWarning("GrasshopperObjectPrefab not selected!");
                         return;
                     }
-                        
-                    var go = Instantiate(grasshopperObjectPrefab);
+                    
+                    var go = Instantiate(grasshopperObjectPrefab, position, Quaternion.identity);
                     go.name = id;
                 }
             }
+            
         }
     }
     
