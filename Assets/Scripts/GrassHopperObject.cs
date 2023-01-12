@@ -21,20 +21,20 @@ public class GrassHopperObject : MonoBehaviour
     private Outline _selectableOutline;
     private Outline _meshOutline;
     private Transform _meshTransform;
-    private Rigidbody _rigidbody;
-    private bool _previousKinematicSetting;
+    private Rigidbody _meshRigidbody;
+    private bool _previousMeshKinematicSetting;
 
     private void Awake()
     {
         _timer = GetComponent<Timer>();
         _timer.SetTimerDuration(updateDuration);
         _xrInteractable = GetComponent<XRGrabInteractable>();
-        _rigidbody = GetComponent<Rigidbody>();
         _selectableOutline = GetComponent<Outline>();
         _selectableOutline.OutlineColor = selectableColor;
         
         _meshTransform = transform.GetChild(0);
         _meshOutline = _meshTransform.GetComponent<Outline>();
+        _meshRigidbody = _meshTransform.GetComponent<Rigidbody>();
         _meshOutline.OutlineColor = selectableColor;
     }
 
@@ -44,13 +44,25 @@ public class GrassHopperObject : MonoBehaviour
         RobotActions.OnToolUngrabbed += MeshSelectable;
         _xrInteractable.selectEntered.AddListener(delegate
         {
+            DisablePhysics();
             ResetMesh(); 
             ShouldUpdate(true);
         });
         _xrInteractable.selectExited.AddListener(delegate
         {
             ShouldUpdate(false);
+            EnablePhysics();
         });
+    }
+
+    private void EnablePhysics()
+    {
+        _meshRigidbody.isKinematic = false;
+    }
+
+    private void DisablePhysics()
+    {
+        _meshRigidbody.isKinematic = true;
     }
 
     private void Update()
@@ -85,7 +97,7 @@ public class GrassHopperObject : MonoBehaviour
         {
             _meshOutline.OutlineColor = unselectableColor;
             _selectableOutline.OutlineColor = interactedColor;
-            _rigidbody.isKinematic = _previousKinematicSetting;
+            _meshRigidbody.isKinematic = _previousMeshKinematicSetting;
         }
     }
 
@@ -95,15 +107,15 @@ public class GrassHopperObject : MonoBehaviour
         {
             _meshOutline.OutlineColor = selectableColor;
             _selectableOutline.OutlineColor = selectableColor;
-            _rigidbody.isKinematic = _previousKinematicSetting;
-            if (_rigidbody.isKinematic)
+            _meshRigidbody.isKinematic = _previousMeshKinematicSetting;
+            if (_meshRigidbody.isKinematic)
             {
-                _previousKinematicSetting = true;
+                _previousMeshKinematicSetting = true;
             }
             else
             {
-                _previousKinematicSetting = false;
-                _rigidbody.isKinematic = true;
+                _previousMeshKinematicSetting = false;
+                _meshRigidbody.isKinematic = true;
             }
         }
     }
