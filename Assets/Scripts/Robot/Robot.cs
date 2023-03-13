@@ -5,6 +5,16 @@ namespace Robots.Samples.Unity
 {
     public class Robot : MonoBehaviour
     {
+        [Serializable]
+        public enum RobotState
+        {
+            Off = -1,
+            Idle = 0,
+            Normal = 1
+        }
+
+        public static RobotState State { get; set; } = RobotState.Off;
+        
         public PlaybackPanel[] playbackPanels;
         
         public string gripperLoadedName;
@@ -39,6 +49,11 @@ namespace Robots.Samples.Unity
         {
             foreach (var playbackPanel in playbackPanels)
             {
+                if (playbackPanel == null)
+                {
+                    Debug.LogWarning("Playback panel is empty, not able to add listener to it");
+                    return;
+                }
                 playbackPanel.playButton.onClick.AddListener(PlayPlayback);
                 playbackPanel.pauseButton.onClick.AddListener(PausePlayback);
                 playbackPanel.sliderPanel.slider.onValueChanged.AddListener(value => SetPlaybackTime(value));
