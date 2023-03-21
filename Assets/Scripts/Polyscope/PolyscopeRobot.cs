@@ -7,17 +7,18 @@ public class PolyscopeRobot : MonoBehaviour
 {
     public float movementSpeed = 3.0f;
     public List<Transform> joints;
-    public Transform TCP;
+    public Transform TCPTarget;
     public static Action<Transform, Vector3> OnPolyscopeRotateJointToDirection;
     public static Action<Transform, float, Vector3> OnPolyscopeRotateJointToAngle;
-
+    
      void Awake()
      {
          // Get all children transform components to get all the joints
          joints = transform.GetComponentsInChildren<Transform>().Skip(1).ToList();
          
-         // Use last joint for the TCP
-         TCP = joints.Last();
+         // Use last joint for the TCP and connect it to TCPTarget 
+         TCPTarget = joints.Last();
+         
          // Remove TCP from main Joints
          joints = joints.SkipLast(1).ToList();
 
