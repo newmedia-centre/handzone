@@ -1,17 +1,20 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PolyscopeMoveJointButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class PolyscopeMoveTcpButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    public Transform jointToMove;
+    [SerializeField]
+    public TCPController tcpController;
+    public Vector3 translateDirection;
     public Vector3 rotateAxis;
+
     private bool _isHeld;
-    
+
     public void OnPointerDown(PointerEventData eventData)
     {
         _isHeld = true;
     }
-    
+
     public void OnPointerUp(PointerEventData eventData)
     {
         _isHeld = false;
@@ -21,7 +24,8 @@ public class PolyscopeMoveJointButton : MonoBehaviour, IPointerDownHandler, IPoi
     {
         if (_isHeld)
         {
-            PolyscopeRobot.OnPolyscopeRotateJointToDirection(jointToMove, rotateAxis );
+            tcpController.RotateObject(rotateAxis);
+            tcpController.TranslateObject(translateDirection);
         }
     }
 }
