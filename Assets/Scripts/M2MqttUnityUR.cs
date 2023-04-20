@@ -23,24 +23,24 @@ public class M2MqttUnityUR : M2MqttUnityClient
     public InputField portInputField;
     public Button connectButton;
     public Button disconnectButton;
-    public Button clearButton;
+    public Button publishButton;
 
     // Private fields
     private List<string> _eventMessages = new();
     private bool _updateUI = false;
     private List<PolyscopeRobot.JointTransformAndAxis> _jointTransformAndAxisList;
+    private bool _firstMessage = true;
     
     // Nested class for JSON payload
     [Serializable]
     public class JsonPayload
     {
         public string processProgress;
-        public string stationName;
-        public float[] roboPose;
+        public float[] tcpPose;
         public float[] jointPositions;
+        public bool toolStatus;
         public int counterData;
         public bool processBusy;
-        public bool alwaysFalse;
     }
     
     /// <summary>
@@ -82,7 +82,6 @@ public class M2MqttUnityUR : M2MqttUnityClient
     protected override void OnConnecting()
     {
         base.OnConnecting();
-        Debug.Log("Connecting to broker on " + brokerAddress + ":" + brokerPort.ToString() + "...\n");
     }
 
     /// <summary>
@@ -115,7 +114,14 @@ public class M2MqttUnityUR : M2MqttUnityClient
     /// </summary>
     protected override void OnDisconnected()
     {
-        Debug.Log("Disconnected.");
+        base.OnDisconnected();
+        UpdateUI();
+    }
+
+    protected override void OnConnected()
+    {
+        base.OnConnected();
+        UpdateUI();
     }
 
     /// <summary>
@@ -169,9 +175,9 @@ public class M2MqttUnityUR : M2MqttUnityClient
             encryptedToggle.isOn = isEncrypted;
         }
 
-        if (clearButton != null)
+        if (publishButton != null)
         {
-            clearButton.interactable = connectButton != null && connectButton.interactable;
+            publishButton.interactable = disconnectButton != null && disconnectButton.interactable;
         }
 
         _updateUI = false;
@@ -218,14 +224,14 @@ public class M2MqttUnityUR : M2MqttUnityClient
     {
         var jsonPayload = JsonConvert.DeserializeObject<JsonPayload>(msg);
         
-        TransformJoints(jsonPayload.jointPositions);
+        ReceiveTransformJoints(jsonPayload.jointPositions);
     }
 
     /// <summary>
     /// Update the joint positions of the robot based on the received joint positions.
     /// </summary>
     /// <param name="jointPositions">The array of joint positions.</param>
-    private void TransformJoints(float[] jointPositions)
+    private void ReceiveTransformJoints(float[] jointPositions)
     {
         if (jointPositions.Length != _jointTransformAndAxisList.Count)
         {
@@ -257,6 +263,44 @@ public class M2MqttUnityUR : M2MqttUnityClient
         }
     }
 
+    public void PublishTransformJoints()
+    {
+        var jointTransformAndAxisList = polyscopeRobot.GetJointTransformsAndEnabledRotationAxis();
+        List<float>jointAngles = new List<float>(jointTransformAndAxisList.Count);
+
+        for (int i = 0; i < jointTransformAndAxisList.Count; i++)
+        {
+            var angle = polyscopeRobot.GetJointRotationAngle(jointTransformAndAxisList[i]);
+            angle = RobotsHelper.WrapAngle(angle);
+            
+            switch (i)
+            {
+                case 1:
+                case 3:
+                    angle -= 90;
+                    break;
+                case 0:
+                case 4:
+                    angle += 180;
+                    break;
+            }
+            
+            angle *= Mathf.Deg2Rad;
+            jointAngles.Add(angle);
+        }
+
+        // Use object initializer to create JsonPayload
+        var jsonPayload = new JsonPayload { jointPositions = jointAngles.ToArray() };
+
+        // Use JsonUtility.ToJson overload to avoid creating data string
+        var data = JsonUtility.ToJson(jsonPayload, false);
+
+        // Use Encoding.UTF8.GetBytes overload to avoid creating separate byte array
+        client.Publish("test/json", System.Text.Encoding.UTF8.GetBytes(data), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+        Debug.Log("Joint message published:" + data);
+    }
+    
+
     /// <summary>
     /// Called once per frame.
     /// </summary>
@@ -264,18 +308,20 @@ public class M2MqttUnityUR : M2MqttUnityClient
     {
         base.Update(); // call ProcessMqttEvents()
 
-        if (_eventMessages.Count > 0)
+        if (_eventMessages.Count > 0 && _firstMessage)
         {
             foreach (string msg in _eventMessages)
             {
                 ProcessMessage(msg);
             }
             _eventMessages.Clear();
+            _firstMessage = false;
         }
         if (_updateUI)
         {
             UpdateUI();
         }
+        
     }
 
     /// <summary>
