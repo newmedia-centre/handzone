@@ -60,6 +60,27 @@ public class PolyscopeRobot : MonoBehaviour
 
         return jointTransformsAndAxes;
     }
+    
+    public float GetJointRotationAngle(JointTransformAndAxis joint) { 
+        Vector3 enabledRotationAxis = joint.EnabledRotationAxis; 
+        Quaternion currentRotation = joint.JointTransform.localRotation; 
+        float angle = 0f;
+        
+        if (enabledRotationAxis == Vector3.right)
+        {
+            angle = currentRotation.eulerAngles.x;
+        }
+        else if (enabledRotationAxis == Vector3.up)
+        {
+            angle = currentRotation.eulerAngles.y;
+        }
+        else if (enabledRotationAxis == Vector3.forward)
+        {
+            angle = currentRotation.eulerAngles.z;
+        }
+
+        return angle;
+    }
 
     void Awake()
      {
