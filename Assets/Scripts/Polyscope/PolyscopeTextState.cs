@@ -18,17 +18,17 @@ public class PolyscopeTextState : MonoBehaviour
         }
     }
 
-    private void OnRobotStateChanged(Robot.RobotState newState)
+    private void OnRobotStateChanged(RobotProgram.RobotState newState)
     {
         switch (newState)
         {
-            case Robot.RobotState.Off:
+            case RobotProgram.RobotState.Off:
                 _text.text = offStateText;
                 break;
-            case Robot.RobotState.Idle:
+            case RobotProgram.RobotState.Idle:
                 _text.text = idleStateText;
                 break;
-            case Robot.RobotState.Normal:
+            case RobotProgram.RobotState.Normal:
                 _text.text = normalStateText;
                 break;
                 

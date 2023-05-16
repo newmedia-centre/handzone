@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Robots.Samples.Unity
 {
-    public class Robot : MonoBehaviour
+    public class RobotProgram : MonoBehaviour
     {
         [Serializable]
         public enum RobotState
@@ -19,6 +19,7 @@ namespace Robots.Samples.Unity
         
         public string gripperLoadedName;
         public string gripperUnloadedName;
+        public Transform robotMeshTarget;
         public GameObject toolPrefab;
 
         [SerializeField]
@@ -78,14 +79,13 @@ namespace Robots.Samples.Unity
 
         public async void CreateProgramFromJSON(string json)
         {
-            
             _program = await GrasshopperSyncProgram.CreateAsync(json);
 
             if (_toolMaterial == null)
                 throw new ArgumentNullException(nameof(_toolMaterial));
 
             if(_meshPoser == null)
-                _meshPoser = new UnityMeshPoser(_program.RobotSystem, _toolMaterial, toolPrefab);
+                _meshPoser = new UnityMeshPoser(_program.RobotSystem, _toolMaterial, toolPrefab, robotMeshTarget);
 
             _program.MeshPoser = _meshPoser;
 
@@ -100,6 +100,7 @@ namespace Robots.Samples.Unity
         void PausePlayback()
         {
             _isPlaying = false;
+            UR_EthernetIPClient.StopMoving();
         }
 
         /// <summary>
@@ -114,6 +115,8 @@ namespace Robots.Samples.Unity
 
             _currentTime = time;
             _program.Animate(_currentTime, false);
+
+            RobotTranslator.UpdateGHJoints();
             RobotActions.OnTimeUpdated(_currentTime);
             UpdateProgramTargetState(_program.CurrentSimulationPose.TargetIndex);
         }

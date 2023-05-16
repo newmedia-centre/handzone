@@ -19,17 +19,17 @@ public class PolyscopeIconState : MonoBehaviour
         }
     }
 
-    private void OnRobotStateChanged(Robot.RobotState newState)
+    private void OnRobotStateChanged(RobotProgram.RobotState newState)
     {
         switch (newState)
         {
-            case Robot.RobotState.Off:
+            case RobotProgram.RobotState.Off:
                 _icon.color = offStateColor;
                 break;
-            case Robot.RobotState.Idle:
+            case RobotProgram.RobotState.Idle:
                 _icon.color = idleStateColor;
                 break;
-            case Robot.RobotState.Normal:
+            case RobotProgram.RobotState.Normal:
                 _icon.color = normalStateColor;
                 break;
             default:

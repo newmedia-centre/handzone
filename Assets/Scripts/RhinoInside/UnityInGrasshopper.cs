@@ -15,6 +15,7 @@ public class UnityInGrasshopper : MonoBehaviour
     public GameObject[] uiParents;
     public GameObject sliderPanelPrefab;
     public GameObject togglePanelPrefab;
+    public RobotProgram robotProgram;
     
     #region MonoBehaviour
 
@@ -61,10 +62,14 @@ public class UnityInGrasshopper : MonoBehaviour
                 // // DEBUG TIMER START
                 // Stopwatch st = new Stopwatch();
                 // st.Start();
-
-                var robot = GameObject.Find("Robot").GetComponent<Robot>();
-                robot.CreateProgramFromJSON(json);
-
+                
+                try 
+                {
+                    robotProgram.CreateProgramFromJSON(json);
+                } 
+                catch (Exception e) {
+                    Debug.LogError(e);
+                }
 
                 // // DEBUG TIMER STOP
                 // st.Stop();

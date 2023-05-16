@@ -21,23 +21,23 @@ public class PolyscopeInitializeUI : MonoBehaviour
         }
     }
 
-    private void OnRobotStateChanged(Robot.RobotState newState)
+    private void OnRobotStateChanged(RobotProgram.RobotState newState)
     {
         switch (newState)
         {
-            case Robot.RobotState.Off:
+            case RobotProgram.RobotState.Off:
                 offButton.GetComponent<Button>().interactable = false;
                 idleButton.SetActive(true);
                 normalButton.SetActive(false);
                 normalButton.GetComponent<Button>().interactable = true;
                 break;
-            case Robot.RobotState.Idle:
+            case RobotProgram.RobotState.Idle:
                 offButton.GetComponent<Button>().interactable = true;
                 idleButton.SetActive(false);
                 normalButton.SetActive(true);
                 normalButton.GetComponent<Button>().interactable = true;
                 break;
-            case Robot.RobotState.Normal:
+            case RobotProgram.RobotState.Normal:
                 idleButton.SetActive(false);
                 normalButton.SetActive(true);
                 normalButton.GetComponent<Button>().interactable = false;

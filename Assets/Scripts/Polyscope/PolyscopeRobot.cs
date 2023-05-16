@@ -34,6 +34,8 @@ public class PolyscopeRobot : MonoBehaviour
         }
     }
     
+    //TODO: Add method to recieve excisting list of joint transforms and enabled rotation axis, instead of creating a new list every time.
+
     public List<JointTransformAndAxis> GetJointTransformsAndEnabledRotationAxis()
     {
         List<JointTransformAndAxis> jointTransformsAndAxes = new List<JointTransformAndAxis>();

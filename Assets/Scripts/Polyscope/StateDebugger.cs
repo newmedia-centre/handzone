@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class StateDebugger : MonoBehaviour
 {
-    public Robot.RobotState State = Robot.RobotState.Off;
+    public RobotProgram.RobotState State = RobotProgram.RobotState.Off;
 
-    private Robot.RobotState _currentState;
+    private RobotProgram.RobotState _currentState;
 
     private void Start()
     {

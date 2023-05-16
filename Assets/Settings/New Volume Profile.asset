@@ -56,7 +56,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   threshold:
     m_OverrideState: 1
     m_Value: 0.68
@@ -101,7 +101,6 @@ MonoBehaviour:
   - {fileID: -928152172933784707}
   - {fileID: -222463535148198348}
   - {fileID: -8980283016153311291}
-  - {fileID: 3746932813761904224}
 --- !u!114 &3746932813761904224
 MonoBehaviour:
   m_ObjectHideFlags: 3

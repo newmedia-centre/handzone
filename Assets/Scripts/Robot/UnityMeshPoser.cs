@@ -17,18 +17,18 @@ namespace Robots.Samples.Unity
         private List<Transform> _tools;
         private Material _toolMaterial;
         private GameObject _toolPrefab;
+        private Transform _parentTransform;
         
         // For adding a slight offset of the collision box size
         private float _toolBoundsOffset = 0.01f;
 
-        public UnityMeshPoser(RobotSystem robot, Material toolMaterial, GameObject toolPrefab)
+        public UnityMeshPoser(RobotSystem robot, Material toolMaterial, GameObject toolPrefab, Transform parent)
         {
             _default = robot.DefaultPose;
             _toolMaterial = toolMaterial;
             _toolPrefab = toolPrefab;
-            
-            var parent = GameObject.Find("HDRobot").transform;
-            _joints = new Transform[parent.childCount];
+            _parentTransform = parent;
+            _joints = new Transform[_parentTransform.childCount];
 
             for (int i = 0; i < parent.childCount; i++)
             {
@@ -54,7 +54,6 @@ namespace Robots.Samples.Unity
 
         void CreateToolObjects(Tool[] tools)
         {
-            var parent = GameObject.Find("Robot").transform;
             var allMeshes = new List<Rhino.Geometry.Mesh>();
             _tools = new List<Transform>();
 
@@ -83,7 +82,7 @@ namespace Robots.Samples.Unity
                 _tools.Add(go.transform);
                     
                 var transform = go.transform;
-                transform.SetParent(parent);
+                transform.SetParent(_parentTransform);
                 _tools[i] = transform;
                 
             }
@@ -97,7 +96,6 @@ namespace Robots.Samples.Unity
             }
             
             int jcount = 0;
-
             for (int i = 0; i < solutions.Count; i++)
             {
                 var planes = solutions[i].Planes;
@@ -109,9 +107,8 @@ namespace Robots.Samples.Unity
                     var matrix = ToMatrix(ref transform);
                     _joints[jcount++].SetPositionAndRotation(matrix.GetPosition(), matrix.rotation);
                 }
-                
-                int tcount = 0;
 
+                int tcount = 0;
                 for (int k = 0; k < tools.Length; k++)
                 {
                     var transform = Rhino.Geometry.Transform.PlaneToPlane(tools[k].Tcp, planes.Last());

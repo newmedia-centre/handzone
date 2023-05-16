@@ -1495,3 +1495,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24c64ead4c7e9db41897d83ad0b89113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grasshopperObjectPrefab: {fileID: 947022030510488528, guid: d45d1cb9b14b43a418ea8c62f2ed7ba8,
+    type: 3}
+  uiParents: []
+  sliderPanelPrefab: {fileID: 7970024997855630462, guid: 84e77ee8868c20c4cbb7890daf807a52,
+    type: 3}
+  togglePanelPrefab: {fileID: 4051750483564722588, guid: ffc99e6a9083ed84eb0a54b8c471c78f,
+    type: 3}

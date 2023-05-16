@@ -21,7 +21,7 @@ public class PolyscopeMoveJointUI : MonoBehaviour
         {
             var element = Instantiate(moveJointElementPrefab, transform);
             offset.y = elementOffset * i;
-            element.transform.Translate( offset);
+            element.transform.localPosition += (offset);
             var jointElement = element.GetComponent<PolyscopeMoveJointElement>();
             jointElement.jointInfo = jointTransformAndAxisList[i];
         }
