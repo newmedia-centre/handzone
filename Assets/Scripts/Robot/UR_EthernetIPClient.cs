@@ -33,6 +33,10 @@ public class UR_EthernetIPClient : MonoBehaviour
     public int urReadPort = 30013;
     public int urWritePort = 30003;
     public RobotTranslator robotTranslator;
+    public float[] readJointValues = new float[6];
+    public bool digitalOutput = false;
+    public float speedScaling;
+    
     private TcpClient _readTcpClient;
     private TcpClient _writeTcpClient;
     private NetworkStream _readStream;
@@ -40,13 +44,11 @@ public class UR_EthernetIPClient : MonoBehaviour
     private bool _isConnected;
     private Thread _readConnectionThread;
     public static bool isMoving = false;
-
     private Thread _writeConnectionThread;
     private byte[] _readBuffer = new byte[BUFFER_SIZE];
     private byte[] _writeBuffer = new byte[0];
     private Stopwatch readStopwatch = new();
     private Stopwatch writeStopwatch = new();
-    public float[] _readJointValues = new float[6];
     
     private const int BUFFER_SIZE = 1116;
     private const int FIRST_PACKET_SIZE = 4;
@@ -61,6 +63,7 @@ public class UR_EthernetIPClient : MonoBehaviour
     public event Action OnDisconnected;
 
     public static Action<Vector3, Vector3, float, float> UpdateSpeedl;
+    public static Action<int, float, float, float> UpdateSpeedj;
     public static Action<float[]> UpdateMovej;
     public static Action ClearSendBuffer;
     public static Action StopMoving;
@@ -76,6 +79,7 @@ public class UR_EthernetIPClient : MonoBehaviour
         _writeConnectionThread.Start();
 
         UpdateSpeedl += Speedl;
+        UpdateSpeedj += Speedj;
         UpdateMovej += Movej;
         ClearSendBuffer += ClearBuffer;
         StopMoving += StopMoveJ;
@@ -93,7 +97,7 @@ public class UR_EthernetIPClient : MonoBehaviour
 
     private void Update()
     {
-        robotTranslator.UpdateJoints(_readJointValues);
+        robotTranslator.UpdatePolyscopeJoints(readJointValues);
     }
 
     void ConnectToReadAddress()
@@ -177,16 +181,25 @@ public class UR_EthernetIPClient : MonoBehaviour
             var startIndex = _readBuffer.Length - FIRST_PACKET_SIZE;
             var offsetMultiplier = OFFSET;
 
+            // Read actual q values
             for (int i = 0; i < 6; i++)
             {
-                _readJointValues[i] = (float)BitConverter.ToDouble(_readBuffer, startIndex - ((32 + i) * offsetMultiplier));
+                readJointValues[i] = (float)BitConverter.ToDouble(_readBuffer, startIndex - ((32 + i) * offsetMultiplier));
             }
             
+            // Read actual Tool vector
             for (int i = 0; i < 3; i++)
             {
                 cartesianPosition[i] = BitConverter.ToDouble(_readBuffer, startIndex - ((56 + i) * offsetMultiplier));
                 cartesianOrientation[i] = BitConverter.ToDouble(_readBuffer, startIndex - (59 + i * offsetMultiplier));
             }
+            
+            // Read digital outputs
+            double digitalOutputValue = BitConverter.ToDouble(_readBuffer, startIndex - (131 * offsetMultiplier));
+            digitalOutput = Convert.ToBoolean(digitalOutputValue);
+            
+            // Read speed scaling
+            speedScaling = (float)BitConverter.ToDouble(_readBuffer, startIndex - (118 * offsetMultiplier));
             
             readStopwatch.Stop();
             
@@ -208,6 +221,10 @@ public class UR_EthernetIPClient : MonoBehaviour
         
         if(writeStopwatch.ElapsedMilliseconds < TIME_STEP)
         {
+            if (_writeBuffer.Length > 0)
+            {
+                ClearBuffer();
+            }
             Thread.Sleep(TIME_STEP - (int)writeStopwatch.ElapsedMilliseconds);
         }
         writeStopwatch.Restart();
@@ -256,6 +273,32 @@ public class UR_EthernetIPClient : MonoBehaviour
         string commandStr = $"speedl([{xd[0]},{xd[1]},{xd[2]},{xd[3]},{xd[4]},{xd[5]}],a={a},t={t})" + "\n";
         SetWriteBuffer(Encoding.UTF8.GetBytes(commandStr));
     }
+
+    private void Speedj(int joint, float speed, float a, float t)
+    {
+        float[] qd = new float[6];
+        for (int i = 0; i < qd.Length; i++)
+        {
+            if (i == joint)
+            {
+                qd[i] = speed;
+            }
+        }
+        
+        Speedj(qd, a, t);
+    }
+    
+    /// <summary>
+    /// Sets the buffer to send a speedj command to the robot.
+    /// </summary>
+    /// <param name="qd">Joint speeds (rad/s)</param>
+    /// <param name="a">Joint acceleration (rad/s^2) of leading axis</param>
+    /// <param name="t">time in s</param>
+    void Speedj(float[] qd, float a, float t)
+    {
+        string commandStr = $"speedj([{qd[0]},{qd[1]},{qd[2]},{qd[3]},{qd[4]},{qd[5]}],a={a},t={t})" + "\n";
+        SetWriteBuffer(Encoding.UTF8.GetBytes(commandStr));
+    }
     
     /// <summary>
     /// Sets the buffer to send a movej command to the robot.
@@ -287,8 +330,13 @@ public class UR_EthernetIPClient : MonoBehaviour
 
     void SetDigitalOut(int n, bool b)
     {
-        string commandStr = $"set_digital_out({n},{b})" + "\n";
+        string commandStr = $"set_tool_digital_out({n},{b})" + "\n";
         SetWriteBuffer(Encoding.UTF8.GetBytes(commandStr));
+    }
+    
+    public void SetDigitalOutTest()
+    {
+        SetDigitalOut(0, true);
     }
 
     void OnDestroy()

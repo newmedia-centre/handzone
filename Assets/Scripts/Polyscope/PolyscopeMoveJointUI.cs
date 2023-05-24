@@ -2,28 +2,20 @@ using UnityEngine;
 
 public class PolyscopeMoveJointUI : MonoBehaviour
 {
-    public PolyscopeRobot polyscopeRobot;
-    public GameObject moveJointElementPrefab;
-    public float elementOffset = -25.0f;
-    
+    public RobotTranslator robotTranslator;
+
     private void Start()
     {
-        if (polyscopeRobot == null)
+        if (robotTranslator == null)
         {
-            Debug.LogWarning("Cannot render Move Joint UI, PolyscopeRobot is not assigned");
+            Debug.LogWarning("Cannot render Move Joint UI, RobotTranslator is not assigned");
             return;
         }
-        
-        var jointTransformAndAxisList = polyscopeRobot.GetJointTransformsAndEnabledRotationAxis();
-        
-        var offset = Vector3.zero;
-        for (int i = 0; i < jointTransformAndAxisList.Count; i++)
+
+        PolyscopeMoveJointElement[] polyscopeMoveElements = GetComponentsInChildren<PolyscopeMoveJointElement>();
+        for (int i = 0; i < polyscopeMoveElements.Length; i++)
         {
-            var element = Instantiate(moveJointElementPrefab, transform);
-            offset.y = elementOffset * i;
-            element.transform.localPosition += (offset);
-            var jointElement = element.GetComponent<PolyscopeMoveJointElement>();
-            jointElement.jointInfo = jointTransformAndAxisList[i];
+            polyscopeMoveElements[i].jointIndex = i;
         }
     }
 }

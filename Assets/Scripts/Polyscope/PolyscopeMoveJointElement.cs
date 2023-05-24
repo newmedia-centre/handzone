@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,30 +8,25 @@ public class PolyscopeMoveJointElement : MonoBehaviour
 {
     public Button positiveButton;
     public Button negativeButton;
-    public PolyscopeRobot.JointTransformAndAxis jointInfo;
-    
+    public int jointIndex;
+
     TMP_Text _jointLabel;
     Slider _slider;
     TMP_InputField _inputField;
 
     private void Start()
     {
-        
         _slider = GetComponentInChildren<Slider>();
         _inputField = GetComponentInChildren<TMP_InputField>();
-        _jointLabel = GetComponent<TMP_Text>();
-        
-        _jointLabel.text = jointInfo.JointTransform.name;
 
         _inputField.onSubmit.AddListener(delegate { UpdateJoint(); });
-        positiveButton.onClick.AddListener(delegate { UpdateUI(); });
-        negativeButton.onClick.AddListener(delegate { UpdateUI(); });
+        RobotTranslator.OnJointChanged += UpdateUI;
         
         // Add components to buttons and set their initial values
         var moveJointButton = positiveButton.gameObject.AddComponent(typeof(PolyscopeMoveJointButton)) as PolyscopeMoveJointButton;
         if (moveJointButton != null)
         {
-            moveJointButton.jointToMove = jointInfo;
+            moveJointButton.jointIndex = jointIndex;
             moveJointButton.direction = 1;
         }
         
@@ -38,16 +34,19 @@ public class PolyscopeMoveJointElement : MonoBehaviour
         moveJointButton = negativeButton.gameObject.AddComponent(typeof(PolyscopeMoveJointButton)) as PolyscopeMoveJointButton;
         if (moveJointButton != null)
         {
-            moveJointButton.jointToMove = jointInfo;
+            moveJointButton.jointIndex = jointIndex;
             moveJointButton.direction = -1;
         }
     }
 
-    private void UpdateUI()
+
+    private void UpdateUI(int jointIndex, float angle)
     {
-        var localRotation = jointInfo.JointTransform.localRotation.eulerAngles.magnitude.ToString();
-        _inputField.text = localRotation;
-        _slider.value = float.Parse(localRotation);
+        if(jointIndex == this.jointIndex)
+        {
+            _slider.value = angle;
+            _inputField.text = angle.ToString();
+        }
     }
 
     void UpdateJoint()
@@ -55,7 +54,7 @@ public class PolyscopeMoveJointElement : MonoBehaviour
         if (float.TryParse(_inputField.text, out var angle))
         {
             _slider.value = angle;
-            PolyscopeRobot.OnPolyscopeRotateJointToAngle(jointInfo, angle);
+            RobotTranslator.UpdatePolyscopeJoint(jointIndex, angle);
         }
     }
 }

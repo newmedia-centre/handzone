@@ -15,7 +15,6 @@ public class PolyscopeMoveTcpButton : MonoBehaviour, IPointerDownHandler, IPoint
     public void OnPointerDown(PointerEventData eventData)
     {
         _isHeld = true;
-        UR_EthernetIPClient.UpdateSpeedl?.Invoke(translateDirection, rotateAxis, accelerationSpeed, timeSpeed);
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -30,6 +29,8 @@ public class PolyscopeMoveTcpButton : MonoBehaviour, IPointerDownHandler, IPoint
         {
             tcpController.TranslateObject(translateDirection);
             tcpController.RotateObject(rotateAxis);
+            
+            UR_EthernetIPClient.UpdateSpeedl?.Invoke(translateDirection, rotateAxis, accelerationSpeed, timeSpeed);
         }
     }
 }

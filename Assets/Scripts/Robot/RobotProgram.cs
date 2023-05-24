@@ -116,7 +116,6 @@ namespace Robots.Samples.Unity
             _currentTime = time;
             _program.Animate(_currentTime, false);
 
-            RobotTranslator.UpdateGHJoints();
             RobotActions.OnTimeUpdated(_currentTime);
             UpdateProgramTargetState(_program.CurrentSimulationPose.TargetIndex);
         }
