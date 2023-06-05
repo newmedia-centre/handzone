@@ -33,7 +33,7 @@ public class UR_EthernetIPClient : MonoBehaviour
     public int urReadPort = 30013;
     public int urWritePort = 30003;
     public RobotTranslator robotTranslator;
-    public float[] readJointValues = new float[6];
+    public float[] readJointValues = new float[JOINT_SIZE];
     public bool digitalOutput = false;
     public float speedScaling;
     
@@ -49,22 +49,25 @@ public class UR_EthernetIPClient : MonoBehaviour
     private byte[] _writeBuffer = new byte[0];
     private Stopwatch readStopwatch = new();
     private Stopwatch writeStopwatch = new();
+    private float[] _oldReadValues = new float[JOINT_SIZE];
     
     private const int BUFFER_SIZE = 1116;
     private const int FIRST_PACKET_SIZE = 4;
     private const byte OFFSET = 8;
     private const uint TOTAL_MSG_LENGTH = 3288596480;
     private const int TIME_STEP = 8;
+    private const int JOINT_SIZE = 6;
     
-    public event Action OnConnect;
     public event Action OnConnecting;
     public event Action OnConnected;
-    public event Action OnDisconnect;
+    public event Action OnDisconnecting;
     public event Action OnDisconnected;
-
+    
+    public static Action<int, float> JointChanged;
     public static Action<Vector3, Vector3, float, float> UpdateSpeedl;
     public static Action<int, float, float, float> UpdateSpeedj;
     public static Action<float[]> UpdateMovej;
+    public static Action<bool> UpdateDigitalOutput;
     public static Action ClearSendBuffer;
     public static Action StopMoving;
 
@@ -88,16 +91,24 @@ public class UR_EthernetIPClient : MonoBehaviour
 
     void LogEvents()
     {
-        OnConnect += () => Debug.Log("Connected to Ethernet/IP server");
-        OnConnecting += () => Debug.Log("Connecting to Ethernet/IP server...");
+        // OnConnecting += () => Debug.Log("Connecting to Ethernet/IP server...");
         OnConnected += () => Debug.Log("Successfully connected to Ethernet/IP server");
-        OnDisconnect += () => Debug.Log("Disconnected from Ethernet/IP server");
+        // OnDisconnecting += () => Debug.Log("Disconnecting from Ethernet/IP server");
         OnDisconnected += () => Debug.Log("Successfully disconnected from Ethernet/IP server");
     }
 
     private void Update()
     {
-        robotTranslator.UpdatePolyscopeJoints(readJointValues);
+        for (int i = 0; i < readJointValues.Length; i++)
+        {
+            if(readJointValues[i] != _oldReadValues[i])
+            {
+                _oldReadValues[i] = readJointValues[i];
+                JointChanged?.Invoke(i, readJointValues[i]);
+            }
+        }
+        
+        robotTranslator.UpdateJointsFromPolyscope(readJointValues);
     }
 
     void ConnectToReadAddress()
@@ -110,7 +121,6 @@ public class UR_EthernetIPClient : MonoBehaviour
             _readStream = _readTcpClient.GetStream();
             
             _isConnected = true;
-            OnConnect?.Invoke();
             OnConnected?.Invoke();
             ReceiveMessages();
         }
@@ -130,7 +140,6 @@ public class UR_EthernetIPClient : MonoBehaviour
             _writeStream = _writeTcpClient.GetStream();
             
             _isConnected = true;
-            OnConnect?.Invoke();
             OnConnected?.Invoke();
             SendMessages();
         }
@@ -233,7 +242,6 @@ public class UR_EthernetIPClient : MonoBehaviour
     void SetWriteBuffer(byte[] buffer)
     {
         _writeBuffer = buffer;
-        Debug.Log("New Write buffer: " + _writeBuffer.Length);
     }
 
     void StopMoveJ()
@@ -244,7 +252,6 @@ public class UR_EthernetIPClient : MonoBehaviour
     
     private void ClearBuffer()
     {
-        Debug.Log("Clearing buffer");
         _writeBuffer = new byte[0];
     }
 
@@ -279,6 +286,7 @@ public class UR_EthernetIPClient : MonoBehaviour
         float[] qd = new float[6];
         for (int i = 0; i < qd.Length; i++)
         {
+            qd[i] = 0;
             if (i == joint)
             {
                 qd[i] = speed;
@@ -319,8 +327,6 @@ public class UR_EthernetIPClient : MonoBehaviour
         {
             qd[i] *= Mathf.Rad2Deg;
         }
-        Debug.Log($"Angles: {qd[0]},{qd[1]},{qd[2]},{qd[3]},{qd[4]},{qd[5]}");
-        Debug.Log(commandStr);
     }
 
     void Movej(float[] qd)
@@ -334,25 +340,51 @@ public class UR_EthernetIPClient : MonoBehaviour
         SetWriteBuffer(Encoding.UTF8.GetBytes(commandStr));
     }
     
-    public void SetDigitalOutTest()
+    public void ToggleDigitalOut()
     {
-        SetDigitalOut(0, true);
+        SetDigitalOut(0, !digitalOutput);
     }
-
+    
     void OnDestroy()
     {
-        _readStream.Close();
-        _readTcpClient.Close();
-        _readStream.Dispose();
-        _readTcpClient.Dispose();
-        
-        _writeStream.Close();
-        _writeTcpClient.Close();
-        _writeStream.Dispose();
-        _writeTcpClient.Dispose();
-        
-        Thread.Sleep(100);
-        _readConnectionThread.Abort();
-        _writeConnectionThread.Abort();
+        try
+        {
+            OnDisconnecting?.Invoke();
+            _isConnected = false;
+
+            if (_readConnectionThread != null && _readConnectionThread.IsAlive)
+                _readConnectionThread.Join();
+            
+            if (_writeConnectionThread != null && _writeConnectionThread.IsAlive)
+                _writeConnectionThread.Join();
+
+            if (_readStream != null)
+            {
+                _readStream.Close();
+                _readStream.Dispose();
+            }
+            
+            if(_writeStream != null)
+            {
+                _writeStream.Close();
+                _writeStream.Dispose();
+            }
+
+            if (_readTcpClient != null)
+            {
+                _readTcpClient.Close();
+            }
+            
+            if(_writeTcpClient != null)
+            {
+                _writeTcpClient.Close();
+            }
+            
+            OnDisconnected?.Invoke();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error while cleaning up TCP connection: {e.Message}");
+        }
     }
 }

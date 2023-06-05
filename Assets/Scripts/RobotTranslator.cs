@@ -7,6 +7,7 @@ public class RobotTranslator : MonoBehaviour
     public Transform[] robotPivots;
     public Vector3[] rotationDirection;
     public float smoothness = 20f;
+    public float moveSpeed = 4f;
     public bool matchPivots = false;
     public float[] jointAngles;
     
@@ -15,15 +16,16 @@ public class RobotTranslator : MonoBehaviour
     private List<Transform> _alignedGhPivots = new();
     private bool _polyscopePivotChanged;
     private bool _ghPivotChanged;
-    
+
     public static Action<int, float> UpdatePolyscopeJoint;
     public static Action<int, float> MovePolyscopeJoint;
-    public static Action<int, float> OnJointChanged;
+    public static Action<Vector3, Vector3> MovePolyscopeTCP;
     
     private void Awake()
     {
         UpdatePolyscopeJoint += SetCurrentJoint;
         MovePolyscopeJoint += MoveCurrentJoint;
+        MovePolyscopeTCP += MoveTcp;
     }
 
     private void Start()
@@ -60,9 +62,6 @@ public class RobotTranslator : MonoBehaviour
                     _currentTransforms[i].transform.position = robotPivots[i].position;
                     _currentTransforms[i].transform.rotation = robotPivots[i].rotation;
                     robotPivots[i].hasChanged = false;
-                    
-                    jointAngles[i] = _currentTransforms[i].transform.localRotation.eulerAngles.magnitude;
-                    OnJointChanged?.Invoke(i, jointAngles[i]);
                 }
 
                 if (_alignedGhPivots[i].hasChanged)
@@ -72,9 +71,6 @@ public class RobotTranslator : MonoBehaviour
                     _currentTransforms[i].transform.position = _alignedGhPivots[i].position;
                     _currentTransforms[i].transform.rotation = _alignedGhPivots[i].rotation;
                     _alignedGhPivots[i].hasChanged = false;
-                    
-                    jointAngles[i] = _currentTransforms[i].transform.localRotation.eulerAngles.magnitude;
-                    OnJointChanged?.Invoke(i, jointAngles[i]);
                 }
             }
 
@@ -130,39 +126,6 @@ public class RobotTranslator : MonoBehaviour
         }
     }
 
-    void SendJointsOverIP()
-    {
-        
-        UR_EthernetIPClient.UpdateMovej(ToPolyscopeAngles(jointAngles));
-    }
-
-    public float[] ToPolyscopeAngles(float[] joints)
-    {
-        // TODO: Fix correct angles to match rotation with polyscope simulator
-        
-        float[] angles = new float[joints.Length];
-        for (int i = 0; i < joints.Length; i++)
-        {
-            switch (i)
-            {
-                case 0:
-                case 4:
-                    angles[i] = -joints[i];
-                    break;
-                case 1:
-                case 2:
-                case 3:
-                    angles[i] -= 90;
-                    break;
-                    
-            }
-            angles[i] = RobotsHelper.WrapAngle(angles[i]);
-            angles[i] *= Mathf.Deg2Rad;
-        }
-
-        return angles;
-    }
-    
     public float GetCurrentJointAngle(int index)
     {
         return jointAngles[index];
@@ -170,17 +133,30 @@ public class RobotTranslator : MonoBehaviour
     
     void SetCurrentJoint(int index, float angle)
     {
+        float[] newJoints = new float[robotPivots.Length];
+
         robotPivots[index].transform.localRotation = Quaternion.Euler(rotationDirection[index] * angle);
-        SendJointsOverIP();
+        
+        for (int i = 0; i < robotPivots.Length; i++)
+        {
+            newJoints[i] = robotPivots[i].transform.localRotation.eulerAngles.magnitude;
+            newJoints[i] = FixAngle(newJoints[i], index);
+        }
+        
+        UR_EthernetIPClient.UpdateMovej(ToPolyscopeAngles(newJoints));
     }
     
     void MoveCurrentJoint(int index, float direction)
     {
-        robotPivots[index].transform.localRotation *= Quaternion.Euler(rotationDirection[index] * direction);
-        SendJointsOverIP();
+        UR_EthernetIPClient.UpdateSpeedj(index, direction, 0.15f, 0.15f);
+    }
+
+    void MoveTcp(Vector3 direction, Vector3 rotation)
+    {
+        UR_EthernetIPClient.UpdateSpeedl(direction, rotation, 0.15f, 0.15f);
     }
     
-    public void UpdatePolyscopeJoints(float[] joints)
+    public void UpdateJointsFromPolyscope(float[] joints)
     {
         for (int i = 0; i < joints.Length; i++)
         {
@@ -198,5 +174,42 @@ public class RobotTranslator : MonoBehaviour
             }
             robotPivots[i].transform.localRotation = Quaternion.Euler(rotationDirection[i] * angle);
         }
+    }
+    
+    public float[] ToPolyscopeAngles(float[] joints)
+    {
+        for (int i = 0; i < joints.Length; i++)
+        {
+            switch (i)
+            {
+                case 0:
+                case 4:
+                    joints[i] -= joints[i];
+                    break;
+                case 1:
+                case 3:
+                    joints[i] -= 90;
+                    break;
+            }
+            joints[i] = RobotsHelper.WrapAngle(joints[i]);
+            joints[i] *= Mathf.Deg2Rad;
+        }
+        return joints;
+    }
+
+    public float FixAngle(float joint, int index)
+    {
+        switch (index)
+        {
+            case 0:
+            case 4:
+                joint += joint;
+                break;
+            case 1:
+            case 3:
+                joint += 90;
+                break;
+        }
+        return joint;
     }
 }

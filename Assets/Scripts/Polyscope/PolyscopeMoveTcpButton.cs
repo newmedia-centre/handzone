@@ -30,7 +30,7 @@ public class PolyscopeMoveTcpButton : MonoBehaviour, IPointerDownHandler, IPoint
             tcpController.TranslateObject(translateDirection);
             tcpController.RotateObject(rotateAxis);
             
-            UR_EthernetIPClient.UpdateSpeedl?.Invoke(translateDirection, rotateAxis, accelerationSpeed, timeSpeed);
+            RobotTranslator.MovePolyscopeTCP?.Invoke(translateDirection, rotateAxis);
         }
     }
 }

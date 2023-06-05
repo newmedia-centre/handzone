@@ -20,7 +20,7 @@ public class PolyscopeMoveJointElement : MonoBehaviour
         _inputField = GetComponentInChildren<TMP_InputField>();
 
         _inputField.onSubmit.AddListener(delegate { UpdateJoint(); });
-        RobotTranslator.OnJointChanged += UpdateUI;
+        UR_EthernetIPClient.JointChanged += UpdateUI;
         
         // Add components to buttons and set their initial values
         var moveJointButton = positiveButton.gameObject.AddComponent(typeof(PolyscopeMoveJointButton)) as PolyscopeMoveJointButton;
@@ -44,8 +44,9 @@ public class PolyscopeMoveJointElement : MonoBehaviour
     {
         if(jointIndex == this.jointIndex)
         {
+            angle *= Mathf.Rad2Deg;
             _slider.value = angle;
-            _inputField.text = angle.ToString();
+            _inputField.text = angle.ToString("F2");
         }
     }
 

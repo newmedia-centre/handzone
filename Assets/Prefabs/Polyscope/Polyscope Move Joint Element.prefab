@@ -64,9 +64,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positiveButton: {fileID: 5944965927270446071}
   negativeButton: {fileID: 5944965926460320473}
-  jointInfo:
-    JointTransform: {fileID: 0}
-    EnabledRotationAxis: {x: 0, y: 0, z: 0}
+  jointIndex: 0
 --- !u!1 &6672801097612785936
 GameObject:
   m_ObjectHideFlags: 0
@@ -641,7 +639,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 6672801098719228264}
   m_HandleRect: {fileID: 6672801097800297772}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: -360
   m_MaxValue: 360
   m_WholeNumbers: 0
   m_Value: 0

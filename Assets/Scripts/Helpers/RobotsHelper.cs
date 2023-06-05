@@ -49,4 +49,14 @@ public class RobotsHelper
  
         return angle;
     }
+
+    public static float[] WrapAngle(float[] angles)
+    {
+        for (int i = 0; i < angles.Length; i++)
+        {
+            angles[i] = WrapAngle(angles[i]);
+        }
+
+        return angles;
+    }
 }
