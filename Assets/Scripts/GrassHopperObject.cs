@@ -53,7 +53,7 @@ public class GrassHopperObject : MonoBehaviour
         {
             ShouldUpdate(false);
             EnablePhysics();
-            UnityInGrasshopper.Instance.SendPosition(transform.position * SCALE, name);
+            UnityInGrasshopper.Instance?.SendPosition(transform.position * SCALE, name);
         });
     }
 
@@ -76,11 +76,11 @@ public class GrassHopperObject : MonoBehaviour
                 
             if (sendPosition)
             {
-                UnityInGrasshopper.Instance.SendPosition(transform.position * SCALE, name);
+                UnityInGrasshopper.Instance?.SendPosition(transform.position * SCALE, name);
             }
             if (sendRotation)
             {
-                UnityInGrasshopper.Instance.SendRotationQuaternion(transform.rotation, name);
+                UnityInGrasshopper.Instance?.SendRotationQuaternion(transform.rotation, name);
             }
 
             transform.hasChanged = false;
