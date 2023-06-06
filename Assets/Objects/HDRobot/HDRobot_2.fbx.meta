@@ -1,13 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:Assets/Meshes/HDRobot/HDRobot_Joined.fbx.meta
-guid: 178ffc95c04f38248831e03404e4b2f3
-=======
-<<<<<<< HEAD
-guid: a0b00d08d66685f4e802f45d9e596e2a
-=======
-guid: 03951227de1e33046babad7da70b5967
->>>>>>> 2852c1e2bc8ddce884611387ed713b74a8d5a099
->>>>>>> origin/polyscope:Assets/HDRobot/HDRobot_1.fbx.meta
+guid: 44d233703d922564d89fa830f22f8bfa
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
