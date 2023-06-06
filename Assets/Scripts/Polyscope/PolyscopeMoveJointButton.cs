@@ -17,6 +17,7 @@ public class PolyscopeMoveJointButton : MonoBehaviour, IPointerDownHandler, IPoi
     {
         _isHeld = false;
         PolyscopeRobot.EnableIK?.Invoke();
+        UR_EthernetIPClient.ClearSendBuffer();
     }
 
     private void Update()

@@ -7,8 +7,6 @@ public class PolyscopeMoveTcpButton : MonoBehaviour, IPointerDownHandler, IPoint
     public TCPController tcpController;
     public Vector3 translateDirection;
     public Vector3 rotateAxis;
-    public float accelerationSpeed = 0.15f;
-    public float timeSpeed = 0.03f;
 
     private bool _isHeld;
 

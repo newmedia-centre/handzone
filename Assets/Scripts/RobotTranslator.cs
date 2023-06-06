@@ -148,12 +148,12 @@ public class RobotTranslator : MonoBehaviour
     
     void MoveCurrentJoint(int index, float direction)
     {
-        UR_EthernetIPClient.UpdateSpeedj(index, direction, 0.15f, 0.15f);
+        UR_EthernetIPClient.UpdateSpeedj(index, direction, 0.03f, 0.05f);
     }
 
     void MoveTcp(Vector3 direction, Vector3 rotation)
     {
-        UR_EthernetIPClient.UpdateSpeedl(direction, rotation, 0.15f, 0.15f);
+        UR_EthernetIPClient.UpdateSpeedl(direction, rotation, 0.03f, 0.05f);
     }
     
     public void UpdateJointsFromPolyscope(float[] joints)

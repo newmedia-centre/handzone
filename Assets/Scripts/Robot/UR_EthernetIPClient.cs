@@ -50,6 +50,7 @@ public class UR_EthernetIPClient : MonoBehaviour
     private Stopwatch readStopwatch = new();
     private Stopwatch writeStopwatch = new();
     private float[] _oldReadValues = new float[JOINT_SIZE];
+    private bool _oldDigitalOutput = false;
     
     private const int BUFFER_SIZE = 1116;
     private const int FIRST_PACKET_SIZE = 4;
@@ -67,7 +68,7 @@ public class UR_EthernetIPClient : MonoBehaviour
     public static Action<Vector3, Vector3, float, float> UpdateSpeedl;
     public static Action<int, float, float, float> UpdateSpeedj;
     public static Action<float[]> UpdateMovej;
-    public static Action<bool> UpdateDigitalOutput;
+    public static Action<bool> DigitalOutputChanged;
     public static Action ClearSendBuffer;
     public static Action StopMoving;
 
@@ -105,6 +106,13 @@ public class UR_EthernetIPClient : MonoBehaviour
             {
                 _oldReadValues[i] = readJointValues[i];
                 JointChanged?.Invoke(i, readJointValues[i]);
+            }
+            
+            if(digitalOutput != _oldDigitalOutput)
+            {
+                _oldDigitalOutput = digitalOutput;
+                DigitalOutputChanged?.Invoke(digitalOutput);
+                ClearSendBuffer?.Invoke();
             }
         }
         
@@ -232,7 +240,7 @@ public class UR_EthernetIPClient : MonoBehaviour
         {
             if (_writeBuffer.Length > 0)
             {
-                ClearBuffer();
+                // ClearBuffer();
             }
             Thread.Sleep(TIME_STEP - (int)writeStopwatch.ElapsedMilliseconds);
         }
@@ -331,13 +339,14 @@ public class UR_EthernetIPClient : MonoBehaviour
 
     void Movej(float[] qd)
     {
-        Movej(qd, 0.3f, 0.3f, 0f, 0f);
+        Movej(qd, 0.15f, 0.15f, 0f, 0f);
     }
 
     void SetDigitalOut(int n, bool b)
     {
         string commandStr = $"set_tool_digital_out({n},{b})" + "\n";
         SetWriteBuffer(Encoding.UTF8.GetBytes(commandStr));
+        DigitalOutputChanged?.Invoke(b);
     }
     
     public void ToggleDigitalOut()

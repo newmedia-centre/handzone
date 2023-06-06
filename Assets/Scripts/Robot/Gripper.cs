@@ -40,7 +40,7 @@ public class Gripper : MonoBehaviour
         }
     }
 
-    private void UnGrab()
+    public void UnGrab()
     {
         _isGrabbing = false;
 
@@ -51,7 +51,7 @@ public class Gripper : MonoBehaviour
         }
     }
 
-    void Grab()
+    public void Grab()
     {
         if (grabbableObject)
         {
