@@ -205,10 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 376f226031b48b54184afcc677755ba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  polyscopeRobot: {fileID: 0}
-  moveJointElementPrefab: {fileID: 6672801097586083916, guid: 617bb84c355e53a41a36547d2f45e66e,
-    type: 3}
-  elementOffset: -25
+  robotTranslator: {fileID: 0}
 --- !u!1 &7843960052600159073
 GameObject:
   m_ObjectHideFlags: 0
