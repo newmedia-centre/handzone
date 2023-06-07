@@ -1,11 +1,14 @@
 using UnityEngine;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 
@@ -29,6 +32,7 @@ public class GripperStatus
 
 public class UR_EthernetIPClient : MonoBehaviour
 {
+    public AssetReference settings;
     public string urIPAddress = "192.168.1.1";
     public int urReadPort = 30013;
     public int urWritePort = 30003;
@@ -74,6 +78,9 @@ public class UR_EthernetIPClient : MonoBehaviour
 
     void Awake()
     {
+        var handle = settings.LoadAssetAsync<TextAsset>();
+        handle.Completed += Handle_Completed;
+        
         _readConnectionThread = new Thread(ConnectToReadAddress);
         _readConnectionThread.IsBackground = true;
         _readConnectionThread.Start();
@@ -88,6 +95,12 @@ public class UR_EthernetIPClient : MonoBehaviour
         ClearSendBuffer += ClearBuffer;
         StopMoving += StopMoveJ;
         LogEvents();
+    }
+
+    private void Handle_Completed(AsyncOperationHandle<TextAsset> obj)
+    {
+        urIPAddress = obj.Result.text;
+        Debug.Log(urIPAddress);
     }
 
     void LogEvents()
