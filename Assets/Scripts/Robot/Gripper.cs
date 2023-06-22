@@ -55,6 +55,7 @@ public class Gripper : MonoBehaviour
     {
         if (grabbableObject)
         {
+            
             currentGrabbedObject = grabbableObject;
             RobotActions.OnToolGrabbed(currentGrabbedObject);
 

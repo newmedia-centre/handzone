@@ -1,6 +1,4 @@
-using Robots.Samples.Unity;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 
 [RequireComponent(typeof(Timer))]
@@ -59,12 +57,16 @@ public class GrassHopperObject : MonoBehaviour
 
     private void EnablePhysics()
     {
+        _meshRigidbody.velocity = Vector3.zero;
+        _meshRigidbody.ResetInertiaTensor();
         _meshRigidbody.isKinematic = false;
+        _meshRigidbody.useGravity = true;
     }
 
     private void DisablePhysics()
     {
         _meshRigidbody.isKinematic = true;
+        _meshRigidbody.useGravity = false;
     }
 
     private void Update()

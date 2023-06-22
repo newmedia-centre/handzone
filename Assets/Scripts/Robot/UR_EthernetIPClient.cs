@@ -78,9 +78,6 @@ public class UR_EthernetIPClient : MonoBehaviour
 
     void Awake()
     {
-        var handle = settings.LoadAssetAsync<TextAsset>();
-        handle.Completed += Handle_Completed;
-        
         _readConnectionThread = new Thread(ConnectToReadAddress);
         _readConnectionThread.IsBackground = true;
         _readConnectionThread.Start();
