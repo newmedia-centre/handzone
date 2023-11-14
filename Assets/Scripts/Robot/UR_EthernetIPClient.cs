@@ -33,7 +33,7 @@ public class GripperStatus
 public class UR_EthernetIPClient : MonoBehaviour
 {
     public AssetReference settings;
-    public string urIPAddress = "192.168.1.1";
+    public string urIPAddress = "89.200.111.120";
     public int urReadPort = 30013;
     public int urWritePort = 30003;
     public RobotTranslator robotTranslator;

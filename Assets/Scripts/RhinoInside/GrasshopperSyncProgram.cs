@@ -48,7 +48,7 @@ public class GrasshopperSyncProgram
             NullValueHandling = NullValueHandling.Include,
             FloatParseHandling = FloatParseHandling.Double,
             TypeNameHandling = TypeNameHandling.Auto,
-            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
+            // TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
         };
 
         
