@@ -1,5 +1,6 @@
 // import dependencies
 import { Server } from 'socket.io'
+import env from '../environment'
 
 // import types
 import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interfaces'
@@ -14,6 +15,33 @@ export const initSocket = () => {
 			methods: ['GET', 'POST'],
 			credentials: true
 		}
+	})
+
+	// map the real and virtual robots into a single array
+	const targets = [
+		...(env.ROBOTS ? env.ROBOTS.map(x => ({ ...x, type: 'real' as const })) : []),
+		...(env.VIRTUAL_ROBOTS ? env.VIRTUAL_ROBOTS.map(x => ({ ...x, type: 'virtual' as const })) : [])
+	]
+
+	// create a namespace for each robot and virtual robot
+	targets.forEach(target => {
+
+		// create the namespace
+		const namespace = server.of(`/${target.slug}`)
+
+		// handle the connection to the namespace
+		namespace.on('connection', socket => {
+
+			// add the target to the socket data
+			socket.data.target = target
+
+			// handle socket disconnection
+			socket.on('disconnect', () => {
+				// do nothing
+			})
+
+		})
+
 	})
 
 	return server

@@ -28,6 +28,13 @@ const configSchema = z.object({
 		slug: z.string(),
 		address: z.string().ip(),
 	})).optional(),
+
+	/** Array of virtual robot target objects */
+	VIRTUAL_ROBOTS: z.array(z.object({
+		name: z.string(),
+		slug: z.string(),
+		address: z.string().ip(),
+	})).optional(),
 })
 
 // read the json file from the config path
