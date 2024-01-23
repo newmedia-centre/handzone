@@ -9,6 +9,7 @@ module.exports = {
 		parserOptions: {
 			project: ['./tsconfig.json'],
 		},
+		excludedFiles: ['*.config.js', '*.config.ts'],
 	}],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {

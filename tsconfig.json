@@ -32,6 +32,9 @@
   },
   "include": [
     "src",
-    ".eslintrc.cjs"
+    ".eslintrc.cjs",
+    "*.config.js",
+    "*.config.ts",
+    "postcss.config.cjs",
   ]
 }
