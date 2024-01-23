@@ -1,20 +1,14 @@
+
 module.exports = {
 	env: {
 		node: true, es2022: true, browser: true,
 	},
 	extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:react/jsx-runtime', 'plugin:tailwindcss/recommended', 'plugin:@typescript-eslint/recommended'],
-	overrides: [{
-		files: ['*.ts', '*.tsx'],
-		extends: ['plugin:@typescript-eslint/recommended', 'plugin:@typescript-eslint/recommended-requiring-type-checking',],
-		parserOptions: {
-			project: ['./tsconfig.json'],
-		},
-		excludedFiles: ['*.config.js', '*.config.ts'],
-	}],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		ecmaVersion: 'latest', sourceType: 'module', project: ['./tsconfig.json']
 	},
+	ignorePatterns: ['*.config.js', '*.config.ts'],
 	plugins: ['react', '@typescript-eslint'],
 	settings: {
 		react: {
@@ -28,7 +22,16 @@ module.exports = {
 		'padded-blocks': 'off',
 		'no-trailing-spaces': ['warn', { skipBlankLines: true }],
 		'no-tabs': 'off',
-		'capitalized-comments': ['warn', 'never', { 'ignoreConsecutiveComments': true }],
+		'capitalized-comments': ['warn', 'never',
+			{
+				line: {
+					'ignoreConsecutiveComments': true
+				},
+				block: {
+					'ignorePattern': '.*'
+				}
+			}
+		],
 		'array-element-newline': 'off',
 		'react/prop-types': 'off',
 		'@typescript-eslint/no-var-requires': 'off',
