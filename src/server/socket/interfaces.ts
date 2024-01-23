@@ -1,6 +1,7 @@
 // import types
 import type { Socket as BareSocket } from 'socket.io'
 import type { RTDEClientToServer, RTDEServerToClient } from './rtde/interfaces'
+import type { MotionClientToServer } from './motion/interfaces'
 
 /** Represents a 6D vector consisting of three force components and three torque components. */
 export type Vector6D = {
@@ -16,7 +17,7 @@ export type Vector6D = {
 	v: number
 	/** W-axis */
 	w: number
-};
+}
 
 /** Represents a 3D vector consisting of three components */
 export type Vector3D = {
@@ -26,15 +27,16 @@ export type Vector3D = {
 	y: number
 	/** Z-axis */
 	z: number
-};
+}
 
 // declare socket.io interfaces
 export interface ServerToClientEvents extends RTDEServerToClient {
-	ping: () => void
+	simulation: () => void
 }
 
-export interface ClientToServerEvents extends RTDEClientToServer {
-	ping: () => void
+export interface ClientToServerEvents extends RTDEClientToServer, MotionClientToServer {
+	achievement: () => void
+	simulation: () => void
 }
 
 export interface InterServerEvents {

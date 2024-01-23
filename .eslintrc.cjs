@@ -9,7 +9,7 @@ module.exports = {
 		ecmaVersion: 'latest', sourceType: 'module', project: ['./tsconfig.json']
 	},
 	ignorePatterns: ['*.config.js', '*.config.ts'],
-	plugins: ['react', '@typescript-eslint', 'node'],
+	plugins: ['react', '@typescript-eslint', 'node', '@stylistic'],
 	settings: {
 		react: {
 			version: 'detect'
@@ -18,7 +18,7 @@ module.exports = {
 	rules: {
 		'quotes': ['warn', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
 		'jsx-quotes': ['warn', 'prefer-single'],
-		'semi': ['warn', 'never'],
+		'@stylistic/semi': ['warn', 'never'],
 		'padded-blocks': 'off',
 		'no-trailing-spaces': ['warn', { skipBlankLines: true }],
 		'no-tabs': 'off',
