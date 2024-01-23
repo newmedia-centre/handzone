@@ -2,7 +2,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -13,7 +17,21 @@
     "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@/client/*": [
+        "./src/client/*"
+      ],
+      "@/server/*": [
+        "./src/server/*"
+      ],
+      "@/public/*": [
+        "./public/*"
+      ]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    ".eslintrc.cjs"
+  ]
 }
