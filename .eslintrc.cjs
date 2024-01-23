@@ -9,7 +9,7 @@ module.exports = {
 		ecmaVersion: 'latest', sourceType: 'module', project: ['./tsconfig.json']
 	},
 	ignorePatterns: ['*.config.js', '*.config.ts'],
-	plugins: ['react', '@typescript-eslint'],
+	plugins: ['react', '@typescript-eslint', 'node'],
 	settings: {
 		react: {
 			version: 'detect'
@@ -39,6 +39,7 @@ module.exports = {
 		'@typescript-eslint/no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
 		'@typescript-eslint/consistent-type-imports': ['warn', { prefer: 'type-imports', fixStyle: 'separate-type-imports' }],
 		'@typescript-eslint/consistent-type-exports': 'warn',
-		'tailwindcss/no-custom-classname': 'off'
+		'tailwindcss/no-custom-classname': 'off',
+		'node/no-process-env': 'warn'
 	}
 }

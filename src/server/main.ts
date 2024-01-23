@@ -14,7 +14,6 @@ app.get('/hello', (_, res) => {
 // start the server
 const server = app.listen(env.PORT, () => {
 	console.log(`Server is listening on port ${env.PORT}...`)
-	env.ROBOTS?.forEach(x => console.log('Robots: ' + x))
 })
 
 // let vite manage the server

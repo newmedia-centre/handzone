@@ -1,0 +1,16 @@
+{
+	"ROBOTS": [
+		{
+			"name": "Robot 1",
+			"slug": "robot-1",
+			"address": "192.168.0.42"
+		}
+	],
+	"V_ROBOTS": [
+		{
+			"name": "Virtual Robot 1",
+			"slug": "virtual-robot-1",
+			"address": "192.168.0.43"
+		}
+	]
+}

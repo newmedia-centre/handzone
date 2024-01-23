@@ -1,5 +1,6 @@
 // import dependencies
 import 'dotenv/config'
+import { readFileSync } from 'fs'
 import { parseEnv, z, port } from 'znv'
 
 // create environment schema
@@ -12,13 +13,26 @@ const envSchema = {
 		.enum(['development', 'production', 'test'])
 		.default('development'),
 
-	/** Array of robot urls to target for control */
-	ROBOTS: z.string().transform(x => x.split(',')).optional(),
-
-	/** Array of virtual robot urls to target for control */
-	VIRTUAL_ROBOTS: z.string().transform(x => x.split(',')).optional(),
+	/** Path to the config.json file */
+	CONFIG_PATH: z.string().default('config.json'),
 }
 
+// eslint-disable-next-line node/no-process-env
+const envFile = parseEnv(process.env, envSchema)
+
+// create config schema
+const configSchema = z.object({
+	/** Array of robot target objects */
+	ROBOTS: z.array(z.object({
+		name: z.string(),
+		slug: z.string(),
+		address: z.string().ip(),
+	})).optional(),
+})
+
+// read the json file from the config path
+const config = configSchema.parse(JSON.parse(readFileSync(envFile.CONFIG_PATH, 'utf-8')))
+
 // export the environment
-export const env = parseEnv(process.env, envSchema)
+export const env = { ...envFile, ...config }
 export default env
