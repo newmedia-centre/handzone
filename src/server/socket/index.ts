@@ -1,5 +1,6 @@
 // import dependencies
 import { Server } from 'socket.io'
+import { initNamespace } from './namespace'
 import env from '../environment'
 
 // import types
@@ -26,21 +27,9 @@ export const initSocket = () => {
 	// create a namespace for each robot and virtual robot
 	targets.forEach(target => {
 
-		// create the namespace
+		// create and initialize the namespace
 		const namespace = server.of(`/${target.slug}`)
-
-		// handle the connection to the namespace
-		namespace.on('connection', socket => {
-
-			// add the target to the socket data
-			socket.data.target = target
-
-			// handle socket disconnection
-			socket.on('disconnect', () => {
-				// do nothing
-			})
-
-		})
+		initNamespace(namespace, target)
 
 	})
 
