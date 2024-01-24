@@ -7,7 +7,7 @@ export const handleRTDEEvents = (socket: Socket<ClientToServerEvents, ServerToCl
 
 	// handle the rtde:speed_slider_mask event
 	socket.on('rtde:speed_slider_mask', (value) => {
-		tcp.send(socket.data.target.address, `speed_slider_mask(${value})`)
+		tcp.send(socket.data.target.address, `speed_slider_mask(${value})\n`)
 	})
 
 	// forward the robot events

@@ -27,11 +27,22 @@ export const initSocket = (tcp: TCPServer) => {
 
 	// create a namespace for each robot and virtual robot
 	targets.forEach(target => {
-
 		// create and initialize the namespace
 		const namespace = server.of(`/${target.slug}`)
 		initNamespace(namespace, target, tcp)
+	})
 
+	// forward read and write events
+	tcp.on('read', robots => {
+		server.emit('read', [...robots.keys()])
+	})
+
+	tcp.on('write', robots => {
+		server.emit('write', [...robots.keys()])
+	})
+
+	server.on('connection', (socket) => {
+		console.log(`Socket ${socket.id} connected`)
 	})
 
 	return server

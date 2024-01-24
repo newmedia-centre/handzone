@@ -97,8 +97,9 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 
 		// add clients when connected
 		client.on('connect', () => {
-			console.info(`[WRITE:${address}] Connected`)
 			this.writeConnections.set(address, client)
+			this.emit('write', this.writeConnections)
+			console.info(`[WRITE:${address}] Connected`)
 		})
 
 		// remove from clients when closed

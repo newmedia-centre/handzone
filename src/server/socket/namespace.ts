@@ -12,6 +12,7 @@ export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerT
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
+		console.log(`Socket ${socket.id} connected to namespace ${target.address}`)
 
 		// add the target to the socket data
 		socket.data.target = target

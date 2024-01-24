@@ -1,33 +1,39 @@
-import { useState } from 'react'
-
-import reactLogo from './assets/react.svg'
+import { useEffect, useMemo, useState } from 'react'
+import type { Socket } from 'socket.io-client'
+import { io } from 'socket.io-client'
+import type { ServerToClientEvents, ClientToServerEvents } from '@/server/socket/interfaces'
 
 function App() {
-	const [count, setCount] = useState(0)
+	const [robots, setRobots] = useState<string[]>([])
+	const [robot, setRobot] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
+
+	// initialize socket.io connection
+	const socket = useMemo(() => {
+		return io() as Socket<ServerToClientEvents, ClientToServerEvents>
+	}, [])
+
+	useEffect(() => {
+		socket.on('write', robots => {
+			setRobots(robots)
+		})
+	}, [])
 
 	return (
-		<div className='App flex items-center'>
-			<div>
-				<a href='https://vitejs.dev' target='_blank' rel='noreferrer'>
-					<img src='/vite.svg' className='logo' alt='Vite logo' />
-				</a>
-				<a href='https://reactjs.org' target='_blank' rel='noreferrer'>
-					<img src={reactLogo} className='logo react' alt='React logo' />
-				</a>
-			</div>
-			<h1>Vite + React</h1>
-			<div className='card'>
-				<button onClick={() => setCount((count) => count + 1)}>
-					count is {count}
+		<div className='flex size-full items-center justify-center bg-slate-200'>
+			<div className='flex flex-col items-center gap-2 rounded bg-white p-4'>
+				<h1>Handzone Web Interface</h1>
+				<div className='flex flex-col p-2'>
+					{robots.map(robot => (
+						<button key={robot} className='rounded bg-slate-200 p-1 hover:bg-slate-100' onClick={() => setRobot(io(`/${robot}`, { forceNew: true }))}>
+							{robot}
+						</button>
+					))}
+				</div>
+				<button disabled={!robot} className='rounded bg-slate-200 p-2 hover:bg-slate-100 disabled:bg-none' onClick={() => robot?.emit('motion:movej', [0, 0, 0, 0, 0, 0], 1, 1, 1, 1)}>
+					Send Command to Robot
 				</button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
 			</div>
-			<p className='read-the-docs'>
-				Click on the Vite and React logos to learn more
-			</p>
-		</div>
+		</div >
 	)
 }
 

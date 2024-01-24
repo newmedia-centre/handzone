@@ -2,8 +2,8 @@
 	"ROBOTS": [
 		{
 			"name": "Robot 1",
-			"slug": "robot-1",
-			"address": "192.168.0.42"
+			"slug": "127.0.0.1",
+			"address": "127.0.0.1"
 		}
 	],
 	"VIRTUAL_ROBOTS": [
