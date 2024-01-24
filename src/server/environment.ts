@@ -6,7 +6,13 @@ import { parseEnv, z, port } from 'znv'
 // create environment schema
 const envSchema = {
 	/** Port that this application runs on, defaults to 3000 */
-	PORT: port().default(3000),
+	WEB_PORT: port().default(3000),
+
+	/** Port used to read messages from the robots */
+	READ_PORT: port().default(30013),
+
+	/** Port used to write messages to the robots */
+	WRITE_PORT: port().default(30003),
 
 	/** Current node environment, defaults to 'development' */
 	NODE_ENV: z
