@@ -3,6 +3,7 @@ import express from 'express'
 import ViteExpress from 'vite-express'
 import env from './environment'
 import TCPServer from './tcp'
+import initSocket from './socket'
 
 // create express app
 const app = express()
@@ -21,6 +22,10 @@ const server = app.listen(env.WEB_PORT, () => {
 const tcp = new TCPServer(env.READ_PORT, env.WRITE_PORT, () => {
 	console.log(`TCP Server is listening on port ${env.READ_PORT}...`)
 })
+
+// start and attach the socket.io server
+const io = initSocket(tcp)
+io.attach(server)
 
 // let vite manage the server
 ViteExpress.bind(app, server).catch(err => console.error(err))

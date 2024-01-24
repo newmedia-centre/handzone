@@ -5,9 +5,10 @@ import env from '../environment'
 
 // import types
 import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interfaces'
+import type TCPServer from '../tcp'
 
 // create socket.io server
-export const initSocket = () => {
+export const initSocket = (tcp: TCPServer) => {
 	// create server instance
 	const server = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>({
 		serveClient: true,
@@ -29,9 +30,11 @@ export const initSocket = () => {
 
 		// create and initialize the namespace
 		const namespace = server.of(`/${target.slug}`)
-		initNamespace(namespace, target)
+		initNamespace(namespace, target, tcp)
 
 	})
 
 	return server
 }
+
+export default initSocket
