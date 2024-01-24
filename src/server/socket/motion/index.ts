@@ -7,17 +7,17 @@ export const handleMotionEvents = (socket: Socket<ClientToServerEvents, ServerTo
 
 	// handle the motion:movej event
 	socket.on('motion:movej', (q, a, v, t, r) => {
-		tcp.send(socket.data.target.address, `movej(${q}, a=${a}, v=${v}, t=${t}, r=${r})\n`)
+		tcp.send(socket.data.target.address, `movej([${q}],a=${a},v=${v},t=${t},r=${r})\n`)
 	})
 
 	// handle the motion:speedj event
 	socket.on('motion:speedj', (qd, a, t) => {
-		tcp.send(socket.data.target.address, `speedj(${qd}, a=${a}, t=${t})\n`)
+		tcp.send(socket.data.target.address, `speedj([${qd}],a=${a},t=${t})\n`)
 	})
 
 	// handle the motion:speedl event
 	socket.on('motion:speedl', (xd, a, t, aRot) => {
-		tcp.send(socket.data.target.address, `speedl(${xd}, a=${a}, t=${t}, aRot=${aRot})\n`)
+		tcp.send(socket.data.target.address, `speedl([${xd}],a=${a},t=${t},aRot=${aRot})\n`)
 	})
 
 }

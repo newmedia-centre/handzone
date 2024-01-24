@@ -33,16 +33,17 @@ export const initSocket = (tcp: TCPServer) => {
 	})
 
 	// forward read and write events
-	tcp.on('read', robots => {
-		server.emit('read', [...robots.keys()])
+	tcp.on('join', (_, clients) => {
+		server.emit('robots', Object.fromEntries(clients))
 	})
 
-	tcp.on('write', robots => {
-		server.emit('write', [...robots.keys()])
+	tcp.on('leave', (_, clients) => {
+		server.emit('robots', Object.fromEntries(clients))
 	})
 
 	server.on('connection', (socket) => {
 		console.log(`Socket ${socket.id} connected`)
+		socket.emit('robots', Object.fromEntries(tcp.getClients()))
 	})
 
 	return server

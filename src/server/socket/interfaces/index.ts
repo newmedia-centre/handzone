@@ -7,7 +7,7 @@ export const handleMotionEvents = (socket: Socket<ClientToServerEvents, ServerTo
 
 	// handle the interfaces:set_tool_digital_out event
 	socket.on('interfaces:set_tool_digital_out', (n, b) => {
-		tcp.send(socket.data.target.address, `set_tool_digital_out(${n}, ${b})\n`)
+		tcp.send(socket.data.target.address, `set_tool_digital_out(${n},${b})\n`)
 	})
 
 }

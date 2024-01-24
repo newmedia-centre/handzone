@@ -28,11 +28,13 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 			// add this socket to the read connections
 			const address = this._parseAddress(socket.remoteAddress)
 			this.readConnections.set(address, new ReadConnection(socket, address))
-			this.emit('read', this.readConnections)
+			this.emit('join', address, this.getClients())
 			console.info(`[READ:${address}] Connected`)
 
-			// create a new Write connection
-			this._tryCreateWriteConnection(address, writePort)
+			// create a new Write connection if not already established
+			if (!this.writeConnections.has(address)) {
+				this._tryCreateWriteConnection(address, writePort)
+			}
 
 			// handle connection errors
 			socket.on('error', (error: NodeJS.ErrnoException) => {
@@ -43,6 +45,7 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 			// handle disconnections
 			socket.on('close', () => {
 				this.readConnections.delete(address)
+				this.emit('leave', address, this.getClients())
 				console.info(`[READ:${address}] Disconnected`)
 			})
 
@@ -62,6 +65,25 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 
 		// send the instruction as a utf-8 buffer
 		socket.write(Buffer.from(instruction, 'utf-8'))
+	}
+
+	/** Gets all the connected clients and their state */
+	getClients() {
+		// get all the unique clients
+		const uniqueClients = new Set<string>()
+		this.readConnections.forEach((_, address) => { uniqueClients.add(address) })
+		this.writeConnections.forEach((_, address) => { uniqueClients.add(address) })
+
+		// get the clients state
+		const clients = new Map<string, { read: boolean, write: boolean }>()
+		uniqueClients.forEach((address) => {
+			clients.set(address, {
+				read: this.readConnections.has(address),
+				write: this.writeConnections.has(address)
+			})
+		})
+
+		return clients
 	}
 
 	// private methods
@@ -98,15 +120,16 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 		// add clients when connected
 		client.on('connect', () => {
 			this.writeConnections.set(address, client)
-			this.emit('write', this.writeConnections)
+			this.emit('join', address, this.getClients())
 			console.info(`[WRITE:${address}] Connected`)
 		})
 
 		// remove from clients when closed
 		client.on('close', () => {
 			if (this.writeConnections.has(address)) {
-				console.info(`[WRITE:${address}] Disconnected`)
 				this.writeConnections.delete(address)
+				this.emit('join', address, this.getClients())
+				console.info(`[WRITE:${address}] Disconnected`)
 			}
 		})
 	}
