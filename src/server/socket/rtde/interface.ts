@@ -1,5 +1,5 @@
 // import types
-import type { Vector3D, Vector6D } from '../interfaces'
+import type { Vector3D, Vector6D } from '../interface'
 
 // declare socket.io interfaces
 export interface RTDEServerToClient {

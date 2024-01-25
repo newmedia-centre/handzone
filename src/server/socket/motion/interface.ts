@@ -1,4 +1,4 @@
-import type { Vector6D } from '../interfaces'
+import type { Vector6D } from '../interface'
 
 export interface MotionClientToServer {
 	/**

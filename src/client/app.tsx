@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Socket } from 'socket.io-client'
 import { io } from 'socket.io-client'
-import type { ServerToClientEvents, ClientToServerEvents } from '@/server/socket/interfaces'
+import type { ServerToClientEvents, ClientToServerEvents } from '@/server/socket/interface'
 
 function App() {
 	const [robots, setRobots] = useState<Record<string, { read: boolean, write: boolean }>>({})

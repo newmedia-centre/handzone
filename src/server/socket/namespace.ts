@@ -1,21 +1,23 @@
 // import dependencies
 import { handleRTDEEvents } from './rtde'
 import { handleMotionEvents } from './motion'
+import { handleInterfacesEvents } from './interfaces'
 
 // import types
 import type { Namespace } from 'socket.io'
-import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interfaces'
+import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interface'
 import type TCPServer from '../tcp'
 
+
 /** Initialize a new namespace by handling all the required events */
-export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, target: SocketData['target'], tcp: TCPServer) => {
+export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, address: string, tcp: TCPServer) => {
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
-		console.log(`Socket ${socket.id} connected to namespace ${target.address}`)
+		console.log(`Socket ${socket.id} connected to namespace ${address}`)
 
 		// add the target to the socket data
-		socket.data.target = target
+		socket.data.robot = address
 
 		// handle socket disconnection
 		socket.on('disconnect', () => {
@@ -25,6 +27,7 @@ export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerT
 		// handle all the incoming events
 		handleRTDEEvents(socket, tcp)
 		handleMotionEvents(socket, tcp)
+		handleInterfacesEvents(socket, tcp)
 
 		// forward events between sockets
 

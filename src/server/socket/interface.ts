@@ -1,8 +1,8 @@
 // import types
 import type { Socket as BareSocket } from 'socket.io'
-import type { RTDEClientToServer, RTDEServerToClient } from './rtde/interfaces'
-import type { MotionClientToServer } from './motion/interfaces'
-import type { InterfacesClientToServer } from './interfaces/interfaces'
+import type { RTDEClientToServer, RTDEServerToClient } from './rtde/interface'
+import type { MotionClientToServer } from './motion/interface'
+import type { InterfacesClientToServer } from './interfaces/interface'
 
 /** Represents a 6D vector consisting of three force components and three torque components. */
 export type Vector6D = {
@@ -49,12 +49,7 @@ export interface InterServerEvents {
 
 export interface SocketData {
 	id: string
-	target: {
-		name: string
-		slug: string
-		address: string
-		type: 'real' | 'virtual'
-	}
+	robot: string
 }
 
 // create the socket type

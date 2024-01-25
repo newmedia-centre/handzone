@@ -1,10 +1,9 @@
 // import dependencies
 import { Server } from 'socket.io'
 import { initNamespace } from './namespace'
-import env from '../environment'
 
 // import types
-import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interfaces'
+import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interface'
 import type TCPServer from '../tcp'
 
 // create socket.io server
@@ -19,26 +18,19 @@ export const initSocket = (tcp: TCPServer) => {
 		}
 	})
 
-	// map the real and virtual robots into a single array
-	const targets = [
-		...(env.ROBOTS ? env.ROBOTS.map(x => ({ ...x, type: 'real' as const })) : []),
-		...(env.VIRTUAL_ROBOTS ? env.VIRTUAL_ROBOTS.map(x => ({ ...x, type: 'virtual' as const })) : [])
-	]
-
-	// create a namespace for each robot and virtual robot
-	targets.forEach(target => {
-		// create and initialize the namespace
-		const namespace = server.of(`/${target.slug}`)
-		initNamespace(namespace, target, tcp)
-	})
-
 	// forward read and write events
-	tcp.on('join', (_, clients) => {
+	tcp.on('join', (address, clients) => {
 		server.emit('robots', Object.fromEntries(clients))
+
+		// create the namespace if it doesn't exist
+		server._nsps.has(`/${address}`) || initNamespace(server.of(`/${address}`), address, tcp)
 	})
 
-	tcp.on('leave', (_, clients) => {
+	tcp.on('leave', (address, clients) => {
 		server.emit('robots', Object.fromEntries(clients))
+
+		// delete the namespace if it exists
+		server._nsps.has(`/${address}`) && server._nsps.delete(`/${address}`)
 	})
 
 	server.on('connection', (socket) => {
