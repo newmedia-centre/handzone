@@ -2,12 +2,12 @@
 import { handleRTDEEvents } from './rtde'
 import { handleMotionEvents } from './motion'
 import { handleInterfacesEvents } from './interfaces'
+import { handleRealtimeEvents } from './realtime'
 
 // import types
 import type { Namespace } from 'socket.io'
 import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interface'
 import type TCPServer from '../tcp'
-
 
 /** Initialize a new namespace by handling all the required events */
 export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, address: string, tcp: TCPServer) => {
@@ -28,6 +28,7 @@ export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerT
 		handleRTDEEvents(socket, tcp)
 		handleMotionEvents(socket, tcp)
 		handleInterfacesEvents(socket, tcp)
+		handleRealtimeEvents(socket, tcp)
 
 		// forward events between sockets
 

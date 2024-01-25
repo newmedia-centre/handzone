@@ -15,8 +15,9 @@ export const handleRTDEEvents = (socket: Socket<ClientToServerEvents, ServerToCl
 	if (!robot) return false
 
 	// forward robot messages
-	robot.on('message', (message) => {
-		socket.emit('message', message)
+	robot.on('rtde', (data) => {
+		console.log('received rtde data')
+		socket.emit('rtde:raw', data.toString('base64'))
 	})
 
 	return true

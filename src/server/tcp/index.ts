@@ -9,7 +9,7 @@ import type { RobotEmitter, TCPEmitter } from './events'
 /** The TCP Server for communicating with the robots */
 export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 	/** The TCP Sockets for sending messages through the TCP Server */
-	connections: Map<string, Socket>
+	connections: Map<string, RobotConnection>
 
 	constructor() {
 		// initialize the EventEmitter
@@ -28,11 +28,11 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 	/** Sends an instruction to the rover */
 	async send(address: string, instruction: string) {
 		// get the socket
-		const socket = this.connections.get(address)
-		if (!socket) throw new Error(`No write connection found for address ${address}`)
+		const robot = this.connections.get(address)
+		if (!robot) throw new Error(`No write connection found for address ${address}`)
 
 		// send the instruction as a utf-8 buffer
-		socket.write(Buffer.from(instruction, 'utf-8'))
+		robot.socket.write(Buffer.from(instruction, 'utf-8'))
 	}
 
 	// private methods
@@ -51,34 +51,35 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 	/** Starts the TCP Client */
 	_tryCreateConnection(address: string, port: number) {
 		// create the TCP client
-		const client = new Socket()
-		client.setTimeout(5000)
-		client.connect(port, address)
+		const socket = new Socket()
+		socket.setTimeout(5000)
+		socket.connect(port, address)
 
 		// retry until a connection is established
-		client.on('error', (error: NodeJS.ErrnoException) => {
+		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
 				return setTimeout(() => {
-					console.info(`[WRITE:${address}] Retrying...`)
-					client.connect(port, address)
-				}, client.timeout || 1000)
+					console.info(`[ROBOT:${address}] Retrying...`)
+					socket.connect(port, address)
+				}, socket.timeout || 1000)
 			}
 			console.error(error)
 		})
 
 		// add clients when connected
-		client.on('connect', () => {
-			this.connections.set(address, client)
+		socket.on('connect', () => {
+			const connection = new RobotConnection(socket)
+			this.connections.set(address, connection)
 			this.emit('join', address, this.connections)
-			console.info(`[WRITE:${address}] Connected`)
+			console.info(`[ROBOT:${address}] Connected`)
 		})
 
 		// remove from clients when closed
-		client.on('close', () => {
+		socket.on('close', () => {
 			if (this.connections.has(address)) {
 				this.connections.delete(address)
 				this.emit('join', address, this.connections)
-				console.info(`[WRITE:${address}] Disconnected`)
+				console.info(`[ROBOT:${address}] Disconnected`)
 			}
 		})
 	}
@@ -86,11 +87,11 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 }
 
 /** Listens for data from a robot over a TCP socket */
-export class ReadConnection extends (EventEmitter as new () => RobotEmitter) {
+export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	/** The TCP socket for reading data */
 	socket: Socket
 
-	constructor(socket: Socket, address: string) {
+	constructor(socket: Socket) {
 		// initialize the EventEmitter
 		super()
 
@@ -99,14 +100,76 @@ export class ReadConnection extends (EventEmitter as new () => RobotEmitter) {
 
 		// handle incoming messages
 		this.socket.on('data', (data) => {
-			// parse the data
-			const message = data.toString()
-			console.log('received message:', message, address)
 
-			// emit the message
-			this.emit('message', message)
+			// check if the data is RTDE data
+			const header = this.getRealtimeHeader(data)
+
+			// check if the buffer length is the length of the realtime buffer
+			if (header) {
+				this.emit('realtime', data)
+			} else {
+				// parse the data
+				const message = data.toString('utf-8')
+				//console.log('received message:', message, address)
+
+				// emit the message
+				this.emit('message', message)
+			}
 		})
 
+	}
+
+	getRealtimeHeader(data: Buffer) {
+		// verify the size of the package, if it doesn't match the header, return undefined for not being RTDE data
+		const size = data.readUInt32BE(0)
+		if (size !== data.length) return undefined
+
+		return {
+			size
+		}
+	}
+
+	getRTDEHeader(data: Buffer) {
+		// verify the size of the package, if it doesn't match the header, return undefined for not being RTDE data
+		const size = data.readUInt16BE(0)
+		if (size !== data.length) return undefined
+
+		const type = data.readUInt8(2)
+		switch (type) {
+			case 86: return {
+				size,
+				type: 'RTDE_REQUEST_PROTOCOL_VERSION'
+			}
+			case 118: return {
+				size,
+				type: 'RTDE_GET_URCONTROL_VERSION'
+			}
+			case 77: return {
+				size,
+				type: 'RTDE_TEXT_MESSAGE'
+			}
+			case 85: return {
+				size,
+				type: 'RTDE_DATA_PACKAGE'
+			}
+			case 79: return {
+				size,
+				type: 'RTDE_CONTROL_PACKAGE_SETUP_OUTPUTS'
+			}
+			case 73: return {
+				size,
+				type: 'RTDE_CONTROL_PACKAGE_SETUP_INPUTS'
+			}
+			case 83: return {
+				size,
+				type: 'RTDE_CONTROL_PACKAGE_START'
+			}
+			case 80: return {
+				size,
+				type: 'RTDE_CONTROL_PACKAGE_PAUSE'
+			}
+			default: return undefined
+		}
 	}
 }
 
