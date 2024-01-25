@@ -20,4 +20,9 @@ export const handleMotionEvents = (socket: Socket<ClientToServerEvents, ServerTo
 		tcp.send(socket.data.robot, `speedl([${xd}],a=${a},t=${t},aRot=${aRot})\n`)
 	})
 
+	// handle the motion:set_pos event
+	socket.on('motion:set_pos', (q) => {
+		tcp.send(socket.data.robot, `set_pos([${q}])\n`)
+	})
+
 }

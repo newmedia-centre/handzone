@@ -17,7 +17,7 @@ function App() {
 			console.log('robots', robots)
 			setRobots(robots)
 		})
-	}, [])
+	}, [socket])
 
 	return (
 		<div className='flex size-full items-center justify-center bg-slate-200'>
@@ -30,7 +30,7 @@ function App() {
 						</button>
 					))}
 				</div>
-				<button disabled={!robot} className='rounded bg-slate-200 p-2 hover:bg-slate-100 disabled:bg-white disabled:text-slate-400' onClick={() => robot?.emit('motion:movej', [0, 0, 0, 0, 0, 0], 1, 1, 1, 1)}>
+				<button disabled={!robot} className='rounded bg-slate-200 p-2 hover:bg-slate-100 disabled:bg-white disabled:text-slate-400' onClick={() => robot?.emit('motion:movej', [0, 1.57, -1.57, 3.14, -1.57, 1.57], 1, 1, 0, 0)}>
 					Send Command to Robot
 				</button>
 			</div>
