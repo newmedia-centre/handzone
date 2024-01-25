@@ -20,14 +20,14 @@ export const initSocket = (tcp: TCPServer) => {
 
 	// forward read and write events
 	tcp.on('join', (address, clients) => {
-		server.emit('robots', Object.fromEntries(clients))
+		server.emit('robots', [...clients.keys()])
 
 		// create the namespace if it doesn't exist
 		server._nsps.has(`/${address}`) || initNamespace(server.of(`/${address}`), address, tcp)
 	})
 
 	tcp.on('leave', (address, clients) => {
-		server.emit('robots', Object.fromEntries(clients))
+		server.emit('robots', [...clients.keys()])
 
 		// delete the namespace if it exists
 		server._nsps.has(`/${address}`) && server._nsps.delete(`/${address}`)
@@ -35,7 +35,7 @@ export const initSocket = (tcp: TCPServer) => {
 
 	server.on('connection', (socket) => {
 		console.log(`Socket ${socket.id} connected`)
-		socket.emit('robots', Object.fromEntries(tcp.getClients()))
+		socket.emit('robots', [...tcp.connections.keys()])
 	})
 
 	return server

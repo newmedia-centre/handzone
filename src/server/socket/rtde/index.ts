@@ -11,7 +11,7 @@ export const handleRTDEEvents = (socket: Socket<ClientToServerEvents, ServerToCl
 	})
 
 	// forward the robot events
-	const robot = tcp.readConnections.get(socket.data.robot)
+	const robot = tcp.connections.get(socket.data.robot)
 	if (!robot) return false
 
 	// forward robot messages

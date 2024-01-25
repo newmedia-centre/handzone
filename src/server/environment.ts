@@ -31,14 +31,14 @@ const configSchema = z.object({
 	/** Array of robot target objects */
 	ROBOTS: z.array(z.object({
 		name: z.string(),
-		slug: z.string(),
+		port: port().default(30003),
 		address: z.string().ip(),
 	})).optional(),
 
 	/** Array of virtual robot target objects */
 	VIRTUAL_ROBOTS: z.array(z.object({
 		name: z.string(),
-		slug: z.string(),
+		port: port().default(30003),
 		address: z.string().ip(),
 	})).optional(),
 })

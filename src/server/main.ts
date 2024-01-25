@@ -19,9 +19,7 @@ const server = app.listen(env.WEB_PORT, () => {
 })
 
 // start the tcp server
-const tcp = new TCPServer(env.READ_PORT, env.WRITE_PORT, () => {
-	console.log(`TCP Server is listening on port ${env.READ_PORT}...`)
-})
+const tcp = new TCPServer()
 
 // start and attach the socket.io server
 const io = initSocket(tcp)

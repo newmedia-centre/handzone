@@ -4,7 +4,7 @@ import { io } from 'socket.io-client'
 import type { ServerToClientEvents, ClientToServerEvents } from '@/server/socket/interface'
 
 function App() {
-	const [robots, setRobots] = useState<Record<string, { read: boolean, write: boolean }>>({})
+	const [robots, setRobots] = useState<string[]>([])
 	const [robot, setRobot] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
 
 	// initialize socket.io connection
@@ -24,13 +24,9 @@ function App() {
 			<div className='flex flex-col items-center gap-2 rounded bg-white p-4'>
 				<h1>Handzone Web Interface</h1>
 				<div className='flex flex-col p-2'>
-					{Object.entries(robots).map(([robot, state]) => (
+					{robots.map(robot => (
 						<button key={robot} className='flex items-center gap-2 rounded bg-slate-200 p-2 hover:bg-slate-100' onClick={() => setRobot(io(`/${robot}`, { forceNew: true }))}>
 							<span>{robot}</span>
-							<div className='flex gap-2'>
-								<span className={`size-2 rounded ${state.read ? 'bg-green-500' : 'bg-red-500'}`} />
-								<span className={`size-2 rounded ${state.write ? 'bg-green-500' : 'bg-red-500'}`} />
-							</div>
 						</button>
 					))}
 				</div>

@@ -34,7 +34,7 @@ export type Vector3D = {
 export interface ServerToClientEvents extends RTDEServerToClient {
 	message: (message: string) => void
 	simulation: () => void
-	robots: (robots: Record<string, { read: boolean, write: boolean }>) => void
+	robots: (robots: string[]) => void
 }
 
 export interface ClientToServerEvents extends RTDEClientToServer, MotionClientToServer, InterfacesClientToServer {

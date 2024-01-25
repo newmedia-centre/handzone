@@ -1,12 +1,13 @@
 // import types
 import type TypedEmitter from 'typed-emitter'
+import type { Socket } from 'net'
 
 // type all the TCP events
 type TCPEvents = {
 	/** Emitted when a new connection is established or a connection is updated */
-	join: (address: string, clients: Map<string, { read: boolean, write: boolean }>) => void
+	join: (address: string, clients: Map<string, Socket>) => void
 	/**  */
-	leave: (address: string, clients: Map<string, { read: boolean, write: boolean }>) => void
+	leave: (address: string, clients: Map<string, Socket>) => void
 }
 
 // type all the robot events
