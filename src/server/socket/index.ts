@@ -34,7 +34,7 @@ export const initSocket = (tcp: TCPServer) => {
 	})
 
 	server.on('connection', (socket) => {
-		console.log(`Socket ${socket.id} connected`)
+		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected`)
 		socket.emit('robots', [...tcp.connections.keys()])
 	})
 

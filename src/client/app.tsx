@@ -19,6 +19,12 @@ function App() {
 		})
 	}, [socket])
 
+	useEffect(() => {
+		robot?.on('realtime:data', data => {
+			console.log('data', data.message_size)
+		})
+	}, [robot])
+
 	return (
 		<div className='flex size-full items-center justify-center bg-slate-200'>
 			<div className='flex flex-col items-center gap-2 rounded bg-white p-4'>
