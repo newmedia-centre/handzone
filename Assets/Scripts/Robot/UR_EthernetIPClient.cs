@@ -56,7 +56,7 @@ public class UR_EthernetIPClient : MonoBehaviour
     private float[] _oldReadValues = new float[JOINT_SIZE];
     private bool _oldDigitalOutput = false;
     
-    private const int BUFFER_SIZE = 1116;
+    private const int BUFFER_SIZE = 11160;
     private const int FIRST_PACKET_SIZE = 4;
     private const byte OFFSET = 8;
     private const uint TOTAL_MSG_LENGTH = 3288596480;
