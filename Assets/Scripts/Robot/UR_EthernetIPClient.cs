@@ -144,7 +144,7 @@ public class UR_EthernetIPClient : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Ethernet/IP connection error: {ex.Message}");
+            Debug.LogWarning($"Ethernet/IP connection error: {ex.Message}");
         }
     }
 
@@ -163,7 +163,7 @@ public class UR_EthernetIPClient : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Ethernet/IP connection error: {ex.Message}");
+            Debug.LogWarning($"Ethernet/IP connection error: {ex.Message}");
         }
     }
 
