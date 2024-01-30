@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -8,10 +7,11 @@ public class RadialInteractable : MonoBehaviour
 {
     [Header("UI Control")] 
     public Color selectedColor = Color.cyan;
+    public Color arrowOriginColor = Color.cyan;
     public Color circleColor = Color.white;
     public Color arrowTargetColor = Color.gray;
     [Range(0, 360)] public float arrowOrigin = 0f;
-    [Range(0, 360)] public float arrowTarget = 90f;
+    [Range(-360, 360)] public float arrowTarget = 90f;
     
     [Header("Haptic Feedback")]
     [Range(0, 1)]
@@ -24,25 +24,28 @@ public class RadialInteractable : MonoBehaviour
     [SerializeField] private Image arrowTargetImage;
     [SerializeField] private Image circleImage;
 
-    private float _lastHapticAngle = 0f;
 
-    [FormerlySerializedAs("_interactable")]
     [Header("XR Interactable")]
     [SerializeField] private XRBaseInteractable interactable;
+    
+    private float _lastHapticAngle = 0f;
+    private Canvas _canvas;
 
     void Awake()
     {
-        interactable = GetComponent<XRBaseInteractable>();
+        interactable = GetComponentInParent<XRBaseInteractable>();
+        _canvas = GetComponentInChildren<Canvas>();
+        _canvas.enabled = false;
         
-        selectedBackgroundImage.color = selectedColor;
-        arrowOriginImage.color = selectedColor;
-        arrowTargetImage.color = arrowTargetColor;
-        circleImage.color = circleColor;
-
+        interactable.hoverEntered.AddListener(ShowCanvas);
+        interactable.hoverExited.AddListener(HideCanvas);
+        interactable.selectExited.AddListener(HideCanvas);
+        
+        UpdateRadial();
         CheckImageReferences();
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (interactable == null)
         {
@@ -58,17 +61,16 @@ public class RadialInteractable : MonoBehaviour
 
         selectedBackgroundImage.transform.rotation = arrowOriginImage.transform.rotation;
 
-        float originZ = arrowOriginImage.transform.localEulerAngles.z;
-        float targetZ = arrowTargetImage.transform.localEulerAngles.z;
+        float direction = Mathf.Sign((arrowTarget + arrowOrigin) - arrowOrigin);
+        float angle = (arrowTarget + arrowOrigin) - arrowOrigin;
+        angle = angle < 0 ? angle + 360 : angle;
 
-        float angle = targetZ - originZ;
-        if (angle < 0) angle += 360;
-
+        selectedBackgroundImage.fillClockwise = direction < 0;
         selectedBackgroundImage.fillAmount = angle / 360f;
 
-        if (Mathf.Approximately(angle % 90, 0) && Mathf.Abs(angle - _lastHapticAngle) > Mathf.Epsilon)
+        if (angle % 90 == 0 && angle != _lastHapticAngle)
         {
-            TriggerHapticFeedback();
+            // TriggerHapticFeedback();
             _lastHapticAngle = angle;
         }
     }
@@ -89,10 +91,27 @@ public class RadialInteractable : MonoBehaviour
             XRBaseControllerInteractor controllerInteractor = GetComponent<XRBaseControllerInteractor>();
             if (controllerInteractor != null)
             {
-                XRBaseController controller = controllerInteractor.xrController;
-                controller.SendHapticImpulse(intensity, duration);
+                controllerInteractor.SendHapticImpulse(intensity, duration);
                 Debug.Log("RadialInteractable: Triggered haptic feedback!");
             }
+        }
+    }
+    
+    private void ShowCanvas(BaseInteractionEventArgs args)
+    {
+        if (args.interactorObject is XRBaseControllerInteractor controllerInteractor)
+        {
+            _canvas.enabled = true;
+        }
+    }
+    
+    private void HideCanvas(BaseInteractionEventArgs args)
+    {
+        if (args.interactorObject is XRBaseControllerInteractor controllerInteractor)
+        {
+            // It should hide if the controller is not hovering anymore and not selected
+            if (!interactable.isSelected)
+                _canvas.enabled = false;
         }
     }
     
@@ -109,10 +128,16 @@ public class RadialInteractable : MonoBehaviour
     // On editor update
     void OnValidate()
     {
+        UpdateRadial();
+    }
+
+    void UpdateRadial()
+    {
+        arrowOriginImage.transform.localEulerAngles = new Vector3(0, 0, arrowOrigin);
+        arrowTargetImage.transform.localEulerAngles = new Vector3(0, 0, arrowTarget + arrowOrigin);
         selectedBackgroundImage.color = selectedColor;
-        arrowOriginImage.color = selectedColor;
+        arrowOriginImage.color = arrowOriginColor;
         arrowTargetImage.color = arrowTargetColor;
         circleImage.color = circleColor;
-
     }
 }
