@@ -2,13 +2,19 @@
   "name": "handzone-schema",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/generate.js",
+  "bin": "dist/generate.js",
   "scripts": {
-    "generate": "npx quicktype -s schema"
+    "generate": "ts-node generate.ts"
   },
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^10.1.0",
+    "ts-node": "^6.0.3",
+    "typescript": "^2.8.3"
+  },
   "dependencies": {
-    "quicktype": "^23.0.81"
+    "quicktype-core": "^23.0.81"
   }
 }
