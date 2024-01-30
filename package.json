@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon -w src/server -x tsx src/server/main.ts",
     "start": "NODE_ENV=production tsx src/server/main.ts",
-    "build": "vite build"
+    "build": "vite build",
+    "generate": "npx json2ts -i 'schema/**/*.json' -o src/types/ --unreachableDefinitions --style.singleQuote --no-style.semi"
   },
   "dependencies": {
     "dotenv": "^16.3.2",
@@ -36,6 +37,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-tailwindcss": "^3.14.0",
+    "json-schema-to-typescript": "^13.1.2",
     "nodemon": "^3.0.1",
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
