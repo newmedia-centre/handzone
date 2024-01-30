@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 
+[ExecuteInEditMode]
 public class RadialInteractable : MonoBehaviour
 {
     [Header("UI Control")] 
@@ -29,6 +31,7 @@ public class RadialInteractable : MonoBehaviour
     
     private float _lastHapticAngle = 0f;
     private Canvas _canvas;
+    private Vector3 _originPosition;
 
     void Awake()
     {
@@ -39,9 +42,27 @@ public class RadialInteractable : MonoBehaviour
         interactable.hoverEntered.AddListener(ShowCanvas);
         interactable.hoverExited.AddListener(HideCanvas);
         interactable.selectExited.AddListener(HideCanvas);
+        interactable.selectEntered.AddListener(SetOriginPosition);
         
         UpdateRadial();
         CheckImageReferences();
+    }
+
+    void Update()
+    {
+        // Change the target angle to the offset position of the controller from the starting interactable position
+        if (interactable.isSelected)
+        {
+            if (interactable.GetOldestInteractorSelecting() is XRBaseControllerInteractor controllerInteractor)
+            {
+                // Get the angle from the origin position to the controller position on the XZ plane
+                Vector3 originPosition = new Vector3(_originPosition.x, 0, _originPosition.z);
+                Vector3 controllerPosition = new Vector3(controllerInteractor.transform.position.x, 0, controllerInteractor.transform.position.z);
+                Vector3 originToController = controllerPosition - originPosition;
+                float angle = Vector3.SignedAngle(Vector3.forward, originToController, Vector3.up);
+                arrowTarget = angle;
+            }
+        }
     }
 
     void LateUpdate()
@@ -57,15 +78,14 @@ public class RadialInteractable : MonoBehaviour
             Debug.LogError("RadialInteractable: One or more images are not set!");
             return;
         }
-
-        selectedBackgroundImage.transform.rotation = arrowOriginImage.transform.rotation;
-
+        
         float direction = Mathf.Sign((arrowTarget + arrowOrigin) - arrowOrigin);
         float angle = (arrowTarget + arrowOrigin) - arrowOrigin;
         angle = angle < 0 ? angle + 360 : angle;
-
+        
         selectedBackgroundImage.fillClockwise = direction < 0;
         selectedBackgroundImage.fillAmount = angle / 360f;
+        selectedBackgroundImage.transform.rotation = arrowOriginImage.transform.rotation;
 
         if (angle % 90 == 0 && angle != _lastHapticAngle)
         {
@@ -114,16 +134,15 @@ public class RadialInteractable : MonoBehaviour
         }
     }
     
-    public void SetArrowOrigin(float angle)
+    private void SetOriginPosition(BaseInteractionEventArgs args)
     {
-        arrowOriginImage.transform.localEulerAngles = new Vector3(0, 0, angle);
+        // Set the origin position to the controller position on select
+        if (args.interactorObject is XRBaseControllerInteractor controllerInteractor)
+        {
+            _originPosition = controllerInteractor.transform.position;
+        }
     }
-    
-    public void SetArrowTarget(float angle)
-    {
-        arrowTargetImage.transform.localEulerAngles = new Vector3(0, 0, angle);
-    }
-    
+
     // On editor update
     void OnValidate()
     {
