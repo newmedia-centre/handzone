@@ -11,6 +11,25 @@ import {
 	FetchingJSONSchemaStore
 } from 'quicktype-core'
 
+async function ExportTypescript(typeName: string, jsonSchemaString: string) {
+	const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore())
+
+	// we could add multiple schemas for multiple types,
+	// but here we're just making one type from JSON schema.
+	await schemaInput.addSource({ name: typeName, schema: jsonSchemaString })
+
+	const inputData = new InputData()
+	inputData.addInput(schemaInput)
+
+	return await quicktype({
+		inputData,
+		lang: 'typescript',
+		rendererOptions: {
+			'just-types': true,
+		}
+	})
+}
+
 async function exportCSharp(name: string, namespace: string, schema: string) {
 	const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore())
 
@@ -31,24 +50,28 @@ async function exportCSharp(name: string, namespace: string, schema: string) {
 	})
 }
 
-async function ExportTypescript(typeName: string, jsonSchemaString: string) {
+/*
+async function exportCPlusPlus(name: string, namespace: string, schema: string) {
 	const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore())
 
 	// we could add multiple schemas for multiple types,
 	// but here we're just making one type from JSON schema.
-	await schemaInput.addSource({ name: typeName, schema: jsonSchemaString })
+	await schemaInput.addSource({ name, schema })
 
 	const inputData = new InputData()
 	inputData.addInput(schemaInput)
 
 	return await quicktype({
 		inputData,
-		lang: 'typescript',
+		lang: 'cpp',
 		rendererOptions: {
+			namespace,
 			'just-types': true,
+			'code-format': 'with-struct',
 		}
 	})
 }
+*/
 
 async function main() {
 	// get all the schema files in the project
@@ -69,6 +92,12 @@ async function main() {
 		// generate csharp
 		const { lines: csharp } = await exportCSharp(name, namespace, schema)
 		writeFileSync(path.join(path.dirname(file), `${name}.cs`), csharp.join('\n'))
+
+		/*
+		// generate c++
+		const { lines: cpp } = await exportCPlusPlus(name, namespace, schema)
+		writeFileSync(path.join(path.dirname(file), `${name}.h`), cpp.join('\n'))
+		*/
 	})
 }
 
