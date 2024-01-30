@@ -139,7 +139,6 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 
 		// parse the realtime data
 		const parsed = await parseRealtimeData(data)
-		console.log(parsed.time)
 		this.emit('realtime:parsed', parsed)
 	}
 

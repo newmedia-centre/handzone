@@ -2,7 +2,7 @@
 import type { Socket } from 'socket.io'
 import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from '../interface'
 import type { TCPServer } from '@/server/tcp'
-import type { RealtimeData } from './interface'
+import type { RealtimeData } from '@/types/Socket/Realtime/RealtimeData'
 
 export const handleRealtimeEvents = (socket: Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, tcp: TCPServer) => {
 

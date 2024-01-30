@@ -1,4 +1,4 @@
-import type { RealtimeData } from '@/types/socket/realtime/RealtimeData'
+import type { RealtimeData } from '@/types/Socket/Realtime/RealtimeData'
 
 // declare socket.io interfaces
 export interface RealtimeServerToClient {
