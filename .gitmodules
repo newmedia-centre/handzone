@@ -1,3 +1,3 @@
-[submodule "Assets/schema"]
-	path = Assets/schema
+[submodule "Assets/Scripts/schema"]
+	path = Assets/Scripts/schema
 	url = https://github.com/NewMedia-Centre/handzone-schema

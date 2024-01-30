@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 
-[ExecuteInEditMode]
 public class RadialInteractable : MonoBehaviour
 {
     [Header("UI Control")] 

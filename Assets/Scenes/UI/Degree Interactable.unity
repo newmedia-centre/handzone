@@ -500,6 +500,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Robot Joint Interactable
       objectReference: {fileID: 0}
+    - target: {fileID: 6857404999600489426, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
+        type: 3}
+      propertyPath: m_InteractableSource
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5178052650083227068, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
     m_RemovedGameObjects:
@@ -514,7 +519,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5178052650083227070, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1519520465}
+      addedObject: {fileID: 1519520467}
   m_SourcePrefab: {fileID: 100100000, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
 --- !u!4 &1519520463 stripped
 Transform:
@@ -528,7 +533,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1519520462}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1519520465
+--- !u!114 &1519520467
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -537,7 +542,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1519520464}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1895a638e12a78e4c8b559690a6615f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a35f6cfbfba9b548aaa00d52cfe8a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
@@ -896,6 +901,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1233450701768228092, guid: d95a42cbe4fa6dc4980dbaa2b62a9b83,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1233450701768228092, guid: d95a42cbe4fa6dc4980dbaa2b62a9b83,
+        type: 3}
       propertyPath: arrowOrigin
       value: 0
       objectReference: {fileID: 0}
@@ -908,7 +918,7 @@ PrefabInstance:
         type: 3}
       propertyPath: interactable
       value: 
-      objectReference: {fileID: 1519520465}
+      objectReference: {fileID: 1519520467}
     - target: {fileID: 1233450701768228092, guid: d95a42cbe4fa6dc4980dbaa2b62a9b83,
         type: 3}
       propertyPath: arrowOriginColor.b
@@ -962,7 +972,7 @@ PrefabInstance:
     - target: {fileID: 5268143467433322757, guid: d95a42cbe4fa6dc4980dbaa2b62a9b83,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5511868363626569103, guid: d95a42cbe4fa6dc4980dbaa2b62a9b83,
         type: 3}
