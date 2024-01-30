@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using SocketIO.Serializer.NewtonsoftJson;
+using QuickType;
 
 public class WebClient : MonoBehaviour
 {
@@ -46,8 +47,6 @@ public class WebClient : MonoBehaviour
             // output: ["hi client"]
 
             RealtimeData data = response.GetValue<RealtimeData>();
-            Debug.Log(data.MessageSize);
-
         });
 
         _client.OnConnected += async (sender, e) =>
