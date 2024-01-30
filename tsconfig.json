@@ -25,6 +25,9 @@
       "@/server/*": [
         "./src/server/*"
       ],
+      "@/types/*": [
+        "./src/types/*"
+      ],
       "@/public/*": [
         "./public/*"
       ]
