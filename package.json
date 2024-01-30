@@ -1,0 +1,14 @@
+{
+  "name": "handzone-schema",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate": "npx quicktype -s schema"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "quicktype": "^23.0.81"
+  }
+}
