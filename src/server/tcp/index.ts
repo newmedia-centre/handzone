@@ -1,6 +1,7 @@
 // import dependencies
 import { EventEmitter } from 'events'
 import { Socket } from 'net'
+import { parseRealtimeData } from '@/server/socket/realtime'
 import env from '../environment'
 
 // import types
@@ -77,6 +78,7 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 		// remove from clients when closed
 		socket.on('close', () => {
 			if (this.connections.has(address)) {
+				this.connections.get(address)?.clear()
 				this.connections.delete(address)
 				this.emit('join', address, this.connections)
 				console.info(`[ROBOT:${address}] Disconnected`)
@@ -90,6 +92,8 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	/** The TCP socket for reading data */
 	socket: Socket
+	interval?: NodeJS.Timeout
+	realtimeBuffer?: Buffer
 
 	constructor(socket: Socket) {
 		// initialize the EventEmitter
@@ -98,19 +102,21 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 		// initialize the class variables
 		this.socket = socket
 
+		// start the interval at 25hz which should be enough for most applications
+		this.interval = setInterval(() => this.handleRealtimeData(), 40)
+
 		// handle incoming messages
 		this.socket.on('data', (data) => {
-
-			// check if the data is RTDE data
+			// check if the data is realtime data
 			const header = this.getRealtimeHeader(data)
 
 			// check if the buffer length is the length of the realtime buffer
 			if (header) {
-				this.emit('realtime', data)
+				this.realtimeBuffer = data
 			} else {
 				// parse the data
 				const message = data.toString('utf-8')
-				//console.log('received message:', message, address)
+				//console.log('received message:', data.length)
 
 				// emit the message
 				this.emit('message', message)
@@ -119,10 +125,28 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 
 	}
 
+	clear() {
+		clearTimeout(this.interval)
+	}
+
+	async handleRealtimeData() {
+		// get the latest buffer
+		const data = this.realtimeBuffer
+		if (!data) return
+
+		// emit the raw realtime data
+		this.emit('realtime:raw', data)
+
+		// parse the realtime data
+		const parsed = await parseRealtimeData(data)
+		console.log(parsed.time)
+		this.emit('realtime:parsed', parsed)
+	}
+
 	getRealtimeHeader(data: Buffer) {
 		// verify the size of the package, if it doesn't match the header, return undefined for not being RTDE data
 		const size = data.readUInt32BE(0)
-		if (size !== data.length) return undefined
+		if (size % data.length !== 0) return undefined
 
 		return {
 			size

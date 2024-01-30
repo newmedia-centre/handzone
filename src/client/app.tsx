@@ -21,7 +21,7 @@ function App() {
 
 	useEffect(() => {
 		robot?.on('realtime:data', data => {
-			console.log('data', data.message_size)
+			console.log('data', data.message_size, Math.round(data.time))
 		})
 	}, [robot])
 

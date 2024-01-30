@@ -1,6 +1,7 @@
 // import types
 import type TypedEmitter from 'typed-emitter'
 import type { RobotConnection } from '.'
+import type { RealtimeData } from '@/server/socket/realtime/interface'
 
 // type all the TCP events
 type TCPEvents = {
@@ -17,7 +18,9 @@ type RobotEvents = {
 	/** A raw RTDE buffer */
 	rtde: (buffer: Buffer) => void
 	/** A raw realtime buffer */
-	realtime: (buffer: Buffer) => void
+	'realtime:raw': (buffer: Buffer) => void
+	/** A parsed realtime buffer */
+	'realtime:parsed': (data: RealtimeData) => void
 }
 
 // export the typed emitters

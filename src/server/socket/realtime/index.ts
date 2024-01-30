@@ -10,20 +10,21 @@ export const handleRealtimeEvents = (socket: Socket<ClientToServerEvents, Server
 	const robot = tcp.connections.get(socket.data.robot)
 	if (!robot) return false
 
-	// parse and forward robot messages
-	robot.on('realtime', (data) => {
+	// forward the raw realtime data
+	robot.on('realtime:raw', (data) => {
 		socket.emit('realtime:raw', data.toString('base64'))
+	})
 
-		// parse the data
-		const parsed = parseRealtimeData(data)
-		socket.emit('realtime:data', parsed)
+	// forward the parsed realtime data
+	robot.on('realtime:parsed', (data) => {
+		socket.emit('realtime:data', data)
 	})
 
 	return true
 
 }
 
-export const parseRealtimeData = (data: Buffer): RealtimeData => {
+export const parseRealtimeData = async (data: Buffer): Promise<RealtimeData> => {
 	return {
 		message_size: data.readUInt32BE(0),
 		time: data.readDoubleBE(4),
