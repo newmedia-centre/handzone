@@ -1,0 +1,3 @@
+[submodule "Assets/Scripts/Schema"]
+	path = Assets/Scripts/Schema
+	url = https://github.com/NewMedia-Centre/handzone-schema

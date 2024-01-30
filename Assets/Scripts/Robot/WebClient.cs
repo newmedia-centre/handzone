@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using SocketIO.Serializer.NewtonsoftJson;
-using QuickType;
+using Schema.Socket.Realtime;
 
 public class WebClient : MonoBehaviour
 {

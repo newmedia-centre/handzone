@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Struct containing all of the data send using the realtime 5.10 protocol
  * https://s3-eu-west-1.amazonaws.com/ur-support-site/16496/ClientInterfaces_Realtime.pdf
