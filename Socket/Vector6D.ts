@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Represents a 6D vector consisting of three force components and three torque components.
  */
