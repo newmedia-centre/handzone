@@ -244,27 +244,4 @@ namespace QuickType
         [JsonProperty("v_robot")]
         public double VRobot { get; set; }
     }
-
-    public partial class RealtimeData
-    {
-        public static RealtimeData FromJson(string json) => JsonConvert.DeserializeObject<RealtimeData>(json, QuickType.Converter.Settings);
-    }
-
-    public static class Serialize
-    {
-        public static string ToJson(this RealtimeData self) => JsonConvert.SerializeObject(self, QuickType.Converter.Settings);
-    }
-
-    internal static class Converter
-    {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-        {
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-            Converters =
-            {
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
-        };
-    }
 }
