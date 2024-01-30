@@ -13,6 +13,7 @@ public class RadialInteractable : MonoBehaviour
     public Color arrowTargetColor = Color.gray;
     [Range(0, 360)] public float arrowOrigin = 0f;
     [Range(-360, 360)] public float arrowTarget = 90f;
+    public float targetAngleThreshold = 0.05f;
     
     [Header("Haptic Feedback")]
     [Range(0, 1)]
@@ -55,11 +56,26 @@ public class RadialInteractable : MonoBehaviour
         {
             if (interactable.GetOldestInteractorSelecting() is XRBaseControllerInteractor controllerInteractor)
             {
+                // Only update the target angle if the controller position is beyond a threshold distance from the origin position
+                if (Vector3.Distance(_originPosition, controllerInteractor.transform.position) < targetAngleThreshold)
+                {
+                    // If the controller is within the threshold, set the target angle to the origin angle
+                    arrowTarget = arrowOrigin;
+                    return;
+                }
+                
                 // Get the angle from the origin position to the controller position on the XZ plane
                 Vector3 originPosition = new Vector3(_originPosition.x, 0, _originPosition.z);
                 Vector3 controllerPosition = new Vector3(controllerInteractor.transform.position.x, 0, controllerInteractor.transform.position.z);
                 Vector3 originToController = controllerPosition - originPosition;
                 float angle = Vector3.SignedAngle(Vector3.forward, originToController, Vector3.up);
+
+                // Adjust the angle to be within the range of -360 to 360 degrees
+                if (angle < 0)
+                {
+                    angle += 360;
+                }
+
                 arrowTarget = angle;
             }
         }
@@ -81,11 +97,21 @@ public class RadialInteractable : MonoBehaviour
         
         float direction = Mathf.Sign((arrowTarget + arrowOrigin) - arrowOrigin);
         float angle = (arrowTarget + arrowOrigin) - arrowOrigin;
-        angle = angle < 0 ? angle + 360 : angle;
+        if (direction < 0)
+        {
+            angle = 360 + angle;
+            selectedBackgroundImage.fillClockwise = true;
+            selectedBackgroundImage.fillAmount = 1 - (angle / 360f);
+        }
+        else
+        {
+            selectedBackgroundImage.fillAmount = angle / 360f;
+            selectedBackgroundImage.fillClockwise = false;
+        }
         
-        selectedBackgroundImage.fillClockwise = direction < 0;
-        selectedBackgroundImage.fillAmount = angle / 360f;
-        selectedBackgroundImage.transform.rotation = arrowOriginImage.transform.rotation;
+        selectedBackgroundImage.transform.localRotation = Quaternion.Euler(0, 0, arrowOrigin);
+        arrowOriginImage.transform.localRotation = Quaternion.Euler(0, 0, arrowOrigin);
+        arrowTargetImage.transform.localRotation = Quaternion.Euler(0, 0, arrowTarget + arrowOrigin);
 
         if (angle % 90 == 0 && angle != _lastHapticAngle)
         {
@@ -129,7 +155,7 @@ public class RadialInteractable : MonoBehaviour
         if (args.interactorObject is XRBaseControllerInteractor controllerInteractor)
         {
             // It should hide if the controller is not hovering anymore and not selected
-            if (!interactable.isSelected)
+            if (!interactable.isSelected && !interactable.isHovered)
                 _canvas.enabled = false;
         }
     }
