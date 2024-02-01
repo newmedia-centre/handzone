@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 
-[ExecuteInEditMode]
 public class RadialInteractable : MonoBehaviour
 {
     [Header("UI Control")] 
@@ -13,7 +13,6 @@ public class RadialInteractable : MonoBehaviour
     public Color arrowTargetColor = Color.gray;
     [Range(0, 360)] public float arrowOrigin = 0f;
     [Range(-360, 360)] public float arrowTarget = 90f;
-    public float targetAngleThreshold = 0.05f;
     
     [Header("Haptic Feedback")]
     [Range(0, 1)]
@@ -27,23 +26,22 @@ public class RadialInteractable : MonoBehaviour
     [SerializeField] private Image circleImage;
 
 
+    [FormerlySerializedAs("interactable")]
     [Header("XR Interactable")]
-    [SerializeField] private XRBaseInteractable interactable;
+    [SerializeField] private RobotJointInteractable interactableSource;
     
-    private float _lastHapticAngle = 0f;
     private Canvas _canvas;
     private Vector3 _originPosition;
 
     void Awake()
     {
-        interactable = GetComponentInParent<XRBaseInteractable>();
         _canvas = GetComponentInChildren<Canvas>();
         _canvas.enabled = false;
         
-        interactable.hoverEntered.AddListener(ShowCanvas);
-        interactable.hoverExited.AddListener(HideCanvas);
-        interactable.selectExited.AddListener(HideCanvas);
-        interactable.selectEntered.AddListener(SetOriginPosition);
+        interactableSource.hoverEntered.AddListener(ShowCanvas);
+        interactableSource.hoverExited.AddListener(HideCanvas);
+        interactableSource.selectExited.AddListener(HideCanvas);
+        interactableSource.selectEntered.AddListener(SetOriginPosition);
         
         UpdateRadial();
         CheckImageReferences();
@@ -52,18 +50,10 @@ public class RadialInteractable : MonoBehaviour
     void Update()
     {
         // Change the target angle to the offset position of the controller from the starting interactable position
-        if (interactable.isSelected)
+        if (interactableSource.isSelected && interactableSource.isControllerBeyondThreshold)
         {
-            if (interactable.GetOldestInteractorSelecting() is XRBaseControllerInteractor controllerInteractor)
+            if (interactableSource.GetOldestInteractorSelecting() is XRBaseControllerInteractor controllerInteractor)
             {
-                // Only update the target angle if the controller position is beyond a threshold distance from the origin position
-                if (Vector3.Distance(_originPosition, controllerInteractor.transform.position) < targetAngleThreshold)
-                {
-                    // If the controller is within the threshold, set the target angle to the origin angle
-                    arrowTarget = arrowOrigin;
-                    return;
-                }
-                
                 // Get the angle from the origin position to the controller position on the XZ plane
                 Vector3 originPosition = new Vector3(_originPosition.x, 0, _originPosition.z);
                 Vector3 controllerPosition = new Vector3(controllerInteractor.transform.position.x, 0, controllerInteractor.transform.position.z);
@@ -83,7 +73,7 @@ public class RadialInteractable : MonoBehaviour
 
     void LateUpdate()
     {
-        if (interactable == null)
+        if (interactableSource == null)
         {
             Debug.LogError("RadialInteractable: XRBaseInteractable component not found!");
             return;
@@ -109,16 +99,16 @@ public class RadialInteractable : MonoBehaviour
             selectedBackgroundImage.fillClockwise = false;
         }
         
-        selectedBackgroundImage.transform.localRotation = Quaternion.Euler(0, 0, arrowOrigin);
-        arrowOriginImage.transform.localRotation = Quaternion.Euler(0, 0, arrowOrigin);
-        arrowTargetImage.transform.localRotation = Quaternion.Euler(0, 0, arrowTarget + arrowOrigin);
-
-        if (angle % 90 == 0 && angle != _lastHapticAngle)
-        {
-            // TriggerHapticFeedback();
-            _lastHapticAngle = angle;
-        }
+        SetLocalRotation(selectedBackgroundImage, arrowOrigin);
+        SetLocalRotation(arrowOriginImage, arrowOrigin);
+        SetLocalRotation(arrowTargetImage, arrowTarget + arrowOrigin);
     }
+    
+    private void SetLocalRotation(Image image, float angle)
+    {
+        image.transform.localRotation = Quaternion.Euler(0, 0, angle);
+    }
+
 
     private void CheckImageReferences()
     {
@@ -155,7 +145,7 @@ public class RadialInteractable : MonoBehaviour
         if (args.interactorObject is XRBaseControllerInteractor controllerInteractor)
         {
             // It should hide if the controller is not hovering anymore and not selected
-            if (!interactable.isSelected && !interactable.isHovered)
+            if (!interactableSource.isSelected && !interactableSource.isHovered)
                 _canvas.enabled = false;
         }
     }
@@ -165,6 +155,8 @@ public class RadialInteractable : MonoBehaviour
         // Set the origin position to the controller position on select
         if (args.interactorObject is XRBaseControllerInteractor controllerInteractor)
         {
+            arrowOrigin = 0;
+            arrowTarget = 0;
             _originPosition = controllerInteractor.transform.position;
         }
     }
