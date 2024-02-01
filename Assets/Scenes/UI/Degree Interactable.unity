@@ -599,6 +599,42 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3989925011124928986, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3989925011124928986, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3989925011124928986, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3989925011124928986, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4883256840499867878, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -5753624311923978931, guid: dd2fbf136d00295419fde61dd3133e91,
+        type: 3}
+    - target: {fileID: 4883256840499867878, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
+        type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4883256840499867878, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
+        type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5178052650083227069, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -634,6 +670,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Robot Joint Interactable
       objectReference: {fileID: 0}
+    - target: {fileID: 6338841561544118937, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -5753624311923978931, guid: dd2fbf136d00295419fde61dd3133e91,
+        type: 3}
     - target: {fileID: 6857404999600489426, guid: 6821e1b7f44d8c44b8a2ba02f37309d5,
         type: 3}
       propertyPath: m_InteractableSource
@@ -765,7 +807,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   grabDistanceThreshold: 0.03
-  radialInteractable: {fileID: 3035430923111781131}
+  isControllerBeyondThreshold: 0
   _enableDebug: 0
   originInteractorPreviewPrefab: {fileID: 0}
 --- !u!1001 &1731298970
@@ -1233,18 +1275,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3035430923111781129}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3035430923111781131 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1233450701768228092, guid: d95a42cbe4fa6dc4980dbaa2b62a9b83,
-    type: 3}
-  m_PrefabInstance: {fileID: 3035430923111781129}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b403045dee70a0446b69db898e8d1785, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
