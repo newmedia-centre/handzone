@@ -31,7 +31,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7125718144574433697}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -149,7 +148,6 @@ GameObject:
   - component: {fileID: 7125718144574433698}
   - component: {fileID: 5075343737663849198}
   - component: {fileID: 8633865011124755272}
-  - component: {fileID: 8633865011124755275}
   m_Layer: 5
   m_Name: ToggleDigitalToolOut
   m_TagString: Untagged
@@ -171,7 +169,6 @@ RectTransform:
   m_Children:
   - {fileID: 352748262632987825}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -259,19 +256,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7125718144574433699}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UR_EthernetIPClient, Assembly-CSharp
-        m_MethodName: ToggleDigitalOut
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &5075343737663849198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,15 +296,3 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &8633865011124755275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7125718144574433696}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e949861aa2c19c24988bcda677f7cf8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
