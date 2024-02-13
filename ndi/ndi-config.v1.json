@@ -1,0 +1,34 @@
+{
+  "ndi" : {
+    "rudp" : {
+      "recv" : {
+        "enable" : true
+      }
+    },
+    "tcp" : {
+      "recv" : {
+        "enable" : true
+      }
+    },
+    "networks" : {
+      "ips" : "",
+      "discovery" : ""
+    },
+    "groups" : {
+      "recv" : "public",
+      "send" : "public"
+    },
+    "multicast" : {
+      "send" : {
+        "enable" : false,
+        "netprefix" : "",
+        "netmask" : ""
+      }
+    },
+    "unicast" : {
+      "recv" : {
+        "enable" : true
+      }
+    }
+  }
+}
