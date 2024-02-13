@@ -27,7 +27,7 @@ const io = initSocket(tcp)
 io.attach(server)
 
 // start the ndi manager
-new NDIManager(['172.19.14.27', '172.19.14.158'], (ndi) => {
+new NDIManager(['172.19.14.27', '172.19.14.158'], io, (ndi) => {
 	ndi.receivers.forEach((receiver, name) => {
 		receiver.on('video', frame => {
 			console.log('Got video frame:', name, frame.xres, frame.yres)

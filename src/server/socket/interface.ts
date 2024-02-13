@@ -1,5 +1,5 @@
 // import types
-import type { Socket as BareSocket } from 'socket.io'
+import type { Socket as BareSocket, Server as BareServer } from 'socket.io'
 import type { RTDEClientToServer, RTDEServerToClient } from './rtde/interface'
 import type { MotionClientToServer } from './motion/interface'
 import type { InterfacesClientToServer } from './interfaces/interface'
@@ -36,6 +36,7 @@ export interface ServerToClientEvents extends RTDEServerToClient, RealtimeServer
 	message: (message: string) => void
 	simulation: () => void
 	robots: (robots: string[]) => void
+	video: (frame: Buffer) => void
 }
 
 export interface ClientToServerEvents extends RTDEClientToServer, MotionClientToServer, InterfacesClientToServer {
@@ -55,3 +56,4 @@ export interface SocketData {
 
 // create the socket type
 export type Socket = BareSocket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>
+export type Server = BareServer<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>
