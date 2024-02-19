@@ -50,7 +50,7 @@
 					"type": "number"
 				},
 				"data": {
-					"$ref": "#/definitions/global.Buffer"
+					"type": "string"
 				}
 			},
 			"required": [
@@ -92,45 +92,6 @@
 				0,
 				2,
 				3
-			]
-		},
-		"global.Buffer": {
-			"type": "object",
-			"additionalProperties": {
-				"type": "number"
-			},
-			"properties": {
-				"BYTES_PER_ELEMENT": {
-					"type": "number"
-				},
-				"buffer": {
-					"type": "object",
-					"properties": {
-						"byteLength": {
-							"type": "number"
-						}
-					},
-					"required": [
-						"byteLength"
-					],
-					"additionalProperties": false
-				},
-				"byteLength": {
-					"type": "number"
-				},
-				"byteOffset": {
-					"type": "number"
-				},
-				"length": {
-					"type": "number"
-				}
-			},
-			"required": [
-				"BYTES_PER_ELEMENT",
-				"buffer",
-				"byteLength",
-				"byteOffset",
-				"length"
 			]
 		}
 	}
