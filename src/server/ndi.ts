@@ -3,7 +3,6 @@ import { EventEmitter } from 'events'
 import ndi from 'grandiose'
 
 // import types
-import type { Server } from './socket/interface'
 import type TypedEmitter from 'typed-emitter'
 
 /** Manager for NDI connections */
@@ -12,7 +11,7 @@ export class NDIManager {
 	receivers: Map<string, VideoReceiver>
 
 	// constructor
-	constructor(ips: string[], io: Server, callback: (self: NDIManager) => void) {
+	constructor(ips: string[], callback: (self: NDIManager) => void) {
 		this.receivers = new Map()
 		this.finder = new ndi.GrandioseFinder({
 			showLocalSources: true,
@@ -30,16 +29,11 @@ export class NDIManager {
 					source
 				})
 
-				// emit the video frames
-				const video = new VideoReceiver(receiver)
-				video.on('video', frame => {
-					io.emit('video', frame.data)
-				})
-
 				// add the receiver to the map
 				this.receivers.set(source.name, new VideoReceiver(receiver))
 			})
 
+			// wait for all the receivers to be created
 			await Promise.all(res)
 
 			// call the callback
@@ -51,26 +45,24 @@ export class NDIManager {
 /** Listens to a video feed */
 class VideoReceiver extends (EventEmitter as new () => ReceiverEmitter) {
 	receiver: ndi.Receiver
+	stop: boolean
 
 	constructor(receiver: ndi.Receiver) {
 		super()
 
 		this.receiver = receiver
+		this.stop = false
 		this.getVideo()
 	}
 
 	// recursively get the next video frame
 	async getVideo() {
 		try {
-			//const data = await this.receiver.video(500)
-			const any = await this.receiver.data(500)
-			console.log(this.receiver.source, any)
-			//console.log(data)
-			//this.emit('video', data)
-			this.getVideo()
+			const data = await this.receiver.video(500)
+			this.emit('video', data)
+			!this.stop && this.getVideo()
 		} catch (e) {
-			//console.error(e)
-			this.getVideo()
+			!this.stop && this.getVideo()
 		}
 	}
 }
