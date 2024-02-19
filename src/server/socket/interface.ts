@@ -4,6 +4,7 @@ import type { RTDEClientToServer, RTDEServerToClient } from './rtde/interface'
 import type { MotionClientToServer } from './motion/interface'
 import type { InterfacesClientToServer } from './interfaces/interface'
 import type { RealtimeServerToClient } from './realtime/interface'
+import type { VideoFrame } from '../ndi'
 
 /** Represents a 6D vector consisting of three force components and three torque components. */
 export type Vector6D = {
@@ -36,7 +37,7 @@ export interface ServerToClientEvents extends RTDEServerToClient, RealtimeServer
 	message: (message: string) => void
 	simulation: () => void
 	robots: (robots: string[]) => void
-	video: (frame: Buffer) => void
+	video: (frame: VideoFrame) => void
 }
 
 export interface ClientToServerEvents extends RTDEClientToServer, MotionClientToServer, InterfacesClientToServer {

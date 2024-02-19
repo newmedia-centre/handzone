@@ -74,3 +74,6 @@ type ReceiverEvents = {
 }
 
 export type ReceiverEmitter = TypedEmitter<ReceiverEvents>
+export type VideoFrame = Omit<ndi.VideoFrame, 'data'> & {
+	data: string
+}

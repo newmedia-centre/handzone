@@ -30,7 +30,7 @@ io.attach(server)
 new NDIManager(['172.19.14.27', '172.19.14.158'], (ndi) => {
 	ndi.receivers.forEach((receiver, name) => {
 		receiver.on('video', frame => {
-			io.emit('video', frame.data)
+			io.emit('video', { ...frame, data: frame.data.toString('base64') })
 			console.log('Got video frame:', name, frame.xres, frame.yres)
 		})
 	})
