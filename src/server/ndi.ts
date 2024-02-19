@@ -44,7 +44,7 @@ export class NDIManager {
 
 			// call the callback
 			callback.call(this, this)
-		}, 30000)
+		}, 5000)
 	}
 }
 
@@ -62,9 +62,11 @@ class VideoReceiver extends (EventEmitter as new () => ReceiverEmitter) {
 	// recursively get the next video frame
 	async getVideo() {
 		try {
-			const data = await this.receiver.video(500)
+			//const data = await this.receiver.video(500)
+			const any = await this.receiver.data(500)
+			console.log(this.receiver.source, any)
 			//console.log(data)
-			this.emit('video', data)
+			//this.emit('video', data)
 			this.getVideo()
 		} catch (e) {
 			//console.error(e)
