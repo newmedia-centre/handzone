@@ -1,33 +1,33 @@
 {
-  "ndi" : {
-    "rudp" : {
-      "recv" : {
-        "enable" : true
+  "ndi": {
+    "rudp": {
+      "recv": {
+        "enable": true
       }
     },
-    "tcp" : {
-      "recv" : {
-        "enable" : true
+    "tcp": {
+      "recv": {
+        "enable": true
       }
     },
-    "networks" : {
-      "ips" : "",
-      "discovery" : ""
+    "networks": {
+      "ips": "172.19.14.230,172.19.14.152",
+      "discovery": ""
     },
-    "groups" : {
-      "recv" : "public",
-      "send" : "public"
+    "groups": {
+      "recv": "public",
+      "send": "public"
     },
-    "multicast" : {
-      "send" : {
-        "enable" : false,
-        "netprefix" : "",
-        "netmask" : ""
+    "multicast": {
+      "send": {
+        "enable": false,
+        "netprefix": "",
+        "netmask": ""
       }
     },
-    "unicast" : {
-      "recv" : {
-        "enable" : true
+    "unicast": {
+      "recv": {
+        "enable": true
       }
     }
   }
