@@ -1,0 +1,137 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$ref": "#/definitions/VideoFrame",
+	"definitions": {
+		"VideoFrame": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "video"
+				},
+				"xres": {
+					"type": "number"
+				},
+				"yres": {
+					"type": "number"
+				},
+				"frameRateN": {
+					"type": "number"
+				},
+				"frameRateD": {
+					"type": "number"
+				},
+				"fourCC": {
+					"$ref": "#/definitions/FourCC"
+				},
+				"pictureAspectRatio": {
+					"type": "number"
+				},
+				"timestamp": {
+					"type": "array",
+					"items": {
+						"type": "number"
+					},
+					"minItems": 2,
+					"maxItems": 2
+				},
+				"frameFormatType": {
+					"$ref": "#/definitions/FrameType"
+				},
+				"timecode": {
+					"type": "array",
+					"items": {
+						"type": "number"
+					},
+					"minItems": 2,
+					"maxItems": 2
+				},
+				"lineStrideBytes": {
+					"type": "number"
+				},
+				"data": {
+					"$ref": "#/definitions/global.Buffer"
+				}
+			},
+			"required": [
+				"type",
+				"xres",
+				"yres",
+				"frameRateN",
+				"frameRateD",
+				"fourCC",
+				"pictureAspectRatio",
+				"timestamp",
+				"frameFormatType",
+				"timecode",
+				"lineStrideBytes",
+				"data"
+			],
+			"additionalProperties": false
+		},
+		"FourCC": {
+			"type": "number",
+			"enum": [
+				1498831189,
+				1096178005,
+				909193808,
+				909197648,
+				842094169,
+				808596553,
+				842094158,
+				1095911234,
+				1481787202,
+				1094862674,
+				1480738642
+			]
+		},
+		"FrameType": {
+			"type": "number",
+			"enum": [
+				1,
+				0,
+				2,
+				3
+			]
+		},
+		"global.Buffer": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "number"
+			},
+			"properties": {
+				"BYTES_PER_ELEMENT": {
+					"type": "number"
+				},
+				"buffer": {
+					"type": "object",
+					"properties": {
+						"byteLength": {
+							"type": "number"
+						}
+					},
+					"required": [
+						"byteLength"
+					],
+					"additionalProperties": false
+				},
+				"byteLength": {
+					"type": "number"
+				},
+				"byteOffset": {
+					"type": "number"
+				},
+				"length": {
+					"type": "number"
+				}
+			},
+			"required": [
+				"BYTES_PER_ELEMENT",
+				"buffer",
+				"byteLength",
+				"byteOffset",
+				"length"
+			]
+		}
+	}
+}
