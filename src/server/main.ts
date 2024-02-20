@@ -26,16 +26,5 @@ const tcp = new TCPServer()
 const io = initSocket(tcp)
 io.attach(server)
 
-// start the ndi video manager
-new NDIManager(['172.19.14.27', '172.19.14.158', '172.19.14.230', '172.19.14.152'], (ndi) => {
-	ndi.receivers.forEach((receiver, name) => {
-		receiver.on('video', frame => {
-			io.emit('video', { ...frame, data: frame.data.toString('base64') })
-			console.log('Got video frame:', name, frame.xres, frame.yres)
-		})
-	})
-})
-
-
 // let vite manage the server
 ViteExpress.bind(app, server).catch(err => console.error(err))

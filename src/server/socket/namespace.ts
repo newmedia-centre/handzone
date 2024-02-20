@@ -1,8 +1,9 @@
 // import dependencies
 import { handleRTDEEvents } from './rtde'
-import { handleMotionEvents } from './motion'
 import { handleInterfacesEvents } from './interfaces'
 import { handleRealtimeEvents } from './realtime'
+import { handleMotionEvents } from './motion'
+import { handleGrasshopperEvents } from "./grasshopper";
 
 // import types
 import type { Namespace } from 'socket.io'
@@ -27,6 +28,8 @@ export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerT
 		// handle all the incoming events
 		handleRTDEEvents(socket, tcp)
 		handleMotionEvents(socket, tcp)
+		handleGrasshopperEvents(socket, tcp)
+		handleRealtimeEvents(socket, tcp)
 		handleInterfacesEvents(socket, tcp)
 		handleRealtimeEvents(socket, tcp)
 
