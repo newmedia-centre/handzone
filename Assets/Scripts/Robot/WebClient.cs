@@ -1,12 +1,14 @@
 using System;
 using System.Threading.Tasks;
+using Robots;
 using UnityEngine;
 using SocketIO.Serializer.NewtonsoftJson;
 using Schema.Socket.Realtime;
 
 public class WebClient : MonoBehaviour
 {
-    [SerializeField] private string url = "http://172.19.14.253:3000/172.19.14.251";
+    public string url = "http://172.19.14.251:3000";
+    
     private SocketIOClient.SocketIO _client;
 
     /// <summary>
@@ -19,6 +21,7 @@ public class WebClient : MonoBehaviour
 
     // Unity event Actions
     public event Action<RealtimeData> OnRealtimeData;
+    public static event Action<IProgram> OnProgram;
     public event Action<string[]> OnRobots;
     public event Action OnConnected;
     public event Action OnDisconnected;
@@ -78,18 +81,20 @@ public class WebClient : MonoBehaviour
             Debug.Log($@"Received error from server: {s}");
         };
         
+        _client.On("grasshopper:program", response =>
+        {
+            Debug.Log(response);
+            var program = response.GetValue<IProgram>();
+
+            if (program != null)
+                OnProgram?.Invoke(program);
+        });
+        
         _client.On("realtime:data", response =>
         {
             RealtimeData data = response.GetValue<RealtimeData>();
             if (data != null)
                 OnRealtimeData?.Invoke(data);
-        });
-        
-        // TODO: Update event name to the configured server side invoker for robots connected
-        _client.On("robots", response =>
-        {
-            Robots = response.GetValue<string[]>();
-            OnRobots?.Invoke(Robots);
         });
 
         // Connect to server asynchronously 

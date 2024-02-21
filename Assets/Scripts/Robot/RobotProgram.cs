@@ -38,8 +38,18 @@ namespace Robots.Samples.Unity
         {
             RobotActions.OnToolLoaded += LoadTool;
             RobotActions.OnToolUnloaded += UnloadTool;
+            WebClient.OnProgram += CreateProgramFromObject;
         }
-        
+
+        private void CreateProgramFromObject(IProgram obj)
+        {
+            _program = obj as Program;
+
+            if (_program == null) return; 
+            
+            _program.MeshPoser = new UnityMeshPoser(_program.RobotSystem, _toolMaterial, toolPrefab, robotMeshTarget);
+        }
+
         private void OnDisable()
         {
             RobotActions.OnToolLoaded -= LoadTool;
