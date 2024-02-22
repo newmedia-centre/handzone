@@ -18,7 +18,6 @@ function App() {
 			setRobots(robots)
 		})
 	}, [socket])
-
 	useEffect(() => {
 		robot?.on('realtime:data', data => {
 			console.log('data', data.message_size, Math.round(data.time))

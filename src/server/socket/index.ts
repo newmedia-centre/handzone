@@ -11,6 +11,7 @@ export const initSocket = (tcp: TCPServer) => {
 	// create server instance
 	const server = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>({
 		serveClient: true,
+		maxHttpBufferSize: 1e8, 
 		cors: {
 			origin: true,
 			methods: ['GET', 'POST'],

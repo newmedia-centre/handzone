@@ -27,19 +27,5 @@ const tcp = new TCPServer()
 const io = initSocket(tcp)
 io.attach(server)
 
-// start the ndi video manager
-new NDIManager(['172.19.14.27', '172.19.14.158', '172.19.14.230', '172.19.14.152'], (ndi) => {
-	ndi.receivers.forEach((receiver, name) => {
-		receiver.on('video', frame => {
-			if (name === 'NewTek PTZ Camera (Chan 1)') {
-				const namespace = io._nsps.get('/172.19.14.251')!
-				namespace.emit('video', strFromU8(gzipSync(frame.data)))
-				console.log('Got video frame:', name, frame.data.length)
-			}
-		})
-	})
-})
-
-
 // let vite manage the server
 ViteExpress.bind(app, server).catch(err => console.error(err))

@@ -2,6 +2,7 @@
 import type { Socket as BareSocket, Server as BareServer } from 'socket.io'
 import type { RTDEClientToServer, RTDEServerToClient } from './rtde/interface'
 import type { MotionClientToServer } from './motion/interface'
+import type {GrasshopperClientToServer, GrasshopperServerToClient} from './grasshopper/interface'
 import type { InterfacesClientToServer } from './interfaces/interface'
 import type { RealtimeServerToClient } from './realtime/interface'
 import type { VideoFrame } from '../ndi'
@@ -33,14 +34,14 @@ export type Vector3D = {
 }
 
 // declare socket.io interfaces
-export interface ServerToClientEvents extends RTDEServerToClient, RealtimeServerToClient {
+export interface ServerToClientEvents extends RTDEServerToClient, GrasshopperServerToClient, RealtimeServerToClient {
 	message: (message: string) => void
 	simulation: () => void
 	robots: (robots: string[]) => void
 	video: (frame: string) => void
 }
 
-export interface ClientToServerEvents extends RTDEClientToServer, MotionClientToServer, InterfacesClientToServer {
+export interface ClientToServerEvents extends RTDEClientToServer, MotionClientToServer, GrasshopperClientToServer, InterfacesClientToServer {
 	message: (message: string) => void
 	simulation: () => void
 	achievement: () => void
