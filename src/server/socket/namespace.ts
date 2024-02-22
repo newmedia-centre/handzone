@@ -31,7 +31,6 @@ export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerT
 		handleGrasshopperEvents(socket, tcp)
 		handleRealtimeEvents(socket, tcp)
 		handleInterfacesEvents(socket, tcp)
-		handleRealtimeEvents(socket, tcp)
 
 		// forward events between sockets
 
