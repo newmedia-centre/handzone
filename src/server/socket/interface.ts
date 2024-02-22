@@ -37,7 +37,7 @@ export interface ServerToClientEvents extends RTDEServerToClient, RealtimeServer
 	message: (message: string) => void
 	simulation: () => void
 	robots: (robots: string[]) => void
-	video: (frame: VideoFrame) => void
+	video: (frame: string) => void
 }
 
 export interface ClientToServerEvents extends RTDEClientToServer, MotionClientToServer, InterfacesClientToServer {
