@@ -3,7 +3,11 @@
 		{
 			"name": "Robot 1",
 			"port": 30003,
-			"address": "172.19.14.251"
+			"address": "172.19.14.251",
+			"camera": {
+				"port": 4000,
+				"address": "172.19.14.226"
+			}
 		}
 	],
 	"VIRTUAL_ROBOTS": [

@@ -33,6 +33,10 @@ const configSchema = z.object({
 		name: z.string(),
 		port: port().default(30003),
 		address: z.string().ip(),
+		camera: z.object({
+			address: z.string().ip(),
+			port: port(),
+		}).optional()
 	})).optional(),
 
 	/** Array of virtual robot target objects */

@@ -11,7 +11,7 @@ export const initSocket = (tcp: TCPServer) => {
 	// create server instance
 	const server = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>({
 		serveClient: true,
-		maxHttpBufferSize: 1e8, 
+		maxHttpBufferSize: 1e8,
 		cors: {
 			origin: true,
 			methods: ['GET', 'POST'],
@@ -24,7 +24,7 @@ export const initSocket = (tcp: TCPServer) => {
 		server.emit('robots', [...clients.keys()])
 
 		// create the namespace if it doesn't exist
-		server._nsps.has(`/${address}`) || initNamespace(server.of(`/${address}`), address, tcp)
+		server._nsps.has(`/${address}`) || initNamespace(server.of(`/${address}`), address, clients.get(address)!, tcp)
 	})
 
 	tcp.on('leave', (address, clients) => {

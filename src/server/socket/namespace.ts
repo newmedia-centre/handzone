@@ -3,15 +3,15 @@ import { handleRTDEEvents } from './rtde'
 import { handleInterfacesEvents } from './interfaces'
 import { handleRealtimeEvents } from './realtime'
 import { handleMotionEvents } from './motion'
-import { handleGrasshopperEvents } from "./grasshopper";
+import { handleGrasshopperEvents } from './grasshopper'
 
 // import types
 import type { Namespace } from 'socket.io'
 import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interface'
-import type TCPServer from '../tcp'
+import type { TCPServer, RobotConnection } from '../tcp'
 
 /** Initialize a new namespace by handling all the required events */
-export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, address: string, tcp: TCPServer) => {
+export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, address: string, robot: RobotConnection, tcp: TCPServer) => {
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
@@ -32,16 +32,16 @@ export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerT
 		handleRealtimeEvents(socket, tcp)
 		handleInterfacesEvents(socket, tcp)
 
-		// forward events between sockets
-
-		// handle the simulation event
-		socket.on('simulation', () => {
-			socket.emit('simulation')
+		// forward video events
+		robot.video?.on('frame', (data) => {
+			socket.emit('video', data.toString('base64'))
 		})
+
+		// forward events between sockets
 
 		// handle the message event
 		socket.on('message', (message) => {
-			socket.emit('message', message)
+			socket.broadcast.emit('message', message)
 		})
 
 	})

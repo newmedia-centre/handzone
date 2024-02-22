@@ -1,7 +1,7 @@
 // import types
 import type TypedEmitter from 'typed-emitter'
 import type { RobotConnection } from '.'
-import type { RealtimeData } from '@/server/socket/realtime/interface'
+import type { RealtimeData } from '@/types/Socket/Realtime/RealtimeData'
 
 // type all the TCP events
 type TCPEvents = {
@@ -23,6 +23,13 @@ type RobotEvents = {
 	'realtime:parsed': (data: RealtimeData) => void
 }
 
+// type all the video events
+type VideoEvents = {
+	/** Emitted when a video frame is available */
+	frame: (data: Buffer) => void
+}
+
 // export the typed emitters
 export type TCPEmitter = TypedEmitter<TCPEvents>
 export type RobotEmitter = TypedEmitter<RobotEvents>
+export type VideoEmitter = TypedEmitter<VideoEvents>

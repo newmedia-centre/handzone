@@ -1,11 +1,16 @@
 // import dependencies
 import { EventEmitter } from 'events'
 import { Socket } from 'net'
+import * as fs from 'fs'
+import { spawn } from 'child_process'
 import { parseRealtimeData } from '@/server/socket/realtime'
 import env from '../environment'
 
 // import types
-import type { RobotEmitter, TCPEmitter } from './events'
+import type { ChildProcess } from 'child_process'
+import type { RobotEmitter, TCPEmitter, VideoEmitter } from './events'
+
+type robotInfo = { address: string, port: number, camera?: { address: string, port: number } }
 
 /** The TCP Server for communicating with the robots */
 export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
@@ -16,13 +21,15 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 		// initialize the EventEmitter
 		super()
 
+		new VideoConnection('rtsp://172.19.14.226:8554/cam')
+
 		// initialize the class variables
 		this.connections = new Map()
 
 		// try to connect to the robots
-		const robots = [...(env.ROBOTS || []), ...(env.VIRTUAL_ROBOTS || [])]
+		const robots = env.ROBOTS || []
 		robots.forEach((robot) => {
-			this._tryCreateConnection(robot.address, robot.port)
+			this._tryCreateRobotConnection(robot)
 		})
 	}
 
@@ -50,18 +57,18 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 	}
 
 	/** Starts the TCP Client */
-	_tryCreateConnection(address: string, port: number) {
+	_tryCreateRobotConnection(robot: robotInfo) {
 		// create the TCP client
 		const socket = new Socket()
 		socket.setTimeout(5000)
-		socket.connect(port, address)
+		socket.connect(robot.port, robot.address)
 
 		// retry until a connection is established
 		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
 				return setTimeout(() => {
-					console.info(`[ROBOT:${address}] Retrying...`)
-					socket.connect(port, address)
+					console.info(`[ROBOT:${robot.address}] Retrying...`)
+					socket.connect(robot.port, robot.address)
 				}, socket.timeout || 1000)
 			}
 			console.error(error)
@@ -69,19 +76,19 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 
 		// add clients when connected
 		socket.on('connect', () => {
-			const connection = new RobotConnection(socket)
-			this.connections.set(address, connection)
-			this.emit('join', address, this.connections)
-			console.info(`[ROBOT:${address}] Connected`)
+			const connection = new RobotConnection(socket, robot)
+			this.connections.set(robot.address, connection)
+			this.emit('join', robot.address, this.connections)
+			console.info(`[ROBOT:${robot.address}] Connected`)
 		})
 
 		// remove from clients when closed
 		socket.on('close', () => {
-			if (this.connections.has(address)) {
-				this.connections.get(address)?.clear()
-				this.connections.delete(address)
-				this.emit('join', address, this.connections)
-				console.info(`[ROBOT:${address}] Disconnected`)
+			if (this.connections.has(robot.address)) {
+				this.connections.get(robot.address)?.clear()
+				this.connections.delete(robot.address)
+				this.emit('join', robot.address, this.connections)
+				console.info(`[ROBOT:${robot.address}] Disconnected`)
 			}
 		})
 	}
@@ -94,13 +101,19 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	socket: Socket
 	interval?: NodeJS.Timeout
 	realtimeBuffer?: Buffer
+	video?: VideoConnection
 
-	constructor(socket: Socket) {
+	constructor(socket: Socket, robot: robotInfo) {
 		// initialize the EventEmitter
 		super()
 
 		// initialize the class variables
 		this.socket = socket
+
+		// initialize the video connection if the robot has a camera
+		if (robot.camera) {
+			this.video = new VideoConnection('rtsp://172.19.14.226:8554/cam')
+		}
 
 		// start the interval at 25hz which should be enough for most applications
 		this.interval = setInterval(() => this.handleRealtimeData(), 40)
@@ -193,6 +206,35 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 			}
 			default: return undefined
 		}
+	}
+}
+
+export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
+	/** The TCP socket for reading data */
+	process?: ChildProcess
+
+	constructor(url: string) {
+		// initialize the EventEmitter
+		super()
+
+		// initialize the ffmpeg process
+		console.log('starting ffmpeg process')
+		const process = spawn('ffmpeg', [
+			'-i', url,
+			'-f', 'image2',
+			'-update', '1',
+			'pipe:1'], {
+			stdio: ['inherit', 'pipe', 'inherit']
+		})
+
+		// read image frames from ffmpeg stdout and send to connected clients
+		process.stdout.on('data', (data: Buffer) => {
+			console.log('received video frame:', data.length)
+			this.emit('frame', data)
+			fs.writeFileSync('frame.jpg', data)
+		})
+
+		this.process = process
 	}
 }
 
