@@ -610,7 +610,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1378950466}
         m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
-        m_MethodName: setMainMenu
+        m_MethodName: SetMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1263,7 +1263,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1378950466}
         m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
-        m_MethodName: quitGame
+        m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1396,7 +1396,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1378950466}
         m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
-        m_MethodName: setMultiplayerMenu
+        m_MethodName: SetMultiplayerMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1597,7 +1597,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1378950466}
         m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
-        m_MethodName: setScene
+        m_MethodName: SetScene
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1807,7 +1807,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1378950466}
         m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
-        m_MethodName: setScene
+        m_MethodName: SetScene
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2466,7 +2466,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1378950466}
         m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
-        m_MethodName: setOptionsMenu
+        m_MethodName: SetOptionsMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2815,7 +2815,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1378950466}
         m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
-        m_MethodName: setScene
+        m_MethodName: SetScene
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3323,7 +3323,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1378950466}
         m_TargetAssemblyTypeName: MainMenuController, Assembly-CSharp
-        m_MethodName: setMainMenu
+        m_MethodName: SetMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
