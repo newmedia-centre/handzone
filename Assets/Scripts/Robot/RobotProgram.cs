@@ -119,22 +119,6 @@ namespace Robots.Samples.Unity
             }
         }
 
-        public async void CreateProgramFromJSON(string json)
-        {
-            _program = await GrasshopperSyncProgram.CreateAsync(json);
-
-            if (_toolMaterial == null)
-                throw new ArgumentNullException(nameof(_toolMaterial));
-
-            if(_meshPoser == null)
-                _meshPoser = new UnityMeshPoser(_program.RobotSystem, _toolMaterial, toolPrefab, robotMeshTarget);
-
-            _program.MeshPoser = _meshPoser;
-
-            RobotActions.OnProgramDurationUpdated((int)_program.Duration);
-            RobotActions.OnTimeUpdated(0);
-        }
-
         void PlayPlayback()
         {
             _isPlaying = true;
