@@ -55,7 +55,8 @@ public class PolyscopeMoveJointElement : MonoBehaviour
         if (float.TryParse(_inputField.text, out var angle))
         {
             _slider.value = angle;
-            RobotTranslator.UpdatePolyscopeJoint(jointIndex, angle);
+            // RobotTranslator.UpdatePolyscopeJoint(jointIndex, angle);
+            // TODO: CHange to use WebClient event
         }
     }
 }

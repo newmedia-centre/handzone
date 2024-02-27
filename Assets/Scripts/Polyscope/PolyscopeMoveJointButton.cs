@@ -24,7 +24,8 @@ public class PolyscopeMoveJointButton : MonoBehaviour, IPointerDownHandler, IPoi
     {
         if (_isHeld)
         {
-            RobotTranslator.MovePolyscopeJoint?.Invoke(jointIndex, direction);
+            // RobotTranslator.MovePolyscopeJoint?.Invoke(jointIndex, direction);
+            // TODO: CHange to use WebClient event speedj
         }
     }
 }

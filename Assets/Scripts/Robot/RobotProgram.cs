@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
+using Plane = Rhino.Geometry.Plane;
 
 namespace Robots.Samples.Unity
 {
@@ -38,15 +42,43 @@ namespace Robots.Samples.Unity
         {
             RobotActions.OnToolLoaded += LoadTool;
             RobotActions.OnToolUnloaded += UnloadTool;
-            WebClient.OnProgram += CreateProgramFromObject;
+            WebClient.OnToolpaths += CreateProgramFromObject;
+        }
+        
+        static async Task<RobotSystem> GetRobotAsync()
+        {
+            var cellName = "TUDelft-LAMA-UR5";
+
+            try
+            {
+                return FileIO.LoadRobotSystem(cellName, Plane.WorldXY);
+            }
+            catch (ArgumentException e)
+            {
+                if (!e.Message.Contains("not found"))
+                    throw;
+
+                UnityEngine.Debug.Log("TUDelft-LAMA-UR5 robot library not found, installing...");
+                await DownloadLibraryAsync();
+                return FileIO.LoadRobotSystem(cellName, Plane.WorldXY);
+            }
+        }
+        
+        static async Task DownloadLibraryAsync()
+        {
+            var online = new OnlineLibrary();
+            await online.UpdateLibraryAsync();
+            var bartlett = online.Libraries["TUDelft"];
+            await online.DownloadLibraryAsync(bartlett);
         }
 
-        private void CreateProgramFromObject(IProgram obj)
+        private async void CreateProgramFromObject(List<IToolpath> toolpaths)
         {
-            _program = obj as Program;
-
-            if (_program == null) return; 
+            var robot = await GetRobotAsync();
             
+            _program = new Program("GrasshopperSyncProgram", robot, toolpaths);
+            
+            Debug.Log("Created program from object " + _program.RobotSystem.Name);
             _program.MeshPoser = new UnityMeshPoser(_program.RobotSystem, _toolMaterial, toolPrefab, robotMeshTarget);
         }
 

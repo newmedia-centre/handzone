@@ -28,7 +28,9 @@ public class PolyscopeMoveTcpButton : MonoBehaviour, IPointerDownHandler, IPoint
             tcpController.TranslateObject(translateDirection);
             tcpController.RotateObject(rotateAxis);
             
-            RobotTranslator.MovePolyscopeTCP?.Invoke(translateDirection, rotateAxis);
+            // RobotTranslator.MovePolyscopeTCP?.Invoke(translateDirection, rotateAxis);
+            // TODO: CHange to use WebClient event
+            WebClient.Instance.Speedl(translateDirection, rotateAxis, 0.1f, 0.1f);
         }
     }
 }

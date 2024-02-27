@@ -126,7 +126,7 @@ public class UR_EthernetIPClient : MonoBehaviour
             }
         }
         
-        robotTranslator.UpdateJointsFromPolyscope(readJointValues);
+        // robotTranslator.UpdateJointsFromPolyscope(readJointValues);
     }
 
     void ConnectToReadAddress()
