@@ -1,7 +1,6 @@
 // import dependencies
 import { EventEmitter } from 'events'
 import { Socket } from 'net'
-import * as fs from 'fs'
 import { spawn } from 'child_process'
 import { parseRealtimeData } from '@/server/socket/realtime'
 import env from '../environment'
@@ -9,6 +8,7 @@ import env from '../environment'
 // import types
 import type { ChildProcess } from 'child_process'
 import type { RobotEmitter, TCPEmitter, VideoEmitter } from './events'
+import { Buffer } from 'buffer'
 
 type robotInfo = { address: string, port: number, camera?: { address: string, port: number } }
 
@@ -218,20 +218,32 @@ export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
 		super()
 
 		// initialize the ffmpeg process
-		console.log('starting ffmpeg process')
+		console.log('Starting ffmpeg process...')
 		const process = spawn('ffmpeg', [
 			'-i', url,
 			'-f', 'image2',
 			'-update', '1',
+			'-loglevel', 'quiet',
 			'pipe:1'], {
 			stdio: ['inherit', 'pipe', 'inherit']
 		})
 
+		let buffer = Buffer.alloc(0)
+
+		// log once the process has received data
+		process.stdout.once('data', () => {
+			console.log('ffmpeg process started')
+		})
+
 		// read image frames from ffmpeg stdout and send to connected clients
 		process.stdout.on('data', (data: Buffer) => {
-			console.log('received video frame:', data.length)
-			this.emit('frame', data)
-			fs.writeFileSync('frame.jpg', data)
+			if (data.length === 8192) {
+				buffer = Buffer.concat([buffer, data])
+			} else {
+				buffer = Buffer.concat([buffer, data])
+				this.emit('frame', buffer)
+				buffer = Buffer.alloc(0)
+			}
 		})
 
 		this.process = process
