@@ -141,9 +141,7 @@ public class WebClient : MonoBehaviour
             
             UnityMainThreadDispatcher.Instance().Enqueue(() => 
             {
-
                 var deserializedProgram = JsonConvert.DeserializeObject<List<IToolpath>>(json, serializer);
-                Debug.Log("Program deserialized: " + deserializedProgram);
                 OnToolpaths?.Invoke(deserializedProgram);
             });
         });

@@ -290,6 +290,27 @@
       },
       "url": "https://registry.npmjs.com"
     },
+    "org.nuget.kdl.netstandard.x64": {
+      "version": "2.0.6",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://unitynuget-registry.azurewebsites.net"
+    },
+    "org.nuget.mathnet.numerics": {
+      "version": "5.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://unitynuget-registry.azurewebsites.net"
+    },
+    "org.nuget.rhino3dm": {
+      "version": "8.4.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://unitynuget-registry.azurewebsites.net"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

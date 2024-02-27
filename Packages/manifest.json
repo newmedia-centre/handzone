@@ -21,6 +21,9 @@
     "com.unity.xr.oculus": "4.1.2",
     "com.unity.xr.openxr": "1.10.0",
     "jp.keijiro.klak.ndi": "2.1.0",
+    "org.nuget.kdl.netstandard.x64": "2.0.6",
+    "org.nuget.mathnet.numerics": "5.0.0",
+    "org.nuget.rhino3dm": "8.4.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -59,6 +62,13 @@
       "url": "https://registry.npmjs.com",
       "scopes": [
         "jp.keijiro"
+      ]
+    },
+    {
+      "name": "Unity NuGet",
+      "url": "https://unitynuget-registry.azurewebsites.net",
+      "scopes": [
+        "org.nuget"
       ]
     }
   ]
