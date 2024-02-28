@@ -32,7 +32,6 @@ public class WebClient : MonoBehaviour
 
     // Unity event Actions
     public static event Action<RealtimeData> OnRealtimeData;
-    public static event Action<IProgram> OnProgram;
     public static event Action<List<IToolpath>> OnToolpaths;
     public static event Action<Texture2D> OnCameraFeed; 
     public event Action OnConnected;
@@ -128,20 +127,22 @@ public class WebClient : MonoBehaviour
         
         _client.On("grasshopper:program", response =>
         {
-            var json = response.GetValue<string>();
-            Debug.Log("Received toolpaths from server...");
-            var serializer = new JsonSerializerSettings
-            {
-                // ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                // NullValueHandling = NullValueHandling.Include,
-                // FloatParseHandling = FloatParseHandling.Double,
-                TypeNameHandling = TypeNameHandling.Objects,
-                // TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
-            };
-            
             UnityMainThreadDispatcher.Instance().Enqueue(() => 
             {
+                var json = response.GetValue<string>();
+                var serializer = new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Include,
+                    FloatParseHandling = FloatParseHandling.Double,
+                    TypeNameHandling = TypeNameHandling.Objects,
+                    // TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+                };
+                
+                Debug.Log("Received program from server...");
+                
                 var deserializedProgram = JsonConvert.DeserializeObject<List<IToolpath>>(json, serializer);
+                Debug.Log("Received toolpaths from server...");
                 OnToolpaths?.Invoke(deserializedProgram);
             });
         });
@@ -209,7 +210,6 @@ public class WebClient : MonoBehaviour
     /// <param name="t">Time (s) before function returns (optional)</param>
     public void Speedl(double[] xd, double a, double t)
     {
-        Debug.Log("Sending speedl command to robot...");
         _client.EmitAsync("motion:speedl", xd, a, t);
     }
 

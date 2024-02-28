@@ -252,7 +252,7 @@ MonoBehaviour:
   playbackPanels: []
   gripperLoadedName: 
   gripperUnloadedName: 
-  robotMeshTarget: {fileID: 646220437}
+  robotMeshTarget: {fileID: 560298050}
   toolPrefab: {fileID: 1632180730063523210, guid: 02117ba590930ec41966932111a58264,
     type: 3}
   _toolMaterial: {fileID: 2100000, guid: 2a207780eb9c0024e999efd40a00cc99, type: 2}
@@ -271,13 +271,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &646220437 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1830768930336012788, guid: 4068f9f6b602f8e4f8ef861826d294aa,
-    type: 3}
-  m_PrefabInstance: {fileID: 3844960380772548821}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &744446010
+--- !u!1 &560298049
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -285,37 +279,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 744446012}
-  - component: {fileID: 744446011}
+  - component: {fileID: 560298050}
   m_Layer: 0
-  m_Name: RobotTest
+  m_Name: Robot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &744446011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 744446010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd3cb8e42a0e2384e8f75b9808729440, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &744446012
+--- !u!4 &560298050
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 744446010}
+  m_GameObject: {fileID: 560298049}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.639233, y: -3.999655, z: -3.1214085}
+  m_LocalPosition: {x: 17.29904, y: -5.769137, z: -6.2175727}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -485,4 +466,4 @@ SceneRoots:
   - {fileID: 427283699}
   - {fileID: 3844960380772548821}
   - {fileID: 332737486}
-  - {fileID: 744446012}
+  - {fileID: 560298050}
