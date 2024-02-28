@@ -220,6 +220,7 @@ export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
 		// initialize the ffmpeg process
 		console.log('Starting ffmpeg process...')
 		const process = spawn('ffmpeg', [
+			'-rtsp_transport', 'tcp',
 			'-i', url,
 			'-f', 'image2',
 			'-update', '1',

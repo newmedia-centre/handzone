@@ -148,6 +148,8 @@ export const handleMotionEvents = (socket: Socket<ClientToServerEvents, ServerTo
 	// handle the motion:speedl event
 	socket.on('motion:speedl', (xd, a, t, aRot) => {
 		tcp.send(socket.data.robot, `speedl([${xd}],a=${a}${t ? `,t=${t}` : ''}${aRot ? `,aRot=${aRot}` : ''})\n`)
+		console.log(`speedl([${xd}],a=${a}${t && `,t=${t}`}${aRot && `,aRot=${aRot}`})\n`)
+		tcp.send(socket.data.robot, `speedl([${xd}],a=${a}${t && `,t=${t}`}${aRot ? `,aRot=${aRot}` : ''})\n`)
 	})
 
 	// handle the motion:stop_conveyor_tracking event
