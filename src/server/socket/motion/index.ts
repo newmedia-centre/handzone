@@ -107,27 +107,27 @@ export const handleMotionEvents = (socket: Socket<ClientToServerEvents, ServerTo
 
 	// handle the motion:pause_on_error_code event
 	socket.on('motion:pause_on_error_code', (code, argument) => {
-		tcp.send(socket.data.robot, `pause_on_error_code(${code}${argument && `, ${argument}`})\n`)
+		tcp.send(socket.data.robot, `pause_on_error_code(${code}${argument ? `, ${argument}` : ''})\n`)
 	})
 
 	// handle the motion:position_deviation_warning event
 	socket.on('motion:position_deviation_warning', (enabled, threshold) => {
-		tcp.send(socket.data.robot, `position_deviation_warning(${enabled}${threshold && `, ${threshold}`})\n`)
+		tcp.send(socket.data.robot, `position_deviation_warning(${enabled}${threshold ? `, ${threshold}` : ''})\n`)
 	})
 
 	// handle the motion:reset_revolution_counter event
 	socket.on('motion:reset_revolution_counter', (qNear) => {
-		tcp.send(socket.data.robot, `reset_revolution_counter(${qNear && `qNear=[${qNear}]`})\n`)
+		tcp.send(socket.data.robot, `reset_revolution_counter(${qNear ? `qNear=[${qNear}]` : ''})\n`)
 	})
 
 	// handle the motion:servoj event
 	socket.on('motion:servoj', (q, a, v, t, lookahead_time, gain) => {
-		tcp.send(socket.data.robot, `servoj([${q}], a=${a}, v=${v}${t && `, t=${t}`}${lookahead_time && `, lookahead_time=${lookahead_time}`}${gain && `, gain=${gain}`})\n`)
+		tcp.send(socket.data.robot, `servoj([${q}], a=${a}, v=${v}${t ? `, t=${t}` : ''}${lookahead_time ? `, lookahead_time=${lookahead_time}` : ''}${gain ? `, gain=${gain}` : ''})\n`)
 	})
 
 	// handle the motion:set_conveyor_tick_count event
 	socket.on('motion:set_conveyor_tick_count', (tick_count, absolute_encoder_resolution) => {
-		tcp.send(socket.data.robot, `set_conveyor_tick_count(${tick_count}${absolute_encoder_resolution && `, absolute_encoder_resolution=${absolute_encoder_resolution}`})\n`)
+		tcp.send(socket.data.robot, `set_conveyor_tick_count(${tick_count}${absolute_encoder_resolution ? `, absolute_encoder_resolution=${absolute_encoder_resolution}` : ''})\n`)
 	})
 
 	// handle the motion:set_pos event
@@ -142,17 +142,17 @@ export const handleMotionEvents = (socket: Socket<ClientToServerEvents, ServerTo
 
 	// handle the motion:speedj event
 	socket.on('motion:speedj', (qd, a, t) => {
-		tcp.send(socket.data.robot, `speedj([${qd}],a=${a}${t && `,t=${t}`})\n`)
+		tcp.send(socket.data.robot, `speedj([${qd}],a=${a}${t ? `,t=${t}` : ''})\n`)
 	})
 
 	// handle the motion:speedl event
 	socket.on('motion:speedl', (xd, a, t, aRot) => {
-		tcp.send(socket.data.robot, `speedl([${xd}],a=${a}${t && `,t=${t}`}${aRot && `,aRot=${aRot}`})\n`)
+		tcp.send(socket.data.robot, `speedl([${xd}],a=${a}${t ? `,t=${t}` : ''}${aRot ? `,aRot=${aRot}` : ''})\n`)
 	})
 
 	// handle the motion:stop_conveyor_tracking event
 	socket.on('motion:stop_conveyor_tracking', (a) => {
-		tcp.send(socket.data.robot, `stop_conveyor_tracking(${a && `a=[${a}]`})\n`)
+		tcp.send(socket.data.robot, `stop_conveyor_tracking(${a ? `a=[${a}]` : ''})\n`)
 	})
 
 	// handle the motion:stopj event
@@ -162,7 +162,7 @@ export const handleMotionEvents = (socket: Socket<ClientToServerEvents, ServerTo
 
 	// handle the motion:stopl event
 	socket.on('motion:stopl', (a, aRot) => {
-		tcp.send(socket.data.robot, `stopl(${a}${aRot && `,aRot=${aRot}`})\n`)
+		tcp.send(socket.data.robot, `stopl(${a}${aRot ? `,aRot=${aRot}` : ''})\n`)
 	})
 
 	// handle the motion:teach_mode event
@@ -172,12 +172,12 @@ export const handleMotionEvents = (socket: Socket<ClientToServerEvents, ServerTo
 
 	// handle the motion:track_conveyor_circular event
 	socket.on('motion:track_conveyor_circular', (center, ticksPerRevolution, rotateTool, encoderIndex) => {
-		tcp.send(socket.data.robot, `track_conveyor_circular([${center}], ${ticksPerRevolution}, ${rotateTool}${encoderIndex && `, encoder_index=${encoderIndex}`})\n`)
+		tcp.send(socket.data.robot, `track_conveyor_circular([${center}], ${ticksPerRevolution}, ${rotateTool}${encoderIndex ? `, encoder_index=${encoderIndex}` : ''})\n`)
 	})
 
 	// handle the motion:track_conveyor_linear event
 	socket.on('motion:track_conveyor_linear', (direction, ticksPerMeter, encoderIndex) => {
-		tcp.send(socket.data.robot, `track_conveyor_linear([${direction}], ${ticksPerMeter}${encoderIndex && `, encoder_index=${encoderIndex}`})\n`)
+		tcp.send(socket.data.robot, `track_conveyor_linear([${direction}], ${ticksPerMeter}${encoderIndex ? `, encoder_index=${encoderIndex}` : ''})\n`)
 	})
 
 }
