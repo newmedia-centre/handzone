@@ -22,11 +22,8 @@ const configSchema = z.object({
 		name: z.string(),
 		port: port().default(30003),
 		address: z.string().ip(),
-		camera: z.object({
-			address: z.string().ip(),
-			port: port(),
-		}).optional()
-	})).optional(),
+		camera: z.string().optional()
+	})).default([]),
 
 	/** Virtual polyscope options */
 	DOCKER_OPTIONS: z.any(),

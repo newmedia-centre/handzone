@@ -36,11 +36,16 @@ io.attach(server)
 ViteExpress.bind(app, server).catch(err => console.error(err))
 
 // handle process termination
-const close = () => {
+let closing = false
+const close = async () => {
+	// check if already closing
+	if (closing) return
+	closing = true
+
 	// shut down the virtual robots
 	console.log('Shutting down virtual robots...')
-	docker.containers.forEach((container) => {
-		docker.closeVirtualRobot(container.id)
+	const vrobots = Array.from(docker.containers.values()).map(async container => {
+		await docker.closeVirtualRobot(container.id)
 		console.log('Closed virtual robot:', container.id)
 	})
 
@@ -57,10 +62,18 @@ const close = () => {
 	})
 
 	// close the express server
-	server.close(() => {
-		console.log('Server closed!')
+	const express = new Promise(resolve => {
+		server.close(() => {
+			console.log('Server closed!')
+			resolve(true)
+		})
 	})
+
+	// await all promises
+	await Promise.all([...vrobots, express])
+	process.exit()
 }
 
 process.on('SIGINT', close)
 process.on('SIGTERM', close)
+process.on('SIGHUP', close)

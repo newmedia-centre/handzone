@@ -10,7 +10,7 @@ import type { ChildProcess } from 'child_process'
 import type { RobotEmitter, TCPEmitter, VideoEmitter } from './events'
 import { Buffer } from 'buffer'
 
-type robotInfo = { address: string, port: number, camera?: { address: string, port: number } }
+type robotInfo = typeof env['ROBOTS'][number]
 
 /** The TCP Server for communicating with the robots */
 export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
@@ -21,14 +21,11 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 		// initialize the EventEmitter
 		super()
 
-		new VideoConnection('rtsp://172.19.14.226:8554/cam')
-
 		// initialize the class variables
 		this.connections = new Map()
 
 		// try to connect to the robots
-		const robots = env.ROBOTS || []
-		robots.forEach((robot) => {
+		env.ROBOTS.forEach((robot) => {
 			this._tryCreateRobotConnection(robot)
 		})
 	}
@@ -112,7 +109,7 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 
 		// initialize the video connection if the robot has a camera
 		if (robot.camera) {
-			this.video = new VideoConnection('rtsp://172.19.14.226:8554/cam')
+			this.video = new VideoConnection(robot.camera)
 		}
 
 		// start the interval at 25hz which should be enough for most applications
