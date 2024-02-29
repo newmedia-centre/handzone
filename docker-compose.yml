@@ -1,0 +1,22 @@
+﻿name: handzone-server
+services:
+  handzone-server-image:
+    stdin_open: true
+    tty: true
+    volumes:
+      - //var/run/docker.sock:/var/run/docker.sock
+      - D:\Github\handzone-server\:/app
+    ports:
+      - 3000:3000
+    image: handzone-server-image
+    command: /bin/bash
+    networks:
+      - handzone
+volumes:
+  D:
+    external:
+      name: D
+networks:
+  handzone:
+    name: handzone-network
+    driver: bridge

@@ -53,7 +53,12 @@ export class DockerManager extends EventEmitter {
 		// create container
 		console.log('Creating virtual robot...')
 		const container = await this.docker.createContainer({
-			Image: 'universalrobots/ursim_cb3:3.15.8'
+			Image: 'universalrobots/ursim_cb3:3.15.8',
+			NetworkingConfig: {
+				EndpointsConfig: {
+					'handzone-network': {},
+				}
+			}
 		})
 
 		// start container
