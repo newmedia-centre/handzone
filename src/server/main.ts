@@ -26,6 +26,7 @@ const tcp = new TCPServer()
 const docker = new DockerManager()
 docker.requestVirtualRobot().then(robot => {
 	console.log('Virtual Robot:', robot.NetworkSettings.IPAddress)
+	tcp.connectVirtualRobot(robot)
 })
 
 // start and attach the socket.io server

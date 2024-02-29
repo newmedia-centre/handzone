@@ -53,19 +53,7 @@ export class DockerManager extends EventEmitter {
 		// create container
 		console.log('Creating virtual robot...')
 		const container = await this.docker.createContainer({
-			Image: 'universalrobots/ursim_cb3:3.15.8',
-			ExposedPorts: {
-				'5900/tcp': {},
-				'6080/tcp': {},
-				'29999/tcp': {},
-				'30001/tcp': {},
-				'30002/tcp': {},
-				'30003/tcp': {},
-				'30004/tcp': {},
-				'30011/tcp': {},
-				'30012/tcp': {},
-				'30013/tcp': {},
-			}
+			Image: 'universalrobots/ursim_cb3:3.15.8'
 		})
 
 		// start container

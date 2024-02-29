@@ -3,12 +3,13 @@ import { EventEmitter } from 'events'
 import { Socket } from 'net'
 import { spawn } from 'child_process'
 import { parseRealtimeData } from '@/server/socket/realtime'
+import { Buffer } from 'buffer'
 import env from '../environment'
 
 // import types
 import type { ChildProcess } from 'child_process'
 import type { RobotEmitter, TCPEmitter, VideoEmitter } from './events'
-import { Buffer } from 'buffer'
+import type { ContainerInspectInfo } from 'dockerode'
 
 type robotInfo = typeof env['ROBOTS'][number]
 
@@ -38,6 +39,15 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 
 		// send the instruction as a utf-8 buffer
 		robot.socket.write(Buffer.from(instruction, 'utf-8'))
+	}
+
+	/** Tries to connect to an endpoint */
+	async connectVirtualRobot(container: ContainerInspectInfo) {
+		this._tryCreateRobotConnection({
+			name: container.Id,
+			address: container.NetworkSettings.IPAddress,
+			port: 30003
+		})
 	}
 
 	// private methods
