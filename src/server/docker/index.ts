@@ -6,8 +6,9 @@ import semaphore from 'semaphore'
 
 // import types
 import type { Semaphore } from 'semaphore'
+import type { DockerEmitter } from './events'
 
-export class DockerManager extends EventEmitter {
+export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 	docker: Docker
 	containers: Map<string, Docker.Container>
 	semaphore: Semaphore
