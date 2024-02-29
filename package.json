@@ -10,6 +10,9 @@
     "generate": "npx json2ts -i 'schema/**/*.json' -o src/types/ --unreachableDefinitions --style.singleQuote --no-style.semi"
   },
   "dependencies": {
+    "@types/dockerode": "^3.3.24",
+    "@types/semaphore": "^1.1.4",
+    "dockerode": "^4.0.2",
     "dotenv": "^16.3.2",
     "express": "^4.18.2",
     "fflate": "^0.8.2",
@@ -17,6 +20,7 @@
     "grandiose": "https://github.com/NewMedia-Centre/grandiose/tarball/42657c4e5225fb875a03bfc123175d1062b59ce7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "semaphore": "^1.1.0",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
     "ts-node": "^10.9.2",
