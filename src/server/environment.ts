@@ -27,6 +27,7 @@ const configSchema = z.object({
 
 	/** Virtual polyscope options */
 	DOCKER_OPTIONS: z.any(),
+	DOCKER_NETWORK: z.string(),
 	MAX_VIRTUAL: z.number().default(3),
 })
 

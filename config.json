@@ -9,5 +9,6 @@
 	],
 	"DOCKER_OPTIONS": {
 		"socketPath": "/var/run/docker.sock"
-	}
+	},
+	"DOCKER_NETWORK": "handzone-server"
 }

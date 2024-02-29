@@ -45,7 +45,7 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 	async connectVirtualRobot(container: ContainerInspectInfo) {
 		this._tryCreateRobotConnection({
 			name: container.Id,
-			address: container.NetworkSettings.IPAddress,
+			address: container.NetworkSettings.Networks[env.DOCKER_NETWORK].IPAddress,
 			port: 30003
 		})
 	}

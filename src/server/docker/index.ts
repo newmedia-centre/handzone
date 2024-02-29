@@ -56,7 +56,7 @@ export class DockerManager extends EventEmitter {
 			Image: 'universalrobots/ursim_cb3:3.15.8',
 			NetworkingConfig: {
 				EndpointsConfig: {
-					'handzone-network': {},
+					[env.DOCKER_NETWORK]: {},
 				}
 			}
 		})

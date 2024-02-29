@@ -25,7 +25,7 @@ const tcp = new TCPServer()
 // start the docker manager
 const docker = new DockerManager()
 docker.requestVirtualRobot().then(robot => {
-	console.log('Virtual Robot:', robot.NetworkSettings.IPAddress)
+	console.log('Virtual Robot:', robot.NetworkSettings.Networks[env.DOCKER_NETWORK].IPAddress)
 	tcp.connectVirtualRobot(robot)
 })
 
