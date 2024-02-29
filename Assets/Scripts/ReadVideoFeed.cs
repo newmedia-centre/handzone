@@ -1,24 +1,32 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ReadVideoFeed : MonoBehaviour
 {
-    // Assign with the Material component of your object where you want to display the video feed
-    private Material _materialRef;
+    private MeshRenderer _meshRenderer;
 
+    /// <summary>
+    /// This method is called on the frame when a script is enabled just before any of the Update methods are called the first time.
+    /// It initializes the MeshRenderer component and subscribes to the OnCameraFeed event from the WebClient.
+    /// </summary>
     private void Start()
     {
-        _materialRef = GetComponent<Material>();
-        
-        // Subscribe to the OnCameraFeed event
-        WebClient.OnCameraFeed += LoadVideoFeed;
+        _meshRenderer = GetComponent<MeshRenderer>();
+
+        if (_meshRenderer != null)
+        {
+            WebClient.OnCameraFeed += LoadVideoFeed;
+        }
+        else
+        {
+            Debug.LogError("MeshRenderer component is missing!");
+        }
     }
 
-    void LoadVideoFeed(Texture2D texture2D)
+    private void LoadVideoFeed(Texture2D texture2D)
     {
-        _materialRef.mainTexture = texture2D;
+        if (_meshRenderer != null)
+        {
+            _meshRenderer.material.mainTexture = texture2D;
+        }
     }
 }

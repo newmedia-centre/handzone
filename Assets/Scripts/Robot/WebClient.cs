@@ -34,7 +34,7 @@ public class WebClient : MonoBehaviour
 
     private async void Start()
     {
-        _cameraFeedTexture = new(2, 2);
+        _cameraFeedTexture = new Texture2D(2, 2);
         
         _client = new SocketIOClient.SocketIO(url);
         var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
