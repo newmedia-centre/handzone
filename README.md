@@ -1,223 +1,46 @@
-# SURF-Unity
+# Running HandZone Guide
 
-SURF provides a blended learning environment for students to learn operating a digital twin of a physical robot.
+All software required is already installed and placed on the desktop. Instructions to run the experience is explained below.
 
-# To Add Custom UI (ex. Toggle)
+## 1. Run URSim Docker Container
+1. Launch `Docker Desktop` from desktop.
+2. In the `Containers` tab press the `Start` button on ursim under the Actions.
+3. When the container turns green. Click the following link and open it in your browser.
+> http://127.0.0.1:6080/vnc.html?host=127.0.0.1&port=6080
+4. Within this URL you can view the Polyscope interface.
 
-### Step 1. Register Callback to receive data from Unity.
+## 2. Run HandZONE server Docker Container
 
-GrasshopperUnity.cs
-
-```csharp
-
-public GameObject togglePanelPrefab;
-
-void Start(){
-  ...
-  ...
-  Rhino.Runtime.HostUtils.RegisterNamedCallback("FromGHCreateToggle", FromGHCreateToggle);
-  ...
-  ...
-}
-
-void FromGHCreateToggle(object sender, Rhino.Runtime.NamedParametersEventArgs args)
-{
-    if (Application.isPlaying)
-    {
-        string id = "";
-        string toggleName = "";
-        bool val;
-        if (args.TryGetString("id", out id))
-        {
-            args.TryGetString("name", out toggleName);
-            args.TryGetBool("value", out val);
-
-            var togglePanelObj = (GameObject)Instantiate(togglePanelPrefab, uiParent.transform);
-            togglePanelObj.name = id;
-            TogglePanel togglePanel = togglePanelObj.GetComponent<TogglePanel>();
-            togglePanel.toggleLabel.text = toggleName;
-            togglePanel.toggle.isOn = val;
-            togglePanel.toggle.onValueChanged.AddListener((value) =>
-            {
-                SendToggleValue(id, value);
-            });
-
-        }
-    }
-}
+1. Launch `Docker Desktop` from desktop.
+2. In the `Containers` tab press the `Start` button on handzone-server under the Actions.
+3. When the container turns green, click on it. Open the `Exec` tab.
+4. Type the following commands in the Exec terminal:
+```sh
+cd app
+npm run dev
 ```
 
-```csharp
-public void SendToggleValue(string id, bool val)
-{
-    using (var args = new Rhino.Runtime.NamedParametersEventArgs())
-    {
-        args.Set("toggleValue", val);
-        Rhino.Runtime.HostUtils.ExecuteNamedCallback("ToGH_Toggle_" + id, args);
-    }
-}
-```
+This will start the web server on the docker container.
 
-TogglePanel.cs
+> Note: after entering `npm run dev` and pressing enter. The server should start and must mention something similar to `[ROBOT:172.17.0.2] Connected` this means the server is up and running.
 
-```csharp
-using UnityEngine.UI;
-public class TogglePanel : MonoBehaviour
-{
-    public Toggle toggle;
-    public Text toggleLabel;
-}
-```
+> Note: If the connection is not found. You need to make sure to that the URSim Docker Container is running and has an IP address assigned to it. And make sure that the IP address is also inside the server configuration file. 
 
-### Step 2. Create Callback execution code to send data from Unity to Grasshopper.
+## 3. Establish Oculus Link
 
-```csharp
-public void SendToggleValue(string id, bool val)
-{
-    using (var args = new Rhino.Runtime.NamedParametersEventArgs())
-    {
-        args.Set("toggleValue", val);
-        Rhino.Runtime.HostUtils.ExecuteNamedCallback("ToGH_Toggle_" + id, args);
-    }
-}
-```
+1. Launch `Oculus` from desktop.
+2. Turn on Oculus headset and connect the Link Cable to the PC & headset.
+3. When asked to `Allow access to data` in the headset, select `Allow`.
+4. It will prompt to `Enable Oculus Link`, select `Enable`.
 
-### Step 3. C# code to send toggle value from GH to Unity.
+> Note: When `Enable Oculus Link` prompt is not shown. You can enable link through the Quick settings menu, which is found in the task bar below when wearing the headset.
 
-```csharp
-using System;
-using System.Collections;
-using System.Collections.Generic;
+5. After Oculus Link is enabled it will load a new gray environment. 
 
-using Rhino;
-using Rhino.Geometry;
+## 4. Launch HandZone Unity project
 
-using Grasshopper;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel.Types;
+1. Launch `Unity Hub` from desktop.
+2. Open `handzone-unity` to load the Unity project.
+3. After the project is loaded press the Play button on top.
 
-using Grasshopper.Kernel.Special;
-using Grasshopper.GUI.Canvas;
-
-public class Script_Instance : GH_ScriptInstance
-{
-
-  private void RunScript(bool toggle, bool init, ref object Value)
-  {
-
-    if(toggle != prevVal){
-      prevVal = toggle;
-      tglVal = toggle;
-    }
-
-    var inputs = Component.Params.Input;
-    var finput = inputs[0];
-    if(finput.SourceCount > 0){
-      var tglComp = finput.Sources[0];
-      if(tglComp.GetType() == typeof(GH_BooleanToggle)){
-        var tgl = (GH_BooleanToggle) tglComp;
-        var name = tgl.NickName;
-        var val = tgl.Value;
-
-        if(name != prevName || init || forceUpdate){
-
-          using(var args = new Rhino.Runtime.NamedParametersEventArgs()){
-            Component.PingDocument -= OnPingDocument;
-            Component.PingDocument += OnPingDocument;
-            Component.ObjectChanged -= OnObjectChanged;
-            Component.ObjectChanged += OnObjectChanged;
-            Grasshopper.Instances.ActiveCanvas.DocumentChanged -= OnDocumentChanged;
-            Grasshopper.Instances.ActiveCanvas.DocumentChanged += OnDocumentChanged;
-
-            args.Set("id", Component.InstanceGuid.ToString());
-            args.Set("name", name);
-            args.Set("value", val);
-            Rhino.Runtime.HostUtils.ExecuteNamedCallback("FromGHClearUI", args);
-            Rhino.Runtime.HostUtils.ExecuteNamedCallback("FromGHCreateToggle", args);
-
-            Register(Component);
-          }
-
-          prevName = name;
-          forceUpdate = false;
-        }
-      }
-    }
-
-
-    Value = tglVal;
-  }
-
-  // <Custom additional code>
-  bool tglVal = false;
-  bool prevVal = false;
-  IGH_Component comp = null;
-  bool forceUpdate = false;
-
-  string prevName = "";
-
-  void Register(IGH_Component component)
-  {
-    Rhino.Runtime.HostUtils.RegisterNamedCallback("ToGH_Toggle_" + component.InstanceGuid.ToString(), ToGrasshopper);
-
-    comp = component;
-  }
-
-  void ToGrasshopper(object sender, Rhino.Runtime.NamedParametersEventArgs args)
-  {
-    bool val;
-
-    if (args.TryGetBool("toggleValue", out val)){
-      tglVal = val;
-
-      if(Component.Params.Input[0].SourceCount > 0){
-        var c = Component.Params.Input[0].Sources[0];
-        if(c.GetType() == typeof(Grasshopper.Kernel.Special.GH_BooleanToggle)){
-          var toggle = (Grasshopper.Kernel.Special.GH_BooleanToggle) c;
-          toggle.Value = tglVal;
-        }
-      }
-    }
-
-    comp.ExpireSolution(true);
-  }
-
-  public void OnPingDocument(object sender, GH_PingDocumentEventArgs e){
-    if(e.Document == null){
-      using(var args = new Rhino.Runtime.NamedParametersEventArgs()){
-        args.Set("id", comp.InstanceGuid.ToString());
-        Rhino.Runtime.HostUtils.ExecuteNamedCallback("FromGHClearUI", args);
-      }
-    }
-  }
-
-  public void OnObjectChanged(object sender, GH_ObjectChangedEventArgs e){
-    if(e.Type == GH_ObjectEventType.Enabled){
-      if(comp.Locked){
-        using(var args = new Rhino.Runtime.NamedParametersEventArgs()){
-          forceUpdate = true;
-          args.Set("id", comp.InstanceGuid.ToString());
-          Rhino.Runtime.HostUtils.ExecuteNamedCallback("FromGHClearUI", args);
-        }
-      }
-    }
-
-    comp.ExpireSolution(true);
-  }
-
-  public void OnDocumentChanged(object sender, GH_CanvasDocumentChangedEventArgs e){
-    using(var args = new Rhino.Runtime.NamedParametersEventArgs()){
-      args.Set("id", comp.InstanceGuid.ToString());
-      Rhino.Runtime.HostUtils.ExecuteNamedCallback("FromGHClearUI", args);
-
-      forceUpdate = true;
-
-      if(comp != null){
-        comp.ExpireSolution(true);
-      }
-    }
-  }
-  // </Custom additional code>
-}
-```
+**Free Software, Hell Yeah!**
