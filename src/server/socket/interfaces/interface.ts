@@ -11,4 +11,5 @@ export interface InterfacesClientToServer {
 	*   - b = true.
 	*/
 	'interfaces:set_tool_digital_out': (n: number, b: boolean) => void
+	'interfaces:set_standard_digital_out': (n: number, b: boolean) => void
 }

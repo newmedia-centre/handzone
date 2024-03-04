@@ -68,6 +68,7 @@ export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
 		// create the TCP client
 		const socket = new Socket()
 		socket.setTimeout(5000)
+		console.info(`[ROBOT:${robot.address}] Connecting...`)
 		socket.connect(robot.port, robot.address)
 
 		// retry until a connection is established
