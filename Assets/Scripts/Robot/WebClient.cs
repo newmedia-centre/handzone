@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
@@ -8,34 +7,48 @@ using Robots;
 using UnityEngine;
 using Schema.Socket.Realtime;
 using SocketIO.Serializer.NewtonsoftJson;
-using UnityEngine.UI;
 
 public class WebClient : MonoBehaviour
 {
     public string url;
     
     private SocketIOClient.SocketIO _client;
-    private Queue<RealtimeData> _dataQueue = new();
+    private Queue<RealtimeData> _dataQueue;
     private Texture2D _cameraFeedTexture;
+    private bool _digitalOutput;
 
     public string[] Robots { get; private set; }
 
     public static event Action<RealtimeData> OnRealtimeData;
     public static event Action<List<IToolpath>> OnToolpaths;
     public static event Action<Texture2D> OnCameraFeed;
+    public static event Action<bool> OnDigitalOutputChanged;
     public event Action OnConnected;
     public event Action OnDisconnected;
     public event Action OnSessionJoin;
     public event Action OnSessionJoined;
     public event Action OnSessionLeft;
 
-    private static readonly Lazy<WebClient> _instance = new Lazy<WebClient>(() => new WebClient());
-    public static WebClient Instance => _instance.Value;
+    public static WebClient Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private async void Start()
     {
         _cameraFeedTexture = new Texture2D(2, 2);
         
+        _dataQueue = new Queue<RealtimeData>();
         _client = new SocketIOClient.SocketIO(url);
         var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
@@ -164,9 +177,16 @@ public class WebClient : MonoBehaviour
         await _client.EmitAsync("motion:movej", q, a, v, t, r);
     }
 
-    public async Task SetDigitalOut(int n, bool b)
+    public async Task SetToolDigitalOut(int n, bool b)
     {
-        await _client.EmitAsync("motion:setdigitalout", n, b);
+        await _client.EmitAsync("interfaces:set_tool_digital_out", n, b);
+    }
+    
+    public bool ToggleToolDigitalOut(bool value)
+    {
+        SetToolDigitalOut(0, !value);
+        OnDigitalOutputChanged?.Invoke(!value);
+        return !value;
     }
 
     private async void OnDestroy()

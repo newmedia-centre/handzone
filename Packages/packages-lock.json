@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "7388d28922b2144497f639630fd8b8b7a3c1ee6d"
     },
+    "com.meta.xr.simulator": {
+      "version": "62.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.addressables": {
       "version": "1.21.19",
       "depth": 0,

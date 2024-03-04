@@ -15,7 +15,7 @@ public class GripperAnim : MonoBehaviour
         _gripper = GetComponent<Gripper>();
         _gripper.SetAnchorPosition(new Vector3(0, 0, -1.453f));
         
-        UR_EthernetIPClient.DigitalOutputChanged += SetGripperAnim;
+        WebClient.OnDigitalOutputChanged += SetGripperAnim;
     }
 
     private void SetGripperAnim(bool state)
