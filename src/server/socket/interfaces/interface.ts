@@ -11,6 +11,18 @@ export interface InterfacesClientToServer {
 	*   - b = true.
 	*/
 	'interfaces:set_tool_digital_out': (n: number, b: boolean) => void
+
+	/**
+	 * Set standard digital output signal level.
+	 * 
+	 * @param n The number (id) of the output, integer: [0:7].
+	 * @param b The signal level (boolean).
+	 * 
+	 * Example command: set_standard_digital_out(1, true)
+	 * - Example Parameters:
+	 *  - n is standard digital output 1.
+	 *  - b = true.
+	 */
 	'interfaces:set_standard_digital_out': (n: number, b: boolean) => void
 
 
