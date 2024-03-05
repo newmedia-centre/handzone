@@ -7,13 +7,16 @@ export const handleInterfacesEvents = (socket: Socket<ClientToServerEvents, Serv
 
 	// handle the interfaces:set_tool_digital_out event
 	socket.on('interfaces:set_tool_digital_out', (n, b) => {
-		console.log(`set_tool_digital_out(${n},${b})`)
-		tcp.send(socket.data.robot, `set_tool_digital_out(${n},${b})\n`)
+		// Convert the first letter of the bool to uppercase. Yes... this is a thing.
+		var capitalB = String(b).charAt(0).toUpperCase() + String(b).slice(1)
+		tcp.send(socket.data.robot, `set_tool_digital_out(${n},${capitalB})\n`)
 	})
 
 	socket.on('interfaces:set_standard_digital_out', (n, b) => {
-		console.log(`set_standard_digital_out(${n},${b})`)
-		tcp.send(socket.data.robot, `set_standard_digital_out(${n},${b})\n`)
+		// Convert the first letter of the bool to uppercase. Yes... this is a thing.
+		var capitalB = String(b).charAt(0).toUpperCase() + String(b).slice(1)
+		console.log(`set_standard_digital_out(${n},${capitalB})`)
+		tcp.send(socket.data.robot, `set_standard_digital_out(${n},${capitalB})\n`)
 	})
 
 	socket.on('interfaces:get_inverse_kin', (x, qnear, maxPositionError, tcp_offset) => {
