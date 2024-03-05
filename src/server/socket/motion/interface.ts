@@ -56,6 +56,13 @@ export interface MotionClientToServer {
 	'motion:encoder_get_tick_count': (encoder_index: number) => number
 
 	/**
+	 * Sets the active tcp offset, i.e. the transformation from the output flange coordinate system to the TCP as a pose.
+	 * 
+	 * @param pose The TCP pose to set.
+	 */
+	'motion:set_tcp': (pose: number[]) => void
+	
+	/**
 	* Tells the robot controller the tick count of the encoder. This function is useful for absolute encoders (e.g., MODBUS).
 	* Assumes that the encoder is enabled using encoder_enable_set_tick_count first.
 	*
@@ -305,7 +312,20 @@ export interface MotionClientToServer {
 	*   - t = 0.5 s → time before the function returns.
 	*/
 	'motion:speedl': (xd: number[], a: number, t?: number, aRot?: string) => void
-
+	
+	/**
+	 * Calculate the forward kinematics for the robot. This function returns the pose of the robot's tool center point (TCP) given the joint angles and the tool center point (TCP) offset.
+	 *
+	 * @param q Joint angles in radians representing rotations of base, shoulder, elbow, wrist1, wrist2, and wrist3.
+	 * @param tcp_offset The tool center point (TCP) offset pose vector.
+	 *
+	 * Example command: get_forward_kin([0.0, 1.57, -1.57, 0, 0, 3.14], [0.1, 0.2, 0.3, 0, 0, 0])
+	 * - Example Parameters:
+	 *  - q = [0.0, 1.57, -1.57, 0, 0, 3.14] → the joint angles in radians representing rotations of base, shoulder, elbow, wrist1, wrist2, and wrist3.
+	 *  - tcp = [0.1, 0.2, 0.3, 0, 0, 0] → the tool center point (TCP) offset pose vector.
+	 */
+	'motion:get_forward_kin': (tcp_offset?: number[]) => void
+	
 	/**
 	* Stop tracking the conveyor, started by track_conveyor_linear() or track_conveyor_circular(),
 	* and decelerate all joint speeds to zero.

@@ -24,6 +24,11 @@ export const handleMotionEvents = (socket: Socket<ClientToServerEvents, ServerTo
 	socket.on('motion:encoder_get_tick_count', () => {
 		throw new Error('Get requests not implemented')
 	})
+	
+	// handle the motion:set_pose event
+	socket.on('motion:set_tcp', (pose) => {
+		tcp.send(socket.data.robot, `set_tcp(p[${pose}])\n`)
+	})
 
 	// handle the motion:encoder_set_tick_count event
 	socket.on('motion:encoder_set_tick_count', (encoder_index, count) => {
