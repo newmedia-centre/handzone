@@ -12,4 +12,15 @@ export interface InterfacesClientToServer {
 	*/
 	'interfaces:set_tool_digital_out': (n: number, b: boolean) => void
 	'interfaces:set_standard_digital_out': (n: number, b: boolean) => void
+
+
+	/**
+	 * Calculate the inverse kinematics for a given pose. 
+	 * 
+	 * @param x Tool pose.
+	 * @param qnear The initial joint position for the inverse kinematics calculation. If not provided, the current joint position is used.
+	 * @param maxPositionError The maximum allowed position error. If not provided, the default value is used.
+	 * @param tcp The tool center point (TCP) to use for the inverse kinematics calculation. If not provided, the default TCP is used.
+	 */
+	'interfaces:get_inverse_kin': (x: number[], qnear?: number[], maxPositionError?: number, tcp_offset?: string ) => void
 }

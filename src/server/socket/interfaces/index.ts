@@ -16,5 +16,9 @@ export const handleInterfacesEvents = (socket: Socket<ClientToServerEvents, Serv
 		tcp.send(socket.data.robot, `set_standard_digital_out(${n},${b})\n`)
 	})
 
-
+	socket.on('interfaces:get_inverse_kin', (x, qnear, maxPositionError, tcp_offset) => {
+		tcp.send(socket.data.robot, `get_inverse_kin(p[${x}], ${qnear ? `qnear=${qnear}` : ''}, 
+		${maxPositionError ? `maxPositionError=${maxPositionError}` : ''}, 
+		${tcp_offset ? `tcp=${tcp_offset}` : '' })\n`)
+	})
 }
