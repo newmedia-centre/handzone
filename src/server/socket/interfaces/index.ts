@@ -15,7 +15,6 @@ export const handleInterfacesEvents = (socket: Socket<ClientToServerEvents, Serv
 	socket.on('interfaces:set_standard_digital_out', (n, b) => {
 		// Make sure to use exactly 'True' or 'False' as bool value.
 		var capitalB = String(b).charAt(0).toUpperCase() + String(b).slice(1)
-		console.log(`set_standard_digital_out(${n},${capitalB})`)
 		tcp.send(socket.data.robot, `set_standard_digital_out(${n},${capitalB})\n`)
 	})
 
