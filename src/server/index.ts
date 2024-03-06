@@ -2,7 +2,7 @@
 import Express from 'express'
 import Next from 'next'
 import { createServer } from 'http'
-import { initSocket } from './socket'
+import { io } from './socket'
 import { env } from './environment'
 
 // create the nextjs webserver
@@ -29,8 +29,7 @@ next.prepare().then(() => {
 			console.log(`Server is running on http://localhost:${env.PORT}`)
 
 			// attach the socket.io server
-			const socket = initSocket()
-			socket.attach(instance, {
+			io.attach(instance, {
 				serveClient: true,
 				maxHttpBufferSize: 1e8,
 				cors: {
