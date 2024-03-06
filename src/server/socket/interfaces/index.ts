@@ -7,14 +7,14 @@ export const handleInterfacesEvents = (socket: Socket<NamespaceClientToServerEve
 
 	// handle the interfaces:set_tool_digital_out event
 	socket.on('interfaces:set_tool_digital_out', (n, b) => {
-		// Make sure to use exactly 'True' or 'False' as bool value.
-		var capitalB = String(b).charAt(0).toUpperCase() + String(b).slice(1)
+		// make sure to use exactly 'True' or 'False' as bool value.
+		const capitalB = String(b).charAt(0).toUpperCase() + String(b).slice(1)
 		tcp.send(socket.data.robot, `set_tool_digital_out(${n},${capitalB})\n`)
 	})
 
 	socket.on('interfaces:set_standard_digital_out', (n, b) => {
-		// Make sure to use exactly 'True' or 'False' as bool value.
-		var capitalB = String(b).charAt(0).toUpperCase() + String(b).slice(1)
+		// make sure to use exactly 'True' or 'False' as bool value.
+		const capitalB = String(b).charAt(0).toUpperCase() + String(b).slice(1)
 		tcp.send(socket.data.robot, `set_standard_digital_out(${n},${capitalB})\n`)
 	})
 

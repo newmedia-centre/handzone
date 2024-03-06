@@ -87,7 +87,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 
 // init tcp server
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const docker = global.docker ?? new DockerManager()
+export const docker: DockerManager = global.docker ?? new DockerManager()
 export default docker
 
 // fix global instancing in production // TODO

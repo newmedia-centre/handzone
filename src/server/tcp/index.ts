@@ -261,7 +261,7 @@ export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
 
 // init tcp server
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const tcp = global.tcp ?? new TCPServer()
+export const tcp: TCPServer = global.tcp ?? new TCPServer()
 export default tcp
 
 // fix global instancing in production // TODO

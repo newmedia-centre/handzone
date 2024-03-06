@@ -2,11 +2,12 @@
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
 		"esModuleInterop": true,
-		"module": "commonjs",
+		"module": "ESNext",
 		"outDir": "dist",
 		"noEmit": false
 	},
 	"include": [
-		"src/server"
+		"src/server",
+		"src/types",
 	]
 }

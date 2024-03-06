@@ -53,7 +53,7 @@ export const init = () => {
 
 // init socket.io server
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const io = global.io ?? init()
+export const io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData> = global.io ?? init()
 export default io
 
 // fix global instancing in production // TODO
