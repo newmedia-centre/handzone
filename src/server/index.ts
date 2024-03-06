@@ -2,10 +2,11 @@
 import Express from 'express'
 import Next from 'next'
 import { createServer } from 'http'
-import { initSocket } from './socket';
+import { initSocket } from './socket'
+import { env } from './environment'
 
 // create the nextjs webserver
-const dev = process.env.NODE_ENV !== "production";
+const dev = env.NODE_ENV !== 'production'
 const next = Next({ dev })
 const handle = next.getRequestHandler()
 
