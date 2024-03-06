@@ -25,8 +25,8 @@ next.prepare().then(() => {
 		const server = createServer(express)
 
 		// listen on port 3000
-		const instance = server.listen(3000, () => {
-			console.log('Server is running on http://localhost:3000')
+		const instance = server.listen(env.PORT, () => {
+			console.log(`Server is running on http://localhost:${env.PORT}`)
 
 			// attach the socket.io server
 			const socket = initSocket()

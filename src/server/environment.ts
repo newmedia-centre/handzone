@@ -1,5 +1,4 @@
 // import dependencies
-import 'dotenv/config'
 import { readFileSync } from 'fs'
 import { parseEnv, z, port } from 'znv'
 
@@ -9,7 +8,7 @@ const envSchema = {
 	NODE_ENV: z.enum(['development', 'production']).default('development'),
 
 	/** Port that this application runs on, defaults to 3000 */
-	WEB_PORT: port().default(3000),
+	PORT: port().default(3000),
 
 	/** Path to the config.json file */
 	CONFIG_PATH: z.string().default('config.json'),
