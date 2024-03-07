@@ -2,7 +2,7 @@
 import type { Namespace } from 'socket.io'
 import { Server } from 'socket.io'
 import { initNamespace } from './namespace'
-import { tcp } from '../tcp'
+import { robots } from '../robot'
 
 // import types
 import type {
@@ -29,14 +29,14 @@ export const init = () => {
 	})
 
 	// forward read and write events
-	tcp.on('join', (address, clients) => {
+	robots.on('join', (address, clients) => {
 		server.emit('robots', [...clients.keys()])
 
 		// create the namespace if it doesn't exist
 		server._nsps.has(`/${address}`) || initNamespace((server.of(`/${address}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, address, clients.get(address)!)
 	})
 
-	tcp.on('leave', (address, clients) => {
+	robots.on('leave', (address, clients) => {
 		server.emit('robots', [...clients.keys()])
 
 		// delete the namespace if it exists
@@ -45,7 +45,7 @@ export const init = () => {
 
 	server.on('connection', (socket) => {
 		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected`)
-		socket.emit('robots', [...tcp.connections.keys()])
+		socket.emit('robots', [...robots.connections.keys()])
 	})
 
 	return server

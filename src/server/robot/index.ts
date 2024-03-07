@@ -8,13 +8,13 @@ import env from '../environment'
 
 // import types
 import type { ChildProcess } from 'child_process'
-import type { RobotEmitter, TCPEmitter, VideoEmitter } from './events'
+import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
 
 type robotInfo = typeof env['ROBOTS'][number]
 
 /** The TCP Server for communicating with the robots */
-export class TCPServer extends (EventEmitter as new () => TCPEmitter) {
+export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	/** The TCP Sockets for sending messages through the TCP Server */
 	connections: Map<string, RobotConnection>
 
@@ -261,8 +261,8 @@ export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
 
 // init tcp server
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const tcp: TCPServer = global.tcp ?? new TCPServer()
-export default tcp
+export const robots: RobotManager = global.robots ?? new RobotManager()
+export default robots
 
 // fix global instancing in production // TODO
-global.tcp = tcp
+global.robots = robots

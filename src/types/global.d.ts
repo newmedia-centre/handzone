@@ -7,13 +7,13 @@ import type {
 	InterServerEvents,
 	SocketData
 } from '@/server/socket/interface'
-import type { TCPServer } from '@/server/tcp'
+import type { RobotManager as RobotManager } from '@/server/robot'
 import type { DockerManager } from '@/server/docker'
 
 // declare global types
 declare global {
 	var io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData> | undefined // eslint-disable-line no-var
 	var namespaces: Map<string, Namespace> // eslint-disable-line no-var
-	var tcp: TCPServer // eslint-disable-line no-var
+	var robots: RobotManager // eslint-disable-line no-var
 	var docker: DockerManager // eslint-disable-line no-var
 }

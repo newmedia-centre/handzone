@@ -4,7 +4,7 @@ import type { RobotConnection } from '.'
 import type { RealtimeData } from '@/types/Socket/Realtime/RealtimeData'
 
 // type all the TCP events
-type TCPEvents = {
+type ManagerEvents = {
 	/** Emitted when a new connection is established or a connection is updated */
 	join: (address: string, clients: Map<string, RobotConnection>) => void
 	/**  */
@@ -30,6 +30,6 @@ type VideoEvents = {
 }
 
 // export the typed emitters
-export type TCPEmitter = TypedEmitter<TCPEvents>
+export type ManagerEmitter = TypedEmitter<ManagerEvents>
 export type RobotEmitter = TypedEmitter<RobotEvents>
 export type VideoEmitter = TypedEmitter<VideoEvents>

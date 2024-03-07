@@ -1,13 +1,15 @@
+// import dependencies
+import { robots } from '@/server/robot'
+
 // import types
 import type { Socket } from 'socket.io'
-import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from '../interface'
-import type { TCPServer } from '@/server/tcp'
+import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
 import type { RealtimeData } from '@/types/Socket/Realtime/RealtimeData'
 
-export const handleRealtimeEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, tcp: TCPServer) => {
+export const handleRealtimeEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>) => {
 
 	// forward the robot events
-	const robot = tcp.connections.get(socket.data.robot)
+	const robot = robots.connections.get(socket.data.robot)
 	if (!robot) return false
 
 	// forward the raw realtime data

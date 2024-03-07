@@ -3,12 +3,11 @@ import { handleInterfacesEvents } from './interfaces'
 import { handleRealtimeEvents } from './realtime'
 import { handleMotionEvents } from './motion'
 import { handleGrasshopperEvents } from './grasshopper'
-import { tcp } from '../tcp'
 
 // import types
 import type { Namespace } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
-import type { RobotConnection } from '../tcp'
+import type { RobotConnection } from '../robot'
 
 /** Initialize a new namespace by handling all the required events */
 export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, address: string, robot: RobotConnection) => {
@@ -26,10 +25,10 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		})
 
 		// handle all the incoming events
-		handleMotionEvents(socket, tcp)
-		handleGrasshopperEvents(socket, tcp)
-		handleRealtimeEvents(socket, tcp)
-		handleInterfacesEvents(socket, tcp)
+		handleMotionEvents(socket)
+		handleGrasshopperEvents(socket)
+		handleRealtimeEvents(socket)
+		handleInterfacesEvents(socket)
 
 		// forward video events
 		robot.video?.on('frame', (data) => {

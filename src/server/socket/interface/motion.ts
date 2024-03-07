@@ -1,4 +1,28 @@
-import type { Vector6D } from '../interface'
+/** Represents a 6D vector consisting of three force components and three torque components. */
+export type Vector6D = {
+	/** X-axis */
+	x: number
+	/** Y-axis */
+	y: number
+	/** Z-axis */
+	z: number
+	/** U-axis */
+	u: number
+	/** V-axis */
+	v: number
+	/** W-axis */
+	w: number
+}
+
+/** Represents a 3D vector consisting of three components */
+export type Vector3D = {
+	/** X-axis */
+	x: number
+	/** Y-axis */
+	y: number
+	/** Z-axis */
+	z: number
+}
 
 export interface MotionClientToServer {
 	/**
@@ -57,11 +81,11 @@ export interface MotionClientToServer {
 
 	/**
 	 * Sets the active tcp offset, i.e. the transformation from the output flange coordinate system to the TCP as a pose.
-	 * 
+	 *
 	 * @param pose The TCP pose to set.
 	 */
 	'motion:set_tcp': (pose: number[]) => void
-	
+
 	/**
 	* Tells the robot controller the tick count of the encoder. This function is useful for absolute encoders (e.g., MODBUS).
 	* Assumes that the encoder is enabled using encoder_enable_set_tick_count first.
@@ -312,7 +336,7 @@ export interface MotionClientToServer {
 	*   - t = 0.5 s → time before the function returns.
 	*/
 	'motion:speedl': (xd: number[], a: number, t?: number, aRot?: string) => void
-	
+
 	/**
 	 * Calculate the forward kinematics for the robot. This function returns the pose of the robot's tool center point (TCP) given the joint angles and the tool center point (TCP) offset.
 	 *
@@ -325,7 +349,7 @@ export interface MotionClientToServer {
 	 *  - tcp = [0.1, 0.2, 0.3, 0, 0, 0] → the tool center point (TCP) offset pose vector.
 	 */
 	'motion:get_forward_kin': (tcp_offset?: number[]) => void
-	
+
 	/**
 	* Stop tracking the conveyor, started by track_conveyor_linear() or track_conveyor_circular(),
 	* and decelerate all joint speeds to zero.
