@@ -31,8 +31,11 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		handleInterfacesEvents(socket)
 
 		// forward video events
-		robot.video?.on('frame', (data) => {
-			socket.emit('video', data.toString('base64'))
+		robot.video?.forEach(video => {
+			video.on('frame', (data) => {
+				socket.emit('video', video.camera.name, data.toString('base64'))
+			})
+
 		})
 
 		// forward events between sockets

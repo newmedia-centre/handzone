@@ -11,7 +11,8 @@ import type { ChildProcess } from 'child_process'
 import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
 
-type robotInfo = typeof env['ROBOTS'][number]
+type RobotInfo = typeof env['ROBOTS'][number]
+type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
 
 /** The TCP Server for communicating with the robots */
 export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
@@ -46,7 +47,8 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		this._tryCreateRobotConnection({
 			name: container.Id,
 			address: container.NetworkSettings.Networks[env.DOCKER_NETWORK].IPAddress,
-			port: 30003
+			port: 30003,
+			camera: []
 		})
 	}
 
@@ -64,7 +66,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	}
 
 	/** Starts the TCP Client */
-	_tryCreateRobotConnection(robot: robotInfo) {
+	_tryCreateRobotConnection(robot: RobotInfo) {
 		// create the TCP client
 		const socket = new Socket()
 		socket.setTimeout(5000)
@@ -109,19 +111,20 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	socket: Socket
 	interval?: NodeJS.Timeout
 	realtimeBuffer?: Buffer
-	video?: VideoConnection
+	video?: Set<VideoConnection>
 
-	constructor(socket: Socket, robot: robotInfo) {
+	constructor(socket: Socket, robot: RobotInfo) {
 		// initialize the EventEmitter
 		super()
 
 		// initialize the class variables
 		this.socket = socket
+		this.video = new Set()
 
 		// initialize the video connection if the robot has a camera
-		if (robot.camera) {
-			this.video = new VideoConnection(robot.camera)
-		}
+		robot.camera.forEach(camera => {
+			this.video?.add(new VideoConnection(camera))
+		})
 
 		// start the interval at 25hz which should be enough for most applications
 		this.interval = setInterval(() => this.handleRealtimeData(), 40)
@@ -220,16 +223,19 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
 	/** The TCP socket for reading data */
 	process?: ChildProcess
+	camera: CameraInfo
 
-	constructor(url: string) {
+	constructor(camera: CameraInfo) {
 		// initialize the EventEmitter
 		super()
+
+		this.camera = camera
 
 		// initialize the ffmpeg process
 		console.log('Starting ffmpeg process...')
 		const process = spawn('ffmpeg', [
 			'-rtsp_transport', 'tcp',
-			'-i', url,
+			'-i', camera.address,
 			'-f', 'image2',
 			'-update', '1',
 			'-loglevel', 'quiet',
