@@ -34,5 +34,5 @@ export interface InterfacesClientToServer {
 	 * @param maxPositionError The maximum allowed position error. If not provided, the default value is used.
 	 * @param tcp The tool center point (TCP) to use for the inverse kinematics calculation. If not provided, the default TCP is used.
 	 */
-	'interfaces:get_inverse_kin': (x: number[], qnear?: number[], maxPositionError?: number, tcp_offset?: string) => void
+	'interfaces:get_inverse_kin': (params: { x: number[], qnear?: number[], maxPositionError?: number, tcp_offset?: string }, callback: (success: boolean, response?: string) => void) => void
 }

@@ -29,11 +29,11 @@ export const init = () => {
 	})
 
 	// forward read and write events
-	robots.on('join', (address, clients) => {
+	robots.on('join', (robot, clients) => {
 		server.emit('robots', [...clients.keys()])
 
 		// create the namespace if it doesn't exist
-		server._nsps.has(`/${address}`) || initNamespace((server.of(`/${address}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, address, clients.get(address)!)
+		server._nsps.has(`/${robot.info.address}`) || initNamespace((server.of(`/${robot.info.address}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot)
 	})
 
 	robots.on('leave', (address, clients) => {

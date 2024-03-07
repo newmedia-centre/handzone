@@ -1,12 +1,14 @@
 // import dependencies
 import { EventEmitter } from 'events'
-import { Socket } from 'net'
+import { Socket, createServer } from 'net'
 import { spawn } from 'child_process'
 import { parseRealtimeData } from '@/server/socket/realtime'
 import { Buffer } from 'buffer'
+import semaphore from 'semaphore'
 import env from '../environment'
 
 // import types
+import type { Semaphore } from 'semaphore'
 import type { ChildProcess } from 'child_process'
 import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
@@ -18,6 +20,7 @@ type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
 export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	/** The TCP Sockets for sending messages through the TCP Server */
 	connections: Map<string, RobotConnection>
+	_semaphore: Semaphore
 
 	constructor() {
 		// initialize the EventEmitter
@@ -25,6 +28,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 		// initialize the class variables
 		this.connections = new Map()
+		this._semaphore = semaphore(1)
 
 		// try to connect to the robots
 		env.ROBOTS.forEach((robot) => {
@@ -36,6 +40,44 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	async send(robot: RobotConnection, instruction: string) {
 		// send the instruction as a utf-8 buffer
 		robot.socket.write(Buffer.from(instruction, 'utf-8'))
+	}
+
+	/** sends an instruction with a callback */
+	async sendCallback(robot: RobotConnection, instruction: string) {
+		// acquire a semaphore
+		await new Promise(resolve => {
+			this._semaphore.take(1, () => resolve(true))
+		})
+
+		const promise = new Promise<Buffer>((resolve, reject) => {
+			// set timeout to 5 seconds
+			const timeout = setTimeout(() => {
+				server.close()
+				server.on('close', () => { this._semaphore.leave(1) })
+
+				reject('timeout')
+			}, 5000)
+
+			// create a tcp server receive values from the robot and listen on port 4000
+			const server = createServer(socket => {
+
+				socket.once('data', data => {
+					clearTimeout(timeout)
+					server.close()
+					server.on('close', () => { this._semaphore.leave(1) })
+					resolve(data)
+				})
+
+				socket.on('error', () => { })
+			})
+			server.maxConnections = 1
+			server.listen(4000)
+		})
+
+		// send the instruction as a utf-8 buffer
+		robot.socket.write(Buffer.from(instruction, 'utf-8'))
+
+		return promise
 	}
 
 	/** Tries to connect to an endpoint */
@@ -165,13 +207,8 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	}
 
 	getRealtimeHeader(data: Buffer) {
-		// verify the size of the package, if it doesn't match the header, return undefined for not being realtime data
-		const size = data.readUInt32BE(0)
-		if (size % data.length !== 0) return undefined
-
-		return {
-			size
-		}
+		// verify the size of the package, realtime data has a fixed size of 1220 bytes, if so, return true
+		return data.length % 1220 === 0
 	}
 }
 

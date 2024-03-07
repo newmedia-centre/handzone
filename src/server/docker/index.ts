@@ -11,7 +11,7 @@ import type { DockerEmitter } from './events'
 export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 	docker: Docker
 	containers: Map<string, Docker.Container>
-	semaphore: Semaphore
+	_semaphore: Semaphore
 
 	constructor() {
 		// initialize the EventEmitter
@@ -19,9 +19,9 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 
 		// create the dockerode instance
 		console.log('Connecting to docker...')
-		this.docker = new Docker(env.DOCKER_OPTIONS)
+		this.docker = new Docker(env.DOCKER.OPTIONS)
 		this.containers = new Map()
-		this.semaphore = semaphore(env.MAX_VIRTUAL)
+		this._semaphore = semaphore(env.DOCKER.MAX_VIRTUAL)
 
 		// ping docker to check connection
 		this.docker.ping((err) => {
@@ -38,7 +38,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		console.log('Requesting virtual robot...')
 
 		// emit a capacity event if the semaphore is full
-		if (!this.semaphore.available(1)) {
+		if (!this._semaphore.available(1)) {
 			console.log('Virtual robot capacity reached!')
 			this.emit('capacity')
 		}
@@ -48,7 +48,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 			console.log('Waiting for virtual robot capacity...')
 
 			// acquire the semaphore
-			this.semaphore.take(1, () => resolve(true))
+			this._semaphore.take(1, () => resolve(true))
 		})
 
 		// create container
@@ -81,7 +81,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		}
 
 		// release the semaphore
-		this.semaphore.leave(1)
+		this._semaphore.leave(1)
 	}
 }
 

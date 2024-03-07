@@ -10,6 +10,8 @@ const envSchema = {
 
 	/** Port that this application runs on, defaults to 3000 */
 	PORT: port().default(3000),
+	TCP_PORT: port().default(4000),
+	HOSTNAME: z.string().default('localhost'),
 	DOCKER_NETWORK: z.string(),
 
 	/** Path to the config.json file */
