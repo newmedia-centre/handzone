@@ -4,11 +4,18 @@
 			"name": "Robot 1",
 			"port": 30003,
 			"address": "172.19.14.251",
-			"camera": "rtsp://172.19.14.226:8554/cam"
+			"camera": [
+				{
+					"name": "Static",
+					"address": "rtsp://172.19.14.226:8554/cam"
+				}
+			]
 		}
 	],
-	"DOCKER_OPTIONS": {
-		"socketPath": "/var/run/docker.sock"
-	},
-	"DOCKER_NETWORK": "handzone-network"
+	"DOCKER": {
+		"OPTIONS": {
+			"socketPath": "/var/run/docker.sock"
+		},
+		"NETWORK": "handzone-network"
+	}
 }

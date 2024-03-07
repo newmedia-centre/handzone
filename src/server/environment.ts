@@ -24,13 +24,18 @@ const configSchema = z.object({
 		name: z.string(),
 		port: port().default(30003),
 		address: z.string().ip(),
-		camera: z.string().optional()
+		camera: z.array(z.object({
+			name: z.string(),
+			address: z.string(),
+		})).default([]),
 	})).default([]),
 
 	/** Virtual polyscope options */
-	DOCKER_OPTIONS: z.any(),
-	DOCKER_NETWORK: z.string(),
-	MAX_VIRTUAL: z.number().default(3),
+	DOCKER: z.object({
+		OPTIONS: z.any(),
+		NETWORK: z.string(),
+		MAX_VIRTUAL: z.number().default(3),
+	})
 })
 
 // read the json file from the config path
