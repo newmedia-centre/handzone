@@ -1,4 +1,5 @@
 // import dependencies
+import 'dotenv/config'
 import { readFileSync } from 'fs'
 import { parseEnv, z, port } from 'znv'
 
