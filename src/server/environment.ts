@@ -9,6 +9,7 @@ const envSchema = {
 
 	/** Port that this application runs on, defaults to 3000 */
 	PORT: port().default(3000),
+	DOCKER_NETWORK: z.string(),
 
 	/** Path to the config.json file */
 	CONFIG_PATH: z.string().default('config.json'),
@@ -33,7 +34,6 @@ const configSchema = z.object({
 	/** Virtual polyscope options */
 	DOCKER: z.object({
 		OPTIONS: z.any(),
-		NETWORK: z.string(),
 		MAX_VIRTUAL: z.number().default(3),
 	})
 })

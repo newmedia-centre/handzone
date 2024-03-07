@@ -15,7 +15,6 @@
 	"DOCKER": {
 		"OPTIONS": {
 			"socketPath": "/var/run/docker.sock"
-		},
-		"NETWORK": "handzone-network"
+		}
 	}
 }
