@@ -14,10 +14,10 @@ export interface InterfacesClientToServer {
 
 	/**
 	 * Set standard digital output signal level.
-	 * 
+	 *
 	 * @param n The number (id) of the output, integer: [0:7].
 	 * @param b The signal level (boolean).
-	 * 
+	 *
 	 * Example command: set_standard_digital_out(1, true)
 	 * - Example Parameters:
 	 *  - n is standard digital output 1.
@@ -27,12 +27,12 @@ export interface InterfacesClientToServer {
 
 
 	/**
-	 * Calculate the inverse kinematics for a given pose. 
-	 * 
+	 * Calculate the inverse kinematics for a given pose.
+	 *
 	 * @param x Tool pose.
 	 * @param qnear The initial joint position for the inverse kinematics calculation. If not provided, the current joint position is used.
 	 * @param maxPositionError The maximum allowed position error. If not provided, the default value is used.
 	 * @param tcp The tool center point (TCP) to use for the inverse kinematics calculation. If not provided, the default TCP is used.
 	 */
-	'interfaces:get_inverse_kin': (x: number[], qnear?: number[], maxPositionError?: number, tcp_offset?: string ) => void
+	'interfaces:get_inverse_kin': (x: number[], qnear?: number[], maxPositionError?: number, tcp_offset?: string) => void
 }

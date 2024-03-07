@@ -6,21 +6,21 @@ import type { RealtimeData } from '@/types/Socket/Realtime/RealtimeData'
 // type all the TCP events
 type ManagerEvents = {
 	/** Emitted when a new connection is established or a connection is updated */
-	join: (address: string, clients: Map<string, RobotConnection>) => void
+	join: (connection: RobotConnection, clients: Map<string, RobotConnection>) => void
 	/**  */
-	leave: (address: string, clients: Map<string, RobotConnection>) => void
+	leave: (connection: RobotConnection, clients: Map<string, RobotConnection>) => void
 }
 
 // type all the robot events
 type RobotEvents = {
 	/** Emitted when the robot sends a message */
 	message: (message: string) => void
-	/** A raw RTDE buffer */
-	rtde: (buffer: Buffer) => void
 	/** A raw realtime buffer */
 	'realtime:raw': (buffer: Buffer) => void
 	/** A parsed realtime buffer */
 	'realtime:parsed': (data: RealtimeData) => void
+	/** A request response */
+	response: (response: Buffer) => void
 }
 
 // type all the video events

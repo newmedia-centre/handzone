@@ -33,11 +33,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	}
 
 	/** Sends an instruction to the rover */
-	async send(address: string, instruction: string) {
-		// get the socket
-		const robot = this.connections.get(address)
-		if (!robot) throw new Error(`No write connection found for address ${address}`)
-
+	async send(robot: RobotConnection, instruction: string) {
 		// send the instruction as a utf-8 buffer
 		robot.socket.write(Buffer.from(instruction, 'utf-8'))
 	}
@@ -88,16 +84,17 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		socket.on('connect', () => {
 			const connection = new RobotConnection(socket, robot)
 			this.connections.set(robot.address, connection)
-			this.emit('join', robot.address, this.connections)
+			this.emit('join', connection, this.connections)
 			console.info(`[ROBOT:${robot.address}] Connected`)
 		})
 
 		// remove from clients when closed
 		socket.on('close', () => {
 			if (this.connections.has(robot.address)) {
-				this.connections.get(robot.address)?.clear()
+				const connection = this.connections.get(robot.address)
+				this.emit('leave', connection!, this.connections)
+				connection?.clear()
 				this.connections.delete(robot.address)
-				this.emit('join', robot.address, this.connections)
 				console.info(`[ROBOT:${robot.address}] Disconnected`)
 			}
 		})
@@ -112,17 +109,19 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	interval?: NodeJS.Timeout
 	realtimeBuffer?: Buffer
 	video?: Set<VideoConnection>
+	info: RobotInfo
 
-	constructor(socket: Socket, robot: RobotInfo) {
+	constructor(socket: Socket, info: RobotInfo) {
 		// initialize the EventEmitter
 		super()
 
 		// initialize the class variables
 		this.socket = socket
 		this.video = new Set()
+		this.info = info
 
 		// initialize the video connection if the robot has a camera
-		robot.camera.forEach(camera => {
+		info.camera.forEach(camera => {
 			this.video?.add(new VideoConnection(camera))
 		})
 
@@ -139,11 +138,10 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 				this.realtimeBuffer = data
 			} else {
 				// parse the data
-				const message = data.toString('utf-8')
-				//console.log('received message:', data.length)
+				console.log('received other data:', data.length)
 
 				// emit the message
-				this.emit('message', message)
+				this.emit('response', data)
 			}
 		})
 
@@ -167,55 +165,12 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	}
 
 	getRealtimeHeader(data: Buffer) {
-		// verify the size of the package, if it doesn't match the header, return undefined for not being RTDE data
+		// verify the size of the package, if it doesn't match the header, return undefined for not being realtime data
 		const size = data.readUInt32BE(0)
 		if (size % data.length !== 0) return undefined
 
 		return {
 			size
-		}
-	}
-
-	getRTDEHeader(data: Buffer) {
-		// verify the size of the package, if it doesn't match the header, return undefined for not being RTDE data
-		const size = data.readUInt16BE(0)
-		if (size !== data.length) return undefined
-
-		const type = data.readUInt8(2)
-		switch (type) {
-			case 86: return {
-				size,
-				type: 'RTDE_REQUEST_PROTOCOL_VERSION'
-			}
-			case 118: return {
-				size,
-				type: 'RTDE_GET_URCONTROL_VERSION'
-			}
-			case 77: return {
-				size,
-				type: 'RTDE_TEXT_MESSAGE'
-			}
-			case 85: return {
-				size,
-				type: 'RTDE_DATA_PACKAGE'
-			}
-			case 79: return {
-				size,
-				type: 'RTDE_CONTROL_PACKAGE_SETUP_OUTPUTS'
-			}
-			case 73: return {
-				size,
-				type: 'RTDE_CONTROL_PACKAGE_SETUP_INPUTS'
-			}
-			case 83: return {
-				size,
-				type: 'RTDE_CONTROL_PACKAGE_START'
-			}
-			case 80: return {
-				size,
-				type: 'RTDE_CONTROL_PACKAGE_PAUSE'
-			}
-			default: return undefined
 		}
 	}
 }

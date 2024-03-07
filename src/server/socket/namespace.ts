@@ -10,14 +10,14 @@ import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, Inte
 import type { RobotConnection } from '../robot'
 
 /** Initialize a new namespace by handling all the required events */
-export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, address: string, robot: RobotConnection) => {
+export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot: RobotConnection) => {
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
-		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected to namespace ${address}`)
+		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected to namespace ${robot.info.address}`)
 
 		// add the target to the socket data
-		socket.data.robot = address
+		socket.data.robot = robot
 
 		// handle socket disconnection
 		socket.on('disconnect', () => {

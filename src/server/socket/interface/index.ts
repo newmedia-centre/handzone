@@ -5,6 +5,7 @@ import type { GrasshopperClientToServer, GrasshopperServerToClient } from './gra
 import type { UnityClientToServer, UnityServerToClient } from './unity'
 import type { InterfacesClientToServer } from './interfaces'
 import type { RealtimeServerToClient } from './realtime'
+import type { RobotConnection } from '@/server/robot'
 
 // declare socket.io interfaces
 export interface ServerToClientEvents {
@@ -39,7 +40,7 @@ export interface NamespaceClientToServerEvents extends MotionClientToServer, Gra
 
 export interface NamespaceSocketData {
 	id: string
-	robot: string
+	robot: RobotConnection
 	achievements: []
 }
 

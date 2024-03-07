@@ -1,6 +1,3 @@
-// import dependencies
-import { robots } from '@/server/robot'
-
 // import types
 import type { Socket } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
@@ -8,17 +5,13 @@ import type { RealtimeData } from '@/types/Socket/Realtime/RealtimeData'
 
 export const handleRealtimeEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>) => {
 
-	// forward the robot events
-	const robot = robots.connections.get(socket.data.robot)
-	if (!robot) return false
-
 	// forward the raw realtime data
-	robot.on('realtime:raw', (data) => {
+	socket.data.robot.on('realtime:raw', (data) => {
 		socket.emit('realtime:raw', data.toString('base64'))
 	})
 
 	// forward the parsed realtime data
-	robot.on('realtime:parsed', (data) => {
+	socket.data.robot.on('realtime:parsed', (data) => {
 		socket.emit('realtime:data', data)
 	})
 
