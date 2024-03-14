@@ -7,7 +7,7 @@ import { handleGrasshopperEvents } from './grasshopper'
 // import types
 import type { Namespace } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
-import type { PositionDataOut } from './interface/unity'
+import type { PlayerData } from './interface/unity'
 import type { RobotConnection } from '../robot'
 import { handleUnityEvents } from './unity'
 
@@ -15,7 +15,7 @@ import { handleUnityEvents } from './unity'
 export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot: RobotConnection) => {
 
 	// create a map to store position data
-	const positions = new Map<string, PositionDataOut>()
+	const positions = new Map<string, PlayerData>()
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
@@ -54,7 +54,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 
 	// emit the positions data
 	setInterval(() => {
-		namespace.emit('unity:position', Array.from(positions.values()))
+		namespace.emit('unity:players', { players: Array.from(positions.values()) })
 	}, 200)
 
 	console.log('Namespace initialized:', robot.info.name)
