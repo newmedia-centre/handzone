@@ -178,12 +178,6 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 			// check if the buffer length is the length of the realtime buffer
 			if (header) {
 				this.realtimeBuffer = data
-			} else {
-				// parse the data
-				console.log('received other data:', data.length)
-
-				// emit the message
-				this.emit('response', data)
 			}
 		})
 
