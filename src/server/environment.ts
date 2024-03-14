@@ -27,7 +27,7 @@ const configSchema = z.object({
 	ROBOTS: z.array(z.object({
 		name: z.string(),
 		port: port().default(30003),
-		address: z.string().ip(),
+		address: z.string(),
 		camera: z.array(z.object({
 			name: z.string(),
 			address: z.string(),

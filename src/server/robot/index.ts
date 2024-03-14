@@ -180,7 +180,6 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 				this.realtimeBuffer = data
 			} else {
 				// parse the data
-				console.log('received other data:', data.length)
 
 				// emit the message
 				this.emit('response', data)
