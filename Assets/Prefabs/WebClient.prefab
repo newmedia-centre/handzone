@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3781775351743480638}
-  - component: {fileID: 8622072275190329319}
+  - component: {fileID: 6383885936175786048}
   m_Layer: 0
   m_Name: WebClient
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8622072275190329319
+--- !u!114 &6383885936175786048
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50d9ca1fa3fcde24aa76e6823e23c8c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  url: http://172.19.14.251:3000/172.19.14.251
+  url: http://localhost:3000/host.docker.internal

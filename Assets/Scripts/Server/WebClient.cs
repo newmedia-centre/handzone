@@ -4,12 +4,15 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
 using Robots;
+using Schema.Socket;
 using UnityEngine;
 using Schema.Socket.Realtime;
 using SocketIO.Serializer.NewtonsoftJson;
+using XRZone;
 
 public class WebClient : MonoBehaviour
 {
+    [HideInInspector]
     public string url;
     
     private SocketIOClient.SocketIO _client;
@@ -23,6 +26,10 @@ public class WebClient : MonoBehaviour
     public static event Action<List<IToolpath>> OnToolpaths;
     public static event Action<Texture2D> OnCameraFeed;
     public static event Action<bool> OnDigitalOutputChanged;
+    public static event Action<string> OnUnityMessage;
+    public static event Action<PositionDataOut> OnUnityPosition;
+    public static event Action<PendantDataOut> OnUnityPendant;
+    
     public event Action OnConnected;
     public event Action OnDisconnected;
     public event Action OnSessionJoin;
@@ -79,6 +86,9 @@ public class WebClient : MonoBehaviour
 
     public async Task TryConnectToWebServer()
     {
+
+        // Register general events for the web client, such as connection, disconnection, and errors
+        #region General connection events
         Debug.Log("Connecting to web server...");
 
         _client.OnConnected += (sender, args) =>
@@ -97,7 +107,22 @@ public class WebClient : MonoBehaviour
         {
             Debug.Log($@"Received error from server: {s}");
         };
-
+        #endregion
+        
+        // Register events for the web client that are specific to the video feed
+        _client.On("video", response =>
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                // Index 0 = Camera name | Index 1 = Base64 encoded image
+                var base64 = response.GetValue<string>(1);
+                _cameraFeedTexture.LoadImage(Convert.FromBase64String(base64));
+                OnCameraFeed?.Invoke(_cameraFeedTexture);
+            });
+        });
+        
+        // Register events for the web client that are specific to Grasshopper
+        # region Grasshopper events
         _client.On("grasshopper:program", response =>
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -118,7 +143,7 @@ public class WebClient : MonoBehaviour
                 OnToolpaths?.Invoke(deserializedProgram);
             });
         });
-
+        
         _client.On("realtime:data", response =>
         {
             RealtimeData data = response.GetValue<RealtimeData>();
@@ -126,16 +151,25 @@ public class WebClient : MonoBehaviour
 
             _dataQueue.Enqueue(data);
         });
-
-        _client.On("video", response =>
+        #endregion
+        
+        // Register events for the web client that are specific to the Unity client
+        #region Unity events
+        _client.On("unity:message", response =>
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-            {
-                var base64 = response.GetValue<string>();
-                _cameraFeedTexture.LoadImage(Convert.FromBase64String(base64));
-                OnCameraFeed?.Invoke(_cameraFeedTexture);
-            });
+            OnUnityMessage?.Invoke(response.GetValue<string>());
         });
+        
+        _client.On("unity:position", response =>
+        {
+            OnUnityPosition?.Invoke(response.GetValue<PositionDataOut>());
+        });
+        
+        _client.On("unity:pendant", response =>
+        {
+            OnUnityPendant?.Invoke(response.GetValue<PendantDataOut>());
+        });
+        #endregion
 
         await _client.ConnectAsync();
     }
@@ -153,6 +187,19 @@ public class WebClient : MonoBehaviour
         OnSessionLeft?.Invoke();
     }
 
+    public void SendInveseKinematicsRequest()
+    {
+        double[] x = { 0.1,.2,.2,0,3.14,0 };
+        var data = new 
+        {
+            x
+        };
+        _client.EmitAsync("interfaces:get_inverse_kin", response =>
+        { 
+            Debug.Log(response);
+        }, data);
+    }
+
     public void Speedl(Vector3 translateDirection, Vector3 rotateAxis, float a, float t)
     {
         double[] xd =
@@ -167,19 +214,29 @@ public class WebClient : MonoBehaviour
         Speedl(xd, a, t);
     }
 
+    public void SetTCP(double[] pose)
+    {
+        _client.EmitAsync("motion:set_tcp", pose);
+    }
+
     public void Speedl(double[] xd, double a, double t)
     {
         _client.EmitAsync("motion:speedl", xd, a, t);
     }
 
-    public async Task MoveJ(double[] q, double a, double v, double t, double r)
+    public void MoveL(double[] pose, double a, double v, double t, double r)
     {
-        await _client.EmitAsync("motion:movej", q, a, v, t, r);
+        _client.EmitAsync("motion:movel", pose, a, v, t, r);
     }
 
-    public async Task SetToolDigitalOut(int n, bool b)
+    public void MoveJ(double[] q, double a, double v, double t, double r)
     {
-        await _client.EmitAsync("interfaces:set_tool_digital_out", n, b);
+        _client.EmitAsync("motion:movej", q, a, v, t, r);
+    }
+
+    public void SetToolDigitalOut(int n, bool b)
+    {
+        _client.EmitAsync("interfaces:set_tool_digital_out", n, b);
     }
     
     public bool ToggleToolDigitalOut(bool value)
@@ -187,6 +244,21 @@ public class WebClient : MonoBehaviour
         SetToolDigitalOut(0, !value);
         OnDigitalOutputChanged?.Invoke(!value);
         return !value;
+    }
+    
+    public void SendUnityMessage(string message)
+    {
+        _client.EmitAsync("unity:message", message);
+    }
+    
+    public void SendUnityPosition(PositionDataIn positionData)
+    {
+        _client.EmitAsync("unity:position", positionData);
+    }
+    
+    public void SendUnityPendant(Vector6D message)
+    {
+        _client.EmitAsync("unity:pendant", message);
     }
 
     private async void OnDestroy()
