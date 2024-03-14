@@ -26,7 +26,7 @@ export interface InterServerEvents {
 }
 
 export interface SocketData {
-	id: string
+	dbid: string
 }
 
 export interface NamespaceServerToClientEvents extends GrasshopperServerToClient, UnityServerToClient, RealtimeServerToClient {
@@ -39,9 +39,14 @@ export interface NamespaceClientToServerEvents extends MotionClientToServer, Gra
 }
 
 export interface NamespaceSocketData {
-	id: string
+	dbid: string
 	robot: RobotConnection
-	achievements: []
+	name: string
+	color: string
+	achievements: {
+		id: string
+		data: JSON
+	}[]
 }
 
 // create the socket type
