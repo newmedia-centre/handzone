@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Schema.Socket;
 using UnityEngine;
-using UnityEngine.Serialization;
 using XRZone;
 
 public class NetworkPlayer : MonoBehaviour
@@ -17,6 +13,6 @@ public class NetworkPlayer : MonoBehaviour
 
     public void SetPosition(PositionDataOut data)
     {
-        hmdTransform.transform.position.x = data.hmd.U;
+        //hmdTransform.transform.position.x = data.hmd.U;
     }
 }
