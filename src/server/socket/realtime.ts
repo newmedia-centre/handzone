@@ -1,13 +1,13 @@
 // import types
 import type { Socket } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
-import type { RealtimeData } from '@/types/Socket/Realtime/RealtimeData'
+import type { RealtimeDataOut } from '@/types/Socket/Realtime'
 
 export const handleRealtimeEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>) => {
 
 	// forward the raw realtime data
 	socket.data.robot.on('realtime:raw', (data) => {
-		socket.emit('realtime:raw', data.toString('base64'))
+		socket.emit('realtime:raw', { raw: data.toString('base64') })
 	})
 
 	// forward the parsed realtime data
@@ -19,7 +19,7 @@ export const handleRealtimeEvents = (socket: Socket<NamespaceClientToServerEvent
 
 }
 
-export const parseRealtimeData = async (data: Buffer): Promise<RealtimeData> => {
+export const parseRealtimeData = async (data: Buffer): Promise<RealtimeDataOut> => {
 	return {
 		message_size: data.readUInt32BE(0),
 		time: data.readDoubleBE(4),

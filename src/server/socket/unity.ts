@@ -1,7 +1,7 @@
 // import types
 import type { Socket } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
-import type { PlayerData } from './interface/unity'
+import type { PlayerData } from '@/types/Socket/Unity'
 
 export const handleUnityEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, players: Map<string, PlayerData>) => {
 
