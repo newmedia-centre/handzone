@@ -918,7 +918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50d9ca1fa3fcde24aa76e6823e23c8c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  url: http://172.19.14.251:3000/172.17.0.2
+  url: http://localhost:3000/host.docker.internal
 --- !u!4 &305839137 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 947022030510488534, guid: d45d1cb9b14b43a418ea8c62f2ed7ba8,
@@ -2227,14 +2227,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 797909361}
-  - component: {fileID: 797909362}
   m_Layer: 0
   m_Name: Robot Program Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &797909361
 Transform:
   m_ObjectHideFlags: 0
@@ -2257,18 +2256,6 @@ Transform:
   - {fileID: 810819462}
   m_Father: {fileID: 1486915854}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &797909362
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 797909360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53c9c46768cc1974c93bbaa6f496b350, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &810819461
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8111,7 +8098,7 @@ PrefabInstance:
         type: 3}
       propertyPath: robotTranslator
       value: 
-      objectReference: {fileID: 797909362}
+      objectReference: {fileID: 0}
     - target: {fileID: 1993399178170459545, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -8772,6 +8759,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3177014815098804001}
+  - component: {fileID: 3177014815098804002}
   m_Layer: 0
   m_Name: RobotArm
   m_TagString: Untagged
@@ -9218,6 +9206,33 @@ Transform:
   - {fileID: 4775705425040540166}
   m_Father: {fileID: 1486915854}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3177014815098804002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2836377748542213531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53c9c46768cc1974c93bbaa6f496b350, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  robotPivots:
+  - {fileID: 4775705425040540166}
+  - {fileID: 6865346553550513822}
+  - {fileID: 5675072982344106366}
+  - {fileID: 8139647022401962023}
+  - {fileID: 5878335380437734892}
+  - {fileID: 763016765859230498}
+  rotationDirection:
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: -1, z: 0}
+  - {x: 0, y: -1, z: 0}
+  - {x: 0, y: -1, z: 0}
+  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: -1, z: 0}
+  qActualJoints: []
 --- !u!4 &3182984247240273987
 Transform:
   m_ObjectHideFlags: 0
