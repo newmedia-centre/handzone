@@ -3,64 +3,29 @@
 //import { readFileSync } from "fs";
 import * as path from 'path'
 import { glob } from 'glob'
-import { readFileSync, writeFileSync } from 'fs'
+import { writeFileSync } from 'fs'
 import {
 	quicktype,
 	InputData,
 	JSONSchemaInput,
-	FetchingJSONSchemaStore
+	FetchingJSONSchemaStore,
 } from 'quicktype-core'
+import { schemaForTypeScriptSources } from 'quicktype-typescript-input'
 
-async function ExportTypescript(typeName: string, jsonSchemaString: string) {
-	const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore())
-
-	// we could add multiple schemas for multiple types,
-	// but here we're just making one type from JSON schema.
-	await schemaInput.addSource({ name: typeName, schema: jsonSchemaString })
-
-	const inputData = new InputData()
-	inputData.addInput(schemaInput)
-
-	return await quicktype({
-		inputData,
-		lang: 'typescript',
-		rendererOptions: {
-			'just-types': true,
-		}
-	})
-}
-
-async function exportCSharp(name: string, namespace: string, schema: string) {
-	const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore())
-
-	// we could add multiple schemas for multiple types,
-	// but here we're just making one type from JSON schema.
-	await schemaInput.addSource({ name, schema })
-
-	const inputData = new InputData()
-	inputData.addInput(schemaInput)
-
+async function exportCSharp(namespace: string, inputData: InputData) {
 	return await quicktype({
 		inputData,
 		lang: 'cs',
 		rendererOptions: {
 			namespace,
-			features: 'just-types-and-namespace'
+			features: 'just-types-and-namespace',
+
 		}
 	})
 }
 
 /*
-async function exportCPlusPlus(name: string, namespace: string, schema: string) {
-	const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore())
-
-	// we could add multiple schemas for multiple types,
-	// but here we're just making one type from JSON schema.
-	await schemaInput.addSource({ name, schema })
-
-	const inputData = new InputData()
-	inputData.addInput(schemaInput)
-
+async function exportCPlusPlus(namespace: string, inputData: InputData) {
 	return await quicktype({
 		inputData,
 		lang: 'cpp',
@@ -75,27 +40,30 @@ async function exportCPlusPlus(name: string, namespace: string, schema: string) 
 
 async function main() {
 	// get all the schema files in the project
-	const files = await glob(__dirname + '/**/*.schema.json', {})
+	const files = await glob(__dirname + '/src/**/*.ts', {})
 
 	// iterate over all schema files
 	files.forEach(async (file) => {
-		const namespace = 'Schema.' + path.dirname(file.replace(__dirname, '').replace(/^\/+/g, '')).replace(/\/|\\/g, '.')
-		const name = path.basename(file).replace('.schema.json', '')
+		const namespace = 'Schema.' + path.dirname(file.replace(__dirname + '/src', '').replace(/^\/+/g, '')).replace(/\/|\\/g, '.')
+		const name = path.basename(file).replace('.ts', '')
 
-		// read the schema
-		const schema = readFileSync(file, 'utf8')
+		console.log('Processing:', file, '->', `${namespace}.${name}`)
 
-		// generate typescript
-		const { lines: typescript } = await ExportTypescript(name, schema)
-		writeFileSync(path.join(path.dirname(file), `${name}.ts`), '/* eslint-disable */\n' + typescript.join('\n'))
+		const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore())
+		const typescriptSchema = schemaForTypeScriptSources([file])
+		await schemaInput.addSource(typescriptSchema)
+
+		const inputData = new InputData()
+		inputData.addInput(schemaInput)
 
 		// generate csharp
-		const { lines: csharp } = await exportCSharp(name, namespace, schema)
+		const { lines: csharp } = await exportCSharp(`${namespace}.${name}`, inputData)
 		writeFileSync(path.join(path.dirname(file), `${name}.cs`), csharp.join('\n'))
+
 
 		/*
 		// generate c++
-		const { lines: cpp } = await exportCPlusPlus(name, namespace, schema)
+		const { lines: cpp } = await exportCPlusPlus(`${namespace}.${name}`, inputData)
 		writeFileSync(path.join(path.dirname(file), `${name}.h`), cpp.join('\n'))
 		*/
 	})

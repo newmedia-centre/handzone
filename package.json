@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "glob": "^10.3.10",
-    "quicktype-core": "^23.0.81"
+    "quicktype-core": "^23.0.81",
+    "quicktype-typescript-input": "^23.0.107"
   }
 }
