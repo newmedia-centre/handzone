@@ -3,13 +3,13 @@ import { handleInterfacesEvents } from './interfaces'
 import { handleRealtimeEvents } from './realtime'
 import { handleMotionEvents } from './motion'
 import { handleGrasshopperEvents } from './grasshopper'
+import { handleUnityEvents } from './unity'
 
 // import types
 import type { Namespace } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
-import type { PlayerData } from './interface/unity'
+import type { PlayerData } from '@/types/src/Socket/Unity'
 import type { RobotConnection } from '../robot'
-import { handleUnityEvents } from './unity'
 
 /** Initialize a new namespace by handling all the required events */
 export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot: RobotConnection) => {

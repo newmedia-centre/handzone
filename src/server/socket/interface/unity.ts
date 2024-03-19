@@ -1,48 +1,12 @@
 // import types
-import type { Vector3D } from './motion'
-
-export type SixDofPosition = {
-	position: Vector3D
-	rotation: Vector3D
-}
-
-export type PlayerData = {
-	id: string
-	hmd: SixDofPosition
-	left: SixDofPosition
-	right: SixDofPosition
-	name: string
-	color: string
-}
-
-export type UnityMessageIn = {
-	message: string
-}
-
-export type UnityPlayerIn = {
-	hmd: SixDofPosition
-	left: SixDofPosition
-	right: SixDofPosition
-}
-
-export type UnityPendantIn = {
-	position: Vector3D
-	rotation: Vector3D
-}
-
-export type UnityMessageOut = {
-	message: string
-}
-
-export type UnityPlayerOut = {
-	players: PlayerData[]
-}
-
-export type UnityPendantOut = {
-	owner: string
-	position: Vector3D
-	rotation: Vector3D
-}
+import type {
+	UnityMessageIn,
+	UnityMessageOut,
+	UnityPendantIn,
+	UnityPendantOut,
+	UnityPlayerIn,
+	UnityPlayerOut
+} from '@/types/src/Socket/Unity'
 
 export interface UnityClientToServer {
 
