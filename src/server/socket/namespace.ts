@@ -8,7 +8,7 @@ import { handleUnityEvents } from './unity'
 // import types
 import type { Namespace } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
-import type { PlayerData } from '@/types/src/Socket/Unity'
+import type { PlayerData } from '@/types/Socket/Unity'
 import type { RobotConnection } from '../robot'
 
 /** Initialize a new namespace by handling all the required events */

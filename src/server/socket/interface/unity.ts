@@ -6,7 +6,7 @@ import type {
 	UnityPendantOut,
 	UnityPlayerIn,
 	UnityPlayerOut
-} from '@/types/src/Socket/Unity'
+} from '@/types/Socket/Unity'
 
 export interface UnityClientToServer {
 
