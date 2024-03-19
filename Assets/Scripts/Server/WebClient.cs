@@ -4,17 +4,16 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
 using Robots;
-using Schema.Socket;
+using Schema.Socket.Motion;
 using UnityEngine;
 using Schema.Socket.Realtime;
+using Schema.Socket.Unity;
 using SocketIO.Serializer.NewtonsoftJson;
-using XRZone;
 
 public class WebClient : MonoBehaviour
 {
-    [HideInInspector]
-    public string url;
-    
+    [HideInInspector] public string url;
+
     private SocketIOClient.SocketIO _client;
     private Queue<RealtimeData> _dataQueue;
     private Texture2D _cameraFeedTexture;
@@ -27,9 +26,9 @@ public class WebClient : MonoBehaviour
     public static event Action<Texture2D> OnCameraFeed;
     public static event Action<bool> OnDigitalOutputChanged;
     public static event Action<string> OnUnityMessage;
-    public static event Action<PositionDataOut> OnUnityPosition;
-    public static event Action<PendantDataOut> OnUnityPendant;
-    
+    public static event Action<PlayerData> OnUnityPlayerData;
+    public static event Action<UnityPendantIn> OnUnityPendant;
+
     public event Action OnConnected;
     public event Action OnDisconnected;
     public event Action OnSessionJoin;
@@ -54,7 +53,7 @@ public class WebClient : MonoBehaviour
     private async void Start()
     {
         _cameraFeedTexture = new Texture2D(2, 2);
-        
+
         _dataQueue = new Queue<RealtimeData>();
         _client = new SocketIOClient.SocketIO(url);
         var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
@@ -88,7 +87,9 @@ public class WebClient : MonoBehaviour
     {
 
         // Register general events for the web client, such as connection, disconnection, and errors
+
         #region General connection events
+
         Debug.Log("Connecting to web server...");
 
         _client.OnConnected += (sender, args) =>
@@ -103,12 +104,10 @@ public class WebClient : MonoBehaviour
             OnDisconnected?.Invoke();
         };
 
-        _client.OnError += (sender, s) =>
-        {
-            Debug.Log($@"Received error from server: {s}");
-        };
+        _client.OnError += (sender, s) => { Debug.Log($@"Received error from server: {s}"); };
+
         #endregion
-        
+
         // Register events for the web client that are specific to the video feed
         _client.On("video", response =>
         {
@@ -120,9 +119,11 @@ public class WebClient : MonoBehaviour
                 OnCameraFeed?.Invoke(_cameraFeedTexture);
             });
         });
-        
+
         // Register events for the web client that are specific to Grasshopper
+
         # region Grasshopper events
+
         _client.On("grasshopper:program", response =>
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -143,7 +144,7 @@ public class WebClient : MonoBehaviour
                 OnToolpaths?.Invoke(deserializedProgram);
             });
         });
-        
+
         _client.On("realtime:data", response =>
         {
             RealtimeData data = response.GetValue<RealtimeData>();
@@ -151,23 +152,28 @@ public class WebClient : MonoBehaviour
 
             _dataQueue.Enqueue(data);
         });
+
         #endregion
-        
+
         // Register events for the web client that are specific to the Unity client
+
         #region Unity events
+
         _client.On("unity:message", response =>
         {
+
+            Debug.Log("Hello from Web server! " +  response.GetValue<string>());
             OnUnityMessage?.Invoke(response.GetValue<string>());
         });
         
-        _client.On("unity:position", response =>
+        _client.On("unity:player", response =>
         {
-            OnUnityPosition?.Invoke(response.GetValue<PositionDataOut>());
+            OnUnityPlayerData?.Invoke(response.GetValue<PlayerData>());
         });
         
         _client.On("unity:pendant", response =>
         {
-            OnUnityPendant?.Invoke(response.GetValue<PendantDataOut>());
+            OnUnityPendant?.Invoke(response.GetValue<UnityPendantIn>());
         });
         #endregion
 
@@ -187,7 +193,7 @@ public class WebClient : MonoBehaviour
         OnSessionLeft?.Invoke();
     }
 
-    public void SendInveseKinematicsRequest()
+    public void SendInverseKinematicsRequest()
     {
         double[] x = { 0.1,.2,.2,0,3.14,0 };
         var data = new 
@@ -248,12 +254,13 @@ public class WebClient : MonoBehaviour
     
     public void SendUnityMessage(string message)
     {
-        _client.EmitAsync("unity:message", message);
+        var data = new { message = message };
+        _client.EmitAsync("unity:message", data);
     }
     
-    public void SendUnityPosition(PositionDataIn positionData)
+    public void SendUnityPosition(UnityPlayerIn unityPlayer)
     {
-        _client.EmitAsync("unity:position", positionData);
+        _client.EmitAsync("unity:player", unityPlayer);
     }
     
     public void SendUnityPendant(Vector6D message)
