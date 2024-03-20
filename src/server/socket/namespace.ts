@@ -1,5 +1,6 @@
 // import dependencies
 import { handleInterfacesEvents } from './interfaces'
+import { handleInternalsEvents } from './internals'
 import { handleRealtimeEvents } from './realtime'
 import { handleMotionEvents } from './motion'
 import { handleGrasshopperEvents } from './grasshopper'
@@ -34,6 +35,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		handleGrasshopperEvents(socket)
 		handleRealtimeEvents(socket)
 		handleInterfacesEvents(socket)
+		handleInternalsEvents(socket)
 		handleUnityEvents(socket, positions)
 
 		// forward video events

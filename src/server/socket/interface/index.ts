@@ -4,6 +4,7 @@ import type { MotionClientToServer } from './motion'
 import type { GrasshopperClientToServer, GrasshopperServerToClient } from './grasshopper'
 import type { UnityClientToServer, UnityServerToClient } from './unity'
 import type { InterfacesClientToServer } from './interfaces'
+import type { InternalsClientToServer } from './internals'
 import type { RealtimeServerToClient } from './realtime'
 import type { RobotConnection } from '@/server/robot'
 
@@ -34,7 +35,7 @@ export interface NamespaceServerToClientEvents extends GrasshopperServerToClient
 	video: (camera: string, frame: string) => void
 }
 
-export interface NamespaceClientToServerEvents extends MotionClientToServer, GrasshopperClientToServer, UnityClientToServer, InterfacesClientToServer {
+export interface NamespaceClientToServerEvents extends MotionClientToServer, GrasshopperClientToServer, UnityClientToServer, InterfacesClientToServer, InternalsClientToServer {
 	message: (message: string) => void
 }
 
