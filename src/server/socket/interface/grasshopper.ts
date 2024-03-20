@@ -1,3 +1,4 @@
+// import payload types from shared schema
 import type {
 	GrasshopperProgramIn,
 	GrasshopperProgramOut
@@ -5,8 +6,6 @@ import type {
 
 export interface GrasshopperClientToServer {
 	'grasshopper:program': (payload: GrasshopperProgramIn) => void
-
-
 }
 
 export interface GrasshopperServerToClient {

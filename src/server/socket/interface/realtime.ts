@@ -1,3 +1,4 @@
+// import payload types from shared schema
 import type {
 	RealtimeRawOut,
 	RealtimeDataOut

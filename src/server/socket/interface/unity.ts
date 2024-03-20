@@ -1,4 +1,4 @@
-// import types
+// import payload types from shared schema
 import type {
 	UnityMessageIn,
 	UnityMessageOut,
