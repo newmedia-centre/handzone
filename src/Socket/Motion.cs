@@ -2,63 +2,6 @@ namespace Schema.Socket.Motion
 {
 
     /// <summary>
-    /// Represents a 6D vector consisting of three force components and three torque components.
-    /// </summary>
-    public partial class Vector6D
-    {
-        /// <summary>
-        /// U-axis
-        /// </summary>
-        public double U { get; set; }
-
-        /// <summary>
-        /// V-axis
-        /// </summary>
-        public double V { get; set; }
-
-        /// <summary>
-        /// W-axis
-        /// </summary>
-        public double W { get; set; }
-
-        /// <summary>
-        /// X-axis
-        /// </summary>
-        public double X { get; set; }
-
-        /// <summary>
-        /// Y-axis
-        /// </summary>
-        public double Y { get; set; }
-
-        /// <summary>
-        /// Z-axis
-        /// </summary>
-        public double Z { get; set; }
-    }
-
-    /// <summary>
-    /// Represents a 3D vector consisting of three components
-    /// </summary>
-    public partial class Vector3D
-    {
-        /// <summary>
-        /// X-axis
-        /// </summary>
-        public double X { get; set; }
-
-        /// <summary>
-        /// Y-axis
-        /// </summary>
-        public double Y { get; set; }
-
-        /// <summary>
-        /// Z-axis
-        /// </summary>
-        public double Z { get; set; }
-    }
-
-    /// <summary>
     /// Deprecated: Tells the robot controller to treat digital inputs number A and B as pulses
     /// for a conveyor encoder. Only digital input 0, 1, 2, or 3 can be used. This function is
     /// replaced by encoder_enable_pulse_decode and should therefore not be used moving forward.
@@ -532,5 +475,193 @@ namespace Schema.Socket.Motion
         /// Not used in current version (reserved for future use).
         /// </summary>
         public double V { get; set; }
+    }
+
+    /// <summary>
+    /// Deprecated: Tells the robot controller the tick count of the encoder. This function is
+    /// useful for absolute encoders, use conveyor_pulse_decode() for setting up an incremental
+    /// encoder. For circular conveyors, the value must be between 0 and the number of ticks per
+    /// revolution.
+    /// </summary>
+    public partial class MotionSetConveyorTickCountIn
+    {
+        /// <summary>
+        /// Resolution of the encoder, needed to handle wrapping nicely (Integer). 0 is a 32 bit
+        /// signed encoder, range [-2147483648  2147483647] (default). 1 is an 8 bit unsigned
+        /// encoder, range [0  255]. 2 is a 16 bit unsigned encoder, range [0  65535]. 3 is a 24 bit
+        /// unsigned encoder, range [0  16777215]. 4 is a 32 bit unsigned encoder, range [0
+        /// 4294967295].
+        /// </summary>
+        public double? AbsoluteEncoderResolution { get; set; }
+
+        /// <summary>
+        /// Tick count of the conveyor (Integer).
+        /// </summary>
+        public double TickCount { get; set; }
+    }
+
+    /// <summary>
+    /// Set joint positions of simulated robot.
+    /// </summary>
+    public partial class MotionSetPosIn
+    {
+        /// <summary>
+        /// Joint positions.
+        /// </summary>
+        public double[] Q { get; set; }
+    }
+
+    /// <summary>
+    /// Sets the transition hardness between normal mode, reduced mode, and safeguard stop.
+    /// </summary>
+    public partial class MotionSetSafetyModeTransitionHardnessIn
+    {
+        /// <summary>
+        /// An integer specifying transition hardness. 0 is hard transition between modes using
+        /// maximum torque, similar to emergency stop. 1 is soft transition between modes.
+        /// </summary>
+        public double Type { get; set; }
+    }
+
+    /// <summary>
+    /// Joint speed: Accelerate linearly in joint space and continue with constant joint speed.
+    /// The time t is optional if provided the function will return after time t, regardless of
+    /// the target speed has been reached. If the time t is not provided, the function will
+    /// return when the target speed is reached.
+    /// </summary>
+    public partial class MotionSpeedJIn
+    {
+        /// <summary>
+        /// Joint acceleration [rad/s^2] (of leading axis).
+        /// </summary>
+        public double A { get; set; }
+
+        /// <summary>
+        /// Joint speeds [rad/s].
+        /// </summary>
+        public double[] Qd { get; set; }
+
+        /// <summary>
+        /// Time [s] before the function returns (optional).
+        /// </summary>
+        public double? T { get; set; }
+    }
+
+    /// <summary>
+    /// Tool speed: Accelerate linearly in Cartesian space and continue with constant tool speed.
+    /// The time t is optional if provided the function will return after time t, regardless of
+    /// the target speed has been reached. If the time t is not provided, the function will
+    /// return when the target speed is reached.
+    /// </summary>
+    public partial class MotionSpeedLIn
+    {
+        /// <summary>
+        /// Tool position acceleration [m/s^2].
+        /// </summary>
+        public double A { get; set; }
+
+        /// <summary>
+        /// Tool acceleration [rad/s^2] (optional), if not defined a, position acceleration, is used.
+        /// </summary>
+        public string ARot { get; set; }
+
+        /// <summary>
+        /// Time [s] before function returns (optional).
+        /// </summary>
+        public double? T { get; set; }
+
+        /// <summary>
+        /// Tool speed [m/s] (spatial vector).
+        /// </summary>
+        public double[] Xd { get; set; }
+    }
+
+    /// <summary>
+    /// Stop tracking the conveyor, started by track_conveyor_linear() or
+    /// track_conveyor_circular(), and decelerate all joint speeds to zero.
+    /// </summary>
+    public partial class MotionStopConveyorTrackingIn
+    {
+        /// <summary>
+        /// Joint acceleration [rad/s^2] (optional).
+        /// </summary>
+        public double? A { get; set; }
+    }
+
+    /// <summary>
+    /// Stop (linear in joint space): Decelerate joint speeds to zero.
+    /// </summary>
+    public partial class MotionStopJIn
+    {
+        /// <summary>
+        /// Joint acceleration [rad/s^2] (of leading axis).
+        /// </summary>
+        public double A { get; set; }
+    }
+
+    /// <summary>
+    /// Stop (linear in tool space): Decelerate tool speed to zero.
+    /// </summary>
+    public partial class MotionStopLIn
+    {
+        /// <summary>
+        /// Tool acceleration [m/s^2].
+        /// </summary>
+        public double A { get; set; }
+
+        /// <summary>
+        /// Tool acceleration [rad/s^2] (optional), if not defined a, position acceleration, is used.
+        /// </summary>
+        public string ARot { get; set; }
+    }
+
+    /// <summary>
+    /// Makes robot movement (movej() etc.) track a circular conveyor.
+    /// </summary>
+    public partial class MotionTrackConveyorCircularIn
+    {
+        /// <summary>
+        /// Pose vector that determines the center of the conveyor in the base coordinate system of
+        /// the robot.
+        /// </summary>
+        public double[] Center { get; set; }
+
+        /// <summary>
+        /// The index of the encoder to associate with the conveyor tracking (optional, default is 0).
+        /// </summary>
+        public double? EncoderIndex { get; set; }
+
+        /// <summary>
+        /// Should the tool rotate with the conveyor or stay in the orientation specified by the
+        /// trajectory (movel() etc.).
+        /// </summary>
+        public bool RotateTool { get; set; }
+
+        /// <summary>
+        /// How many ticks the encoder sees when the conveyor moves one revolution.
+        /// </summary>
+        public double TicksPerRevolution { get; set; }
+    }
+
+    /// <summary>
+    /// Makes robot movement (movej() etc.) track a linear conveyor.
+    /// </summary>
+    public partial class MotionTrackConveyorLinearIn
+    {
+        /// <summary>
+        /// Pose vector that determines the direction of the conveyor in the base coordinate system
+        /// of the robot.
+        /// </summary>
+        public double[] Direction { get; set; }
+
+        /// <summary>
+        /// The index of the encoder to associate with the conveyor tracking (optional, default is 0).
+        /// </summary>
+        public double? EncoderIndex { get; set; }
+
+        /// <summary>
+        /// How many ticks the encoder sees when the conveyor moves one meter.
+        /// </summary>
+        public double TicksPerMeter { get; set; }
     }
 }
