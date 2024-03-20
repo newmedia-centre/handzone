@@ -26,8 +26,8 @@ export const handleInterfacesEvents = (socket: Socket<NamespaceClientToServerEve
 		console.log('instruction:', instruction)
 		try {
 			const res = await robots.sendCallback(socket.data.robot, instruction)
-			console.log('res:', res.toString('utf8'))
-			callback(true, { ik: [] })
+			const ik = JSON.parse(res.toString('utf8'))
+			callback(true, { ik })
 		} catch (e) {
 			console.log(e)
 			callback(false)
