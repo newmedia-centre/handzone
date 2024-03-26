@@ -781,11 +781,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   robotPivots:
-  - {fileID: 1987263436}
   - {fileID: 1711237682}
   - {fileID: 1677341267}
   - {fileID: 1344681175}
   - {fileID: 362635225}
+  - {fileID: 308149966}
   - {fileID: 354418708}
   rotationDirection:
   - {x: 0, y: 0, z: 1}
