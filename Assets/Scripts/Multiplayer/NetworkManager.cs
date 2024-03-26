@@ -50,7 +50,7 @@ public class NetworkManager : MonoBehaviour
 
             // Update the player position
             if (player != null)
-                player.UpdatePositions(obj.Hmd, obj.Left, obj.Right);
+                player.UpdatePositions(obj);
         }
         
     }

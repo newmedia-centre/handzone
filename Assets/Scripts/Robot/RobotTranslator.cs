@@ -1,20 +1,23 @@
+using Schema.Socket.Internals;
 using Schema.Socket.Realtime;
+using System;
 using UnityEngine;
 
 public class RobotTranslator : MonoBehaviour
 {
     public Transform[] robotPivots;
     public Vector3[] rotationDirection;
-    public float[] qActualJoints;
+    public double[] qActualJoints;
     
     private GameObject[] _currentTransforms;
     
     private void Awake()
     {
         // Keep track of the current joint angles
-        qActualJoints = new float[robotPivots.Length];
+        qActualJoints = new double[robotPivots.Length];
         
         WebClient.OnRealtimeData += UpdateJointsFromPolyscope;
+        WebClient.OnKinematicCallback += UpdateJointsFromGrabbing;
     }
     
     void SetCurrentJoint(int index, float angle)
@@ -30,14 +33,38 @@ public class RobotTranslator : MonoBehaviour
         }
     }
 
-    public void UpdateJointsFromPolyscope(RealtimeData data)
+    public void UpdateFromInverseKinematics(double[] target, Action function)
+    {
+        InternalsGetInverseKinIn data = new InternalsGetInverseKinIn();
+        data.Qnear = qActualJoints;
+        data.MaxPositionError = 0.001;
+        data.X = target;
+
+        WebClient.Instance.SendInverseKinematicsRequest(data, function);
+    }
+
+    public void UpdateJointsFromPolyscope(RealtimeDataOut data)
     {
         if (data == null) return;
         
-        for (int i = 0; i < data.QActual.Length; i++)
+        UpdateJoints(data.QActual);
+    }
+
+    public void UpdateJointsFromGrabbing(InternalsGetInverseKinCallback data)
+    {
+        if (data == null) return;
+
+        UpdateJoints(data.Ik);
+    }
+
+    private void UpdateJoints(double[] data)
+    {
+        if (data == null) return;
+
+        for (int i = 0; i < data.Length; i++)
         {
-            qActualJoints[i] = (float)data.QActual[i];
-            float angle = qActualJoints[i] * Mathf.Rad2Deg;
+            qActualJoints[i] = data[i];
+            float angle = (float)(qActualJoints[i] * Mathf.Rad2Deg);
             if (i == 0 || i == 4) angle = -angle;
             else if (i == 1 || i == 3) angle += 90;
             

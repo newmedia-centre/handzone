@@ -23,7 +23,7 @@ public class URPendantController : MonoBehaviour
         if (_followingPlayer)
         {
             float deltaAngle = Quaternion.LookRotation(playerCamera.transform.forward).eulerAngles.y - _initialYAngle;
-
+            
             transform.position = playerCamera.transform.position + Quaternion.Euler(new Vector3(0, deltaAngle, 0)) * _relativePosition;
             transform.rotation = Quaternion.Euler(new Vector3(_initialPendantXAngle, _initialPendantYAngle + deltaAngle, _initialPendantZAngle));
         }

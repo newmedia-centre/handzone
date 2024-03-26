@@ -55,15 +55,15 @@ public class NetworkPlayer : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
-    public void UpdatePositions(PlayerDataHmd hmd, PlayerDataLeft left, PlayerDataRight right)
+    public void UpdatePositions(PlayerData playerData)
     {
-        this.hmd.transform.position = new((float)hmd.Position.X, (float)hmd.Position.Y, (float)hmd.Position.Z);
-        this.hmd.transform.eulerAngles = new((float)hmd.Rotation.X, (float)hmd.Rotation.Y, (float)hmd.Rotation.Z);
+        hmd.transform.position = new((float)playerData.Hmd.Position.X, (float)playerData.Hmd.Position.Y, (float)playerData.Hmd.Position.Z);
+        hmd.transform.eulerAngles = new((float)playerData.Hmd.Rotation.X, (float)playerData.Hmd.Rotation.Y, (float)playerData.Hmd.Rotation.Z);
 
-        this.left.transform.position = new((float)left.Position.X, (float)left.Position.Y, (float)left.Position.Z);
-        this.left.transform.eulerAngles = new((float)left.Rotation.X, (float)left.Rotation.Y, (float)left.Rotation.Z);
+        left.transform.position = new((float)playerData.Left.Position.X, (float)playerData.Left.Position.Y, (float)playerData.Left.Position.Z);
+        left.transform.eulerAngles = new((float)playerData.Left.Rotation.X, (float)playerData.Left.Rotation.Y, (float)playerData.Left.Rotation.Z);
         
-        this.right.transform.position = new((float)right.Position.X, (float)right.Position.Y, (float)right.Position.Z);
-        this.right.transform.eulerAngles = new((float)right.Rotation.X, (float)right.Rotation.Y, (float)right.Rotation.Z);
+        right.transform.position = new((float)playerData.Right.Position.X, (float)playerData.Right.Position.Y, (float)playerData.Right.Position.Z);
+        right.transform.eulerAngles = new((float)playerData.Right.Rotation.X, (float)playerData.Right.Rotation.Y, (float)playerData.Right.Rotation.Z);
     }
 }

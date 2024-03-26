@@ -1,3 +1,4 @@
 [submodule "Assets/Scripts/handzone-schema"]
 	path = Assets/Scripts/handzone-schema
 	url = https://github.com/NewMedia-Centre/handzone-schema.git
+	branch = main
