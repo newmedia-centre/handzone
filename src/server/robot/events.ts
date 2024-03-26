@@ -1,7 +1,7 @@
 // import types
 import type TypedEmitter from 'typed-emitter'
 import type { RobotConnection } from '.'
-import type { RealtimeData } from '@/types/Socket/Realtime/RealtimeData'
+import type { RealtimeDataOut } from '@/types/Socket/Realtime'
 
 // type all the TCP events
 type ManagerEvents = {
@@ -18,7 +18,7 @@ type RobotEvents = {
 	/** A raw realtime buffer */
 	'realtime:raw': (buffer: Buffer) => void
 	/** A parsed realtime buffer */
-	'realtime:parsed': (data: RealtimeData) => void
+	'realtime:parsed': (data: RealtimeDataOut) => void
 	/** A request response */
 	response: (response: Buffer) => void
 }
