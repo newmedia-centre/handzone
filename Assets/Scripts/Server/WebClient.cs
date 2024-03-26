@@ -9,25 +9,27 @@ using UnityEngine;
 using Schema.Socket.Realtime;
 using Schema.Socket.Unity;
 using SocketIO.Serializer.NewtonsoftJson;
+using Schema.Socket.Internals;
 
 public class WebClient : MonoBehaviour
 {
     [HideInInspector] public string url;
 
     private SocketIOClient.SocketIO _client;
-    private Queue<RealtimeData> _dataQueue;
+    private Queue<RealtimeDataOut> _dataQueue;
     private Texture2D _cameraFeedTexture;
     private bool _digitalOutput;
 
     public string[] Robots { get; private set; }
 
-    public static event Action<RealtimeData> OnRealtimeData;
+    public static event Action<RealtimeDataOut> OnRealtimeData;
     public static event Action<List<IToolpath>> OnToolpaths;
     public static event Action<Texture2D> OnCameraFeed;
     public static event Action<bool> OnDigitalOutputChanged;
     public static event Action<string> OnUnityMessage;
     public static event Action<PlayerData> OnUnityPlayerData;
     public static event Action<UnityPendantIn> OnUnityPendant;
+    public static event Action<InternalsGetInverseKinCallback> OnKinematicCallback;
 
     public event Action OnConnected;
     public event Action OnDisconnected;
@@ -54,7 +56,7 @@ public class WebClient : MonoBehaviour
     {
         _cameraFeedTexture = new Texture2D(2, 2);
 
-        _dataQueue = new Queue<RealtimeData>();
+        _dataQueue = new Queue<RealtimeDataOut>();
         _client = new SocketIOClient.SocketIO(url);
         var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
@@ -76,7 +78,7 @@ public class WebClient : MonoBehaviour
     {
         if (_dataQueue.Count > 0)
         {
-            RealtimeData data = _dataQueue.Dequeue();
+            RealtimeDataOut data = _dataQueue.Dequeue();
             if (data == null) return;
 
             OnRealtimeData?.Invoke(data);
@@ -147,7 +149,7 @@ public class WebClient : MonoBehaviour
 
         _client.On("realtime:data", response =>
         {
-            RealtimeData data = response.GetValue<RealtimeData>();
+            RealtimeDataOut data = response.GetValue<RealtimeDataOut>();
             if (data == null) return;
 
             _dataQueue.Enqueue(data);
@@ -193,16 +195,12 @@ public class WebClient : MonoBehaviour
         OnSessionLeft?.Invoke();
     }
 
-    public void SendInverseKinematicsRequest()
+    public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)
     {
-        double[] x = { 0.1,.2,.2,0,3.14,0 };
-        var data = new 
+        _client.EmitAsync("internals:get_inverse_kin", response =>
         {
-            x
-        };
-        _client.EmitAsync("interfaces:get_inverse_kin", response =>
-        { 
-            Debug.Log(response);
+            OnKinematicCallback?.Invoke(response.GetValue<InternalsGetInverseKinCallback>());
+            function?.Invoke();
         }, data);
     }
 

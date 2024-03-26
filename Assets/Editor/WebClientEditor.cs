@@ -12,7 +12,7 @@ public class WebClientEditor : Editor
         
         if (GUILayout.Button("Send: interfaces:get_inverse_kin"))
         {
-            webClient.SendInverseKinematicsRequest();
+            //webClient.SendInverseKinematicsRequest();
         }
     }
 }

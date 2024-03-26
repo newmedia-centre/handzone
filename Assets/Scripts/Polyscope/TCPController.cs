@@ -4,7 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 /// <summary>
 /// TCPController is a MonoBehaviour that controls the translation and rotation of an XRGrabInteractable object.
-/// It listens to selectEntered and selectExited events of the XRGrabInteractable object and updates its pose based on RealtimeData received from a WebClient.
+/// It listens to selectEntered and selectExited events of the XRGrabInteractable object and updates its pose based on RealtimeDataOut received from a WebClient.
 /// </summary>
 public class TCPController : MonoBehaviour
 {
@@ -53,11 +53,11 @@ public class TCPController : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates the pose of the XRGrabInteractable object based on the RealtimeData received.
+    /// Updates the pose of the XRGrabInteractable object based on the RealtimeDataOut received.
     /// If the object is not grabbed, it does nothing.
     /// </summary>
-    /// <param name="data">The RealtimeData received from the WebClient.</param>
-    private void UpdateRobotPose(RealtimeData data)
+    /// <param name="data">The RealtimeDataOut received from the WebClient.</param>
+    private void UpdateRobotPose(RealtimeDataOut data)
     {
         if (!_isGrabbed) return;
 
