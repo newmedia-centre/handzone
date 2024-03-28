@@ -56,7 +56,7 @@ jobs:
           echo "HOSTNAME"=${{ vars.HOSTNAME }}" >> .env
           echo "DOCKER_NETWORK"=${{ vars.DOCKER_NETWORK }}" >> .env
 
-          echo "CONFIG_PATH=/app/config.json" >> .env
+          echo "CONFIG_PATH=~/app/config.json" >> .env
 
       - name: copy files to target server via scp
         uses: appleboy/scp-action@v0.1.3
@@ -68,7 +68,7 @@ jobs:
           proxy_username: ${{ secrets.SSH_PROXY_USER }}
           proxy_key: ${{ secrets.SSH_PROXY_KEY }}
           source: "./docker-compose.yml,./.env,./config.json"
-          target: "/app"
+          target: "~/app"
 
       - name: remote docker-compose up via ssh
         uses: appleboy/ssh-action@v0.1.5
