@@ -1,0 +1,54 @@
+name: Docker Build & Publish
+
+on:
+  push:
+    branches: [next]
+
+jobs:
+  build:
+    name: Build Docker Image and Push to Registry
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Repository Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v3
+        with:
+          file: dockerfile
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
+
+  deploy:
+    name: Deploy on Server
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: SSH Deploy
+        # Use the 'appleboy/ssh-action' action for SSH deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.HOST }} # Your server's IP address
+          username: ${{ secrets.SSH_USERNAME }} # Your server's username
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # Your server's SSH private key
+          script: |
+            cd /path/to/your/application/directory # Specify the path to your app directory on the server
+            git pull
+            npm install
+            npm run build
+            pm2 restart your-pm2-service-name # Replace with your PM2 service name
+
+
