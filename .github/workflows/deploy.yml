@@ -87,6 +87,6 @@ jobs:
             echo $APPTOKEN | sudo docker login ghcr.io -u $USERNAME --password-stdin
             cd /app
             sudo docker compose -f ./docker-compose.yml pull
-            sudo docker compose -f ./docker-compose.yml up handzone -d
+            sudo docker compose -f ./docker-compose.yml up -d
 
 
