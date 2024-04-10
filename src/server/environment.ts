@@ -15,6 +15,8 @@ const envSchema = {
 	DOCKER_NETWORK: z.string(),
 
 	DATABASE_URL: z.string(),
+	CLIENT_ID: z.string(),
+	CLIENT_SECRET: z.string(),
 
 	/** Path to the config.json file */
 	CONFIG_PATH: z.string().default('config.json'),
