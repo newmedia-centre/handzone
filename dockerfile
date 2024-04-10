@@ -1,5 +1,5 @@
 ##### DEPENDENCIES
-FROM --platform=linux/amd64 node:16-alpine3.17 AS base
+FROM --platform=linux/amd64 node:16-alpine3.17 AS deps
 RUN apk add --no-cache libc6-compat openssl1.1-compat
 WORKDIR /app
 
@@ -8,7 +8,7 @@ COPY package.json package-lock.json* ./
 RUN npm ci
 
 # Rebuild the source code only when needed
-FROM base AS builder
+FROM deps AS builder
 LABEL stage=builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -21,7 +21,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
 # Production image, copy all the files and run next
-FROM base AS runner
+FROM deps AS runner
 LABEL stage=runner
 WORKDIR /app
 
