@@ -3,6 +3,9 @@ FROM --platform=linux/amd64 node:20-alpine3.18 AS deps
 RUN apk add --no-cache libc6-compat openssl1.1-compat
 WORKDIR /app
 
+# Install Prisma Client
+COPY prisma ./
+
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
 RUN npm ci
@@ -34,6 +37,7 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./package.json
 
 RUN npm install --omit=dev

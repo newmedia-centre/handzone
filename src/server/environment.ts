@@ -14,6 +14,8 @@ const envSchema = {
 	HOSTNAME: z.string().default('localhost'),
 	DOCKER_NETWORK: z.string(),
 
+	DATABASE_URL: z.string(),
+
 	/** Path to the config.json file */
 	CONFIG_PATH: z.string().default('config.json'),
 }
