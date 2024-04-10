@@ -2,10 +2,11 @@
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
 		"module": "commonjs",
-		"esModuleInterop": true,
 		"outDir": "dist",
+		"target": "ESNext",
 		"isolatedModules": false,
-		"noEmit": false
+		"noEmit": false,
+		"moduleResolution": "node",
 	},
 	"include": [
 		"src/types",
