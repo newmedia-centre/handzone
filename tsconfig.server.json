@@ -1,13 +1,22 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
+		"module": "commonjs",
 		"esModuleInterop": true,
-		"module": "ESNext",
 		"outDir": "dist",
+		"isolatedModules": false,
 		"noEmit": false
 	},
 	"include": [
-		"src/server",
 		"src/types",
-	]
+	],
+	"exclude": [
+		"dist"
+	],
+	"ts-node": {
+		"files": true
+	},
+	"files": [
+		"./src/server/index.ts"
+	],
 }
