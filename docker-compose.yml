@@ -10,6 +10,10 @@ services:
     container_name: handzone-server
     environment:
       VIRTUAL_HOST: ${HOSTNAME}
+    volumes:
+      - type: bind
+        source: /app/config.json
+        target: /app/config.json
 
 networks:
   default:
