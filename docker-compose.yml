@@ -2,9 +2,10 @@ version: "3.9"
 services:
   db:
     image: postgres:16.2
+    restart: always
     ports:
       - 5432:5432
-    restart: always
+    container_name: handzone-db
     volumes:
       - database:/var/lib/postgresql/data
     environment:
