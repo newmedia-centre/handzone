@@ -84,7 +84,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	async connectVirtualRobot(container: ContainerInspectInfo) {
 		this._tryCreateRobotConnection({
 			name: container.Id,
-			address: container.NetworkSettings.Networks[env.DOCKER_NETWORK].IPAddress,
+			address: this._parseAddress(container.NetworkSettings.Networks[env.DOCKER_NETWORK]?.IPAddress),
 			port: 30003,
 			camera: []
 		})
