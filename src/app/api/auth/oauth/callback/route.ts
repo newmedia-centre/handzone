@@ -1,22 +1,12 @@
 // import dependencies
 import { OAuth2RequestError } from 'oslo/oauth2'
 import { cookies } from 'next/headers'
-import { surf, lucia, getUserInfo, decodeIdToken } from '@/server/db/auth'
+import { oauth, lucia, getUserInfo, decodeIdToken } from '@/server/db/auth'
 import { prisma } from '@/server/db'
 import { env } from '@/server/environment'
 
 // import types
 import type { TokenResponseBody } from 'oslo/oauth2'
-
-// define the user returned by SURFConext
-export type SurfUser = {
-	sub: string,
-	uids: string[],
-	schac_personal_unique_code: string[],
-	name: string,
-	email: string,
-	eduperson_affiliation: ('student' | 'pre-student' | 'employee' | 'faculty' | 'member' | 'affiliate')[]
-}
 
 // handle the GET request
 export async function GET(request: Request): Promise<Response> {
@@ -33,8 +23,8 @@ export async function GET(request: Request): Promise<Response> {
 
 	try {
 		// validate the authorization code and get the tokens
-		const tokens = await surf.validateAuthorizationCode<TokenResponseBody & { id_token: string }>(code, {
-			credentials: env.CLIENT_SECRET,
+		const tokens = await oauth.validateAuthorizationCode<TokenResponseBody & { id_token: string }>(code, {
+			credentials: env.OAUTH_CLIENT_SECRET,
 			codeVerifier: storedCodeVerifier,
 			authenticateWith: 'request_body'
 		})
@@ -59,17 +49,13 @@ export async function GET(request: Request): Promise<Response> {
 			// create the user
 			await prisma.user.create({
 				data: {
-					id: user.sub,
-					uid: user.uids[0] || '',
-					code: user.schac_personal_unique_code[0]?.split(':').pop() || '',
+					id: user.id,
 					email: user.email,
-					emailVerified: user.email_verified,
 					name: user.name,
-					role: user.eduperson_affiliation.join(','),
 				}
 			})
 
-			const session = await lucia.createSession(user.sub, {})
+			const session = await lucia.createSession(user.id, {})
 			const sessionCookie = lucia.createSessionCookie(session.id)
 			cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
 		}

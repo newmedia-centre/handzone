@@ -10,17 +10,6 @@ import { env } from '../environment'
 // import types
 import type { User } from '@prisma/client'
 
-// define the user returned by SURFConext
-export type SurfUserResponse = {
-	sub: string,
-	uids: string[],
-	schac_personal_unique_code: string[],
-	name: string,
-	email: string,
-	email_verified: boolean,
-	eduperson_affiliation: ('student' | 'pre-student' | 'employee' | 'faculty' | 'member' | 'affiliate')[]
-}
-
 // connect auth to the database using prisma
 const adapter = new PrismaAdapter(prisma.session, prisma.user)
 
@@ -35,18 +24,18 @@ export const lucia = new Lucia(adapter, {
 	getUserAttributes: (user) => user
 })
 
-// prepare the SURFConext oauth2 client
-const authorizeEndpoint = 'https://connect.test.surfconext.nl/oidc/authorize'
-const tokenEndpoint = 'https://connect.test.surfconext.nl/oidc/token'
+// prepare the oauth2 client
+const authorizeEndpoint = env.OAUTH.authorization_endpoint
+const tokenEndpoint = env.OAUTH.token_endpoint
 
-// create the SURFConext oauth2 client
-export const surf = new OAuth2Client(env.CLIENT_ID, authorizeEndpoint, tokenEndpoint, {
-	redirectURI: 'http://localhost:3000/api/auth/surf/callback'
+// create the oauth2 client
+export const oauth = new OAuth2Client(env.OAUTH_CLIENT_ID, authorizeEndpoint, tokenEndpoint, {
+	redirectURI: `http://${env.HOSTNAME}/api/auth/oauth/callback`
 })
 
-// get user info from the SURFConext endpoint
+// get user info from the endpoint
 export const getUserInfo = async (accessToken: string) => {
-	const response = await fetch('https://connect.test.surfconext.nl/oidc/userinfo', {
+	const response = await fetch(env.OAUTH.userinfo_endpoint, {
 		headers: {
 			Authorization: `Bearer ${accessToken}`
 		}
@@ -56,7 +45,12 @@ export const getUserInfo = async (accessToken: string) => {
 		throw new Error(response.statusText)
 	}
 
-	return await response.json() as SurfUserResponse
+	const json = await response.json()
+	return {
+		id: json[env.OAUTH.claims.id],
+		name: json[env.OAUTH.claims.name],
+		email: json[env.OAUTH.claims.email]
+	}
 }
 
 // does not verify id tokens
@@ -81,8 +75,18 @@ export const decodeIdToken = (idToken: string) => {
 
 // validate whether the user is authenticated
 export const validateRequest = cache(
-	async () => {
-		const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null
+	async (authorizationHeader?: string) => {
+		let sessionId: string | null = null
+
+		// try get the session id from the authorization header
+		const tokenId = lucia.readBearerToken(authorizationHeader ?? '')
+		if (tokenId) sessionId = tokenId
+
+		// try get the session id from the cookie
+		const cookieId = cookies().get(lucia.sessionCookieName)?.value
+		if (cookieId) sessionId = cookieId
+
+		// if no session id was found, return null, user is not authenticated
 		if (!sessionId) {
 			return {
 				user: null,

@@ -21,17 +21,11 @@ model Session {
 }
 
 model User {
-  id            String    @id
-  uid           String
-  code          String
-  name          String?
-  email         String?   @unique
-  emailVerified Boolean?
-  role          String?
-  sessions      Session[]
-  admin         Admin?
-
-  @@unique([uid, code])
+  id       String    @id
+  name     String?
+  email    String?   @unique
+  sessions Session[]
+  admin    Admin?
 }
 
 model Admin {

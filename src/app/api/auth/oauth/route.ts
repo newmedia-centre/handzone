@@ -1,14 +1,14 @@
 // import dependencies
 import { generateState, generateCodeVerifier } from 'oslo/oauth2'
 import { cookies } from 'next/headers'
-import { surf } from '@/server/db/auth'
+import { oauth } from '@/server/db/auth'
 import { env } from '@/server/environment'
 
 // handle the GET request
 export async function GET(): Promise<Response> {
 	const state = generateState()
 	const codeVerifier = generateCodeVerifier()
-	const url = await surf.createAuthorizationURL({
+	const url = await oauth.createAuthorizationURL({
 		state,
 		scopes: ['openid'],
 		codeVerifier

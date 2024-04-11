@@ -15,8 +15,8 @@ const envSchema = {
 	DOCKER_NETWORK: z.string(),
 
 	DATABASE_URL: z.string(),
-	CLIENT_ID: z.string(),
-	CLIENT_SECRET: z.string(),
+	OAUTH_CLIENT_ID: z.string(),
+	OAUTH_CLIENT_SECRET: z.string(),
 
 	/** Path to the config.json file */
 	CONFIG_PATH: z.string().default('config.json'),
@@ -42,7 +42,19 @@ const configSchema = z.object({
 	DOCKER: z.object({
 		OPTIONS: z.any(),
 		MAX_VIRTUAL: z.number().default(3),
-	})
+	}),
+
+	/** OAuth options */
+	OAUTH: z.object({
+		authorization_endpoint: z.string(),
+		token_endpoint: z.string(),
+		userinfo_endpoint: z.string(),
+		claims: z.object({
+			id: z.string(),
+			name: z.string(),
+			email: z.string(),
+		})
+	}),
 })
 
 // read the json file from the config path
