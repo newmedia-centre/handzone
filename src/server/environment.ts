@@ -54,26 +54,12 @@ const configSchema = z.object({
 	}),
 })
 
-const parse = () => {
-	try {
-		// eslint-disable-next-line node/no-process-env
-		const envFile = parseEnv(process.env, envSchema)
+// eslint-disable-next-line node/no-process-env
+const envFile = parseEnv(process.env, envSchema)
 
-		// read the json file from the config path
-		const config = configSchema.parse(JSON.parse(readFileSync(envFile.CONFIG_PATH, 'utf-8')))
-
-		return { ...envFile, ...config }
-	} catch (error) {
-		// eslint-disable-next-line node/no-process-env
-		if (!process.env.BUILDING) throw error
-
-		// eslint-disable-next-line node/no-process-env
-		return { ...process.env, ...JSON.parse(readFileSync(process.env.CONFIG_PATH!, 'utf-8')) } as unknown as (ReturnType<typeof parseEnv<typeof envSchema>> & ReturnType<typeof configSchema.parse>)
-	}
-}
-
-
+// read the json file from the config path
+const config = configSchema.parse(JSON.parse(readFileSync(envFile.CONFIG_PATH, 'utf-8')))
 
 // export the environment
-export const env = parse()
+export const env = { ...envFile, ...config }
 export default env
