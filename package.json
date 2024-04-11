@@ -6,7 +6,7 @@
     "dev": "npx tsx src/server/index.ts",
     "build:server": "tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
     "build:next": "next build",
-    "build": "npm run build:next && npm run build:server",
+    "build": "BUILDING=1 npm run build:next && npm run build:server",
     "start": "NODE_ENV=production node dist/src/server/index.js",
     "deploy": "prisma migrate deploy && npm start",
     "lint": "next lint"

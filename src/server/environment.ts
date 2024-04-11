@@ -22,9 +22,6 @@ const envSchema = {
 	CONFIG_PATH: z.string().default('config.json'),
 }
 
-// eslint-disable-next-line node/no-process-env
-const envFile = parseEnv(process.env, envSchema)
-
 // create config schema
 const configSchema = z.object({
 	/** Array of robot target objects */
@@ -57,9 +54,23 @@ const configSchema = z.object({
 	}),
 })
 
-// read the json file from the config path
-const config = configSchema.parse(JSON.parse(readFileSync(envFile.CONFIG_PATH, 'utf-8')))
+const parse = () => {
+	try {
+		// eslint-disable-next-line node/no-process-env
+		const envFile = parseEnv(process.env, envSchema)
+
+		// read the json file from the config path
+		const config = configSchema.parse(JSON.parse(readFileSync(envFile.CONFIG_PATH, 'utf-8')))
+
+		return { ...envFile, ...config }
+	} catch (error) {
+		// eslint-disable-next-line node/no-process-env
+		if (!process.env.BUILDING) throw error
+	}
+}
+
+
 
 // export the environment
-export const env = { ...envFile, ...config }
+export const env = parse()!
 export default env
