@@ -18,6 +18,7 @@
 		}
 	},
 	"OAUTH": {
+		"name": "SURFconext",
 		"authorization_endpoint": "https://connect.test.surfconext.nl/oidc/authorize",
 		"token_endpoint": "https://connect.test.surfconext.nl/oidc/token",
 		"userinfo_endpoint": "https://connect.test.surfconext.nl/oidc/userinfo",

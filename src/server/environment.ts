@@ -43,6 +43,7 @@ const configSchema = z.object({
 
 	/** OAuth options */
 	OAUTH: z.object({
+		name: z.string().optional(),
 		authorization_endpoint: z.string(),
 		token_endpoint: z.string(),
 		userinfo_endpoint: z.string(),
