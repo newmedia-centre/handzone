@@ -66,11 +66,14 @@ const parse = () => {
 	} catch (error) {
 		// eslint-disable-next-line node/no-process-env
 		if (!process.env.BUILDING) throw error
+
+		// eslint-disable-next-line node/no-process-env
+		return { ...process.env } as unknown as (ReturnType<typeof parseEnv<typeof envSchema>> & ReturnType<typeof configSchema.parse>)
 	}
 }
 
 
 
 // export the environment
-export const env = parse()!
+export const env = parse()
 export default env
