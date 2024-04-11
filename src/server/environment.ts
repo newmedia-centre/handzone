@@ -68,7 +68,7 @@ const parse = () => {
 		if (!process.env.BUILDING) throw error
 
 		// eslint-disable-next-line node/no-process-env
-		return { ...process.env } as unknown as (ReturnType<typeof parseEnv<typeof envSchema>> & ReturnType<typeof configSchema.parse>)
+		return { ...process.env, ...JSON.parse(readFileSync(process.env.CONFIG_PATH!, 'utf-8')) } as unknown as (ReturnType<typeof parseEnv<typeof envSchema>> & ReturnType<typeof configSchema.parse>)
 	}
 }
 
