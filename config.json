@@ -14,7 +14,8 @@
 	],
 	"DOCKER": {
 		"OPTIONS": {
-			"socketPath": "tcp://docker:2375"
+			"host": "docker",
+			"port": 2375
 		}
 	},
 	"OAUTH": {
