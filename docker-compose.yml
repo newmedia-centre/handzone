@@ -30,7 +30,7 @@ services:
         source: /app/config.json
         target: /app/config.json
       - type: bind
-        source: /run/docker.sock
+        source: /var/run/docker.sock
         target: /var/run/docker.sock
 
 networks:
