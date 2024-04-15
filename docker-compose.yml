@@ -21,6 +21,7 @@ services:
     ports: 
       - "3000:3000"
     container_name: handzone-server
+    privileged: true
     environment:
       VIRTUAL_HOST: ${HOSTNAME}
       DATABASE_URL: "postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/handzone?schema=public"
