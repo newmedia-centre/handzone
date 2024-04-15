@@ -11,6 +11,7 @@ import type { TokenResponseBody } from 'oslo/oauth2'
 // handle the GET request
 export async function GET(request: Request): Promise<Response> {
 	const url = new URL(request.url)
+
 	const code = url.searchParams.get('code')
 	const state = url.searchParams.get('state')
 	const storedState = cookies().get('oauth_state')?.value ?? null

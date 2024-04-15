@@ -1,0 +1,32 @@
+{
+	"ROBOTS": [
+		{
+			"name": "Robot 1",
+			"port": 30003,
+			"address": "172.19.14.251",
+			"camera": [
+				{
+					"name": "Static",
+					"address": "rtsp://172.19.14.226:8554/cam"
+				}
+			]
+		}
+	],
+	"DOCKER": {
+		"OPTIONS": {
+			"host": "localhost",
+			"port": 2375
+		}
+	},
+	"OAUTH": {
+		"name": "SURFconext",
+		"authorization_endpoint": "https://connect.test.surfconext.nl/oidc/authorize",
+		"token_endpoint": "https://connect.test.surfconext.nl/oidc/token",
+		"userinfo_endpoint": "https://connect.test.surfconext.nl/oidc/userinfo",
+		"claims": {
+			"id": "sub",
+			"name": "name",
+			"email": "email"
+		}
+	}
+}

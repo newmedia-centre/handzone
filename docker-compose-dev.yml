@@ -21,7 +21,7 @@ services:
       - ALLOW_START=1
       - ALLOW_STOP=1
       - ALLOW_RESTART=1
-      - INFO=1
+      - POST=1
     restart: always
     ports: 
       - "2375:2375"
