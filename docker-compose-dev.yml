@@ -14,7 +14,9 @@ services:
       POSTGRES_DB: handzone
 
   app:
-    image: ghcr.io/newmedia-centre/handzone-server:latest
+    build:
+      context: .
+      dockerfile: dockerfile
     env_file:
       - .env
     restart: always
@@ -24,6 +26,8 @@ services:
     environment:
       VIRTUAL_HOST: ${HOSTNAME}
       DATABASE_URL: "postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/handzone?schema=public"
+    networks:
+      - ${DOCKER_NETWORK}
     volumes:
       - type: bind
         source: /app/config.json
@@ -42,6 +46,8 @@ services:
     container_name: handzone-docker
     volumes:
      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - ${DOCKER_NETWORK}
     deploy:
       placement:
         constraints: [node.role == manager]
