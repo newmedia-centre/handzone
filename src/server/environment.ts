@@ -12,6 +12,7 @@ const envSchema = {
 	PORT: port().default(3000),
 	TCP_PORT: port().default(4000),
 	HOSTNAME: z.string().default('localhost'),
+	URL: z.string(),
 	DOCKER_NETWORK: z.string(),
 
 	DATABASE_URL: z.string(),

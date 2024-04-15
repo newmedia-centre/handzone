@@ -30,7 +30,7 @@ const tokenEndpoint = env.OAUTH.token_endpoint
 
 // create the oauth2 client
 export const oauth = new OAuth2Client(env.OAUTH_CLIENT_ID, authorizeEndpoint, tokenEndpoint, {
-	redirectURI: `http://${env.HOSTNAME}/api/auth/oauth/callback`
+	redirectURI: `${env.URL}/api/auth/oauth/callback`
 })
 
 // get user info from the endpoint
