@@ -13,25 +13,6 @@ services:
       POSTGRES_USER: "${DATABASE_USER}"
       POSTGRES_DB: handzone
 
-  app:
-    image: ghcr.io/newmedia-centre/handzone-server:latest
-    env_file:
-      - .env
-    restart: always
-    ports: 
-      - "3000:3000"
-    container_name: handzone-server
-    environment:
-      VIRTUAL_HOST: ${HOSTNAME}
-      DATABASE_URL: "postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/handzone?schema=public"
-    volumes:
-      - type: bind
-        source: /app/config.json
-        target: /app/config.json
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-
   docker:
     image: tecnativa/docker-socket-proxy
     privileged: true
@@ -50,6 +31,28 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+
+  app:
+    image: ghcr.io/newmedia-centre/handzone-server:latest
+    env_file:
+      - .env
+    restart: always
+    ports: 
+      - "3000:3000"
+    container_name: handzone-server
+    environment:
+      VIRTUAL_HOST: ${HOSTNAME}
+      DATABASE_URL: "postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/handzone?schema=public"
+    volumes:
+      - type: bind
+        source: /app/config.json
+        target: /app/config.json
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    depends_on:
+      - db
+      - docker
 
 networks:
   default:
