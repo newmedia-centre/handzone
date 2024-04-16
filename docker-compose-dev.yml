@@ -43,6 +43,7 @@ services:
     restart: always
     ports: 
       - "3000:3000"
+      - "4000:4000"
     container_name: handzone-server-dev
     environment:
       VIRTUAL_HOST: ${HOSTNAME}
@@ -51,6 +52,9 @@ services:
       - type: bind
         source: ./
         target: /app
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
     depends_on:
       - db
       - docker
