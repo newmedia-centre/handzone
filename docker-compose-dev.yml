@@ -47,8 +47,8 @@ services:
       DATABASE_URL: "postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/handzone?schema=public"
     volumes:
       - type: bind
-        source: ./config.json
-        target: /app/config.json
+        source: ./
+        target: /app
       - type: bind
         source: /var/run/docker.sock
         target: /var/run/docker.sock
