@@ -27,7 +27,9 @@ services:
       - "2375:2375"
     container_name: handzone-docker
     volumes:
-     - /var/run/docker.sock:/var/run/docker.sock
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -49,9 +51,6 @@ services:
       - type: bind
         source: ./
         target: /app
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
     depends_on:
       - db
       - docker
