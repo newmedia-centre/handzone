@@ -32,16 +32,16 @@ services:
       placement:
         constraints: [node.role == manager]
 
-  app:
+  app-dev:
     build:
       context: .
-      dockerfile: dockerfile
+      dockerfile: dockerfile-dev
     env_file:
       - .env
     restart: always
     ports: 
       - "3000:3000"
-    container_name: handzone-server
+    container_name: handzone-server-dev
     environment:
       VIRTUAL_HOST: ${HOSTNAME}
       DATABASE_URL: "postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/handzone?schema=public"

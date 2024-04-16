@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npx tsx src/server/index.ts",
+    "dev": "prisma generate && npm run dev:node",
+    "dev:node": "tsx src/server/index.ts",
     "build:server": "tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
     "build:next": "next build",
     "build": "BUILDING=1 npm run build:next && npm run build:server",
