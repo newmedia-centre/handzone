@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: BasicTutorials
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialMenuData
+  data:
+  - name: Test
+    videoClip: {fileID: 32900000, guid: 145482fdd8382af40ab1840f28b2f5f8, type: 3}
+    overrider: {fileID: 22100000, guid: 82e1d80ecf99c32478c299cb8805c1ad, type: 2}
+  - name: AnotherTest
+    videoClip: {fileID: 32900000, guid: 4d7eedb81c6436c42a0603492aa3bc51, type: 3}
+    overrider: {fileID: 22100000, guid: 29fdfc07d2aa7f348b87ef85e505eba1, type: 2}

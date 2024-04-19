@@ -1,9 +1,11 @@
 using System;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class TutorialMenu : MonoBehaviour
+public class TutorialMenuController : MonoBehaviour
 {
     [Header("Video Player")]
     public Toggle playToggle;
@@ -12,38 +14,54 @@ public class TutorialMenu : MonoBehaviour
     public GameObject playImage;
     public GameObject pauseImage;
 
+    public GameObject videoPlayerObject;
     public VideoPlayer videoPlayer;
 
     [Header("Tutorial list references")]
-    public GameObject viewportContenct;
-    public GameObject tutorialElementPrefab;
+    public GameObject viewportContent;
+    public GameObject listElementPrefab;
 
     [Header("Arm animation reference")]
     public Animator armAnimator;
 
-    [Header("Tutorial Data")]
-    public TutorialData[] tutorialData;
-
     private bool _isSliderCodeUpdate = false;
 
-    private void Start()
+    private void Awake()
     {
-        FillTutorialScroller();
-
         videoPlayer.loopPointReached += EndOfVideo;
         videoPlayer.prepareCompleted += PrepareComplete;
 
         videoSlider.onValueChanged.AddListener(SliderChange);
-
-        armAnimator.speed = 0.0f;
     }
 
-    private void FillTutorialScroller()
+    public void Enter(TutorialData[] tutorialData)
+    {
+        FillTutorialScroller(tutorialData);
+
+        armAnimator.speed = 0.0f;
+        
+        videoPlayerObject.SetActive(true);
+    }
+
+    public void Exit()
+    {
+        Pause_Play(false);
+        EndOfVideo(videoPlayer);
+
+        for (int i = viewportContent.transform.childCount; i > 0; i--)
+        {
+            Destroy(viewportContent.transform.GetChild(i - 1).GameObject());
+        }
+        
+        videoPlayerObject.SetActive(false);
+    }
+
+    private void FillTutorialScroller(TutorialData[] tutorialData)
     {
         foreach(TutorialData _data in tutorialData)
         {
-            GameObject _element = Instantiate(tutorialElementPrefab, viewportContenct.transform);
-            Text _text = _element.GetComponentInChildren<Text>();
+            GameObject _element = Instantiate(listElementPrefab, viewportContent.transform);
+            TMP_Text _text = _element.GetComponentInChildren<TMP_Text>();
             _text.text = _data.name;
             
             Button _button = _element.GetComponentInChildren<Button>();
@@ -64,7 +82,6 @@ public class TutorialMenu : MonoBehaviour
         _isSliderCodeUpdate = true;
         videoSlider.value = 0;
         _isSliderCodeUpdate = false;
-        
         
         if(videoSlider.interactable == false)
         {
@@ -120,6 +137,12 @@ public class TutorialMenu : MonoBehaviour
             _isSliderCodeUpdate = false;
         }
     }
+}
+
+[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/TutorialMenuData", order = 1)]
+public class TutorialMenuData : ScriptableObject
+{
+    public TutorialData[] data;
 }
 
 [System.Serializable]
