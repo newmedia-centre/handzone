@@ -23,7 +23,6 @@ public class WebClient : MonoBehaviour
     public string[] Robots { get; private set; }
 
     public static event Action<RealtimeDataOut> OnRealtimeData;
-    public static event Action<List<IToolpath>> OnToolpaths;
     public static event Action<Texture2D> OnCameraFeed;
     public static event Action<bool> OnDigitalOutputChanged;
     public static event Action<string> OnUnityMessage;
@@ -128,23 +127,7 @@ public class WebClient : MonoBehaviour
 
         _client.On("grasshopper:program", response =>
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-            {
-                var json = response.GetValue<string>();
-                var serializer = new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    NullValueHandling = NullValueHandling.Include,
-                    FloatParseHandling = FloatParseHandling.Double,
-                    TypeNameHandling = TypeNameHandling.Objects,
-                };
-
-                Debug.Log("Received program from server...");
-
-                var deserializedProgram = JsonConvert.DeserializeObject<List<IToolpath>>(json, serializer);
-                Debug.Log("Received toolpaths from server...");
-                OnToolpaths?.Invoke(deserializedProgram);
-            });
+            Debug.Log("Received program from server...");
         });
 
         _client.On("realtime:data", response =>

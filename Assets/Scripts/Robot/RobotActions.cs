@@ -10,5 +10,4 @@ public static class RobotActions
     public static Action<GameObject> OnToolUngrabbed;
     public static Action<float> OnTimeUpdated;
     public static Action<int> OnProgramDurationUpdated;
-    public static Action<RobotProgram.RobotState> OnRobotStateChanged;
 }
