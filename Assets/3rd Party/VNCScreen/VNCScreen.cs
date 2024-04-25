@@ -430,9 +430,19 @@ namespace VNCScreen
             if (!IsConnected) return;
 
             Size s = vnc.BufferSize;
-            Point point = new Point((int)(pos.x * s.Width), (int)((1 - pos.y) * s.Height));
+            Point point = new Point((int)(pos.x * s.Width), (int)((pos.y) * s.Height));
 
             UpdateMouse(point, button0, button1, button2);
+        }
+
+        public void UpdateMouse(Vector2 pos, bool button0)
+        {
+            if (!IsConnected) return;
+
+            Size s = vnc.BufferSize;
+            Point point = new Point((int)(pos.x * s.Width), (int)(pos.y * s.Height));
+
+            UpdateMouse(point, button0, false, false);
         }
 
         public void UpdateMouse(Point pos, bool button0, bool button1, bool button2)

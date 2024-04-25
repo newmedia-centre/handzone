@@ -2448,7 +2448,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras:
-  - {fileID: 878920133}
+  - {fileID: 0}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
@@ -3402,12 +3402,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 853723836}
   m_PrefabAsset: {fileID: 0}
---- !u!20 &878920133 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 3972129529137040259, guid: f6336ac4ac8b4d34bc5072418cdc62a0,
-    type: 3}
-  m_PrefabInstance: {fileID: 620860025}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &903230447
 GameObject:
   m_ObjectHideFlags: 0
@@ -3627,7 +3621,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 4294967295
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -7325,18 +7319,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1987263435}
   m_Mesh: {fileID: 3661821087953271347, guid: cbbc825c091e2b34d82a6af1e01e9756, type: 3}
---- !u!114 &1990494383 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1649920319946850775, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
-    type: 3}
-  m_PrefabInstance: {fileID: 2225032429376532901}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cc329982edfc412a8a508a8e175eef1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2003860401 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3765343446221086213, guid: 89812722be5016f489df95e1e6c688d4,
@@ -9576,7 +9558,7 @@ PrefabInstance:
         type: 3}
       propertyPath: SelectedSegment
       value: 
-      objectReference: {fileID: 1990494383}
+      objectReference: {fileID: 0}
     - target: {fileID: 8595223413597810631, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
         type: 3}
       propertyPath: playerCamera
