@@ -28,6 +28,7 @@
     "socket.io-client": "^4.7.4",
     "tsc-alias": "^1.8.8",
     "typed-emitter": "^2.1.0",
+    "winston": "^3.13.0",
     "znv": "^0.4.0",
     "zod": "^3.22.4"
   },
@@ -39,6 +40,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/semaphore": "^1.1.4",
+    "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",

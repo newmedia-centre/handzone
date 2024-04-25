@@ -36,7 +36,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		})
 	}
 
-	/** Sends an instruction to the rover */
+	/** Sends an instruction to the robot */
 	async send(robot: RobotConnection, instruction: string) {
 		// send the instruction as a utf-8 buffer
 		robot.socket.write(Buffer.from(instruction, 'utf-8'))
