@@ -33,10 +33,12 @@ export interface SocketData {
 export interface NamespaceServerToClientEvents extends GrasshopperServerToClient, UnityServerToClient, RealtimeServerToClient {
 	message: (message: string) => void
 	video: (camera: string, frame: string) => void
+	vnc: (data: string) => void
 }
 
 export interface NamespaceClientToServerEvents extends MotionClientToServer, GrasshopperClientToServer, UnityClientToServer, InterfacesClientToServer, InternalsClientToServer {
 	message: (message: string) => void
+	vnc: (data: string) => void
 }
 
 export interface NamespaceSocketData {

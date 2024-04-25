@@ -38,6 +38,16 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		handleInternalsEvents(socket)
 		handleUnityEvents(socket, positions)
 
+		// handle incoming vnc messages
+		socket.on('vnc', (data) => {
+			robot.vnc?.send(Buffer.from(data, 'base64'))
+		})
+
+		// forward vnc events
+		robot.vnc?.on('data', data => {
+			socket.emit('vnc', data.toString('base64'))
+		})
+
 		// forward video events
 		robot.video?.forEach(video => {
 			video.on('frame', (data) => {

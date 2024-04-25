@@ -23,6 +23,13 @@ type RobotEvents = {
 	response: (response: Buffer) => void
 }
 
+// type all the vnc events
+type VNCEvents = {
+	/** Emitted when a vnc buffer is available */
+	data: (data: Buffer) => void
+}
+
+
 // type all the video events
 type VideoEvents = {
 	/** Emitted when a video frame is available */
@@ -32,4 +39,5 @@ type VideoEvents = {
 // export the typed emitters
 export type ManagerEmitter = TypedEmitter<ManagerEvents>
 export type RobotEmitter = TypedEmitter<RobotEvents>
+export type VNCEmitter = TypedEmitter<VNCEvents>
 export type VideoEmitter = TypedEmitter<VideoEvents>

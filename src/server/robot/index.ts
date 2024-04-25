@@ -10,7 +10,7 @@ import env from '../environment'
 // import types
 import type { Semaphore } from 'semaphore'
 import type { ChildProcess } from 'child_process'
-import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
+import type { RobotEmitter, ManagerEmitter, VideoEmitter, VNCEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
 
 type RobotInfo = typeof env['ROBOTS'][number]
@@ -39,7 +39,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	/** Sends an instruction to the rover */
 	async send(robot: RobotConnection, instruction: string) {
 		// send the instruction as a utf-8 buffer
-		robot.socket.write(Buffer.from(instruction, 'utf-8'))
+		robot.robot.write(Buffer.from(instruction, 'utf-8'))
 	}
 
 	/** sends an instruction with a callback */
@@ -75,7 +75,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		})
 
 		// send the instruction as a utf-8 buffer
-		robot.socket.write(Buffer.from(instruction, 'utf-8'))
+		robot.robot.write(Buffer.from(instruction, 'utf-8'))
 
 		return promise
 	}
@@ -86,6 +86,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 			name: container.Id,
 			address: this._parseAddress(container.NetworkSettings.Networks[env.DOCKER_NETWORK]?.IPAddress),
 			port: 30003,
+			vnc: 5900,
 			camera: []
 		})
 	}
@@ -147,18 +148,19 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 /** Listens for data from a robot over a TCP socket */
 export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	/** The TCP socket for reading data */
-	socket: Socket
+	robot: Socket
+	vnc: VNCConnection | undefined
 	interval?: NodeJS.Timeout
 	realtimeBuffer?: Buffer
 	video?: Set<VideoConnection>
 	info: RobotInfo
 
-	constructor(socket: Socket, info: RobotInfo) {
+	constructor(robot: Socket, info: RobotInfo) {
 		// initialize the EventEmitter
 		super()
 
 		// initialize the class variables
-		this.socket = socket
+		this.robot = robot
 		this.video = new Set()
 		this.info = info
 
@@ -167,11 +169,16 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 			this.video?.add(new VideoConnection(camera))
 		})
 
+		// initialize the vnc connection if the robot has a vnc port
+		if (info.vnc) {
+			this.vnc = new VNCConnection(info)
+		}
+
 		// start the interval at 25hz which should be enough for most applications
 		this.interval = setInterval(() => this.handleRealtimeData(), 40)
 
 		// handle incoming messages
-		this.socket.on('data', (data) => {
+		this.robot.on('data', (data) => {
 			// check if the data is realtime data
 			const header = this.getRealtimeHeader(data)
 
@@ -211,8 +218,70 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	}
 }
 
+export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
+	socket: Socket
+	state: 'connecting' | 'connected' | 'disconnected' | 'failed'
+	_attempts: number
+
+	constructor(robot: RobotInfo) {
+		// initialize the EventEmitter
+		super()
+
+		// initialize the class variables
+		this.state = 'connecting'
+		this._attempts = 5
+
+		// create the TCP client
+		this.socket = new Socket()
+		this.socket.setTimeout(5000)
+		console.info(`[ROBOT-VNC:${robot.address}] Connecting...`)
+		this.socket.connect(robot.vnc!, robot.address)
+
+		// retry until a connection is established
+		this.socket.on('error', (error: NodeJS.ErrnoException) => {
+			// retry if the connection was refused
+			if (error.code === 'ECONNREFUSED' && this._attempts-- > 0) {
+				return setTimeout(() => {
+					console.info(`[ROBOT:${robot.address}] Retrying...`)
+					this.socket.connect(robot.port, robot.address)
+				}, this.socket.timeout || 1000)
+			}
+
+			// set the state to failed if the connection was refused too many times
+			if (this._attempts <= 0) {
+				this.state = 'failed'
+				console.info(`[ROBOT-VNC:${robot.address}] Connect Failed`)
+			}
+
+			// log any errors
+			console.error(error)
+		})
+
+		// add clients when connected
+		this.socket.on('connect', () => {
+			this.state = 'connected'
+			console.info(`[ROBOT-VNC:${robot.address}] Connected`)
+
+			// emit data when received
+			this.socket.on('data', data => {
+				this.emit('data', data)
+			})
+		})
+
+		// remove from clients when closed
+		this.socket.on('close', () => {
+			this.state = 'disconnected'
+			console.info(`[ROBOT-VNC:${robot.address}] Disconnected`)
+		})
+	}
+
+	// send data to the vnc server
+	send(data: Buffer) {
+		this.socket.write(data)
+	}
+}
+
 export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
-	/** The TCP socket for reading data */
 	process?: ChildProcess
 	camera: CameraInfo
 
