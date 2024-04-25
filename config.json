@@ -3,7 +3,8 @@
 		{
 			"name": "Robot 1",
 			"port": 30003,
-			"address": "172.19.14.251",
+			"vnc": 5900,
+			"address": "host.docker.internal",
 			"camera": [
 				{
 					"name": "Static",

@@ -4,13 +4,14 @@ import { Socket, createServer } from 'net'
 import { spawn } from 'child_process'
 import { parseRealtimeData } from '@/server/socket/realtime'
 import { Buffer } from 'buffer'
+import { VNCConnection } from './vnc'
 import semaphore from 'semaphore'
 import env from '../environment'
 
 // import types
 import type { Semaphore } from 'semaphore'
 import type { ChildProcess } from 'child_process'
-import type { RobotEmitter, ManagerEmitter, VideoEmitter, VNCEmitter } from './events'
+import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
 
 type RobotInfo = typeof env['ROBOTS'][number]
@@ -112,6 +113,11 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		console.info(`[ROBOT:${robot.address}] Connecting...`)
 		socket.connect(robot.port, robot.address)
 
+		// initialize the vnc connection if the robot has a vnc port
+		if (robot.vnc) {
+			new VNCConnection(robot)
+		}
+
 		// retry until a connection is established
 		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
@@ -169,11 +175,6 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 			this.video?.add(new VideoConnection(camera))
 		})
 
-		// initialize the vnc connection if the robot has a vnc port
-		if (info.vnc) {
-			this.vnc = new VNCConnection(info)
-		}
-
 		// start the interval at 25hz which should be enough for most applications
 		this.interval = setInterval(() => this.handleRealtimeData(), 40)
 
@@ -215,69 +216,6 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	getRealtimeHeader(data: Buffer) {
 		// verify the size of the package, realtime data has a fixed size of 1220 bytes, if so, return true
 		return data.length % 1220 === 0
-	}
-}
-
-export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
-	socket: Socket
-	state: 'connecting' | 'connected' | 'disconnected' | 'failed'
-	_attempts: number
-
-	constructor(robot: RobotInfo) {
-		// initialize the EventEmitter
-		super()
-
-		// initialize the class variables
-		this.state = 'connecting'
-		this._attempts = 5
-
-		// create the TCP client
-		this.socket = new Socket()
-		this.socket.setTimeout(5000)
-		console.info(`[ROBOT-VNC:${robot.address}] Connecting...`)
-		this.socket.connect(robot.vnc!, robot.address)
-
-		// retry until a connection is established
-		this.socket.on('error', (error: NodeJS.ErrnoException) => {
-			// retry if the connection was refused
-			if (error.code === 'ECONNREFUSED' && this._attempts-- > 0) {
-				return setTimeout(() => {
-					console.info(`[ROBOT:${robot.address}] Retrying...`)
-					this.socket.connect(robot.port, robot.address)
-				}, this.socket.timeout || 1000)
-			}
-
-			// set the state to failed if the connection was refused too many times
-			if (this._attempts <= 0) {
-				this.state = 'failed'
-				console.info(`[ROBOT-VNC:${robot.address}] Connect Failed`)
-			}
-
-			// log any errors
-			console.error(error)
-		})
-
-		// add clients when connected
-		this.socket.on('connect', () => {
-			this.state = 'connected'
-			console.info(`[ROBOT-VNC:${robot.address}] Connected`)
-
-			// emit data when received
-			this.socket.on('data', data => {
-				this.emit('data', data)
-			})
-		})
-
-		// remove from clients when closed
-		this.socket.on('close', () => {
-			this.state = 'disconnected'
-			console.info(`[ROBOT-VNC:${robot.address}] Disconnected`)
-		})
-	}
-
-	// send data to the vnc server
-	send(data: Buffer) {
-		this.socket.write(data)
 	}
 }
 
