@@ -1,7 +1,7 @@
 ##### DEPENDENCIES
 FROM --platform=linux/amd64 node:20-alpine3.18 AS deps
 RUN apk add --no-cache libc6-compat openssl1.1-compat
-RUN apt-get -y update && apt-get -y upgrade && apt-get install -y --no-install-recommends ffmpeg
+RUN apk update && apk add ffmpeg
 WORKDIR /app
 
 # Install Prisma Client
