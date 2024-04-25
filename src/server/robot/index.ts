@@ -39,7 +39,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	/** Sends an instruction to the rover */
 	async send(robot: RobotConnection, instruction: string) {
 		// send the instruction as a utf-8 buffer
-		robot.robot.write(Buffer.from(instruction, 'utf-8'))
+		robot.socket.write(Buffer.from(instruction, 'utf-8'))
 	}
 
 	/** sends an instruction with a callback */
@@ -75,7 +75,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		})
 
 		// send the instruction as a utf-8 buffer
-		robot.robot.write(Buffer.from(instruction, 'utf-8'))
+		robot.socket.write(Buffer.from(instruction, 'utf-8'))
 
 		return promise
 	}
@@ -148,8 +148,8 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 /** Listens for data from a robot over a TCP socket */
 export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	/** The TCP socket for reading data */
-	robot: Socket
-	vnc: VNCConnection | undefined
+	socket: Socket
+	vnc?: VNCConnection
 	interval?: NodeJS.Timeout
 	realtimeBuffer?: Buffer
 	video?: Set<VideoConnection>
@@ -160,7 +160,7 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 		super()
 
 		// initialize the class variables
-		this.robot = robot
+		this.socket = robot
 		this.video = new Set()
 		this.info = info
 
@@ -178,7 +178,7 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 		this.interval = setInterval(() => this.handleRealtimeData(), 40)
 
 		// handle incoming messages
-		this.robot.on('data', (data) => {
+		this.socket.on('data', (data) => {
 			// check if the data is realtime data
 			const header = this.getRealtimeHeader(data)
 
