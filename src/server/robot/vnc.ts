@@ -22,6 +22,7 @@ enum RFBHandshake {
 export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 	socket: Socket
 	state: 'connecting' | 'handshake' | 'connected' | 'disconnected' | 'failed'
+	protocolVersion?: string
 	serverInit: Buffer
 	_state: RFBHandshake
 	_attempts: number
@@ -98,6 +99,7 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 			// parse the protocol version
 			const protocolVersion = data.subarray(0, 12).toString('ascii')
 			console.log('RFB VER: ' + protocolVersion)
+			this.protocolVersion = protocolVersion
 
 			// write the protocol version we support
 			this._state = RFBHandshake.HANDSHAKE_SECURITY
