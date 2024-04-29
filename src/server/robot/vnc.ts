@@ -91,6 +91,11 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 		this.socket.write(data)
 	}
 
+	// update the pixel format
+	updatePixelFormat(data: Buffer) {
+		const pixelFormat = data.subarray(3, 20)
+	}
+
 	// handle the vnc handshake
 	_handshake(data: Buffer) {
 		// protocol version handshake

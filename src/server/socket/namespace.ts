@@ -43,6 +43,11 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 			robot.vnc?.send(Buffer.from(data, 'base64'))
 		})
 
+		socket.on('vnc:pixelformat', (data) => {
+			robot.vnc?.updatePixelFormat(Buffer.from(data, 'base64'))
+			robot.vnc?.send(Buffer.from(data, 'base64'))
+		})
+
 		// forward vnc events
 		robot.vnc?.on('data', data => {
 			socket.emit('vnc', data.toString('base64'))

@@ -39,6 +39,7 @@ export interface NamespaceServerToClientEvents extends GrasshopperServerToClient
 export interface NamespaceClientToServerEvents extends MotionClientToServer, GrasshopperClientToServer, UnityClientToServer, InterfacesClientToServer, InternalsClientToServer {
 	message: (message: string) => void
 	vnc: (data: string) => void
+	'vnc:pixelformat': (data: string) => void
 }
 
 export interface NamespaceSocketData {
