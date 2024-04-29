@@ -94,7 +94,10 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 
 	// update the pixel format
 	updatePixelFormat(data: Buffer) {
+		const prepend = this.serverInit.subarray(0, 4)
 		const pixelFormat = data.subarray(3, 20)
+		const append = this.serverInit.subarray(20, this.serverInit.length)
+		this.serverInit = Buffer.concat([prepend, pixelFormat, append])
 	}
 
 	// handle the vnc handshake
