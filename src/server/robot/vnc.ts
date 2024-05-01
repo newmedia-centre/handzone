@@ -277,7 +277,6 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 		switch (encoding) {
 			case 16:
 				const length = this._buff.readUInt32BE(this._expectedLength + 12)
-				console.log('ENC:', encoding, 'LENGTH:', length + 16)
 				return length + 16
 		}
 
