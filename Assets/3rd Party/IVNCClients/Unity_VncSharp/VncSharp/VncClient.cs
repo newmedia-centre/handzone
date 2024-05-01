@@ -370,8 +370,9 @@ namespace UnityVncSharp
                 if (CheckIfThreadDone())
                     break;
 
-                if (WebClient.Instance.vncStream.Position >= WebClient.Instance.streamLength)
+                if (WebClient.Instance.vncStream.Position >= WebClient.Instance.vncStream.Length)
                 {
+                    Thread.Sleep(50);
                     continue;
                 }
                 
