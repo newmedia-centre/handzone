@@ -26,6 +26,9 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 	serverInit: Buffer
 	_state: RFBHandshake
 	_attempts: number
+	_buff: Buffer
+	_expectedLength: number
+	_currentMessageType: number
 
 	constructor(robot: RobotInfo) {
 		// initialize the EventEmitter
@@ -36,6 +39,9 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 		this.serverInit = Buffer.from([])
 		this._state = RFBHandshake.CONNECTING
 		this._attempts = 5
+		this._buff = Buffer.from([])
+		this._expectedLength = 0
+		this._currentMessageType = -1
 
 		// create the TCP client
 		this.socket = new Socket()
@@ -72,8 +78,18 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 			// emit data when received
 			this.socket.on('data', data => {
 				if (this._state === RFBHandshake.CONNECTED) {
-					console.log('vnc data: ', data.length)
-					this.emit('data', data)
+					this._buff = Buffer.concat([this._buff, data])
+					this._setHeader(data)
+
+					// check if the buffer is complete
+					if (this._checkLength()) {
+						console.log('SENDING FULL PACKET:', this._buff.length, this._expectedLength)
+						this.emit('data', this._buff)
+						this._buff = Buffer.from([])
+						this._expectedLength = -1
+					} else {
+						console.log('DATA IS PARTIAL PACKET:', this._buff.length, this._expectedLength)
+					}
 				} else {
 					this._handshake(data)
 				}
@@ -174,15 +190,98 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 
 		// server init
 		if (this._state === RFBHandshake.INITIALIZE) {
-			console.log('RFB INIT')
-
 			// save the server init message
-			this.serverInit = data
+			console.log('RFB INIT:', data)
+			this.serverInit = Buffer.from(data)
 
 			// set the state to connected
 			this._state = RFBHandshake.CONNECTED
 			this.state = 'connected'
 			return
 		}
+	}
+
+	// check if the data is a header
+	_setHeader(data: Buffer): boolean {
+		const messageType = data.readInt8(0)
+
+		if (messageType === 0 || messageType === 1) {
+			// check if the bit after the message type is empty padding
+			const padding = data.readUInt8(1)
+
+			if (padding === 0) {
+				this._currentMessageType = messageType
+				console.log('GOT MESSAGE TYPE:', messageType ? 'SET COLOUR MAP' : 'FRAMEBUFFER UPDATE')
+				return true
+			}
+			return false
+		}
+
+		// message-type 2 is always a new packet
+		if (messageType === 2) {
+			this._currentMessageType = messageType
+			console.log('GOT MESSAGE TYPE: BELL')
+			return true
+		}
+
+		if (messageType === 3) {
+			// check if the bit after the message type is empty padding
+			const padding = data.readUInt8(1) + data.readUInt8(2) + data.readUInt8(3)
+
+			if (padding === 0) {
+				this._currentMessageType = messageType
+				console.log('GOT MESSAGE TYPE: SERVER CUT TEXT')
+				return true
+			}
+			return false
+		}
+
+		return false
+	}
+
+	// check message length, return true if the data contains a full message
+	_checkLength(): boolean {
+		switch (this._currentMessageType) {
+			// framebuffer update
+			case 0:
+				this._expectedLength = 4
+				const numRectangles = this._buff.readUInt16BE(2)
+				console.log('NUM RECTANGLES:', numRectangles)
+				for (let i = 0; i < numRectangles; i++) {
+					const encoding = this._buff.readUInt32BE(this._expectedLength + 8)
+					this._expectedLength = this._expectedLength + this._getEncodingLength(encoding)
+				}
+				break
+			// set colour map entries
+			case 1:
+				this._expectedLength = this._buff.readUint16BE(4) + 6
+				break
+			// bell
+			case 2:
+				return true
+			// server cut text
+			case 3:
+				this._expectedLength = this._buff.readUInt32BE(4) + 8
+				break
+		}
+
+		if (this._expectedLength === this._buff.length) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	// parse the length for each encoding
+	_getEncodingLength(encoding: number): number {
+		switch (encoding) {
+			case 16:
+				const length = this._buff.readUInt32BE(this._expectedLength + 12)
+				console.log('ENC:', encoding, 'LENGTH:', length + 16)
+				return length + 16
+		}
+
+		console.log('ENC:', encoding, 'NOT SUPPORTED')
+		return -1
 	}
 }

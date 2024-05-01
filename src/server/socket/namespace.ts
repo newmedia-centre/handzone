@@ -40,6 +40,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 
 		// handle incoming vnc messages
 		socket.on('vnc', (data) => {
+			console.log('VNC CLIENT:', Buffer.from(data, 'base64'))
 			robot.vnc?.send(Buffer.from(data, 'base64'))
 		})
 
@@ -50,10 +51,11 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 
 		// forward vnc events
 		robot.vnc?.on('data', data => {
+			console.log('VNC Server:', data)
 			socket.emit('vnc', data.toString('base64'))
 		})
 
-		// emit the vnc init
+		console.log('VNC INIT SEND:', robot.vnc?.serverInit)
 		socket.emit('vnc:init', robot.vnc?.serverInit.toString('base64') || '')
 
 		// forward video events

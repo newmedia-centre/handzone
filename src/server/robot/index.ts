@@ -113,11 +113,6 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		console.info(`[ROBOT:${robot.address}] Connecting...`)
 		socket.connect(robot.port, robot.address)
 
-		// initialize the vnc connection if the robot has a vnc port
-		if (robot.vnc) {
-			new VNCConnection(robot)
-		}
-
 		// retry until a connection is established
 		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
@@ -169,6 +164,11 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 		this.socket = robot
 		this.video = new Set()
 		this.info = info
+
+		// initialize the vnc connection if the robot has a vnc port
+		if (info.vnc) {
+			this.vnc = new VNCConnection(info)
+		}
 
 		// initialize the video connection if the robot has a camera
 		info.camera.forEach(camera => {
