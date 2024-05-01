@@ -56,7 +56,7 @@ namespace UnityVncSharp.Internal
 		public EncodedRectangle Build(Rectangle rectangle, int BitsPerPixel, int encoding)
 		{
 			EncodedRectangle e = null;
-
+			
 			switch (encoding) {
 				case RfbProtocol.RAW_ENCODING:
 					e = new RawRectangle(rfb, BitsPerPixel, rectangle);

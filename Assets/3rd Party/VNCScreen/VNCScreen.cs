@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using System.Threading;
+using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
 using UnityEngine.UI;
 using VNCScreen.Drawing;
@@ -59,7 +60,6 @@ namespace VNCScreen
         public int port = 5900;
         public bool viewOnly = false;
         public int display = 0;
-        public string password;
 
         public Material disconnectedScreen;
         public Material connectedMaterial;
@@ -68,7 +68,6 @@ namespace VNCScreen
         public Size ScreenSize { get { return screenSize; } }
 
         public bool connectOnStartUp;
-        bool passwordPending = false;            // After Connect() is called, a password might be required.
         bool fullScreenRefresh = false;		     // Whether or not to request the entire remote screen be sent.
 
         private Material m;
@@ -78,7 +77,7 @@ namespace VNCScreen
         // Use this for initialization
         void Start()
         {
-            mainThread = System.Threading.Thread.CurrentThread;
+            mainThread = Thread.CurrentThread;
 
             setDisconnectedMaterial();
             if (connectOnStartUp)
@@ -162,6 +161,11 @@ namespace VNCScreen
                 Disconnect();
             }
 
+            while (!WebClient.Instance.vncConnected)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
             while (state != RuntimeState.Disconnected)
             {
                 yield return new WaitForEndOfFrame();
@@ -181,28 +185,11 @@ namespace VNCScreen
             while (!connectionReceived)
                 yield return new WaitForFixedUpdate();
 
-            if (needPassword)
-            {
-                // Server needs a password, so call which ever method is refered to by the GetPassword delegate.
-                if (string.IsNullOrEmpty(password))
-                {
-                    // No password could be obtained (e.g., user clicked Cancel), so stop connecting
-                    SetState(RuntimeState.Error);
-                }
-                else
-                {
-                    Authenticate(password);
-                }
-            }
-            else
-            {
-                // No password needed, so go ahead and Initialize here
-                Initialize();
-            }
+            // No password needed, so go ahead and Initialize here
+            Initialize();
         }
 
         bool connectionReceived;
-        bool needPassword;
 
         private void Vnc_onConnection(Exception errorConnection, bool needPassword)
         {
@@ -212,39 +199,8 @@ namespace VNCScreen
                 return;
             }
             this.connectionReceived = true;
-            this.needPassword = needPassword;
         }
-
-        /// <summary>
-        /// Authenticate with the VNC Host using a user supplied password.
-        /// </summary>
-        /// <exception cref="System.InvalidOperationException">Thrown if the RemoteDesktop control is already Connected.  See <see cref="VncSharp.RemoteDesktop.IsConnected" />.</exception>
-        /// <exception cref="System.NullReferenceException">Thrown if the password is null.</exception>
-        /// <param name="password">The user's password.</param>
-        public void Authenticate(string password)
-        {
-            if (!passwordPending)
-                throw new InvalidOperationException("Authentication is only required when Connect() returns True and the VNC Host requires a password.");
-
-            if (password == null)
-                throw new NullReferenceException("password");
-
-            passwordPending = false;  // repeated calls to Authenticate should fail.
-            vnc.Authenticate(password, OnPassword);
-        }
-
-        void OnPassword(bool ok)
-        {
-            if (ok)
-            {
-                Initialize();
-            }
-            else
-            {
-                OnConnectionLost("Wrong Password");
-            }
-        }
-
+        
         void OnConnectionLost(string reason)
         {
             OnConnectionLost(this, new ErrorEventArg(reason));
@@ -413,6 +369,7 @@ namespace VNCScreen
 
             for (int i = 0; i < stateChanges.Count; i++)
             {
+                Debug.Log(stateChanges[i]);
                 SetState(stateChanges[i]);
             }
 

@@ -43,8 +43,6 @@ namespace UnityVncSharp.Imaging
 
         public Bitmap(int w, int h)
         {
-       
-
             size = new Size(w, h);
             texture = new Texture2D(w, h, TextureFormat.ARGB32, true);
             texture.filterMode = FilterMode.Point;
