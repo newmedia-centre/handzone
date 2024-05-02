@@ -24,6 +24,7 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 	state: 'connecting' | 'handshake' | 'connected' | 'disconnected' | 'failed'
 	protocolVersion?: string
 	serverInit: Buffer
+	initialFrameBuffer?: Buffer
 	_state: RFBHandshake
 	_attempts: number
 	_buff: Buffer
@@ -85,6 +86,10 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 					if (this._checkLength()) {
 						console.log('SENDING FULL PACKET:', this._buff.length, this._expectedLength)
 						this.emit('data', this._buff)
+						if (this._currentMessageType === 0 && !this.initialFrameBuffer) {
+							this.initialFrameBuffer = Buffer.from(this._buff)
+							console.log('INITIAL FRAMEBUFFER SET:', this.initialFrameBuffer.length)
+						}
 						this._buff = Buffer.from([])
 						this._expectedLength = -1
 					} else {
@@ -167,7 +172,7 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 			// check if the security result is successful
 			if (securityResult === 0) {
 				this._state = RFBHandshake.INITIALIZE
-				this.socket.write(Buffer.from([0])) // shared flag: 0: exclusive, 1: shared
+				this.socket.write(Buffer.from([1])) // shared flag: 0: exclusive, 1: shared
 				return
 			}
 
@@ -193,6 +198,15 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 			// save the server init message
 			console.log('RFB INIT:', data)
 			this.serverInit = Buffer.from(data)
+
+			// send pixelformat and encoding
+			this.socket.write(Buffer.from([0x00, 0x00, 0x00, 0x00, 0x20, 0x18, 0x00, 0x01, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00]))
+			this.socket.write(Buffer.from([0x02, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00]))
+			this.socket.write(Buffer.from([0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x20, 0x02, 0x58]))
+
+			setInterval(() => {
+				this.socket.write(Buffer.from([0x03, 0x01, 0x00, 0x00, 0x00, 0x00, 0x03, 0x20, 0x02, 0x58]))
+			}, 40)
 
 			// set the state to connected
 			this._state = RFBHandshake.CONNECTED
@@ -249,7 +263,7 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 				console.log('NUM RECTANGLES:', numRectangles)
 				for (let i = 0; i < numRectangles; i++) {
 					const encoding = this._buff.readUInt32BE(this._expectedLength + 8)
-					this._expectedLength = this._expectedLength + this._getEncodingLength(encoding)
+					this._expectedLength = this._expectedLength + this._getEncodingLength(encoding) + 12
 				}
 				break
 			// set colour map entries
@@ -265,7 +279,7 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 				break
 		}
 
-		if (this._expectedLength === this._buff.length) {
+		if (this._expectedLength <= this._buff.length) {
 			return true
 		} else {
 			return false
@@ -275,9 +289,16 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 	// parse the length for each encoding
 	_getEncodingLength(encoding: number): number {
 		switch (encoding) {
+			case 0:
+				return 800 * 600 * 3
+			case 1:
+				return 4
+			case 2:
+				const rectangles = this._buff.readUInt32BE(this._expectedLength + 12)
+				return 7 + (rectangles * 11)
 			case 16:
 				const length = this._buff.readUInt32BE(this._expectedLength + 12)
-				return length + 16
+				return length + 4
 		}
 
 		console.log('ENC:', encoding, 'NOT SUPPORTED')
