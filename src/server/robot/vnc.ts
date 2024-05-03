@@ -279,7 +279,8 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 				break
 		}
 
-		if (this._expectedLength <= this._buff.length) {
+		// this might fail cause sometimes we get 2 packets combined, we need to check if this has to do with the errors on the client
+		if (this._expectedLength === this._buff.length) {
 			return true
 		} else {
 			return false
