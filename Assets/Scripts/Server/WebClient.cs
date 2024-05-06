@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
@@ -10,6 +13,7 @@ using Schema.Socket.Realtime;
 using Schema.Socket.Unity;
 using SocketIO.Serializer.NewtonsoftJson;
 using Schema.Socket.Internals;
+using Unity.VisualScripting;
 
 public class WebClient : MonoBehaviour
 {
@@ -19,9 +23,13 @@ public class WebClient : MonoBehaviour
     private Queue<RealtimeDataOut> _dataQueue;
     private Texture2D _cameraFeedTexture;
     private bool _digitalOutput;
+    
+    public bool vncConnected { get; private set; }
 
     public string[] Robots { get; private set; }
-
+    public MemoryStream vncStream { get; private set; }
+    public Semaphore vncLock = new Semaphore(1, 1);
+    
     public static event Action<RealtimeDataOut> OnRealtimeData;
     public static event Action<Texture2D> OnCameraFeed;
     public static event Action<bool> OnDigitalOutputChanged;
@@ -37,7 +45,7 @@ public class WebClient : MonoBehaviour
     public event Action OnSessionLeft;
 
     public static WebClient Instance { get; private set; }
-
+    
     private void Awake()
     {
         if (Instance == null)
@@ -54,6 +62,7 @@ public class WebClient : MonoBehaviour
     private async void Start()
     {
         _cameraFeedTexture = new Texture2D(2, 2);
+        vncStream = new MemoryStream(65536);
 
         _dataQueue = new Queue<RealtimeDataOut>();
         _client = new SocketIOClient.SocketIO(url);
@@ -120,7 +129,42 @@ public class WebClient : MonoBehaviour
                 OnCameraFeed?.Invoke(_cameraFeedTexture);
             });
         });
+        
+        // Register event for the web client that are specific to the VNC connection
+        _client.On("vnc", response =>
+        {
+            var base64 = response.GetValue<string>();
+            Debug.Log("vnc event: " + Convert.FromBase64String(base64).Length);
+            // Debug.Log("vnc event data: " + Convert.FromBase64String(base64).ToHexString());
 
+            Debug.Log("Write lock");
+            vncLock.WaitOne();
+            Debug.Log("Write lock acquired");
+            vncStream.SetLength(Convert.FromBase64String(base64).Length);
+            vncStream.Position = 0;
+            vncStream.Write(Convert.FromBase64String(base64));
+            vncStream.Flush();
+            vncStream.Position = 0;
+            vncLock.Release();
+            Debug.Log("Write lock released");
+        });
+        
+        // Register event for the web client that are specific to the VNC ServerInit
+        _client.On("vnc:init", response =>
+        {
+            var base64 = response.GetValue<string>();
+            Debug.Log("vnc:init event: " + Convert.FromBase64String(base64).Length);
+            // Debug.Log("vnc:init event data: " + Convert.FromBase64String(base64).ToHexString());
+            
+            vncLock.WaitOne();
+            vncConnected = true;
+            vncStream.SetLength(Convert.FromBase64String(base64).Length);
+            vncStream.Position = 0;
+            vncStream.Write(Convert.FromBase64String(base64));
+            vncStream.Flush();
+            vncStream.Position = 0;
+            vncLock.Release();
+        });
         // Register events for the web client that are specific to Grasshopper
 
         # region Grasshopper events
@@ -185,6 +229,21 @@ public class WebClient : MonoBehaviour
             OnKinematicCallback?.Invoke(response.GetValue<InternalsGetInverseKinCallback>());
             function?.Invoke();
         }, data);
+    }
+    
+    public void WriteVNC(byte[] data)
+    {
+        _client.EmitAsync("vnc", Convert.ToBase64String(data));
+    }
+
+    public void WriteVNC(byte data)
+    {
+        _client.EmitAsync("vnc", Convert.ToBase64String(new byte[] { data }));
+    }
+
+    public void WriteVNCPixelFormat(byte[] data)
+    {
+        _client.EmitAsync("vnc:pixelformat", Convert.ToBase64String(data));
     }
 
     public void Speedl(Vector3 translateDirection, Vector3 rotateAxis, float a, float t)
@@ -251,6 +310,8 @@ public class WebClient : MonoBehaviour
 
     private async void OnDestroy()
     {
+        await vncStream.DisposeAsync();
+        
         if (_client != null)
         {
             await _client.DisconnectAsync();
