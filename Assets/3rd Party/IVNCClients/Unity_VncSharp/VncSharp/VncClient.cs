@@ -275,14 +275,14 @@ namespace UnityVncSharp
 
             theBitmap = new Bitmap(bufferInfos.Width, bufferInfos.Height);
 
-            rfb.WriteSetPixelFormat(bufferInfos);    // just use the server's framebuffer format
+            // rfb.WriteSetPixelFormat(bufferInfos);    // just use the server's framebuffer format
 
-            rfb.WriteSetEncodings(new uint[] {  RfbProtocol.ZRLE_ENCODING,
-                                                RfbProtocol.HEXTILE_ENCODING, 
-											//	RfbProtocol.CORRE_ENCODING, // CoRRE is buggy in some hosts, so don't bother using
-												RfbProtocol.RRE_ENCODING,
-                                                RfbProtocol.COPYRECT_ENCODING,
-                                                RfbProtocol.RAW_ENCODING });
+           //  rfb.WriteSetEncodings(new uint[] {  RfbProtocol.ZRLE_ENCODING,
+           //                                      RfbProtocol.HEXTILE_ENCODING, 
+											// //	RfbProtocol.CORRE_ENCODING, // CoRRE is buggy in some hosts, so don't bother using
+											// 	RfbProtocol.RRE_ENCODING,
+           //                                      RfbProtocol.COPYRECT_ENCODING,
+           //                                      RfbProtocol.RAW_ENCODING });
 
             // Create an EncodedRectangleFactory so that EncodedRectangles can be built according to set pixel layout
             factory = new EncodedRectangleFactory(rfb);
@@ -311,18 +311,6 @@ namespace UnityVncSharp
 
             // Stop the worker thread.
             done.Set();
-
-            // BUG FIX: Simon.Phillips@warwick.ac.uk for UltraVNC disconnect issue
-            // Request a tiny screen update to flush the blocking read
-            try
-            {
-                rfb.WriteFramebufferUpdateRequest(0, 0, 1, 1, false);
-            }
-            catch
-            {
-                // this may not work, as Disconnect can get called in response to the
-                // VncClient raising a ConnectionLost event (e.g., the remote host died).
-            }
 
             worker.Join(3000);  // this number is arbitrary, just so that it doesn't block forever....
 
@@ -364,24 +352,30 @@ namespace UnityVncSharp
 
             // Get the initial destkop from the host
             RequestScreenUpdate(true);
-
+            
             while (true)
             {
+                
                 if (CheckIfThreadDone())
                     break;
 
+                
+                // Debug.Log("Pos: " + WebClient.Instance.vncStream.Position + " / Length: " + WebClient.Instance.vncStream.Length);
                 if (WebClient.Instance.vncStream.Position >= WebClient.Instance.vncStream.Length)
                 {
-                    Thread.Sleep(50);
                     continue;
                 }
-                
+
+                Debug.Log("Read lock");
+                WebClient.Instance.vncLock.WaitOne();
+                Debug.Log("Read lock acquired");
                 try
                 {
                     switch (rfb.ReadServerMessageType())
                     {
                         case RfbProtocol.FRAMEBUFFER_UPDATE:
                             rectangles = rfb.ReadFramebufferUpdate();
+                            Debug.Log("Reading framebuffer update");
 
                             if (CheckIfThreadDone())
                                 break;
@@ -425,8 +419,14 @@ namespace UnityVncSharp
                 }
                 catch (Exception e)
                 {
-                    OnConnectionLost(e);
+                    Debug.LogWarning(e.Message);
+                    // OnConnectionLost(e);
                 }
+                
+                WebClient.Instance.vncLock.Release();
+                Debug.Log("Read lock released");
+                
+                Thread.Sleep(40);
             }
         }
 

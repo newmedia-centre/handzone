@@ -73,6 +73,7 @@ namespace VNCScreen
         private Material m;
 
         Thread mainThread;
+        float targetTime = 1f;
 
         // Use this for initialization
         void Start()
@@ -359,10 +360,17 @@ namespace VNCScreen
 
                 if (state == RuntimeState.Connected)
                 {
-                    vnc.RequestScreenUpdate(fullScreenRefresh);
+                    // targetTime -= Time.deltaTime;
 
-                    // Make sure the next screen update is incremental
-                    fullScreenRefresh = false;
+                    // if (targetTime <= 0.0f)
+                    // {
+                        // Request a screen update from the remote host
+                        // vnc.RequestScreenUpdate(fullScreenRefresh);
+
+                        // Make sure the next screen update is incremental
+                        fullScreenRefresh = false;
+                        // targetTime = 1.0f;
+                    // }
                 }
 
             }
