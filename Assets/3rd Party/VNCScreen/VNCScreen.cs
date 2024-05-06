@@ -73,7 +73,6 @@ namespace VNCScreen
         private Material m;
 
         Thread mainThread;
-        float targetTime = 1f;
 
         // Use this for initialization
         void Start()

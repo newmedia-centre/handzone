@@ -26,7 +26,8 @@ using VNCScreen.Drawing;
 
 using System.Diagnostics;
 using System.Security.Cryptography;
-
+using PimDeWitte.UnityMainThreadDispatcher;
+using UnityEditor.Search;
 using VNCScreen;
 using UnityVncSharp.Encodings;
 using UnityVncSharp.Internal;
@@ -359,16 +360,23 @@ namespace UnityVncSharp
                 if (CheckIfThreadDone())
                     break;
 
-                
-                // Debug.Log("Pos: " + WebClient.Instance.vncStream.Position + " / Length: " + WebClient.Instance.vncStream.Length);
-                if (WebClient.Instance.vncStream.Position >= WebClient.Instance.vncStream.Length)
+                WebClient.Instance.vncLock.WaitOne();
+                // Debug.Log("Read lock acquired");
+
+                Debug.Log("Stream Length: " + WebClient.Instance.vncStream.Length);
+                if (WebClient.Instance.IsVncStreamAtEnd() || WebClient.Instance.vncStream.Length == 0)
                 {
+                    // Clear the stream
+                    WebClient.Instance.vncStream.SetLength(0);
+                    WebClient.Instance.vncStream.Position = 0;
+                    WebClient.Instance.vncLock.Release();
                     continue;
                 }
 
-                Debug.Log("Read lock");
-                WebClient.Instance.vncLock.WaitOne();
-                Debug.Log("Read lock acquired");
+                Debug.Log("Reading from stream");
+                Debug.Log(WebClient.Instance.vncStream.Position + " / " + WebClient.Instance.vncStream.Length);
+
+                
                 try
                 {
                     switch (rfb.ReadServerMessageType())
@@ -423,10 +431,12 @@ namespace UnityVncSharp
                     // OnConnectionLost(e);
                 }
                 
+                // Clear the stream
+                WebClient.Instance.vncStream.SetLength(0);
+                WebClient.Instance.vncStream.Position = 0;
                 WebClient.Instance.vncLock.Release();
-                Debug.Log("Read lock released");
                 
-                Thread.Sleep(40);
+                Thread.Sleep(1000);
             }
         }
 

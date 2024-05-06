@@ -28,7 +28,7 @@ public class WebClient : MonoBehaviour
 
     public string[] Robots { get; private set; }
     public MemoryStream vncStream { get; private set; }
-    public Semaphore vncLock = new Semaphore(1, 1);
+    public Semaphore vncLock = new(1, 1);
     
     public static event Action<RealtimeDataOut> OnRealtimeData;
     public static event Action<Texture2D> OnCameraFeed;
@@ -62,7 +62,7 @@ public class WebClient : MonoBehaviour
     private async void Start()
     {
         _cameraFeedTexture = new Texture2D(2, 2);
-        vncStream = new MemoryStream(65536);
+        vncStream = new MemoryStream();
 
         _dataQueue = new Queue<RealtimeDataOut>();
         _client = new SocketIOClient.SocketIO(url);
@@ -134,29 +134,26 @@ public class WebClient : MonoBehaviour
         _client.On("vnc", response =>
         {
             var base64 = response.GetValue<string>();
-            Debug.Log("vnc event: " + Convert.FromBase64String(base64).Length);
-            // Debug.Log("vnc event data: " + Convert.FromBase64String(base64).ToHexString());
+            // Debug.Log("vnc event: " + Convert.FromBase64String(base64).Length);
 
-            Debug.Log("Write lock");
             vncLock.WaitOne();
-            Debug.Log("Write lock acquired");
+            Debug.Log("Writing to stream");
             vncStream.SetLength(Convert.FromBase64String(base64).Length);
             vncStream.Position = 0;
             vncStream.Write(Convert.FromBase64String(base64));
             vncStream.Flush();
             vncStream.Position = 0;
             vncLock.Release();
-            Debug.Log("Write lock released");
         });
         
         // Register event for the web client that are specific to the VNC ServerInit
         _client.On("vnc:init", response =>
         {
             var base64 = response.GetValue<string>();
-            Debug.Log("vnc:init event: " + Convert.FromBase64String(base64).Length);
-            // Debug.Log("vnc:init event data: " + Convert.FromBase64String(base64).ToHexString());
+            // Debug.Log("vnc:init event: " + Convert.FromBase64String(base64).Length);
             
             vncLock.WaitOne();
+            Debug.Log("Writing to stream");
             vncConnected = true;
             vncStream.SetLength(Convert.FromBase64String(base64).Length);
             vncStream.Position = 0;
@@ -207,6 +204,11 @@ public class WebClient : MonoBehaviour
         #endregion
 
         await _client.ConnectAsync();
+    }
+    
+    public bool IsVncStreamAtEnd()
+    {
+        return vncStream.Position >= vncStream.Length;
     }
 
     public async Task JoinSession(string id)
