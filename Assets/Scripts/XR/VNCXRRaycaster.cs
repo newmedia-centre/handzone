@@ -33,10 +33,13 @@ namespace VNCScreen
 
             if (_xrRayInteractor.TryGetCurrentRaycast(out var raycastHit, out _, out _, out _, out _))
             {
-                raycastHit.Value.collider.TryGetComponent<VNCScreen>(out var vnc);
-                if(vnc != null)
+                if (raycastHit != null)
                 {
-                    vnc.UpdateMouse(raycastHit.Value.textureCoord, _xrRayInteractor.isSelectActive);
+                    raycastHit.Value.collider.TryGetComponent<VNCScreen>(out var vnc);
+                    if(vnc != null)
+                    {
+                        vnc.UpdateMouse(raycastHit.Value.textureCoord, _xrRayInteractor.isSelectActive);
+                    }
                 }
             }
         }
