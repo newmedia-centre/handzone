@@ -262,6 +262,11 @@ export class VNCConnection extends (EventEmitter as new () => VNCEmitter) {
 				const numRectangles = this._buff.readUInt16BE(2)
 				console.log('NUM RECTANGLES:', numRectangles)
 				for (let i = 0; i < numRectangles; i++) {
+					// return false if the buffer is not long enough so we can wait for new packets
+					if (this._buff.length < this._expectedLength + 12) {
+						break
+					}
+
 					const encoding = this._buff.readUInt32BE(this._expectedLength + 8)
 					this._expectedLength = this._expectedLength + this._getEncodingLength(encoding) + 12
 				}
