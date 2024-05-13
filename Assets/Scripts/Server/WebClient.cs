@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Security;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +29,8 @@ public class WebClient : MonoBehaviour
     public bool vncConnected { get; private set; }
 
     public string[] Robots { get; private set; }
-    public MemoryStream vncStream { get; private set; }
+    public TcpClient vncClient { get; private set; }
+    public SslStream vncStream { get; private set; }
     public Semaphore vncLock = new(1, 1);
     
     public static event Action<RealtimeDataOut> OnRealtimeData;
@@ -62,7 +65,6 @@ public class WebClient : MonoBehaviour
     private async void Start()
     {
         _cameraFeedTexture = new Texture2D(2, 2);
-        vncStream = new MemoryStream();
 
         _dataQueue = new Queue<RealtimeDataOut>();
         _client = new SocketIOClient.SocketIO(url);
@@ -160,6 +162,13 @@ public class WebClient : MonoBehaviour
             vncStream.Write(Convert.FromBase64String(base64));
             vncStream.Flush();
             vncStream.Position = 0;
+            
+                    
+            // vncClient = new TcpClient();
+            // vncClient.NoDelay = true;
+            //
+            // vncStream = new SslStream(vncClient.GetStream(), false);
+            //
             vncLock.Release();
         });
         // Register events for the web client that are specific to Grasshopper
