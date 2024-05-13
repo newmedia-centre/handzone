@@ -4,7 +4,6 @@ import { Socket, createServer } from 'net'
 import { spawn } from 'child_process'
 import { parseRealtimeData } from '@/server/socket/realtime'
 import { Buffer } from 'buffer'
-import { VNCConnection } from './vnc'
 import semaphore from 'semaphore'
 import env from '../environment'
 
@@ -13,6 +12,7 @@ import type { Semaphore } from 'semaphore'
 import type { ChildProcess } from 'child_process'
 import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
+import { VNCProxy } from './proxy'
 
 type RobotInfo = typeof env['ROBOTS'][number]
 type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
@@ -150,7 +150,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	/** The TCP socket for reading data */
 	socket: Socket
-	vnc?: VNCConnection
+	vnc?: VNCProxy
 	interval?: NodeJS.Timeout
 	realtimeBuffer?: Buffer
 	video?: Set<VideoConnection>
@@ -167,7 +167,8 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 
 		// initialize the vnc connection if the robot has a vnc port
 		if (info.vnc) {
-			this.vnc = new VNCConnection(info)
+			this.vnc = new VNCProxy(info)
+			//this.vnc = new VNCConnection(info)
 		}
 
 		// initialize the video connection if the robot has a camera

@@ -11,6 +11,7 @@ const envSchema = {
 	/** Port that this application runs on, defaults to 3000 */
 	PORT: port().default(3000),
 	TCP_PORT: port().default(4000),
+	VNC_PORT: port().default(5900),
 	HOSTNAME: z.string().default('localhost'),
 	URL: z.string(),
 	DOCKER_NETWORK: z.string(),
