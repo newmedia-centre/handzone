@@ -363,7 +363,9 @@ namespace UnityVncSharp
                 WebClient.Instance.vncLock.WaitOne();
                 // Debug.Log("Read lock acquired");
 
-                Debug.Log("Stream Length: " + WebClient.Instance.vncStream.Length);
+                if(WebClient.Instance.vncStream.Length != 0)
+                    Debug.Log("Stream Length: " + WebClient.Instance.vncStream.Length);
+                
                 if (WebClient.Instance.IsVncStreamAtEnd() || WebClient.Instance.vncStream.Length == 0)
                 {
                     // Clear the stream
