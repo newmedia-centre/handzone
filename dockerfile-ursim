@@ -1,4 +1,4 @@
-FROM universalrobots:ursim_cb3:3.15.8
+FROM universalrobots/ursim_cb3:3.15.8
 
 # Copy your entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
