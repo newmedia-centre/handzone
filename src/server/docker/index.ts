@@ -54,12 +54,13 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		// create container
 		console.log('Creating virtual robot...')
 		const container = await this.docker.createContainer({
-			Image: 'universalrobots/ursim_cb3:3.15.8',
+			Image: 'ghcr.io/newmedia-centre/ursim_cb3:3.15.8',
 			NetworkingConfig: {
 				EndpointsConfig: {
 					[env.DOCKER_NETWORK]: {},
 				}
-			}
+			},
+			Entrypoint: ['/ursim.sh'],
 		})
 
 		// start container
