@@ -20,7 +20,6 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
-		let intialMessage = true
 		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected to namespace ${robot.info.address}`)
 
 		// add the target to the socket data
@@ -38,33 +37,6 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		handleInterfacesEvents(socket)
 		handleInternalsEvents(socket)
 		handleUnityEvents(socket, positions)
-
-		// handle incoming vnc messages
-		socket.on('vnc', (data) => {
-			if (intialMessage) {
-				intialMessage = false
-				console.log('VNC SERVER INITIAL FRAME SEND')
-				socket.emit('vnc', robot.vnc?.initialFrameBuffer?.toString('base64') || '')
-			}
-			console.log('VNC CLIENT:', Buffer.from(data, 'base64'))
-			robot.vnc?.send(Buffer.from(data, 'base64'))
-
-		})
-
-		socket.on('vnc:pixelformat', (data) => {
-			console.log('VNC CLIENT PIXELFORMAT:', Buffer.from(data, 'base64'))
-			//robot.vnc?.updatePixelFormat(Buffer.from(data, 'base64'))
-			//robot.vnc?.send(Buffer.from(data, 'base64'))
-		})
-
-		// forward vnc events
-		robot.vnc?.on('data', data => {
-			console.log('VNC SERVER:', data)
-			socket.emit('vnc', data.toString('base64'))
-		})
-
-		console.log('VNC INIT SEND:', robot.vnc?.serverInit)
-		socket.emit('vnc:init', robot.vnc?.serverInit.toString('base64') || '')
 
 		// forward video events
 		robot.video?.forEach(video => {
