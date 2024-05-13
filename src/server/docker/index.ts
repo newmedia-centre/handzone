@@ -59,8 +59,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 				EndpointsConfig: {
 					[env.DOCKER_NETWORK]: {},
 				}
-			},
-			Entrypoint: ['/ursim.sh'],
+			}
 		})
 
 		// start container
