@@ -27,14 +27,17 @@ public class ChapterMenuController : MonoBehaviour
 
     [HideInInspector]
     public ChapterData currentChapterData;
+
+    private const float PADDING = 12.5f;
+    private const float SIZE_BETWEEN_NODES = 75;
     public void Awake()
     {
         _graphContainerHeight = graphContainer.GetComponent<RectTransform>().rect.height;
         _graphContainerWidth = graphContainer.GetComponent<RectTransform>().rect.width;
-        generateGraph();
+        GenerateGraph();
     }
 
-    public void generateGraph()
+    public void GenerateGraph()
     {
         ChapterData _initialNodeData;
 
@@ -54,68 +57,52 @@ public class ChapterMenuController : MonoBehaviour
         List<ChapterData> _dataList = data.data.ToList();
         Dictionary<string, GameObject> _placedNodes = new Dictionary<string, GameObject>();
         List<ChapterData> _currentLevelData = new List<ChapterData>();
-        int maxNodeCount = _dataList.Count;
+        int _maxNodeCount = _dataList.Count;
 
         _dataList.Remove(_initialNodeData);
 
-        GameObject _node = AddNode(_initialNodeData, 0, 1, 1);
+        GameObject _initialNode = AddNode(_initialNodeData, 0, 1, 1);
 
-        _placedNodes.Add(_initialNodeData.name, _node);
+        _placedNodes.Add(_initialNodeData.name, _initialNode);
 
-        foreach(ChapterData _chapterData in _dataList)
+        foreach (ChapterData _chapterData in _dataList)
         {
-            foreach(string prerequisite in _chapterData.prerequisites)
+            if (PreviousChaptersDone(_chapterData, _placedNodes))
             {
-                if (!_placedNodes.ContainsKey(prerequisite))
-                {
-                    goto outerContinue;
-                }
+                _currentLevelData.Add(_chapterData);
             }
-
-            _currentLevelData.Add(_chapterData);
-
-        outerContinue:
-            continue;
         }
 
-        int levelIndex = 0;
+        int _levelIndex = 0;
 
-        while (_placedNodes.Count < maxNodeCount && _currentLevelData.Count > 0)
+        while (_placedNodes.Count < _maxNodeCount && _currentLevelData.Count > 0)
         {
-            levelIndex++;
+            _levelIndex++;
 
-            int widthIndex = 0;
+            int _widthIndex = 0;
             
             foreach(ChapterData _chapterData in _currentLevelData)
             {
-                widthIndex++;
-                GameObject node = AddNode(_chapterData, levelIndex, widthIndex, _currentLevelData.Count);
+                _widthIndex++;
+                GameObject _node = AddNode(_chapterData, _levelIndex, _widthIndex, _currentLevelData.Count);
 
-                foreach(string prerequisite in _chapterData.prerequisites)
+                foreach(string _prerequisite in _chapterData.prerequisites)
                 {
-                    AddConnection(node, _placedNodes[prerequisite]);
+                    AddConnection(_node, _placedNodes[_prerequisite]);
                 }
 
-                _placedNodes.Add(_chapterData.name, node);
+                _placedNodes.Add(_chapterData.name, _node);
                 _dataList.Remove(_chapterData);
             }
 
             _currentLevelData.Clear();
 
-            foreach(ChapterData _chapterData in _dataList)
+            foreach (ChapterData _chapterData in _dataList)
             {
-                foreach(string prerequisite in _chapterData.prerequisites)
+                if (PreviousChaptersDone(_chapterData, _placedNodes))
                 {
-                    if (!_placedNodes.ContainsKey(prerequisite))
-                    {
-                        goto outerContinue;
-                    }
+                    _currentLevelData.Add(_chapterData);
                 }
-
-                _currentLevelData.Add(_chapterData);
-
-            outerContinue:
-                continue;
             }
         }
 
@@ -124,14 +111,27 @@ public class ChapterMenuController : MonoBehaviour
             Debug.LogError("Could not get show all chapters since a part of the tree is disconnected. Please check the prerequisites for each of the chapters, since you either are missing, have too many prerequisites, or misspelled a prerequisite.");
             Debug.LogError("The following nodes could not be placed:");
             
-            foreach (ChapterData _chapterData  in _dataList)
+            foreach (ChapterData _chapterData in _dataList)
             {
                 Debug.LogError(_chapterData.name);
             }
         }
     }
 
-    public GameObject AddNode(ChapterData chapterData, int level, int index, int totalLevelSize)
+    private bool PreviousChaptersDone(ChapterData chapterData, Dictionary<string, GameObject> placedNodes)
+    {
+        foreach (String _prerequisite in chapterData.prerequisites)
+        {
+            if (!placedNodes.ContainsKey(_prerequisite))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private GameObject AddNode(ChapterData chapterData, int level, int index, int totalLevelSize)
     {
         GameObject _node = Instantiate(nodePrefab, graphContainer.transform);
 
@@ -141,29 +141,29 @@ public class ChapterMenuController : MonoBehaviour
         TMP_Text _text = _node.GetComponentInChildren<TMP_Text>();
         _text.text = chapterData.name;
 
-        float height = _graphContainerHeight - 12.5f - (level * 75);
-        float width = (_graphContainerWidth / (totalLevelSize + 1)) * index;
-        _node.GetComponent<RectTransform>().anchoredPosition = new Vector3(width, height);
+        float _height = _graphContainerHeight - PADDING - (level * SIZE_BETWEEN_NODES);
+        float _width = (_graphContainerWidth / (totalLevelSize + 1)) * index;
+        _node.GetComponent<RectTransform>().anchoredPosition = new Vector3(_width, _height);
         
         return _node;
     }
 
-    public void AddConnection(GameObject to, GameObject from)
+    private void AddConnection(GameObject to, GameObject from)
     {
-        GameObject connection = new GameObject("connection");
+        GameObject _connection = new GameObject("connection");
         
-        Image newImage = connection.AddComponent<Image>();
-        newImage.sprite = boxSprite;
+        Image _newImage = _connection.AddComponent<Image>();
+        _newImage.sprite = boxSprite;
         
-        RectTransform rec = connection.GetComponent<RectTransform>();
-        rec.SetParent(graphContainer.transform, false);
-        rec.anchoredPosition = (from.transform.localPosition + to.transform.localPosition) / 2;
-        rec.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (from.transform.localPosition - to.transform.localPosition).magnitude);
-        rec.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 5);
+        RectTransform _rec = _connection.GetComponent<RectTransform>();
+        _rec.SetParent(graphContainer.transform, false);
+        _rec.anchoredPosition = (from.transform.localPosition + to.transform.localPosition) / 2;
+        _rec.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (from.transform.localPosition - to.transform.localPosition).magnitude);
+        _rec.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 5);
 
-        connection.transform.localRotation = Quaternion.Euler(0, 0, Vector3.SignedAngle(Vector3.up, (to.transform.localPosition - from.transform.localPosition), Vector3.forward));
-        connection.transform.SetSiblingIndex(0);
-        connection.SetActive(true);
+        _connection.transform.localRotation = Quaternion.Euler(0, 0, Vector3.SignedAngle(Vector3.up, (to.transform.localPosition - from.transform.localPosition), Vector3.forward));
+        _connection.transform.SetSiblingIndex(0);
+        _connection.SetActive(true);
     }
 
     public void GoToChapter(ChapterData chapterData)
