@@ -3,7 +3,7 @@
 		{
 			"name": "Robot 1",
 			"port": 30003,
-			"vnc": 5900,
+			"vnc": 5901,
 			"address": "172.19.14.251",
 			"camera": [
 				{
