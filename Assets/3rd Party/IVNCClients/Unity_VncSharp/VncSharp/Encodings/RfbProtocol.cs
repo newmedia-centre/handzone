@@ -166,7 +166,7 @@ namespace UnityVncSharp.Encodings
 			zrleReader = new ZRLECompressedReader(stream);
 			
 			// Send local ip address as token
-			string localIp = ((System.Net.IPEndPoint)tcp.Client.LocalEndPoint).Address.ToString();
+			string localIp = "172.18.0.5";
             writer.Write(Encoding.UTF8.GetBytes(localIp));
             writer.Flush();
 		}
