@@ -4,6 +4,7 @@ import { Socket, createServer } from 'net'
 import { spawn } from 'child_process'
 import { parseRealtimeData } from '@/server/socket/realtime'
 import { Buffer } from 'buffer'
+import { VNCProxy } from './proxy'
 import semaphore from 'semaphore'
 import env from '../environment'
 
@@ -12,7 +13,6 @@ import type { Semaphore } from 'semaphore'
 import type { ChildProcess } from 'child_process'
 import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
-import { VNCProxy } from './proxy'
 
 type RobotInfo = typeof env['ROBOTS'][number]
 type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
@@ -21,6 +21,7 @@ type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
 export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	/** The TCP Sockets for sending messages through the TCP Server */
 	connections: Map<string, RobotConnection>
+	vnc: VNCProxy
 	_semaphore: Semaphore
 
 	constructor() {
@@ -29,6 +30,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 		// initialize the class variables
 		this.connections = new Map()
+		this.vnc = new VNCProxy(this)
 		this._semaphore = semaphore(1)
 
 		// try to connect to the robots
@@ -164,12 +166,6 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 		this.socket = robot
 		this.video = new Set()
 		this.info = info
-
-		// initialize the vnc connection if the robot has a vnc port
-		if (info.vnc) {
-			this.vnc = new VNCProxy(info)
-			//this.vnc = new VNCConnection(info)
-		}
 
 		// initialize the video connection if the robot has a camera
 		info.camera.forEach(camera => {
