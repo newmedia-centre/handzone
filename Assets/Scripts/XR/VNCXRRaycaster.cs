@@ -38,7 +38,9 @@ namespace VNCScreen
                     raycastHit.Value.collider.TryGetComponent<VNCScreen>(out var vnc);
                     if(vnc != null)
                     {
-                        vnc.UpdateMouse(raycastHit.Value.textureCoord, _xrRayInteractor.isSelectActive);
+                        var textureCoord = raycastHit.Value.textureCoord;
+                        textureCoord.y = 1 - textureCoord.y;
+                        vnc.UpdateMouse(textureCoord, _xrRayInteractor.isSelectActive);
                     }
                 }
             }
