@@ -34,8 +34,10 @@ services:
       placement:
         constraints: [node.role == manager]
 
-  app:
-    image: ghcr.io/newmedia-centre/handzone-server:latest
+  app-dev:
+    build:
+      context: .
+      dockerfile: dockerfile-dev
     env_file:
       - .env
     restart: always
@@ -43,14 +45,17 @@ services:
       - "3000:3000"
       - "4000:4000"
       - "5900:5900"
-    container_name: handzone-server
+    container_name: handzone-server-dev
     environment:
       VIRTUAL_HOST: ${HOSTNAME}
       DATABASE_URL: "postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/handzone?schema=public"
     volumes:
       - type: bind
-        source: /app/config.json
-        target: /app/config.json
+        source: ./
+        target: /app
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
     depends_on:
       - db
       - docker

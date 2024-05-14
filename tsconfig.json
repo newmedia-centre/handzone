@@ -1,44 +1,50 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
-    "allowJs": false,
+    "allowJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "noUncheckedIndexedAccess": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
-      "@/client/*": [
-        "./src/client/*"
-      ],
-      "@/server/*": [
-        "./src/server/*"
+      "@/*": [
+        "./src/*"
       ],
       "@/types/*": [
-        "./schema/*"
+        "./schema/src/*"
       ],
-      "@/public/*": [
-        "./public/*"
-      ]
     }
   },
   "include": [
-    "src",
-    "schema",
-    ".eslintrc.cjs",
-    "*.config.js",
-    "*.config.ts",
-    "postcss.config.cjs",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".eslintrc.js",
+    "next.config.mjs",
+    "tailwind.config.ts",
+    "postcss.config.js",
+  ],
+  "exclude": [
+    "node_modules",
+    "schema"
   ]
 }

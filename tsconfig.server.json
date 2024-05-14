@@ -1,0 +1,23 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"module": "commonjs",
+		"outDir": "dist",
+		"target": "ESNext",
+		"isolatedModules": false,
+		"noEmit": false,
+		"moduleResolution": "node",
+	},
+	"include": [
+		"src/types",
+	],
+	"exclude": [
+		"dist"
+	],
+	"ts-node": {
+		"files": true
+	},
+	"files": [
+		"./src/server/index.ts"
+	],
+}

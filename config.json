@@ -3,12 +3,31 @@
 		{
 			"name": "Robot 1",
 			"port": 30003,
-			"address": "172.17.0.2",
-			"camera": "rtsp://172.19.14.226:8554/cam"
+			"vnc": 5901,
+			"address": "172.19.14.251",
+			"camera": [
+				{
+					"name": "Static",
+					"address": "rtsp://172.19.14.226:8554/cam"
+				}
+			]
 		}
 	],
-	"DOCKER_OPTIONS": {
-		"socketPath": "/var/run/docker.sock"
+	"DOCKER": {
+		"OPTIONS": {
+			"host": "docker",
+			"port": 2375
+		}
 	},
-	"DOCKER_NETWORK": "handzone-network"
+	"OAUTH": {
+		"name": "SURFconext",
+		"authorization_endpoint": "https://connect.test.surfconext.nl/oidc/authorize",
+		"token_endpoint": "https://connect.test.surfconext.nl/oidc/token",
+		"userinfo_endpoint": "https://connect.test.surfconext.nl/oidc/userinfo",
+		"claims": {
+			"id": "sub",
+			"name": "name",
+			"email": "email"
+		}
+	}
 }

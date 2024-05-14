@@ -1,0 +1,43 @@
+// import types
+import type TypedEmitter from 'typed-emitter'
+import type { RobotConnection } from '.'
+import type { RealtimeDataOut } from '@/types/Socket/Realtime'
+
+// type all the TCP events
+type ManagerEvents = {
+	/** Emitted when a new connection is established or a connection is updated */
+	join: (connection: RobotConnection, clients: Map<string, RobotConnection>) => void
+	/**  */
+	leave: (connection: RobotConnection, clients: Map<string, RobotConnection>) => void
+}
+
+// type all the robot events
+type RobotEvents = {
+	/** Emitted when the robot sends a message */
+	message: (message: string) => void
+	/** A raw realtime buffer */
+	'realtime:raw': (buffer: Buffer) => void
+	/** A parsed realtime buffer */
+	'realtime:parsed': (data: RealtimeDataOut) => void
+	/** A request response */
+	response: (response: Buffer) => void
+}
+
+// type all the vnc events
+type VNCEvents = {
+	/** Emitted when a vnc buffer is available */
+	data: (data: Buffer) => void
+}
+
+
+// type all the video events
+type VideoEvents = {
+	/** Emitted when a video frame is available */
+	frame: (data: Buffer) => void
+}
+
+// export the typed emitters
+export type ManagerEmitter = TypedEmitter<ManagerEvents>
+export type RobotEmitter = TypedEmitter<RobotEvents>
+export type VNCEmitter = TypedEmitter<VNCEvents>
+export type VideoEmitter = TypedEmitter<VideoEvents>

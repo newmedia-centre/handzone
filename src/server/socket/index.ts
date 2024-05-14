@@ -1,13 +1,22 @@
 // import dependencies
+import type { Namespace } from 'socket.io'
 import { Server } from 'socket.io'
 import { initNamespace } from './namespace'
+import { robots } from '../robot'
 
 // import types
-import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interface'
-import type TCPServer from '../tcp'
+import type {
+	ClientToServerEvents,
+	ServerToClientEvents,
+	InterServerEvents,
+	SocketData,
+	NamespaceClientToServerEvents,
+	NamespaceServerToClientEvents,
+	NamespaceSocketData
+} from './interface'
 
 // create socket.io server
-export const initSocket = (tcp: TCPServer) => {
+export const init = () => {
 	// create server instance
 	const server = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>({
 		serveClient: true,
@@ -20,14 +29,14 @@ export const initSocket = (tcp: TCPServer) => {
 	})
 
 	// forward read and write events
-	tcp.on('join', (address, clients) => {
+	robots.on('join', (robot, clients) => {
 		server.emit('robots', [...clients.keys()])
 
 		// create the namespace if it doesn't exist
-		server._nsps.has(`/${address}`) || initNamespace(server.of(`/${address}`), address, clients.get(address)!, tcp)
+		server._nsps.has(`/${robot.info.address}`) || initNamespace((server.of(`/${robot.info.address}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot)
 	})
 
-	tcp.on('leave', (address, clients) => {
+	robots.on('leave', (address, clients) => {
 		server.emit('robots', [...clients.keys()])
 
 		// delete the namespace if it exists
@@ -36,10 +45,16 @@ export const initSocket = (tcp: TCPServer) => {
 
 	server.on('connection', (socket) => {
 		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected`)
-		socket.emit('robots', [...tcp.connections.keys()])
+		socket.emit('robots', [...robots.connections.keys()])
 	})
 
 	return server
 }
 
-export default initSocket
+// init socket.io server
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData> = global.io ?? init()
+export default io
+
+// fix global instancing in production // TODO
+global.io = io

@@ -1,24 +1,29 @@
 // import dependencies
-import { handleRTDEEvents } from './rtde'
 import { handleInterfacesEvents } from './interfaces'
+import { handleInternalsEvents } from './internals'
 import { handleRealtimeEvents } from './realtime'
 import { handleMotionEvents } from './motion'
 import { handleGrasshopperEvents } from './grasshopper'
+import { handleUnityEvents } from './unity'
 
 // import types
 import type { Namespace } from 'socket.io'
-import type { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './interface'
-import type { TCPServer, RobotConnection } from '../tcp'
+import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
+import type { PlayerData } from '@/types/Socket/Unity'
+import type { RobotConnection } from '../robot'
 
 /** Initialize a new namespace by handling all the required events */
-export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, address: string, robot: RobotConnection, tcp: TCPServer) => {
+export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot: RobotConnection) => {
+
+	// create a map to store position data
+	const positions = new Map<string, PlayerData>()
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
-		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected to namespace ${address}`)
+		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected to namespace ${robot.info.address}`)
 
 		// add the target to the socket data
-		socket.data.robot = address
+		socket.data.robot = robot
 
 		// handle socket disconnection
 		socket.on('disconnect', () => {
@@ -26,15 +31,19 @@ export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerT
 		})
 
 		// handle all the incoming events
-		handleRTDEEvents(socket, tcp)
-		handleMotionEvents(socket, tcp)
-		handleGrasshopperEvents(socket, tcp)
-		handleRealtimeEvents(socket, tcp)
-		handleInterfacesEvents(socket, tcp)
+		handleMotionEvents(socket)
+		handleGrasshopperEvents(socket)
+		handleRealtimeEvents(socket)
+		handleInterfacesEvents(socket)
+		handleInternalsEvents(socket)
+		handleUnityEvents(socket, positions)
 
 		// forward video events
-		robot.video?.on('frame', (data) => {
-			socket.emit('video', data.toString('base64'))
+		robot.video?.forEach(video => {
+			video.on('frame', (data) => {
+				socket.emit('video', video.camera.name, data.toString('base64'))
+			})
+
 		})
 
 		// forward events between sockets
@@ -43,7 +52,13 @@ export const initNamespace = (namespace: Namespace<ClientToServerEvents, ServerT
 		socket.on('message', (message) => {
 			socket.broadcast.emit('message', message)
 		})
-
 	})
+
+	// emit the positions data
+	setInterval(() => {
+		namespace.emit('unity:players', { players: Array.from(positions.values()) })
+	}, 200)
+
+	console.log('Namespace initialized:', robot.info.name)
 
 }
