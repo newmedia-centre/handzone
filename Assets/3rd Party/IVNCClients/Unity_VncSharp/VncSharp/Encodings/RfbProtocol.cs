@@ -165,9 +165,9 @@ namespace UnityVncSharp.Encodings
 			writer = new BigEndianBinaryWriter(stream);
 			zrleReader = new ZRLECompressedReader(stream);
 			
-            string token = "token";
-            writer.Write(Encoding.UTF8.GetBytes(token));
-            
+			// Send local ip address as token
+			string localIp = ((System.Net.IPEndPoint)tcp.Client.LocalEndPoint).Address.ToString();
+            writer.Write(Encoding.UTF8.GetBytes(localIp));
             writer.Flush();
 		}
 
