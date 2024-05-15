@@ -15,7 +15,7 @@
 	],
 	"DOCKER": {
 		"OPTIONS": {
-			"host": "docker",
+			"host": "172.19.14.251",
 			"port": 2375
 		}
 	},

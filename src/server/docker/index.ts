@@ -22,6 +22,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		this.docker = new Docker(env.DOCKER.OPTIONS)
 		this.containers = new Map()
 		this._semaphore = semaphore(env.DOCKER.MAX_VIRTUAL)
+		this._semaphore.take(env.DOCKER.MAX_VIRTUAL, () => { })
 
 		// ping docker to check connection
 		this.docker.ping((err) => {
@@ -29,6 +30,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 				console.error('Error connecting to docker:', err)
 			} else {
 				console.log('Connected to docker!')
+				this._semaphore.leave(env.DOCKER.MAX_VIRTUAL)
 			}
 		})
 	}
@@ -59,6 +61,32 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 				EndpointsConfig: {
 					[env.DOCKER_NETWORK]: {},
 				}
+			},
+			HostConfig: {
+				PortBindings: {
+					'30000/tcp': [{ HostPort: `3${'01'}00` }],
+					'30001/tcp': [{ HostPort: `3${'01'}01` }],
+					'30002/tcp': [{ HostPort: `3${'01'}02` }],
+					'30003/tcp': [{ HostPort: `3${'01'}03` }],
+					'30004/tcp': [{ HostPort: `3${'01'}04` }],
+					'30011/tcp': [{ HostPort: `3${'01'}11` }],
+					'30012/tcp': [{ HostPort: `3${'01'}12` }],
+					'30013/tcp': [{ HostPort: `3${'01'}13` }],
+					'5900/tcp': [{ HostPort: `59${'01'}` }],
+					'6080/tcp': [{ HostPort: `608${'01'}` }],
+				}
+			},
+			ExposedPorts: {
+				'30000/tcp': {},
+				'30001/tcp': {},
+				'30002/tcp': {},
+				'30003/tcp': {},
+				'30004/tcp': {},
+				'30011/tcp': {},
+				'30012/tcp': {},
+				'30013/tcp': {},
+				'5900/tcp': {},
+				'6080/tcp': {},
 			}
 		})
 
