@@ -3,6 +3,7 @@ import type { Namespace } from 'socket.io'
 import { Server } from 'socket.io'
 import { initNamespace } from './namespace'
 import { robots } from '../robot'
+import { validatePin } from '../db/pin'
 
 // import types
 import type {
@@ -26,6 +27,22 @@ export const init = () => {
 			methods: ['GET', 'POST'],
 			credentials: true
 		}
+	})
+
+	// set up the index server middleware
+	server.use((socket, next) => {
+		// get the pin number
+		const pin = socket.handshake.auth.pin as string
+
+		// check if the pin is valid
+		validatePin(pin).then(user => {
+			// attach the user to the socket
+			socket.data.user = user
+			return next()
+		}).catch(e => {
+			console.log('Could not authenticate user', e)
+			return next(new Error('User not authenticated'))
+		})
 	})
 
 	// forward read and write events

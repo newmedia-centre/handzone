@@ -23,7 +23,6 @@ const envSchema = {
 
 	OAUTH_CLIENT_ID: z.string(),
 	OAUTH_CLIENT_SECRET: z.string(),
-	JWT_SECRET: z.string(),
 }
 
 // create config schema
