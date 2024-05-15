@@ -86,7 +86,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	/** Tries to connect to an endpoint */
 	async connectVirtualRobot(container: ContainerInspectInfo, port: number, vnc: number) {
 		this._tryCreateRobotConnection({
-			name: container.Id,
+			name: container.Name.split('/')[1]!,
 			address: env.DOCKER.OPTIONS.host,
 			port,
 			vnc,
@@ -112,14 +112,14 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		// create the TCP client
 		const socket = new Socket()
 		socket.setTimeout(5000)
-		console.info(`[ROBOT:${robot.address}] Connecting...`)
+		console.info(`[ROBOT:${robot.name}] Connecting...`)
 		socket.connect(robot.port, robot.address)
 
 		// retry until a connection is established
 		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
 				return setTimeout(() => {
-					console.info(`[ROBOT:${robot.address}] Retrying...`)
+					console.info(`[ROBOT:${robot.name}] Retrying...`)
 					socket.connect(robot.port, robot.address)
 				}, socket.timeout || 1000)
 			}
@@ -131,7 +131,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 			const connection = new RobotConnection(socket, robot)
 			this.connections.set(robot.address, connection)
 			this.emit('join', connection, this.connections)
-			console.info(`[ROBOT:${robot.address}] Connected`)
+			console.info(`[ROBOT:${robot.name}] Connected`)
 		})
 
 		// remove from clients when closed
@@ -141,7 +141,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 				this.emit('leave', connection!, this.connections)
 				connection?.clear()
 				this.connections.delete(robot.address)
-				console.info(`[ROBOT:${robot.address}] Disconnected`)
+				console.info(`[ROBOT:${robot.name}] Disconnected`)
 			}
 		})
 	}

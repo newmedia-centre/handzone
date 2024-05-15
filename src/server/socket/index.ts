@@ -30,14 +30,14 @@ export const init = () => {
 
 	// forward read and write events
 	robots.on('join', (robot, clients) => {
-		server.emit('robots', [...clients.keys()])
+		server.emit('robots', { real: null, sessions: [] })
 
 		// create the namespace if it doesn't exist
-		server._nsps.has(`/${robot.info.address}`) || initNamespace((server.of(`/${robot.info.address}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot)
+		server._nsps.has(`/${robot.info.name}`) || initNamespace((server.of(`/${robot.info.name}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot)
 	})
 
 	robots.on('leave', (address, clients) => {
-		server.emit('robots', [...clients.keys()])
+		server.emit('robots', { real: null, sessions: [] })
 
 		// delete the namespace if it exists
 		server._nsps.has(`/${address}`) && server._nsps.delete(`/${address}`)
@@ -45,7 +45,7 @@ export const init = () => {
 
 	server.on('connection', (socket) => {
 		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected`)
-		socket.emit('robots', [...robots.connections.keys()])
+		socket.emit('robots', { real: null, sessions: [] })
 	})
 
 	return server

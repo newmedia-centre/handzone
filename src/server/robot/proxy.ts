@@ -1,10 +1,13 @@
 // import dependencies
 import { Socket, createServer } from 'net'
+import { validateAccessToken } from '../db/jwt'
 import env from '../environment'
 
 // import types
 import type { Server } from 'net'
 import type { RobotConnection, RobotManager } from '.'
+
+type RobotInfo = typeof env['ROBOTS'][number]
 
 export class VNCProxy {
 	server: Server
@@ -27,7 +30,7 @@ export class VNCProxy {
 
 export class VNCClient {
 	manager: RobotManager
-	robot?: RobotConnection
+	robot?: RobotInfo
 	_client: Socket
 	_vnc?: Socket
 
@@ -36,17 +39,18 @@ export class VNCClient {
 		this._client = client
 
 		// check if the first message is a valid auth token
-		this._client.once('data', message => {
-			const robot = this.manager.connections.get(message.toString('utf8'))
+		this._client.once('data', async (message) => {
+			const token = message.toString('utf8')
+			const { user, robot } = await validateAccessToken(token)
 
-			if (robot && robot.info.vnc) {
-				console.info(`[ROBOT-VNC]: Authenticated for robot: ${robot.info.address}`)
+			if (robot && robot.vnc) {
+				console.info(`[ROBOT-VNC]: User ${user.name} Authenticated for robot: ${robot.name}`)
 
 				// connect to robot vnc server
 				this._vnc = new Socket()
 				this._vnc.setTimeout(5000)
-				console.info(`[ROBOT-VNC]: Connecting to robot: ${robot.info.address}...`)
-				this._vnc.connect(robot.info.vnc, robot.info.address)
+				console.info(`[ROBOT-VNC]: Connecting to robot: ${robot.name}...`)
+				this._vnc.connect(robot.vnc, robot.address)
 
 				// retry until a connection is established
 				this._vnc.on('error', (error: NodeJS.ErrnoException) => {
@@ -55,7 +59,7 @@ export class VNCClient {
 				})
 
 				this._vnc.on('connect', () => {
-					console.info(`[ROBOT-VNC]: Connected to robot: ${robot.info.address}...`)
+					console.info(`[ROBOT-VNC]: Connected to robot: ${robot.name}...`)
 
 					// pipe the sockets to each other
 					this._vnc!.pipe(this._client)
@@ -63,7 +67,7 @@ export class VNCClient {
 				})
 
 				this._vnc.on('close', () => {
-					console.info(`[ROBOT-VNC]: Robot closed the connection to robot: ${robot.info.address}...`)
+					console.info(`[ROBOT-VNC]: Robot closed the connection to robot: ${robot.name}...`)
 					this._client.destroy()
 					this._vnc?.destroy()
 				})
@@ -83,7 +87,7 @@ export class VNCClient {
 
 		// remove from clients when closed
 		this._client.on('close', () => {
-			console.info(`[ROBOT-VNC]: Disconnected from robot: ${this.robot?.info.address}...`)
+			console.info(`[ROBOT-VNC]: Disconnected from robot: ${this.robot?.name}...`)
 			this._client.destroy()
 			this._vnc?.destroy()
 		})

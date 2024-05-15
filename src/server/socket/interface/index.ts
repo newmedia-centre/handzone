@@ -7,19 +7,25 @@ import type { InterfacesClientToServer } from './interfaces'
 import type { InternalsClientToServer } from './internals'
 import type { RealtimeServerToClient } from './realtime'
 import type { RobotConnection } from '@/server/robot'
+import type { RobotsOut, JoinSessionOut } from '@/types/Socket/Index'
+import type { User } from '@prisma/client'
 
 // declare socket.io interfaces
 export interface ServerToClientEvents {
 	message: (message: string) => void
-	robots: (robots: string[]) => void
+	robots: (payload: RobotsOut) => void
+	join: (payload: JoinSessionOut) => void
 	queue: (position: number) => void
 	afk: () => void
+
 }
 
 export interface ClientToServerEvents {
 	message: (message: string) => void
 	virtual: () => void
+	join: (address: string) => void
 	achievement: () => void
+	afk: () => void
 }
 
 export interface InterServerEvents {
@@ -27,13 +33,14 @@ export interface InterServerEvents {
 }
 
 export interface SocketData {
-	dbid: string
+	user: User
 }
 
 export interface NamespaceServerToClientEvents extends GrasshopperServerToClient, UnityServerToClient, RealtimeServerToClient {
 	message: (message: string) => void
 	video: (camera: string, frame: string) => void
 	vnc: (data: string) => void
+	token: (token: string) => void
 	'vnc:init': (data: string) => void
 }
 
@@ -44,7 +51,7 @@ export interface NamespaceClientToServerEvents extends MotionClientToServer, Gra
 }
 
 export interface NamespaceSocketData {
-	dbid: string
+	user: User
 	robot: RobotConnection
 	name: string
 	color: string
