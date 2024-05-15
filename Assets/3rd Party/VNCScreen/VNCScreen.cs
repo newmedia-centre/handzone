@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using System.Threading;
+using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
 using UnityEngine.UI;
 using VNCScreen.Drawing;
@@ -70,7 +71,8 @@ namespace VNCScreen
         private Material _m;
         private Thread _mainThread;
         private bool _secure = false;
-    
+        private string _token;
+        
         public bool Secure => _secure;
         public Size ScreenSize => _screenSize;
 
@@ -84,6 +86,12 @@ namespace VNCScreen
             {
                 Connect();
             }
+            
+            WebClient.OnVncToken += token =>
+            {
+                _token = token;
+                Connect();
+            };
         }
 
         void setDisconnectedMaterial()
@@ -173,7 +181,8 @@ namespace VNCScreen
             connectionReceived = false;
             SetState(RuntimeState.Connecting);
 
-            vnc.Connect(host, display, port, false);
+            Debug.Log("Connect vnc");
+            vnc.Connect(host, display, port, false, _token);
 
             Debug.Log("[VNCScreen] Connection In progress " + host + ":" + port);
 

@@ -108,12 +108,13 @@ namespace UnityVncSharp.Encodings
 	        return false;
         }
 
-		/// <summary>
-		/// Attempt to connect to a remote VNC Host.
-		/// </summary>
-		/// <param name="host">The IP Address or Host Name of the VNC Host.</param>
-		/// <param name="port">The Port number on which to connect.  Usually this will be 5900, except in the case that the VNC Host is running on a different Display, in which case the Display number should be added to 5900 to determine the correct port.</param>
-		public void Connect(string host, int port)
+        /// <summary>
+        /// Attempt to connect to a remote VNC Host.
+        /// </summary>
+        /// <param name="host">The IP Address or Host Name of the VNC Host.</param>
+        /// <param name="port">The Port number on which to connect.  Usually this will be 5900, except in the case that the VNC Host is running on a different Display, in which case the Display number should be added to 5900 to determine the correct port.</param>
+        /// <param name="token"></param>
+        public void Connect(string host, int port, string token)
 		{
 			if (host == null) throw new ArgumentNullException("host");
 
@@ -165,9 +166,9 @@ namespace UnityVncSharp.Encodings
 			writer = new BigEndianBinaryWriter(stream);
 			zrleReader = new ZRLECompressedReader(stream);
 			
-			// Send local ip address as token
-			string localIp = "172.18.0.5";
-            writer.Write(Encoding.UTF8.GetBytes(localIp));
+			// Send token back to server
+            writer.Write(Encoding.UTF8.GetBytes(token));
+            Debug.Log("Token sent to server: " + token);
             writer.Flush();
 		}
 

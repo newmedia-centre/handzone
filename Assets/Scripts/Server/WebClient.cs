@@ -40,6 +40,7 @@ public class WebClient : MonoBehaviour
     public static event Action<PlayerData> OnUnityPlayerData;
     public static event Action<UnityPendantIn> OnUnityPendant;
     public static event Action<InternalsGetInverseKinCallback> OnKinematicCallback;
+    public static event Action<string> OnVncToken;
 
     public event Action OnConnected;
     public event Action OnDisconnected;
@@ -171,6 +172,17 @@ public class WebClient : MonoBehaviour
             //
             vncLock.Release();
         });
+        
+        // Register event for the web client that are specific to the VNC Namespace
+        _client.On("token", response =>
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                var token = response.GetValue<string>();
+                Debug.Log(token);
+                OnVncToken?.Invoke(token);
+            });
+        });
+        
         // Register events for the web client that are specific to Grasshopper
 
         # region Grasshopper events
