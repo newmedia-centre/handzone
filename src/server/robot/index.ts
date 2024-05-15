@@ -92,6 +92,14 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 			vnc,
 			camera: []
 		})
+
+		return {
+			name: container.Name.split('/')[1]!,
+			address: env.DOCKER.OPTIONS.host,
+			port,
+			vnc,
+			camera: []
+		} as RobotInfo
 	}
 
 	// private methods
@@ -129,18 +137,18 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		// add clients when connected
 		socket.on('connect', () => {
 			const connection = new RobotConnection(socket, robot)
-			this.connections.set(robot.address, connection)
+			this.connections.set(robot.name, connection)
 			this.emit('join', connection, this.connections)
 			console.info(`[ROBOT:${robot.name}] Connected`)
 		})
 
 		// remove from clients when closed
 		socket.on('close', () => {
-			if (this.connections.has(robot.address)) {
-				const connection = this.connections.get(robot.address)
+			if (this.connections.has(robot.name)) {
+				const connection = this.connections.get(robot.name)
 				this.emit('leave', connection!, this.connections)
 				connection?.clear()
-				this.connections.delete(robot.address)
+				this.connections.delete(robot.name)
 				console.info(`[ROBOT:${robot.name}] Disconnected`)
 			}
 		})

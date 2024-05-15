@@ -5,7 +5,7 @@ import env from '../environment'
 
 // import types
 import type { Server } from 'net'
-import type { RobotConnection, RobotManager } from '.'
+import type { RobotManager } from '.'
 
 type RobotInfo = typeof env['ROBOTS'][number]
 

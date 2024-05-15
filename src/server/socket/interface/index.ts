@@ -22,8 +22,8 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
 	message: (message: string) => void
-	virtual: () => void
-	join: (address: string) => void
+	virtual: (callback: (success: boolean, payload?: JoinSessionOut) => void) => void
+	join: (address: string, callback: (success: boolean, payload?: JoinSessionOut) => void) => void
 	achievement: () => void
 	afk: () => void
 }

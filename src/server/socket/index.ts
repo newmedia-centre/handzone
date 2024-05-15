@@ -2,8 +2,11 @@
 import type { Namespace } from 'socket.io'
 import { Server } from 'socket.io'
 import { initNamespace } from './namespace'
-import { robots } from '../robot'
-import { validatePin } from '../db/pin'
+import { robots } from '@/server/robot'
+import { docker } from '@/server/docker'
+import { validatePin } from '@/server/db/pin'
+import { generateAccessToken } from '@/server/db/jwt'
+import { env } from '@/server/environment'
 
 // import types
 import type {
@@ -46,23 +49,49 @@ export const init = () => {
 	})
 
 	// forward read and write events
-	robots.on('join', (robot, clients) => {
+	robots.on('join', (robot) => {
 		server.emit('robots', { real: null, sessions: [] })
 
 		// create the namespace if it doesn't exist
 		server._nsps.has(`/${robot.info.name}`) || initNamespace((server.of(`/${robot.info.name}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot)
 	})
 
-	robots.on('leave', (address, clients) => {
+	robots.on('leave', (address) => {
 		server.emit('robots', { real: null, sessions: [] })
 
 		// delete the namespace if it exists
 		server._nsps.has(`/${address}`) && server._nsps.delete(`/${address}`)
 	})
 
+	// handle connection events
 	server.on('connection', (socket) => {
 		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected`)
 		socket.emit('robots', { real: null, sessions: [] })
+
+		// join robot session
+		socket.on('join', async (name, callback) => {
+			// get the robot
+			const robot = robots.connections.get(name)
+			if (!robot) return callback(false)
+
+			// generate the access token
+			const token = await generateAccessToken(socket.data.user, robot.info)
+			callback(true, { robot, token })
+		})
+
+		// spawn virtual robot
+		socket.on('virtual', async (callback) => {
+			// try to spawn a virtual robot
+			const robot = await docker.requestVirtualRobot()
+
+			// connect to the virtual robot
+			console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, '30103')
+			const info = await robots.connectVirtualRobot(robot, 30103, 5901)
+
+			// generate the access token
+			const token = await generateAccessToken(socket.data.user, info)
+			callback(true, { robot, token })
+		})
 	})
 
 	return server

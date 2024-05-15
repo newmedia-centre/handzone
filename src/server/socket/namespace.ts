@@ -5,7 +5,7 @@ import { handleRealtimeEvents } from './realtime'
 import { handleMotionEvents } from './motion'
 import { handleGrasshopperEvents } from './grasshopper'
 import { handleUnityEvents } from './unity'
-import { generateAccessToken } from '../db/jwt'
+import { generateAccessToken, validateAccessToken } from '@/server/db/jwt'
 
 // import types
 import type { Namespace } from 'socket.io'
@@ -16,20 +16,30 @@ import type { RobotConnection } from '../robot'
 /** Initialize a new namespace by handling all the required events */
 export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot: RobotConnection) => {
 
+	// set up the namespace middleware
+	namespace.use((socket, next) => {
+		// get the token
+		const token = socket.handshake.auth.token as string
+
+		// check if the pin is valid
+		validateAccessToken(token).then(({ user }) => {
+			// attach the user to the socket
+			socket.data.user = user
+			socket.data.robot = robot
+
+			return next()
+		}).catch(e => {
+			console.log('Could not authenticate user', e)
+			return next(new Error('User not authenticated'))
+		})
+	})
+
 	// create a map to store position data
 	const positions = new Map<string, PlayerData>()
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
 		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected to namespace ${robot.info.address}`)
-
-		// add the target to the socket data
-		socket.data.robot = robot
-		socket.data.user = {
-			id: '1',
-			name: 'test',
-			email: ''
-		}
 
 		// handle socket disconnection
 		socket.on('disconnect', () => {
