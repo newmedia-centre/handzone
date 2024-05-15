@@ -84,12 +84,12 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	}
 
 	/** Tries to connect to an endpoint */
-	async connectVirtualRobot(container: ContainerInspectInfo) {
+	async connectVirtualRobot(container: ContainerInspectInfo, port: number, vnc: number) {
 		this._tryCreateRobotConnection({
 			name: container.Id,
-			address: this._parseAddress(container.NetworkSettings.Networks[env.DOCKER_NETWORK]?.IPAddress),
-			port: 30003,
-			vnc: 5900,
+			address: env.DOCKER.OPTIONS.host,
+			port,
+			vnc,
 			camera: []
 		})
 	}

@@ -57,14 +57,8 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		console.log('Creating virtual robot...')
 		const container = await this.docker.createContainer({
 			Image: 'ghcr.io/newmedia-centre/ursim_cb3:3.15.8',
-			NetworkingConfig: {
-				EndpointsConfig: {
-					[env.DOCKER_NETWORK]: {},
-				}
-			},
 			HostConfig: {
 				PortBindings: {
-					'30000/tcp': [{ HostPort: `3${'01'}00` }],
 					'30001/tcp': [{ HostPort: `3${'01'}01` }],
 					'30002/tcp': [{ HostPort: `3${'01'}02` }],
 					'30003/tcp': [{ HostPort: `3${'01'}03` }],
@@ -77,7 +71,6 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 				}
 			},
 			ExposedPorts: {
-				'30000/tcp': {},
 				'30001/tcp': {},
 				'30002/tcp': {},
 				'30003/tcp': {},
@@ -87,7 +80,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 				'30013/tcp': {},
 				'5900/tcp': {},
 				'6080/tcp': {},
-			}
+			},
 		})
 
 		// start container
