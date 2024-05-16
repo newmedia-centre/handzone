@@ -12,10 +12,6 @@ export type RobotInfo = {
 	name: string
 	/** The address of the robot */
 	address: string
-	/** The port of the robot */
-	port: number
-	/** The vnc port of the robot */
-	vnc?: number
 }
 
 /** Information about a robot session */

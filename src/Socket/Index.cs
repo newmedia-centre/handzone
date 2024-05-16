@@ -33,16 +33,6 @@ namespace Schema.Socket.Index
         /// The name of the robot
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// The port of the robot
-        /// </summary>
-        public double Port { get; set; }
-
-        /// <summary>
-        /// The vnc port of the robot
-        /// </summary>
-        public double? Vnc { get; set; }
     }
 
     /// <summary>
