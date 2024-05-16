@@ -1,6 +1,13 @@
-import type { Metadata } from 'next'
+// import components
+import { Header } from './header'
+import { Footer } from './footer'
+
+// import styles
 import { Inter } from 'next/font/google'
 import './globals.css'
+
+// import types
+import type { Metadata } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,7 +23,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={'flex flex-col size-full container min-h-screen mx-auto ' + inter.className}>{children}</body>
+			<body className={'flex flex-col size-full container min-h-screen mx-auto ' + inter.className}>
+				<Header />
+				{children}
+				<Footer />
+			</body>
 		</html>
 	)
 }
