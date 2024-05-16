@@ -2,13 +2,14 @@
 import { TOTPController } from 'oslo/otp'
 import { TimeSpan } from 'oslo'
 import { HMAC } from 'oslo/crypto'
+import { env } from '@/server/environment'
 
 // import types
 import type { User } from '@prisma/client'
 
 // init the TOTP controller and pin map
-const pins = new Map<string, { user: User, secret: ArrayBuffer }>()
-const controller = new TOTPController({ digits: 6, period: new TimeSpan(15, 'm') })
+const pins = global.otpPins || new Map<string, { user: User, secret: ArrayBuffer }>()
+const controller = global.otpController || new TOTPController({ digits: 6, period: new TimeSpan(15, 'm') })
 
 // generate a pin for the user
 export const generatePin = async (user: User) => {
@@ -35,16 +36,22 @@ export const validatePin = async (otp: string) => {
 	// get the user and secret
 	const data = pins.get(otp)
 	if (!data) {
-		throw new Error('Invalid pin')
+		console.log('Invalid pin (not found)', otp, pins.keys())
+		throw new Error('Invalid pin (not found)')
 	}
 
 	// verify the pin
 	const valid = await controller.verify(otp, data.secret)
 	if (!valid) {
-		throw new Error('Invalid pin')
+		throw new Error('Invalid pin (not verified)')
 	}
 
 	// return the user
 	pins.delete(otp)
 	return data.user
+}
+
+if (env.NODE_ENV !== 'production') {
+	global.otpPins = pins
+	global.otpController = controller
 }
