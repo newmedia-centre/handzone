@@ -13,7 +13,7 @@ namespace Schema.Socket.Grasshopper
     }
 
     /// <summary>
-    /// Sends a json payload of the program to Unity to be deserialized as a program.
+    /// Receives a json payload of the program from Unity to be deserialized as a program.
     /// </summary>
     public partial class GrasshopperProgramOut
     {
