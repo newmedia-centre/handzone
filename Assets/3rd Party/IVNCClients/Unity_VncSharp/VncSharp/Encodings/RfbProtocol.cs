@@ -104,7 +104,7 @@ namespace UnityVncSharp.Encodings
 		{
 			if (host == null) throw new ArgumentNullException("host");
           
-            stream = WebClient.Instance.vncStream;
+            stream = RobotClient.Instance.vncStream;
 
 			// Most of the RFB protocol uses Big-Endian byte order, while
 			// .NET uses Little-Endian. These wrappers convert between the
@@ -234,7 +234,7 @@ namespace UnityVncSharp.Encodings
 			msg.Add(SET_PIXEL_FORMAT);
 			msg.AddRange(new byte[] { 0, 0, 0 });			
 			msg.AddRange(infos.ToPixelFormat()); // 16-byte Pixel Format
-			WebClient.Instance.WriteVNCPixelFormat(msg.ToArray());
+			RobotClient.Instance.WriteVNCPixelFormat(msg.ToArray());
 		}
 
 		/// <summary>
@@ -253,7 +253,7 @@ namespace UnityVncSharp.Encodings
 				msg.AddRange(BitConverter.GetBytes(encodings[i]).Reverse());
 			}
 
-			WebClient.Instance.WriteVNC(msg.ToArray());
+			RobotClient.Instance.WriteVNC(msg.ToArray());
 		}
 
 		/// <summary>
@@ -275,7 +275,7 @@ namespace UnityVncSharp.Encodings
 			msg.AddRange(BitConverter.GetBytes(width).Reverse());
 			msg.AddRange(BitConverter.GetBytes(height).Reverse());
 			
-			WebClient.Instance.WriteVNC(msg.ToArray());
+			RobotClient.Instance.WriteVNC(msg.ToArray());
 		}
 
 		/// <summary>
@@ -292,7 +292,7 @@ namespace UnityVncSharp.Encodings
 			msg.AddRange(new byte[] {0, 0});
 			msg.AddRange(BitConverter.GetBytes(keysym).Reverse());
 			
-			WebClient.Instance.WriteVNC(msg.ToArray());
+			RobotClient.Instance.WriteVNC(msg.ToArray());
 		}
 
 		/// <summary>
@@ -309,7 +309,7 @@ namespace UnityVncSharp.Encodings
 			msg.AddRange( BitConverter.GetBytes((ushort)point.X).Reverse());
 			msg.AddRange( BitConverter.GetBytes((ushort)point.Y).Reverse());
 			
-			WebClient.Instance.WriteVNC(msg.ToArray());
+			RobotClient.Instance.WriteVNC(msg.ToArray());
 		}
 
 		/// <summary>
@@ -504,7 +504,7 @@ namespace UnityVncSharp.Encodings
 		protected void WritePadding(int length)
 		{
 			byte [] padding = new byte[length];
-			WebClient.Instance.WriteVNC(padding);
+			RobotClient.Instance.WriteVNC(padding);
 		}
 
 		/// <summary>

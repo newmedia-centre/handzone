@@ -360,23 +360,23 @@ namespace UnityVncSharp
                 if (CheckIfThreadDone())
                     break;
 
-                WebClient.Instance.vncLock.WaitOne();
+                RobotClient.Instance.vncLock.WaitOne();
                 // Debug.Log("Read lock acquired");
 
-                if(WebClient.Instance.vncStream.Length != 0)
-                    Debug.Log("Stream Length: " + WebClient.Instance.vncStream.Length);
+                if(RobotClient.Instance.vncStream.Length != 0)
+                    Debug.Log("Stream Length: " + RobotClient.Instance.vncStream.Length);
                 
-                if (WebClient.Instance.IsVncStreamAtEnd() || WebClient.Instance.vncStream.Length == 0)
+                if (RobotClient.Instance.IsVncStreamAtEnd() || RobotClient.Instance.vncStream.Length == 0)
                 {
                     // Clear the stream
-                    WebClient.Instance.vncStream.SetLength(0);
-                    WebClient.Instance.vncStream.Position = 0;
-                    WebClient.Instance.vncLock.Release();
+                    RobotClient.Instance.vncStream.SetLength(0);
+                    RobotClient.Instance.vncStream.Position = 0;
+                    RobotClient.Instance.vncLock.Release();
                     continue;
                 }
 
                 Debug.Log("Reading from stream");
-                Debug.Log(WebClient.Instance.vncStream.Position + " / " + WebClient.Instance.vncStream.Length);
+                Debug.Log(RobotClient.Instance.vncStream.Position + " / " + RobotClient.Instance.vncStream.Length);
 
                 
                 try
@@ -434,9 +434,9 @@ namespace UnityVncSharp
                 }
                 
                 // Clear the stream
-                WebClient.Instance.vncStream.SetLength(0);
-                WebClient.Instance.vncStream.Position = 0;
-                WebClient.Instance.vncLock.Release();
+                RobotClient.Instance.vncStream.SetLength(0);
+                RobotClient.Instance.vncStream.Position = 0;
+                RobotClient.Instance.vncLock.Release();
                 
                 Thread.Sleep(1000);
             }

@@ -50,7 +50,7 @@ public class NetworkPlayer : MonoBehaviour
 
     IEnumerator ExampleCoroutine()
     {
-        WebClient.Instance.SendUnityMessage("Hello from Unity client");
+        RobotClient.Instance.SendUnityMessage("Hello from Unity client");
         //yield on a new YieldInstruction that waits for 5 seconds.
         yield return new WaitForSeconds(1f);
     }

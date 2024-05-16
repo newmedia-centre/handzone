@@ -1,21 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
-using Robots;
-using Schema.Socket.Motion;
 using UnityEngine;
 using Schema.Socket.Realtime;
 using Schema.Socket.Unity;
 using SocketIO.Serializer.NewtonsoftJson;
 using Schema.Socket.Internals;
-using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 
-public class WebClient : MonoBehaviour
+public class RobotClient : MonoBehaviour
 {
     [HideInInspector] public string url;
 
@@ -26,7 +23,6 @@ public class WebClient : MonoBehaviour
     
     public bool vncConnected { get; private set; }
 
-    public string[] Robots { get; private set; }
     public MemoryStream vncStream { get; private set; }
     public Semaphore vncLock = new(1, 1);
     
@@ -44,7 +40,7 @@ public class WebClient : MonoBehaviour
     public event Action OnSessionJoined;
     public event Action OnSessionLeft;
 
-    public static WebClient Instance { get; private set; }
+    public static RobotClient Instance { get; private set; }
     
     private void Awake()
     {
@@ -57,6 +53,8 @@ public class WebClient : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        SceneManager.LoadScene(2);
     }
 
     private async void Start()

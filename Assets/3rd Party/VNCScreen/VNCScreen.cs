@@ -161,7 +161,7 @@ namespace VNCScreen
                 Disconnect();
             }
 
-            while (!WebClient.Instance.vncConnected)
+            while (!RobotClient.Instance.vncConnected)
             {
                 yield return new WaitForEndOfFrame();
             }
