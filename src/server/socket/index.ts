@@ -76,7 +76,7 @@ export const init = () => {
 
 			// generate the access token
 			const token = await generateAccessToken(socket.data.user, robot.info)
-			callback(true, { robot, token })
+			callback(true, { robot: robot.info, token })
 		})
 
 		// spawn virtual robot
@@ -90,7 +90,7 @@ export const init = () => {
 
 			// generate the access token
 			const token = await generateAccessToken(socket.data.user, info)
-			callback(true, { robot, token })
+			callback(true, { robot: info, token })
 		})
 	})
 
