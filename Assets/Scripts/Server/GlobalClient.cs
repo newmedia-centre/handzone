@@ -64,14 +64,6 @@ public class GlobalClient : MonoBehaviour
     }
 
     /// <summary>
-    /// Initializes the Socket.IO client and sets up the JSON serializer.
-    /// </summary>
-    private async void Start()
-    {
-
-    }
-
-    /// <summary>
     /// Attempts to connect to the web server using the provided PIN.
     /// Registers connection, disconnection, and error handling events.
     /// </summary>

@@ -11,8 +11,6 @@ using Schema.Socket.Unity;
 using SocketIO.Serializer.NewtonsoftJson;
 using Schema.Socket.Internals;
 using SocketIOClient;
-using Unity.VisualScripting;
-using UnityEngine.SceneManagement;
 
 public class RobotClient : MonoBehaviour
 {
@@ -68,7 +66,7 @@ public class RobotClient : MonoBehaviour
         Debug.Log(url);
         _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
         {
-            Auth = new { token = GlobalClient.Instance.Session.Token }
+            Auth = new { token = GlobalClient.Instance?.Session?.Token }
         });
         var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
@@ -180,7 +178,7 @@ public class RobotClient : MonoBehaviour
             RealtimeDataOut data = response.GetValue<RealtimeDataOut>();
             if (data == null) return;
 
-            Debug.Log(data.QActual);
+            Debug.Log(data.QActual[0]);
             _dataQueue.Enqueue(data);
         });
 

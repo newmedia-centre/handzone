@@ -29,7 +29,7 @@ public class RealVncClient : MonoBehaviour, IVncClient
     public event OnConnection onConnection;
 
 
-    public void Connect(string host, int display, int port, bool viewOnly, string token)
+    public void Connect(string host, int display, int port, bool viewOnly)
     {
         connectionInfos = new ConnectionOptions();
         connectionInfos.host = host;

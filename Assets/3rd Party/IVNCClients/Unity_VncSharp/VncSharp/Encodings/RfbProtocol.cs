@@ -114,7 +114,7 @@ namespace UnityVncSharp.Encodings
         /// <param name="host">The IP Address or Host Name of the VNC Host.</param>
         /// <param name="port">The Port number on which to connect.  Usually this will be 5900, except in the case that the VNC Host is running on a different Display, in which case the Display number should be added to 5900 to determine the correct port.</param>
         /// <param name="token"></param>
-        public void Connect(string host, int port, string token)
+        public void Connect(string host, int port)
 		{
 			if (host == null) throw new ArgumentNullException("host");
 
@@ -167,8 +167,8 @@ namespace UnityVncSharp.Encodings
 			zrleReader = new ZRLECompressedReader(stream);
 			
 			// Send token back to server
+			var token = GlobalClient.Instance?.Session?.Token ?? "";
             writer.Write(Encoding.UTF8.GetBytes(token));
-            Debug.Log("Token sent to server: " + token);
             writer.Flush();
 		}
 

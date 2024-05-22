@@ -44,7 +44,6 @@ namespace UnityVncSharp
         FrameBufferInfos bufferInfos;         // The geometry and properties of the remote framebuffer
         byte securityType;          // The type of Security agreed upon by client/server
         EncodedRectangleFactory factory;
-        string token;
 
         Bitmap theBitmap;                          // Internal representation of remote image.
 
@@ -160,7 +159,7 @@ namespace UnityVncSharp
         /// <param name="viewOnly">True if mouse/keyboard events are to be ignored.</param>
         /// <param name="token1"></param>
         /// <returns>Returns True if the VNC Host requires a Password to be sent after Connect() is called, otherwise False.</returns>
-        public void Connect(string host, int display, int port, bool viewOnly, string token1)
+        public void Connect(string host, int display, int port, bool viewOnly)
         {
             if (host == null) throw new ArgumentNullException("host");
 
@@ -214,7 +213,7 @@ namespace UnityVncSharp
        
         public void Connect(string host, int display, int port)
         {
-            Connect(host, display, port, false, token);
+            Connect(host, display, port, false);
         }
 
         /// <summary>
@@ -413,7 +412,7 @@ namespace UnityVncSharp
             // Connect and determine version of server, and set client protocol version to match			
             try
             {
-                rfb.Connect(host, port, token);
+                rfb.Connect(host, port);
                 rfb.ReadProtocolVersion();
                 rfb.WriteProtocolVersion();
 
