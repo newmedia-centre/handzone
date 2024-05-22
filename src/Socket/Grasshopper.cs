@@ -9,6 +9,7 @@ namespace Schema.Socket.Grasshopper
         /// <summary>
         /// The string payload of the IProgram object to send to the server.
         /// </summary>
+        [JsonProperty("program")]
         public string Program { get; set; }
     }
 
@@ -20,6 +21,7 @@ namespace Schema.Socket.Grasshopper
         /// <summary>
         /// The string payload of the IProgram object received from the server.
         /// </summary>
+        [JsonProperty("program")]
         public string Program { get; set; }
     }
 }
