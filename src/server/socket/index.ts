@@ -34,8 +34,6 @@ export const init = () => {
 
 	// set up the index server middleware
 	server.use((socket, next) => {
-
-
 		// get the pin number
 		const pin = socket.handshake.auth.pin as string
 		console.log('Socket User middleware running', socket.handshake.auth, pin.length)
@@ -79,6 +77,7 @@ export const init = () => {
 
 			// generate the access token
 			const token = await generateAccessToken(socket.data.user, robot.info)
+			socket.data.namespace = robot.info
 			callback(true, { robot: robot.info, token })
 		})
 
@@ -93,7 +92,16 @@ export const init = () => {
 
 			// generate the access token
 			const token = await generateAccessToken(socket.data.user, info)
+			socket.data.namespace = info
 			callback(true, { robot: info, token })
+		})
+
+		// send joined namespace
+		socket.on('namespace', async (callback) => {
+			if (!socket.data.namespace) return callback(false)
+
+			const token = await generateAccessToken(socket.data.user, socket.data.namespace)
+			callback(true, { robot: socket.data.namespace, token })
 		})
 	})
 

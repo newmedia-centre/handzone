@@ -9,6 +9,9 @@ import type { RealtimeServerToClient } from './realtime'
 import type { RobotConnection } from '@/server/robot'
 import type { RobotsOut, JoinSessionOut } from '@/types/Socket/Index'
 import type { User } from '@prisma/client'
+import type env from '@/server/environment'
+
+type RobotInfo = typeof env['ROBOTS'][number]
 
 // declare socket.io interfaces
 export interface ServerToClientEvents {
@@ -24,6 +27,7 @@ export interface ClientToServerEvents {
 	message: (message: string) => void
 	virtual: (callback: (success: boolean, payload?: JoinSessionOut) => void) => void
 	join: (address: string, callback: (success: boolean, payload?: JoinSessionOut) => void) => void
+	namespace: (callback: (success: boolean, payload?: JoinSessionOut) => void) => void
 	achievement: () => void
 	afk: () => void
 }
@@ -34,6 +38,7 @@ export interface InterServerEvents {
 
 export interface SocketData {
 	user: User
+	namespace?: RobotInfo
 }
 
 export interface NamespaceServerToClientEvents extends GrasshopperServerToClient, UnityServerToClient, RealtimeServerToClient {

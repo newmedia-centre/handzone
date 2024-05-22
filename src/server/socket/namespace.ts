@@ -17,7 +17,6 @@ import type { RobotConnection } from '../robot'
 export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot: RobotConnection) => {
 
 	// set up the namespace middleware
-	/*
 	namespace.use((socket, next) => {
 		// get the token
 		const token = socket.handshake.auth.token as string
@@ -34,7 +33,6 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 			return next(new Error('User not authenticated'))
 		})
 	})
-	*/
 
 	// create a map to store position data
 	const positions = new Map<string, PlayerData>()
