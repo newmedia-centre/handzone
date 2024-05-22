@@ -5,7 +5,7 @@ import { handleRealtimeEvents } from './realtime'
 import { handleMotionEvents } from './motion'
 import { handleGrasshopperEvents } from './grasshopper'
 import { handleUnityEvents } from './unity'
-import { generateAccessToken, validateAccessToken } from '@/server/db/jwt'
+import { validateAccessToken } from '@/server/db/jwt'
 
 // import types
 import type { Namespace } from 'socket.io'
@@ -48,14 +48,6 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		socket.on('disconnect', () => {
 			// do nothing
 		})
-
-		// send a token for vnc
-		const token = async () => {
-			const token = await generateAccessToken(socket.data.user, socket.data.robot.info)
-			socket.emit('token', token)
-			console.log(`[ROBOT-${socket.data.robot.info.name}]: Token sent to user ${socket.data.user.name}`)
-		}
-		token()
 
 		// handle all the incoming events
 		handleMotionEvents(socket)
