@@ -10,6 +10,8 @@ using Schema.Socket.Realtime;
 using Schema.Socket.Unity;
 using SocketIO.Serializer.NewtonsoftJson;
 using Schema.Socket.Internals;
+using SocketIOClient;
+using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 
 public class RobotClient : MonoBehaviour
@@ -47,23 +49,27 @@ public class RobotClient : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
-
-        SceneManager.LoadScene(2);
     }
 
     private async void Start()
     {
         _cameraFeedTexture = new Texture2D(2, 2);
         vncStream = new MemoryStream();
-
         _dataQueue = new Queue<RealtimeDataOut>();
-        _client = new SocketIOClient.SocketIO(url);
+
+        if (GlobalClient.Instance?.Session != null)
+            url = GlobalClient.Instance.url + GlobalClient.Instance.Session.Robot.Name;
+        
+        Debug.Log(url);
+        _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
+        {
+            Auth = new { token = GlobalClient.Instance.Session.Token }
+        });
         var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
@@ -174,6 +180,7 @@ public class RobotClient : MonoBehaviour
             RealtimeDataOut data = response.GetValue<RealtimeDataOut>();
             if (data == null) return;
 
+            Debug.Log(data.QActual);
             _dataQueue.Enqueue(data);
         });
 

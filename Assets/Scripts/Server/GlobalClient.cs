@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using PimDeWitte.UnityMainThreadDispatcher;
 using Schema.Socket.Index;
 using UnityEngine;
 using SocketIO.Serializer.NewtonsoftJson;
 using SocketIOClient;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Manages the global client connections and interactions with a web server using Socket.IO.
@@ -22,7 +24,9 @@ public class GlobalClient : MonoBehaviour
     /// URL of the web server to connect to.
     /// </summary>
     public string url;
-
+    
+    public JoinSessionOut Session { get; private set; }
+    
     /// <summary>
     /// Latest robot data received from the server.
     /// </summary>
@@ -77,8 +81,7 @@ public class GlobalClient : MonoBehaviour
         _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
         {
             Auth = new{pin}
-        }
-        );
+        });
         
         var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
@@ -113,7 +116,8 @@ public class GlobalClient : MonoBehaviour
             if (robots == null) return;
             
             OnRobotsReceived?.Invoke(robots);
-            Debug.Log($"Received robots: {robots}");
+            Debug.Log($"Received robots: {robots.Real?.Address}");
+            Debug.Log("Received robots sessions: " + robots.Sessions.Length);
         });
 
         _client.On("session", response =>
@@ -135,6 +139,28 @@ public class GlobalClient : MonoBehaviour
         OnSessionJoined?.Invoke();
     }
 
+    public void RequestVirtual()
+    {
+        _client.EmitAsync("virtual", response =>
+        {
+            var success = response.GetValue<bool>(0);
+            Debug.Log(success);
+            if (success)
+            {
+                Session = response.GetValue<JoinSessionOut>(1);
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    SceneManager.LoadScene("Scenes/UR Robot Scene");   
+                    OnSessionReceived?.Invoke(Session);
+                });           
+            }
+            else
+            {
+                Debug.LogError("Could not join session.");
+            }
+        });
+    }
+    
     /// <summary>
     /// Leaves a session with the specified ID.
     /// </summary>
