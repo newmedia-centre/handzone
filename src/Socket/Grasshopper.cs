@@ -7,9 +7,9 @@ namespace Schema.Socket.Grasshopper
     public partial class GrasshopperProgramIn
     {
         /// <summary>
-        /// The the json payload of the IProgram object to send to the server.
+        /// The string payload of the IProgram object to send to the server.
         /// </summary>
-        public string Json { get; set; }
+        public string Program { get; set; }
     }
 
     /// <summary>
@@ -18,8 +18,8 @@ namespace Schema.Socket.Grasshopper
     public partial class GrasshopperProgramOut
     {
         /// <summary>
-        /// The json payload of the IProgram object received from the server.
+        /// The string payload of the IProgram object received from the server.
         /// </summary>
-        public string Json { get; set; }
+        public string Program { get; set; }
     }
 }
