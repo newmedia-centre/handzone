@@ -60,30 +60,38 @@ namespace VNCScreen
         public int port = 5900;
         public bool viewOnly = false;
         public int display = 0;
-
+        public string password;
+        public bool connectOnStartUp;
         public Material disconnectedScreen;
         public Material connectedMaterial;
 
-        private Size screenSize;
-        public Size ScreenSize { get { return screenSize; } }
-
-        public bool connectOnStartUp;
-        bool fullScreenRefresh = false;		     // Whether or not to request the entire remote screen be sent.
-
-        private Material m;
-
-        Thread mainThread;
+        private Size _screenSize;
+        private bool _passwordPending = false;            // After Connect() is called, a password might be required.
+        private bool _fullScreenRefresh = false;		     // Whether or not to request the entire remote screen be sent.
+        private Material _m;
+        private Thread _mainThread;
+        private bool _secure = false;
+        private string _token;
+        
+        public bool Secure => _secure;
+        public Size ScreenSize => _screenSize;
 
         // Use this for initialization
         void Start()
         {
-            mainThread = Thread.CurrentThread;
+            _mainThread = System.Threading.Thread.CurrentThread;
 
             setDisconnectedMaterial();
             if (connectOnStartUp)
             {
                 Connect();
             }
+            
+            WebClient.OnVncToken += token =>
+            {
+                _token = token;
+                Connect();
+            };
         }
 
         void setDisconnectedMaterial()
@@ -161,11 +169,6 @@ namespace VNCScreen
                 Disconnect();
             }
 
-            while (!RobotClient.Instance.vncConnected)
-            {
-                yield return new WaitForEndOfFrame();
-            }
-
             while (state != RuntimeState.Disconnected)
             {
                 yield return new WaitForEndOfFrame();
@@ -178,18 +181,36 @@ namespace VNCScreen
             connectionReceived = false;
             SetState(RuntimeState.Connecting);
 
-            vnc.Connect(host, display, port, false);
+            Debug.Log("Connect vnc");
+            vnc.Connect(host, display, port, false, _token);
 
             Debug.Log("[VNCScreen] Connection In progress " + host + ":" + port);
 
             while (!connectionReceived)
                 yield return new WaitForFixedUpdate();
 
-            // No password needed, so go ahead and Initialize here
-            Initialize();
+            if (needPassword)
+            {
+                // Server needs a password, so call which ever method is refered to by the GetPassword delegate.
+                if (string.IsNullOrEmpty(password))
+                {
+                    // No password could be obtained (e.g., user clicked Cancel), so stop connecting
+                    SetState(RuntimeState.Error);
+                }
+                else
+                {
+                    Authenticate(password);
+                }
+            }
+            else
+            {
+                // No password needed, so go ahead and Initialize here
+                Initialize();
+            }
         }
 
         bool connectionReceived;
+        bool needPassword;
 
         private void Vnc_onConnection(Exception errorConnection, bool needPassword)
         {
@@ -199,8 +220,39 @@ namespace VNCScreen
                 return;
             }
             this.connectionReceived = true;
+            this.needPassword = needPassword;
         }
-        
+
+        /// <summary>
+        /// Authenticate with the VNC Host using a user supplied password.
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">Thrown if the RemoteDesktop control is already Connected.  See <see cref="VncSharp.RemoteDesktop.IsConnected" />.</exception>
+        /// <exception cref="System.NullReferenceException">Thrown if the password is null.</exception>
+        /// <param name="password">The user's password.</param>
+        public void Authenticate(string password)
+        {
+            if (!_passwordPending)
+                throw new InvalidOperationException("Authentication is only required when Connect() returns True and the VNC Host requires a password.");
+
+            if (password == null)
+                throw new NullReferenceException("password");
+
+            _passwordPending = false;  // repeated calls to Authenticate should fail.
+            vnc.Authenticate(password, OnPassword);
+        }
+
+        void OnPassword(bool ok)
+        {
+            if (ok)
+            {
+                Initialize();
+            }
+            else
+            {
+                OnConnectionLost("Wrong Password");
+            }
+        }
+
         void OnConnectionLost(string reason)
         {
             OnConnectionLost(this, new ErrorEventArg(reason));
@@ -249,7 +301,7 @@ namespace VNCScreen
 
         private void SetState(RuntimeState newState)
         {
-            var isMainThread = mainThread.Equals(Thread.CurrentThread);
+            var isMainThread = _mainThread.Equals(Thread.CurrentThread);
             if (!isMainThread)
             {
                 stateChanges.Add(newState);
@@ -298,7 +350,7 @@ namespace VNCScreen
         {
             if (state != RuntimeState.Connected) return;
 
-            fullScreenRefresh = true;
+            _fullScreenRefresh = true;
         }
 
         /// <summary>
@@ -311,7 +363,7 @@ namespace VNCScreen
             vnc.Initialize();
             SetState(RuntimeState.WaitFirstBuffer);
 
-            screenSize = vnc.BufferSize;
+            _screenSize = vnc.BufferSize;
 
             // Tell the user of this control the necessary info about the desktop in order to setup the display
             // Create a texture
@@ -321,9 +373,9 @@ namespace VNCScreen
                 connectedMaterial = GetComponent<Renderer>().sharedMaterial;
 
             // Set texture onto our material
-            m = Instantiate(connectedMaterial) as Material;
-            m.mainTexture = tex;
-            GetComponent<Renderer>().sharedMaterial = m;
+            _m = Instantiate(connectedMaterial) as Material;
+            _m.mainTexture = tex;
+            GetComponent<Renderer>().sharedMaterial = _m;
 
             // Refresh scroll properties
             //AutoScrollMinSize = desktopPolicy.AutoScrollMinSize;
@@ -359,24 +411,16 @@ namespace VNCScreen
 
                 if (state == RuntimeState.Connected)
                 {
-                    // targetTime -= Time.deltaTime;
+                    vnc.RequestScreenUpdate(_fullScreenRefresh);
 
-                    // if (targetTime <= 0.0f)
-                    // {
-                        // Request a screen update from the remote host
-                        // vnc.RequestScreenUpdate(fullScreenRefresh);
-
-                        // Make sure the next screen update is incremental
-                        fullScreenRefresh = false;
-                        // targetTime = 1.0f;
-                    // }
+                    // Make sure the next screen update is incremental
+                    _fullScreenRefresh = false;
                 }
 
             }
 
             for (int i = 0; i < stateChanges.Count; i++)
             {
-                Debug.Log(stateChanges[i]);
                 SetState(stateChanges[i]);
             }
 
@@ -394,9 +438,14 @@ namespace VNCScreen
             if (!IsConnected) return;
 
             Size s = vnc.BufferSize;
-            Point point = new Point((int)(pos.x * s.Width), (int)(pos.y * s.Height));
+            Point point = new Point((int)(pos.x * s.Width), (int)((1 - pos.y) * s.Height));
 
             UpdateMouse(point, button0, button1, button2);
+        }
+
+        public void UpdateMouse(Point pos, bool button0, bool button1, bool button2)
+        {
+            vnc.UpdateMouse(pos, button0, button1, button2);
         }
 
         public void UpdateMouse(Vector2 pos, bool button0)
@@ -408,12 +457,7 @@ namespace VNCScreen
 
             UpdateMouse(point, button0, false, false);
         }
-
-        public void UpdateMouse(Point pos, bool button0, bool button1, bool button2)
-        {
-            vnc.UpdateMouse(pos, button0, button1, button2);
-        }
-
+        
         /// <summary>
         /// Sends a keyboard combination that would otherwise be reserved for the client PC.
         /// </summary>
