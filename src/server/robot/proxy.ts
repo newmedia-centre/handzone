@@ -41,9 +41,7 @@ export class VNCClient {
 		// check if the first message is a valid auth token
 		this._client.once('data', async (message) => {
 			const token = message.toString('utf8')
-			//const { user, robot } = await validateAccessToken(token)
-			const user = { name: 'user' }
-			const robot = env.ROBOTS[0]
+			const { user, robot } = await validateAccessToken(token)
 
 			if (robot && robot.vnc) {
 				console.info(`[ROBOT-VNC]: User ${user.name} Authenticated for robot: ${robot.name}`)

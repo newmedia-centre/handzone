@@ -17,7 +17,8 @@
 		"OPTIONS": {
 			"host": "172.19.14.251",
 			"port": 2375
-		}
+		},
+		"MAX_VIRTUAL": 5
 	},
 	"OAUTH": {
 		"name": "SURFconext",

@@ -85,21 +85,16 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 	/** Tries to connect to an endpoint */
 	async connectVirtualRobot(container: ContainerInspectInfo, port: number, vnc: number) {
-		this._tryCreateRobotConnection({
+		const info: RobotInfo = {
 			name: container.Name.split('/')[1]!,
 			address: env.DOCKER.OPTIONS.host,
 			port,
 			vnc,
 			camera: []
-		})
+		}
 
-		return {
-			name: container.Name.split('/')[1]!,
-			address: env.DOCKER.OPTIONS.host,
-			port,
-			vnc,
-			camera: []
-		} as RobotInfo
+		this._tryCreateRobotConnection(info)
+		return info
 	}
 
 	// private methods

@@ -12,6 +12,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 	docker: Docker
 	containers: Map<string, Docker.Container>
 	_semaphore: Semaphore
+	_slotMachine: Set<number>
 
 	constructor() {
 		// initialize the EventEmitter
@@ -22,6 +23,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		this.docker = new Docker(env.DOCKER.OPTIONS)
 		this.containers = new Map()
 		this._semaphore = semaphore(env.DOCKER.MAX_VIRTUAL)
+		this._slotMachine = new Set([...Array(env.DOCKER.MAX_VIRTUAL).keys()].map(x => x + 1))
 		this._semaphore.take(env.DOCKER.MAX_VIRTUAL, () => { })
 
 		// ping docker to check connection
@@ -31,6 +33,10 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 			} else {
 				console.log('Connected to docker!')
 				this._semaphore.leave(env.DOCKER.MAX_VIRTUAL)
+
+				// close all virtual robots that are still running on start
+				console.log('Closing all virtual robots on start...')
+				this.closeAllVirtualRobots()
 			}
 		})
 	}
@@ -53,21 +59,27 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 			this._semaphore.take(1, () => resolve(true))
 		})
 
+		// aquire next available slot from the slot machine
+		const slot = [...this._slotMachine.values()][0]
+		if (!slot || !this._slotMachine.delete(slot)) {
+			throw new Error('No available slots in the slot machine!')
+		}
+
 		// create container
 		console.log('Creating virtual robot...')
 		const container = await this.docker.createContainer({
 			Image: 'ghcr.io/newmedia-centre/ursim_cb3:3.15.8',
 			HostConfig: {
 				PortBindings: {
-					'30001/tcp': [{ HostPort: `3${'01'}01` }],
-					'30002/tcp': [{ HostPort: `3${'01'}02` }],
-					'30003/tcp': [{ HostPort: `3${'01'}03` }],
-					'30004/tcp': [{ HostPort: `3${'01'}04` }],
-					'30011/tcp': [{ HostPort: `3${'01'}11` }],
-					'30012/tcp': [{ HostPort: `3${'01'}12` }],
-					'30013/tcp': [{ HostPort: `3${'01'}13` }],
-					'5900/tcp': [{ HostPort: `59${'01'}` }],
-					'6080/tcp': [{ HostPort: `608${'01'}` }],
+					'30001/tcp': [{ HostPort: `3${slot}01` }],
+					'30002/tcp': [{ HostPort: `3${slot}02` }],
+					'30003/tcp': [{ HostPort: `3${slot}03` }],
+					'30004/tcp': [{ HostPort: `3${slot}04` }],
+					'30011/tcp': [{ HostPort: `3${slot}11` }],
+					'30012/tcp': [{ HostPort: `3${slot}12` }],
+					'30013/tcp': [{ HostPort: `3${slot}13` }],
+					'5900/tcp': [{ HostPort: `59${slot}` }],
+					'6080/tcp': [{ HostPort: `608${slot}` }],
 				}
 			},
 			ExposedPorts: {
@@ -81,6 +93,10 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 				'5900/tcp': {},
 				'6080/tcp': {},
 			},
+			Labels: {
+				'slot': `${slot}`,
+				'handzone': 'virtual'
+			}
 		})
 
 		// start container
@@ -99,6 +115,14 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		// remove the container from the map
 		const container = this.containers.get(id)
 		if (container) {
+			// release the slot from the slot machine
+			const slot = (await container.inspect()).Config.Labels['slot']
+			if (!slot) {
+				throw new Error('Found container without slot label')
+			}
+			this._slotMachine.add(parseInt(slot))
+
+			// stop and remove the container
 			await container.stop()
 			await container.remove()
 			this.containers.delete(id)
@@ -106,6 +130,18 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 
 		// release the semaphore
 		this._semaphore.leave(1)
+	}
+
+	// close all virtual polyscope instances
+	closeAllVirtualRobots = async () => {
+		// find all containers with the label 'handzone=virtual'
+		const containers = await this.docker.listContainers({ all: true, filters: { label: ['handzone=virtual'] } })
+
+		// remove all found containers
+		await Promise.all(containers.map(async container => {
+			await this.docker.getContainer(container.Id).stop()
+			await this.docker.getContainer(container.Id).remove()
+		}))
 	}
 }
 
