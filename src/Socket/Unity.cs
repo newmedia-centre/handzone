@@ -180,7 +180,7 @@ namespace Schema.Socket.Unity
         /// An array of player data.
         /// </summary>
         [JsonProperty("players")]
-        public List<PlayerData> Players { get; set; }
+        public PlayerData[] Players { get; set; }
     }
 
     /// <summary>

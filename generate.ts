@@ -17,7 +17,6 @@ async function exportCSharp(namespace: string, inputData: InputData) {
 		lang: 'cs',
 		rendererOptions: {
 			'framework': 'NewtonSoft',
-			'array-type': 'list',
 			'namespace': namespace,
 			'features': 'attributes-only',
 		},

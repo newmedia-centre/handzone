@@ -47,25 +47,25 @@ namespace Schema.Socket.Realtime
         /// Elbow position
         /// </summary>
         [JsonProperty("elbow_position")]
-        public List<double> ElbowPosition { get; set; }
+        public double[] ElbowPosition { get; set; }
 
         /// <summary>
         /// Elbow velocity
         /// </summary>
         [JsonProperty("elbow_velocity")]
-        public List<double> ElbowVelocity { get; set; }
+        public double[] ElbowVelocity { get; set; }
 
         /// <summary>
         /// Actual joint currents
         /// </summary>
         [JsonProperty("i_actual")]
-        public List<double> IActual { get; set; }
+        public double[] IActual { get; set; }
 
         /// <summary>
         /// Joint control currents
         /// </summary>
         [JsonProperty("i_control")]
-        public List<double> IControl { get; set; }
+        public double[] IControl { get; set; }
 
         /// <summary>
         /// Masterboard: Robot current
@@ -77,13 +77,13 @@ namespace Schema.Socket.Realtime
         /// Target joint currents
         /// </summary>
         [JsonProperty("i_target")]
-        public List<double> ITarget { get; set; }
+        public double[] ITarget { get; set; }
 
         /// <summary>
         /// Joint control modes
         /// </summary>
         [JsonProperty("joint_modes")]
-        public List<double> JointModes { get; set; }
+        public double[] JointModes { get; set; }
 
         /// <summary>
         /// Norm of Cartesian linear momentum
@@ -95,7 +95,7 @@ namespace Schema.Socket.Realtime
         /// Target joint moments (torques)
         /// </summary>
         [JsonProperty("m_target")]
-        public List<double> MTarget { get; set; }
+        public double[] MTarget { get; set; }
 
         /// <summary>
         /// Total message length in bytes
@@ -107,19 +107,19 @@ namespace Schema.Socket.Realtime
         /// Temperature of each joint in degrees celsius
         /// </summary>
         [JsonProperty("motor_temperatures")]
-        public List<double> MotorTemperatures { get; set; }
+        public double[] MotorTemperatures { get; set; }
 
         /// <summary>
         /// Payload Center of Gravity (x, y, z) [m]
         /// </summary>
         [JsonProperty("payload_cog")]
-        public List<double> PayloadCog { get; set; }
+        public double[] PayloadCog { get; set; }
 
         /// <summary>
         /// Payload Inertia (Ixx, Iyy, Izz, Ixy, Ixz, Iyz) [kg*m^2]
         /// </summary>
         [JsonProperty("payload_inertia")]
-        public List<double> PayloadInertia { get; set; }
+        public double[] PayloadInertia { get; set; }
 
         /// <summary>
         /// Payload Mass [kg]
@@ -137,31 +137,31 @@ namespace Schema.Socket.Realtime
         /// Actual joint positions
         /// </summary>
         [JsonProperty("q_actual")]
-        public List<double> QActual { get; set; }
+        public double[] QActual { get; set; }
 
         /// <summary>
         /// Target joint positions
         /// </summary>
         [JsonProperty("q_target")]
-        public List<double> QTarget { get; set; }
+        public double[] QTarget { get; set; }
 
         /// <summary>
         /// Actual joint velocities
         /// </summary>
         [JsonProperty("qd_actual")]
-        public List<double> QdActual { get; set; }
+        public double[] QdActual { get; set; }
 
         /// <summary>
         /// Target joint velocities
         /// </summary>
         [JsonProperty("qd_target")]
-        public List<double> QdTarget { get; set; }
+        public double[] QdTarget { get; set; }
 
         /// <summary>
         /// Target joint accelerations
         /// </summary>
         [JsonProperty("qdd_target")]
-        public List<double> QddTarget { get; set; }
+        public double[] QddTarget { get; set; }
 
         /// <summary>
         /// Robot mode
@@ -191,19 +191,19 @@ namespace Schema.Socket.Realtime
         /// Generalised forces in the TCP
         /// </summary>
         [JsonProperty("tcp_force")]
-        public List<double> TcpForce { get; set; }
+        public double[] TcpForce { get; set; }
 
         /// <summary>
         /// Actual speed of the tool given in Cartesian coordinates
         /// </summary>
         [JsonProperty("tcp_speed_actual")]
-        public List<double> TcpSpeedActual { get; set; }
+        public double[] TcpSpeedActual { get; set; }
 
         /// <summary>
         /// Target speed of the tool given in Cartesian coordinates
         /// </summary>
         [JsonProperty("tcp_speed_target")]
-        public List<double> TcpSpeedTarget { get; set; }
+        public double[] TcpSpeedTarget { get; set; }
 
         /// <summary>
         /// Time elapsed since the controller was started
@@ -215,25 +215,25 @@ namespace Schema.Socket.Realtime
         /// Tool x,y and z accelerometer values (software version 1.7)
         /// </summary>
         [JsonProperty("tool_accelerometer_values")]
-        public List<double> ToolAccelerometerValues { get; set; }
+        public double[] ToolAccelerometerValues { get; set; }
 
         /// <summary>
         /// Actual Cartesian coordinates of the tool: (x,y,z,rx,ry,rz)
         /// </summary>
         [JsonProperty("tool_vector_actual")]
-        public List<double> ToolVectorActual { get; set; }
+        public double[] ToolVectorActual { get; set; }
 
         /// <summary>
         /// Target Cartesian coordinates of the tool: (x,y,z,rx,ry,rz)
         /// </summary>
         [JsonProperty("tool_vector_target")]
-        public List<double> ToolVectorTarget { get; set; }
+        public double[] ToolVectorTarget { get; set; }
 
         /// <summary>
         /// Actual joint voltages
         /// </summary>
         [JsonProperty("v_actual")]
-        public List<double> VActual { get; set; }
+        public double[] VActual { get; set; }
 
         /// <summary>
         /// Masterboard: Main voltage
