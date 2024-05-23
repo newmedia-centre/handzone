@@ -24,14 +24,14 @@ public class NetworkManager : MonoBehaviour
             Destroy(gameObject);
         }
         
-        RobotClient.OnUnityPendant += OnUnityPendant;
-        RobotClient.OnUnityPlayerData += UpdateUnityPlayers;
+        SessionClient.Instance.OnUnityPendant += OnUnityPendant;
+        SessionClient.Instance.OnUnityPlayerData += UpdateUnityPlayers;
     }
 
     private void OnDestroy()
     {
-        RobotClient.OnUnityPendant -= OnUnityPendant;
-        RobotClient.OnUnityPlayerData -= UpdateUnityPlayers;
+        SessionClient.Instance.OnUnityPendant -= OnUnityPendant;
+        SessionClient.Instance.OnUnityPlayerData -= UpdateUnityPlayers;
     }
 
     private void OnUnityPendant(UnityPendantIn obj)

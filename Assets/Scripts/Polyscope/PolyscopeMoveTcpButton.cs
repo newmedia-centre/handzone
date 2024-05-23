@@ -25,7 +25,7 @@ public class PolyscopeMoveTcpButton : MonoBehaviour, IPointerDownHandler, IPoint
     {
         if (_isHeld)
         {
-            RobotClient.Instance.Speedl(translateDirection, rotateAxis, 0.1f, 0.1f);
+            SessionClient.Instance.Speedl(translateDirection, rotateAxis, 0.1f, 0.1f);
         }
     }
 }

@@ -68,7 +68,7 @@ public class GlobalClient : MonoBehaviour
     /// Registers connection, disconnection, and error handling events.
     /// </summary>
     /// <param name="pin">The PIN used for secure connection.</param>
-    public async Task TryConnectToWebServer(String pin)
+    public async Task TryConnectToGlobalServer(String pin)
     {
         _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
         {
@@ -109,26 +109,10 @@ public class GlobalClient : MonoBehaviour
             
             OnRobotsReceived?.Invoke(robots);
             Debug.Log($"Received robots: {robots.Real?.Address}");
-            Debug.Log("Received robots sessions: " + robots.Sessions.Length);
-        });
-
-        _client.On("session", response =>
-        {
-            // Handle session data reception here
+            Debug.Log("Received robots sessions: " + robots.Sessions.Count);
         });
         
         await _client.ConnectAsync();
-    }
-    
-    /// <summary>
-    /// Joins a session with the specified ID.
-    /// </summary>
-    /// <param name="id">The session ID to join.</param>
-    public async Task JoinSession(string id)
-    {
-        OnSessionJoin?.Invoke();
-        await _client.EmitAsync("join", new { room = id });
-        OnSessionJoined?.Invoke();
     }
 
     public void RequestVirtual()
@@ -151,16 +135,6 @@ public class GlobalClient : MonoBehaviour
                 Debug.LogError("Could not join session.");
             }
         });
-    }
-    
-    /// <summary>
-    /// Leaves a session with the specified ID.
-    /// </summary>
-    /// <param name="id">The session ID to leave.</param>
-    public async Task LeaveSession(string id)
-    {
-        await _client.EmitAsync("leave", new { room = id });
-        OnSessionLeft?.Invoke();
     }
 
     /// <summary>

@@ -1,14 +1,14 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(RobotClient))]
+[CustomEditor(typeof(SessionClient))]
 public class WebClientEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        RobotClient robotClient = (RobotClient)target;
+        SessionClient sessionClient = (SessionClient)target;
 
-        robotClient.url = EditorGUILayout.TextField("URL", robotClient.url);
+        sessionClient.url = EditorGUILayout.TextField("URL", sessionClient.url);
         
         if (GUILayout.Button("Send: interfaces:get_inverse_kin"))
         {

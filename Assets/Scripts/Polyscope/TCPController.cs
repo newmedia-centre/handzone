@@ -66,7 +66,7 @@ public class TCPController : MonoBehaviour
 
         // pose = AddCurrentTransformToPose(pose);
 
-        RobotClient.Instance.MoveL(pose, 0.2, 0.25, 0, 0);
+        SessionClient.Instance.MoveL(pose, 0.2, 0.25, 0, 0);
         _isGrabbed = false;
     }
 

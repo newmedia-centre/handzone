@@ -56,7 +56,7 @@ public class GlobalClientLoginButton : MonoBehaviour
         
         try
         {
-            await GlobalClient.Instance.TryConnectToWebServer(pin);
+            await GlobalClient.Instance.TryConnectToGlobalServer(pin);
         }
         catch (Exception ex)
         {

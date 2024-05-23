@@ -17,8 +17,8 @@ public class RobotTranslator : MonoBehaviour
         // Keep track of the current joint angles
         qActualJoints = new List<double>(robotPivots.Length);
         
-        RobotClient.OnRealtimeData += UpdateJointsFromPolyscope;
-        RobotClient.OnKinematicCallback += UpdateJointsFromGrabbing;
+        SessionClient.Instance.OnRealtimeData += UpdateJointsFromPolyscope;
+        SessionClient.Instance.OnKinematicCallback += UpdateJointsFromGrabbing;
     }
     
     void SetCurrentJoint(int index, float angle)
@@ -41,7 +41,7 @@ public class RobotTranslator : MonoBehaviour
         data.MaxPositionError = 0.001;
         data.X = target;
 
-        RobotClient.Instance.SendInverseKinematicsRequest(data, function);
+        SessionClient.Instance.SendInverseKinematicsRequest(data, function);
     }
 
     public void UpdateJointsFromPolyscope(RealtimeDataOut data)

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +10,12 @@ public class GlobalClientEditor : Editor
         GlobalClient globalClient = (GlobalClient)target;
 
         globalClient.url = EditorGUILayout.TextField("URL", globalClient.url);
+        string pin = EditorGUILayout.TextField("");
+        
+        if(GUILayout.Button("Connect"))
+        {
+            Task.Run(() => globalClient.TryConnectToGlobalServer(pin));
+        }
         
         if (GUILayout.Button("Request virtual robot"))
         {
