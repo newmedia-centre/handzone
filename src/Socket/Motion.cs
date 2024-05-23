@@ -1,5 +1,11 @@
 namespace Schema.Socket.Motion
 {
+    using System;
+    using System.Collections.Generic;
+
+    using System.Globalization;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     /// <summary>
     /// Deprecated: Tells the robot controller to treat digital inputs number A and B as pulses
@@ -11,11 +17,13 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Encoder input A, values of 0-3 are the digital inputs 0-3.
         /// </summary>
+        [JsonProperty("A")]
         public double A { get; set; }
 
         /// <summary>
         /// Encoder input B, values of 0-3 are the digital inputs 0-3.
         /// </summary>
+        [JsonProperty("B")]
         public double B { get; set; }
 
         /// <summary>
@@ -25,6 +33,7 @@ namespace Schema.Socket.Motion
         /// single input (A). 3 - Rising edge on single input (A). 4 - Falling edge on single input
         /// (A). The controller can decode inputs at up to 40kHz.
         /// </summary>
+        [JsonProperty("type")]
         public double Type { get; set; }
     }
 
@@ -36,11 +45,13 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Encoder input A, values of 0-3 are the digital inputs 0-3.
         /// </summary>
+        [JsonProperty("A")]
         public double A { get; set; }
 
         /// <summary>
         /// Encoder input B, values of 0-3 are the digital inputs 0-3.
         /// </summary>
+        [JsonProperty("B")]
         public double B { get; set; }
 
         /// <summary>
@@ -50,11 +61,13 @@ namespace Schema.Socket.Motion
         /// single input (A). 3 - Rising edge on single input (A). 4 - Falling edge on single input
         /// (A). The controller can decode inputs at up to 40kHz.
         /// </summary>
+        [JsonProperty("decoder_type")]
         public double DecoderType { get; set; }
 
         /// <summary>
         /// Index of the encoder to define. Must be either 0 or 1.
         /// </summary>
+        [JsonProperty("encoder_index")]
         public double EncoderIndex { get; set; }
     }
 
@@ -67,6 +80,7 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Index of the encoder to define. Must be either 0 or 1.
         /// </summary>
+        [JsonProperty("encoder_index")]
         public double EncoderIndex { get; set; }
 
         /// <summary>
@@ -75,6 +89,7 @@ namespace Schema.Socket.Motion
         /// 16 bit unsigned encoder, range [0  65535]. 3 - 24 bit unsigned encoder, range [0
         /// 16777215]. 4 - 32 bit unsigned encoder, range [0  4294967295].
         /// </summary>
+        [JsonProperty("range_id")]
         public double RangeId { get; set; }
     }
 
@@ -86,6 +101,7 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Index of the encoder to query. Must be either 0 or 1.
         /// </summary>
+        [JsonProperty("encoder_index")]
         public double EncoderIndex { get; set; }
     }
 
@@ -94,6 +110,7 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// The conveyor encoder tick count (float).
         /// </summary>
+        [JsonProperty("count")]
         public double Count { get; set; }
     }
 
@@ -106,7 +123,8 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// The TCP pose to set.
         /// </summary>
-        public double[] Pose { get; set; }
+        [JsonProperty("pose")]
+        public List<double> Pose { get; set; }
     }
 
     /// <summary>
@@ -119,11 +137,13 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// The tick count to set. Must be within the range of the encoder.
         /// </summary>
+        [JsonProperty("count")]
         public double Count { get; set; }
 
         /// <summary>
         /// Index of the encoder to define. Must be either 0 or 1.
         /// </summary>
+        [JsonProperty("encoder_index")]
         public double EncoderIndex { get; set; }
     }
 
@@ -142,11 +162,13 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// The delta (difference between two) tick count to unwind (float).
         /// </summary>
+        [JsonProperty("delta_tick_count")]
         public double DeltaTickCount { get; set; }
 
         /// <summary>
         /// Index of the encoder to query. Must be either 0 or 1.
         /// </summary>
+        [JsonProperty("encoder_index")]
         public double EncoderIndex { get; set; }
     }
 
@@ -159,28 +181,33 @@ namespace Schema.Socket.Motion
         /// (Float) 6d vector. For compliant axes, these values are the maximum allowed tcp speed
         /// along/about the axis.
         /// </summary>
-        public double[] Limits { get; set; }
+        [JsonProperty("limits")]
+        public List<double> Limits { get; set; }
 
         /// <summary>
         /// A 6d vector of 0s and 1s. 1 means that the robot will be compliant in the corresponding
         /// axis of the task frame.
         /// </summary>
-        public double[] SelectionVector { get; set; }
+        [JsonProperty("selection_vector")]
+        public List<double> SelectionVector { get; set; }
 
         /// <summary>
         /// A pose vector that defines the force frame relative to the base frame.
         /// </summary>
-        public double[] TaskFrame { get; set; }
+        [JsonProperty("task_frame")]
+        public List<double> TaskFrame { get; set; }
 
         /// <summary>
         /// An integer [13] specifying how the robot interprets the force frame.
         /// </summary>
+        [JsonProperty("type")]
         public double Type { get; set; }
 
         /// <summary>
         /// The forces/torques the robot will apply to its environment.
         /// </summary>
-        public double[] Wrench { get; set; }
+        [JsonProperty("wrench")]
+        public List<double> Wrench { get; set; }
     }
 
     /// <summary>
@@ -191,6 +218,7 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Between 0 and 1, default value is 0.
         /// </summary>
+        [JsonProperty("damping")]
         public double Damping { get; set; }
     }
 
@@ -205,6 +233,7 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// The conveyor encoder tick count.
         /// </summary>
+        [JsonProperty("count")]
         public double Count { get; set; }
     }
 
@@ -218,7 +247,8 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Target TCP pose.
         /// </summary>
-        public double[] Pose { get; set; }
+        [JsonProperty("pose")]
+        public List<double> Pose { get; set; }
     }
 
     /// <summary>
@@ -231,7 +261,8 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Target TCP speed as a vector.
         /// </summary>
-        public double[] Speed { get; set; }
+        [JsonProperty("speed")]
+        public List<double> Speed { get; set; }
     }
 
     /// <summary>
@@ -244,6 +275,7 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Tool acceleration [m/s^2] (default: 1.2).
         /// </summary>
+        [JsonProperty("a")]
         public double A { get; set; }
 
         /// <summary>
@@ -251,6 +283,7 @@ namespace Schema.Socket.Motion
         /// (pose_to). 1: Fixed mode. Keep orientation constant relative to the tangent of the
         /// circular arc (starting from current pose).
         /// </summary>
+        [JsonProperty("mode")]
         public double Mode { get; set; }
 
         /// <summary>
@@ -258,22 +291,26 @@ namespace Schema.Socket.Motion
         /// specified as joint positions, then forward kinematics is used to calculate the
         /// corresponding pose.
         /// </summary>
-        public double[] PoseTo { get; set; }
+        [JsonProperty("pose_to")]
+        public List<double> PoseTo { get; set; }
 
         /// <summary>
         /// Path point (note: only position is used). Pose_via can also be specified as joint
         /// positions, then forward kinematics is used to calculate the corresponding pose.
         /// </summary>
-        public double[] PoseVia { get; set; }
+        [JsonProperty("pose_via")]
+        public List<double> PoseVia { get; set; }
 
         /// <summary>
         /// Blend radius (of target pose) [m] (default: 0).
         /// </summary>
+        [JsonProperty("r")]
         public double R { get; set; }
 
         /// <summary>
         /// Tool speed [m/s] (default: 0.25).
         /// </summary>
+        [JsonProperty("v")]
         public double V { get; set; }
     }
 
@@ -289,13 +326,15 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Joint acceleration of leading axis [rad/s^2] (default: 1.4).
         /// </summary>
+        [JsonProperty("a")]
         public double A { get; set; }
 
         /// <summary>
         /// Joint positions (q can also be specified as a pose, then inverse kinematics is used to
         /// calculate the corresponding joint positions).
         /// </summary>
-        public double[] Q { get; set; }
+        [JsonProperty("q")]
+        public List<double> Q { get; set; }
 
         /// <summary>
         /// Blend radius [m] (default: 0). If a blend radius is set, the robot arm trajectory will be
@@ -303,16 +342,19 @@ namespace Schema.Socket.Motion
         /// move overlaps with the blend radius of previous or following waypoints, this move will be
         /// skipped, and an 'Overlapping Blends' warning message will be generated.
         /// </summary>
+        [JsonProperty("r")]
         public double R { get; set; }
 
         /// <summary>
         /// Time [s] (default: 0).
         /// </summary>
+        [JsonProperty("t")]
         public double T { get; set; }
 
         /// <summary>
         /// Joint speed of leading axis [rad/s] (default: 1.05).
         /// </summary>
+        [JsonProperty("v")]
         public double V { get; set; }
     }
 
@@ -324,27 +366,32 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Tool acceleration [m/s^2] (default: 1.2).
         /// </summary>
+        [JsonProperty("a")]
         public double A { get; set; }
 
         /// <summary>
         /// Target pose (pose can also be specified as joint positions, then forward kinematics is
         /// used to calculate the corresponding pose).
         /// </summary>
-        public double[] Pose { get; set; }
+        [JsonProperty("pose")]
+        public List<double> Pose { get; set; }
 
         /// <summary>
         /// Blend radius [m] (default: 0).
         /// </summary>
+        [JsonProperty("r")]
         public double R { get; set; }
 
         /// <summary>
         /// Time [s] (default: 0).
         /// </summary>
+        [JsonProperty("t")]
         public double T { get; set; }
 
         /// <summary>
         /// Tool speed [m/s] (default: 0.25).
         /// </summary>
+        [JsonProperty("v")]
         public double V { get; set; }
     }
 
@@ -357,22 +404,26 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Tool acceleration [m/s^2] (default: 1.2).
         /// </summary>
+        [JsonProperty("a")]
         public double A { get; set; }
 
         /// <summary>
         /// Target pose (pose can also be specified as joint positions, then forward kinematics is
         /// used to calculate the corresponding pose).
         /// </summary>
-        public double[] Pose { get; set; }
+        [JsonProperty("pose")]
+        public List<double> Pose { get; set; }
 
         /// <summary>
         /// Blend radius [m] (default: 0).
         /// </summary>
+        [JsonProperty("r")]
         public double R { get; set; }
 
         /// <summary>
         /// Tool speed [m/s] (default: 0.25).
         /// </summary>
+        [JsonProperty("v")]
         public double V { get; set; }
     }
 
@@ -387,11 +438,13 @@ namespace Schema.Socket.Motion
         /// The argument of the error. If this parameter is omitted, the robot will pause on any
         /// argument for the specified error code.
         /// </summary>
+        [JsonProperty("argument", NullValueHandling = NullValueHandling.Ignore)]
         public double? Argument { get; set; }
 
         /// <summary>
         /// The code of the error for which the robot should pause.
         /// </summary>
+        [JsonProperty("code")]
         public double Code { get; set; }
     }
 
@@ -405,6 +458,7 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Enable or disable position deviation log messages.
         /// </summary>
+        [JsonProperty("enabled")]
         public bool Enabled { get; set; }
 
         /// <summary>
@@ -413,6 +467,7 @@ namespace Schema.Socket.Motion
         /// protective stop of the robot). If no threshold is specified by the user, a default value
         /// of 0.8 is used.
         /// </summary>
+        [JsonProperty("threshold", NullValueHandling = NullValueHandling.Ignore)]
         public double? Threshold { get; set; }
     }
 
@@ -427,7 +482,8 @@ namespace Schema.Socket.Motion
         /// Reset the revolution counter to one close to the given qNear joint vector. If not
         /// defined, the joint’s actual number of revolutions are used.
         /// </summary>
-        public double[] QNear { get; set; }
+        [JsonProperty("qNear", NullValueHandling = NullValueHandling.Ignore)]
+        public List<double> QNear { get; set; }
     }
 
     /// <summary>
@@ -446,34 +502,40 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Not used in current version (reserved for future use).
         /// </summary>
+        [JsonProperty("a")]
         public double A { get; set; }
 
         /// <summary>
         /// Proportional gain for following target position, range [100,2000] (default: 300).
         /// </summary>
+        [JsonProperty("gain", NullValueHandling = NullValueHandling.Ignore)]
         public double? Gain { get; set; }
 
         /// <summary>
         /// Time [s], range [0.03,0.2] smoothens the trajectory with this lookahead time (default:
         /// 0.1).
         /// </summary>
+        [JsonProperty("lookahead_time", NullValueHandling = NullValueHandling.Ignore)]
         public double? LookaheadTime { get; set; }
 
         /// <summary>
         /// Joint angles in radians representing rotations of base, shoulder, elbow, wrist1, wrist2,
         /// and wrist3.
         /// </summary>
-        public double[] Q { get; set; }
+        [JsonProperty("q")]
+        public List<double> Q { get; set; }
 
         /// <summary>
         /// Time where the command is controlling the robot. The function is blocking for time t [s]
         /// (default: 0.008).
         /// </summary>
+        [JsonProperty("t", NullValueHandling = NullValueHandling.Ignore)]
         public double? T { get; set; }
 
         /// <summary>
         /// Not used in current version (reserved for future use).
         /// </summary>
+        [JsonProperty("v")]
         public double V { get; set; }
     }
 
@@ -492,11 +554,13 @@ namespace Schema.Socket.Motion
         /// unsigned encoder, range [0  16777215]. 4 is a 32 bit unsigned encoder, range [0
         /// 4294967295].
         /// </summary>
+        [JsonProperty("absolute_encoder_resolution", NullValueHandling = NullValueHandling.Ignore)]
         public double? AbsoluteEncoderResolution { get; set; }
 
         /// <summary>
         /// Tick count of the conveyor (Integer).
         /// </summary>
+        [JsonProperty("tick_count")]
         public double TickCount { get; set; }
     }
 
@@ -508,7 +572,8 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Joint positions.
         /// </summary>
-        public double[] Q { get; set; }
+        [JsonProperty("q")]
+        public List<double> Q { get; set; }
     }
 
     /// <summary>
@@ -520,6 +585,7 @@ namespace Schema.Socket.Motion
         /// An integer specifying transition hardness. 0 is hard transition between modes using
         /// maximum torque, similar to emergency stop. 1 is soft transition between modes.
         /// </summary>
+        [JsonProperty("type")]
         public double Type { get; set; }
     }
 
@@ -534,16 +600,19 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Joint acceleration [rad/s^2] (of leading axis).
         /// </summary>
+        [JsonProperty("a")]
         public double A { get; set; }
 
         /// <summary>
         /// Joint speeds [rad/s].
         /// </summary>
-        public double[] Qd { get; set; }
+        [JsonProperty("qd")]
+        public List<double> Qd { get; set; }
 
         /// <summary>
         /// Time [s] before the function returns (optional).
         /// </summary>
+        [JsonProperty("t", NullValueHandling = NullValueHandling.Ignore)]
         public double? T { get; set; }
     }
 
@@ -558,22 +627,26 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Tool position acceleration [m/s^2].
         /// </summary>
+        [JsonProperty("a")]
         public double A { get; set; }
 
         /// <summary>
         /// Tool acceleration [rad/s^2] (optional), if not defined a, position acceleration, is used.
         /// </summary>
+        [JsonProperty("aRot", NullValueHandling = NullValueHandling.Ignore)]
         public string ARot { get; set; }
 
         /// <summary>
         /// Time [s] before function returns (optional).
         /// </summary>
+        [JsonProperty("t", NullValueHandling = NullValueHandling.Ignore)]
         public double? T { get; set; }
 
         /// <summary>
         /// Tool speed [m/s] (spatial vector).
         /// </summary>
-        public double[] Xd { get; set; }
+        [JsonProperty("xd")]
+        public List<double> Xd { get; set; }
     }
 
     /// <summary>
@@ -585,6 +658,7 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Joint acceleration [rad/s^2] (optional).
         /// </summary>
+        [JsonProperty("a", NullValueHandling = NullValueHandling.Ignore)]
         public double? A { get; set; }
     }
 
@@ -596,6 +670,7 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Joint acceleration [rad/s^2] (of leading axis).
         /// </summary>
+        [JsonProperty("a")]
         public double A { get; set; }
     }
 
@@ -607,11 +682,13 @@ namespace Schema.Socket.Motion
         /// <summary>
         /// Tool acceleration [m/s^2].
         /// </summary>
+        [JsonProperty("a")]
         public double A { get; set; }
 
         /// <summary>
         /// Tool acceleration [rad/s^2] (optional), if not defined a, position acceleration, is used.
         /// </summary>
+        [JsonProperty("aRot", NullValueHandling = NullValueHandling.Ignore)]
         public string ARot { get; set; }
     }
 
@@ -624,22 +701,26 @@ namespace Schema.Socket.Motion
         /// Pose vector that determines the center of the conveyor in the base coordinate system of
         /// the robot.
         /// </summary>
-        public double[] Center { get; set; }
+        [JsonProperty("center")]
+        public List<double> Center { get; set; }
 
         /// <summary>
         /// The index of the encoder to associate with the conveyor tracking (optional, default is 0).
         /// </summary>
+        [JsonProperty("encoderIndex", NullValueHandling = NullValueHandling.Ignore)]
         public double? EncoderIndex { get; set; }
 
         /// <summary>
         /// Should the tool rotate with the conveyor or stay in the orientation specified by the
         /// trajectory (movel() etc.).
         /// </summary>
+        [JsonProperty("rotateTool")]
         public bool RotateTool { get; set; }
 
         /// <summary>
         /// How many ticks the encoder sees when the conveyor moves one revolution.
         /// </summary>
+        [JsonProperty("ticksPerRevolution")]
         public double TicksPerRevolution { get; set; }
     }
 
@@ -652,16 +733,19 @@ namespace Schema.Socket.Motion
         /// Pose vector that determines the direction of the conveyor in the base coordinate system
         /// of the robot.
         /// </summary>
-        public double[] Direction { get; set; }
+        [JsonProperty("direction")]
+        public List<double> Direction { get; set; }
 
         /// <summary>
         /// The index of the encoder to associate with the conveyor tracking (optional, default is 0).
         /// </summary>
+        [JsonProperty("encoderIndex", NullValueHandling = NullValueHandling.Ignore)]
         public double? EncoderIndex { get; set; }
 
         /// <summary>
         /// How many ticks the encoder sees when the conveyor moves one meter.
         /// </summary>
+        [JsonProperty("ticksPerMeter")]
         public double TicksPerMeter { get; set; }
     }
 }

@@ -1,5 +1,11 @@
 namespace Schema.Socket.Unity
 {
+    using System;
+    using System.Collections.Generic;
+
+    using System.Globalization;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     /// <summary>
     /// Represents a 6D vector consisting of three force components and three torque components.
@@ -9,31 +15,37 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// U-axis
         /// </summary>
+        [JsonProperty("u")]
         public double U { get; set; }
 
         /// <summary>
         /// V-axis
         /// </summary>
+        [JsonProperty("v")]
         public double V { get; set; }
 
         /// <summary>
         /// W-axis
         /// </summary>
+        [JsonProperty("w")]
         public double W { get; set; }
 
         /// <summary>
         /// X-axis
         /// </summary>
+        [JsonProperty("x")]
         public double X { get; set; }
 
         /// <summary>
         /// Y-axis
         /// </summary>
+        [JsonProperty("y")]
         public double Y { get; set; }
 
         /// <summary>
         /// Z-axis
         /// </summary>
+        [JsonProperty("z")]
         public double Z { get; set; }
     }
 
@@ -45,6 +57,7 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// The message content.
         /// </summary>
+        [JsonProperty("message")]
         public string Message { get; set; }
     }
 
@@ -56,16 +69,19 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// The player's head-mounted display position.
         /// </summary>
+        [JsonProperty("hmd")]
         public SixDofPosition Hmd { get; set; }
 
         /// <summary>
         /// The player's left hand position.
         /// </summary>
+        [JsonProperty("left")]
         public SixDofPosition Left { get; set; }
 
         /// <summary>
         /// The player's right hand position.
         /// </summary>
+        [JsonProperty("right")]
         public SixDofPosition Right { get; set; }
     }
 
@@ -83,11 +99,13 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// The position vector.
         /// </summary>
+        [JsonProperty("position")]
         public Vector3D Position { get; set; }
 
         /// <summary>
         /// The rotation vector.
         /// </summary>
+        [JsonProperty("rotation")]
         public Vector3D Rotation { get; set; }
     }
 
@@ -107,16 +125,19 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// X-axis
         /// </summary>
+        [JsonProperty("x")]
         public double X { get; set; }
 
         /// <summary>
         /// Y-axis
         /// </summary>
+        [JsonProperty("y")]
         public double Y { get; set; }
 
         /// <summary>
         /// Z-axis
         /// </summary>
+        [JsonProperty("z")]
         public double Z { get; set; }
     }
 
@@ -128,11 +149,13 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// The pendant's position.
         /// </summary>
+        [JsonProperty("position")]
         public Vector3D Position { get; set; }
 
         /// <summary>
         /// The pendant's rotation.
         /// </summary>
+        [JsonProperty("rotation")]
         public Vector3D Rotation { get; set; }
     }
 
@@ -144,6 +167,7 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// The message content.
         /// </summary>
+        [JsonProperty("message")]
         public string Message { get; set; }
     }
 
@@ -155,7 +179,8 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// An array of player data.
         /// </summary>
-        public PlayerData[] Players { get; set; }
+        [JsonProperty("players")]
+        public List<PlayerData> Players { get; set; }
     }
 
     /// <summary>
@@ -166,31 +191,37 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// The player's color.
         /// </summary>
+        [JsonProperty("color")]
         public string Color { get; set; }
 
         /// <summary>
         /// The player's head-mounted display position.
         /// </summary>
+        [JsonProperty("hmd")]
         public SixDofPosition Hmd { get; set; }
 
         /// <summary>
         /// The player's ID.
         /// </summary>
+        [JsonProperty("id")]
         public string Id { get; set; }
 
         /// <summary>
         /// The player's left hand position.
         /// </summary>
+        [JsonProperty("left")]
         public SixDofPosition Left { get; set; }
 
         /// <summary>
         /// The player's name.
         /// </summary>
+        [JsonProperty("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// The player's right hand position.
         /// </summary>
+        [JsonProperty("right")]
         public SixDofPosition Right { get; set; }
     }
 
@@ -202,16 +233,19 @@ namespace Schema.Socket.Unity
         /// <summary>
         /// The owner of the pendant.
         /// </summary>
+        [JsonProperty("owner")]
         public string Owner { get; set; }
 
         /// <summary>
         /// The pendant's position.
         /// </summary>
+        [JsonProperty("position")]
         public Vector3D Position { get; set; }
 
         /// <summary>
         /// The pendant's rotation.
         /// </summary>
+        [JsonProperty("rotation")]
         public Vector3D Rotation { get; set; }
     }
 }

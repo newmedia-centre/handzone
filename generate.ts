@@ -16,10 +16,11 @@ async function exportCSharp(namespace: string, inputData: InputData) {
 		inputData,
 		lang: 'cs',
 		rendererOptions: {
-			namespace,
-			features: 'just-types-and-namespace',
-
-		}
+			'framework': 'NewtonSoft',
+			'array-type': 'list',
+			'namespace': namespace,
+			'features': 'attributes-only',
+		},
 	})
 }
 

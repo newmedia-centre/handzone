@@ -1,5 +1,11 @@
 namespace Schema.Socket.Grasshopper
 {
+    using System;
+    using System.Collections.Generic;
+
+    using System.Globalization;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     /// <summary>
     /// Sends a json payload of the program to Unity to be deserialized as a program.
