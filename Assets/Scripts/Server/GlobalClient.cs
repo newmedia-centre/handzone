@@ -109,7 +109,7 @@ public class GlobalClient : MonoBehaviour
             
             OnRobotsReceived?.Invoke(robots);
             Debug.Log($"Received robots: {robots.Real?.Address}");
-            Debug.Log("Received robots sessions: " + robots.Sessions.Length);
+            Debug.Log("Received robots sessions: " + robots.Sessions.Count);
         });
 
         _client.On("session", response =>
