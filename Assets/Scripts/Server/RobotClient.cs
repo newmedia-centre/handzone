@@ -63,7 +63,6 @@ public class RobotClient : MonoBehaviour
         if (GlobalClient.Instance?.Session != null)
             url = GlobalClient.Instance.url + GlobalClient.Instance.Session.Robot.Name;
         
-        Debug.Log(url);
         _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
         {
             Auth = new { token = GlobalClient.Instance?.Session?.Token }

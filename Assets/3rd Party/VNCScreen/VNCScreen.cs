@@ -171,7 +171,6 @@ namespace VNCScreen
             connectionReceived = false;
             SetState(RuntimeState.Connecting);
 
-            Debug.Log("Connect vnc");
             vnc.Connect(host, display, port, false);
 
             Debug.Log("[VNCScreen] Connection In progress " + host + ":" + port);
@@ -428,7 +427,7 @@ namespace VNCScreen
             if (!IsConnected) return;
 
             Size s = vnc.BufferSize;
-            Point point = new Point((int)(pos.x * s.Width), (int)((1 - pos.y) * s.Height));
+            Point point = new Point((int)(pos.x * s.Width), (int)(pos.y * s.Height));
 
             UpdateMouse(point, button0, button1, button2);
         }
