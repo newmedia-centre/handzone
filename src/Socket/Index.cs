@@ -22,7 +22,7 @@ namespace Schema.Socket.Index
         /// The available sessions
         /// </summary>
         [JsonProperty("sessions")]
-        public RobotSession[] Sessions { get; set; }
+        public List<RobotSession> Sessions { get; set; }
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ namespace Schema.Socket.Index
         /// The names of users in the session
         /// </summary>
         [JsonProperty("users")]
-        public string[] Users { get; set; }
+        public List<string> Users { get; set; }
     }
 
     /// <summary>

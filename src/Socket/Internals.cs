@@ -23,7 +23,7 @@ namespace Schema.Socket.Internals
         /// current joint position is used.
         /// </summary>
         [JsonProperty("qnear", NullValueHandling = NullValueHandling.Ignore)]
-        public double[] Qnear { get; set; }
+        public List<double> Qnear { get; set; }
 
         /// <summary>
         /// The tool center point (TCP) to use for the inverse kinematics calculation. If not
@@ -36,7 +36,7 @@ namespace Schema.Socket.Internals
         /// Tool pose.
         /// </summary>
         [JsonProperty("x")]
-        public double[] X { get; set; }
+        public List<double> X { get; set; }
     }
 
     public partial class InternalsGetInverseKinCallback
@@ -45,6 +45,6 @@ namespace Schema.Socket.Internals
         /// The inverse kinematics positions
         /// </summary>
         [JsonProperty("ik")]
-        public double[] Ik { get; set; }
+        public List<double> Ik { get; set; }
     }
 }

@@ -124,7 +124,7 @@ namespace Schema.Socket.Motion
         /// The TCP pose to set.
         /// </summary>
         [JsonProperty("pose")]
-        public double[] Pose { get; set; }
+        public List<double> Pose { get; set; }
     }
 
     /// <summary>
@@ -182,20 +182,20 @@ namespace Schema.Socket.Motion
         /// along/about the axis.
         /// </summary>
         [JsonProperty("limits")]
-        public double[] Limits { get; set; }
+        public List<double> Limits { get; set; }
 
         /// <summary>
         /// A 6d vector of 0s and 1s. 1 means that the robot will be compliant in the corresponding
         /// axis of the task frame.
         /// </summary>
         [JsonProperty("selection_vector")]
-        public double[] SelectionVector { get; set; }
+        public List<double> SelectionVector { get; set; }
 
         /// <summary>
         /// A pose vector that defines the force frame relative to the base frame.
         /// </summary>
         [JsonProperty("task_frame")]
-        public double[] TaskFrame { get; set; }
+        public List<double> TaskFrame { get; set; }
 
         /// <summary>
         /// An integer [13] specifying how the robot interprets the force frame.
@@ -207,7 +207,7 @@ namespace Schema.Socket.Motion
         /// The forces/torques the robot will apply to its environment.
         /// </summary>
         [JsonProperty("wrench")]
-        public double[] Wrench { get; set; }
+        public List<double> Wrench { get; set; }
     }
 
     /// <summary>
@@ -248,7 +248,7 @@ namespace Schema.Socket.Motion
         /// Target TCP pose.
         /// </summary>
         [JsonProperty("pose")]
-        public double[] Pose { get; set; }
+        public List<double> Pose { get; set; }
     }
 
     /// <summary>
@@ -262,7 +262,7 @@ namespace Schema.Socket.Motion
         /// Target TCP speed as a vector.
         /// </summary>
         [JsonProperty("speed")]
-        public double[] Speed { get; set; }
+        public List<double> Speed { get; set; }
     }
 
     /// <summary>
@@ -292,14 +292,14 @@ namespace Schema.Socket.Motion
         /// corresponding pose.
         /// </summary>
         [JsonProperty("pose_to")]
-        public double[] PoseTo { get; set; }
+        public List<double> PoseTo { get; set; }
 
         /// <summary>
         /// Path point (note: only position is used). Pose_via can also be specified as joint
         /// positions, then forward kinematics is used to calculate the corresponding pose.
         /// </summary>
         [JsonProperty("pose_via")]
-        public double[] PoseVia { get; set; }
+        public List<double> PoseVia { get; set; }
 
         /// <summary>
         /// Blend radius (of target pose) [m] (default: 0).
@@ -334,7 +334,7 @@ namespace Schema.Socket.Motion
         /// calculate the corresponding joint positions).
         /// </summary>
         [JsonProperty("q")]
-        public double[] Q { get; set; }
+        public List<double> Q { get; set; }
 
         /// <summary>
         /// Blend radius [m] (default: 0). If a blend radius is set, the robot arm trajectory will be
@@ -374,7 +374,7 @@ namespace Schema.Socket.Motion
         /// used to calculate the corresponding pose).
         /// </summary>
         [JsonProperty("pose")]
-        public double[] Pose { get; set; }
+        public List<double> Pose { get; set; }
 
         /// <summary>
         /// Blend radius [m] (default: 0).
@@ -412,7 +412,7 @@ namespace Schema.Socket.Motion
         /// used to calculate the corresponding pose).
         /// </summary>
         [JsonProperty("pose")]
-        public double[] Pose { get; set; }
+        public List<double> Pose { get; set; }
 
         /// <summary>
         /// Blend radius [m] (default: 0).
@@ -483,7 +483,7 @@ namespace Schema.Socket.Motion
         /// defined, the joint’s actual number of revolutions are used.
         /// </summary>
         [JsonProperty("qNear", NullValueHandling = NullValueHandling.Ignore)]
-        public double[] QNear { get; set; }
+        public List<double> QNear { get; set; }
     }
 
     /// <summary>
@@ -523,7 +523,7 @@ namespace Schema.Socket.Motion
         /// and wrist3.
         /// </summary>
         [JsonProperty("q")]
-        public double[] Q { get; set; }
+        public List<double> Q { get; set; }
 
         /// <summary>
         /// Time where the command is controlling the robot. The function is blocking for time t [s]
@@ -573,7 +573,7 @@ namespace Schema.Socket.Motion
         /// Joint positions.
         /// </summary>
         [JsonProperty("q")]
-        public double[] Q { get; set; }
+        public List<double> Q { get; set; }
     }
 
     /// <summary>
@@ -607,7 +607,7 @@ namespace Schema.Socket.Motion
         /// Joint speeds [rad/s].
         /// </summary>
         [JsonProperty("qd")]
-        public double[] Qd { get; set; }
+        public List<double> Qd { get; set; }
 
         /// <summary>
         /// Time [s] before the function returns (optional).
@@ -646,7 +646,7 @@ namespace Schema.Socket.Motion
         /// Tool speed [m/s] (spatial vector).
         /// </summary>
         [JsonProperty("xd")]
-        public double[] Xd { get; set; }
+        public List<double> Xd { get; set; }
     }
 
     /// <summary>
@@ -702,7 +702,7 @@ namespace Schema.Socket.Motion
         /// the robot.
         /// </summary>
         [JsonProperty("center")]
-        public double[] Center { get; set; }
+        public List<double> Center { get; set; }
 
         /// <summary>
         /// The index of the encoder to associate with the conveyor tracking (optional, default is 0).
@@ -734,7 +734,7 @@ namespace Schema.Socket.Motion
         /// of the robot.
         /// </summary>
         [JsonProperty("direction")]
-        public double[] Direction { get; set; }
+        public List<double> Direction { get; set; }
 
         /// <summary>
         /// The index of the encoder to associate with the conveyor tracking (optional, default is 0).
