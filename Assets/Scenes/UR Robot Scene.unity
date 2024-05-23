@@ -744,7 +744,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50d9ca1fa3fcde24aa76e6823e23c8c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  url: http://172.19.14.141:3000/quizzical_johnson
+  url: http://localhost:3000/robot-1
 --- !u!4 &305839137 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 947022030510488534, guid: d45d1cb9b14b43a418ea8c62f2ed7ba8,
@@ -3834,6 +3834,51 @@ Transform:
   - {fileID: 1435320819}
   - {fileID: 1380501891}
   - {fileID: 745018575}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1750854757
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1750854759}
+  - component: {fileID: 1750854758}
+  m_Layer: 0
+  m_Name: VNC Cursor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1750854758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750854757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f168d592b37eb64182f9b44777dc03a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manageKeys: 0
+--- !u!4 &1750854759
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750854757}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1757058953
@@ -7071,7 +7116,12 @@ PrefabInstance:
     - target: {fileID: 6882951242940150495, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
         type: 3}
       propertyPath: host
-      value: 172.19.14.141
+      value: localhost
+      objectReference: {fileID: 0}
+    - target: {fileID: 6882951242940150495, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: port
+      value: 5999
       objectReference: {fileID: 0}
     - target: {fileID: 6882951242940150495, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
         type: 3}
@@ -13611,3 +13661,4 @@ SceneRoots:
   - {fileID: 1740465543}
   - {fileID: 267285847}
   - {fileID: 838759443}
+  - {fileID: 1750854759}

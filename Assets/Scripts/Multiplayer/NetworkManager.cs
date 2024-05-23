@@ -1,28 +1,37 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Schema.Socket.Unity;
 using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
 {
-    public static NetworkManager instance;
+    public static NetworkManager Instance { get; private set; }
+    
     public GameObject playerPrefab;
     
-    private List<NetworkPlayer> players = new();
-    
+    private Dictionary<string, NetworkPlayer> _playerDictionary = new();
+
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            Instance = this;
         }
-        else if (instance != this)
+        else if (Instance != this)
         {
+            Debug.LogWarning("Multiple instances of NetworkManager detected. Destroying the duplicate instance.");
             Destroy(gameObject);
         }
         
         RobotClient.OnUnityPendant += OnUnityPendant;
-        RobotClient.OnUnityPlayerData += UnityPlayerData;
+        RobotClient.OnUnityPlayerData += UpdateUnityPlayers;
+    }
+
+    private void OnDestroy()
+    {
+        RobotClient.OnUnityPendant -= OnUnityPendant;
+        RobotClient.OnUnityPlayerData -= UpdateUnityPlayers;
     }
 
     private void OnUnityPendant(UnityPendantIn obj)
@@ -30,50 +39,52 @@ public class NetworkManager : MonoBehaviour
         Debug.Log("Pendant data received");
     }
 
-    private void UnityPlayerData(PlayerData obj)
+    private void UpdateUnityPlayers(UnityPlayersOut incomingUnityPlayersData)
     {
-        // Check the player list for the id
-        if (players.Find(x => x.Id == obj.Id) == null)
+        // Remove players that are not in the incoming data
+        HashSet<string> playerIds = new HashSet<string>(incomingUnityPlayersData.Players.Select(x => x.Id));
+        foreach (var player in _playerDictionary.Values)
         {
-            SpawnPlayer(obj);
+            if (!playerIds.Contains(player.Id))
+            {
+                RemovePlayer(player);
+                _playerDictionary.Remove(player.Id);
+            }
+        }
+
+        // Update existing players and add new players
+        foreach (var incomingPlayerData in incomingUnityPlayersData.Players)
+        {
+            if (_playerDictionary.TryGetValue(incomingPlayerData.Id, out var player))
+            {
+                player.UpdatePositions(incomingPlayerData);
+            }
+            else
+            {
+                AddPlayer(incomingPlayerData);
+            }
+        }
+    }
+
+    public void AddPlayer(PlayerData obj)
+    {
+        if (!_playerDictionary.ContainsKey(obj.Id))
+        {
+            NetworkPlayer newPlayer = Instantiate(playerPrefab).GetComponent<NetworkPlayer>();
+            newPlayer.Id = obj.Id;
+            newPlayer.SetNameCard(obj.Name);
+            newPlayer.SetColor(obj.Color);
+            _playerDictionary.Add(newPlayer.Id, newPlayer);
         }
         else
         {
-            NetworkPlayer player = players.Find(x => x.Id == obj.Id);
-
-            // Despawn the player if the player is not found
-            if (player == null)
-            {
-                DespawnPlayer();
-                return;
-            };
-
-            // Update the player position
-            if (player != null)
-                player.UpdatePositions(obj);
+            Debug.LogWarning("Player with ID " + obj.Id + " already exists in the dictionary.");
         }
-        
-    }
-
-    public void SpawnPlayer(PlayerData obj)
-    {
-        NetworkPlayer newPlayer = Instantiate(playerPrefab).GetComponent<NetworkPlayer>();
-        newPlayer.Id = obj.Id;
-        newPlayer.SetNameCard(obj.Name);
-        newPlayer.SetColor(obj.Color);
-        players.Add(newPlayer);
     }
     
-    public void DespawnPlayer()
+    public void RemovePlayer(NetworkPlayer playerToRemove)
     {
-        Destroy(playerPrefab);
+        _playerDictionary.Remove(playerToRemove.Id);
+        Destroy(playerToRemove.gameObject);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    
-    
 }

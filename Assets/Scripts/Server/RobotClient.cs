@@ -30,7 +30,7 @@ public class RobotClient : MonoBehaviour
     public static event Action<Texture2D> OnCameraFeed;
     public static event Action<bool> OnDigitalOutputChanged;
     public static event Action<string> OnUnityMessage;
-    public static event Action<PlayerData> OnUnityPlayerData;
+    public static event Action<UnityPlayersOut> OnUnityPlayerData;
     public static event Action<UnityPendantIn> OnUnityPendant;
     public static event Action<InternalsGetInverseKinCallback> OnKinematicCallback;
 
@@ -196,7 +196,7 @@ public class RobotClient : MonoBehaviour
         
         _client.On("unity:player", response =>
         {
-            OnUnityPlayerData?.Invoke(response.GetValue<PlayerData>());
+            OnUnityPlayerData?.Invoke(response.GetValue<UnityPlayersOut>());
         });
         
         _client.On("unity:pendant", response =>
