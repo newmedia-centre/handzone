@@ -6,6 +6,8 @@ export type SessionsOut = {
 	sessions: RobotSession[]
 }
 
+export type SessionType = 'exercises' | 'sandbox'
+
 /** Information about a real robot */
 export type RobotInfo = {
 	/** The name of the robot */
@@ -20,6 +22,8 @@ export type RobotSession = {
 	name: string
 	/** The address of the robot */
 	address: string
+	/** The session type */
+	type: SessionType
 	/** The names of users in the session */
 	users: string[]
 }
