@@ -143,7 +143,7 @@ export const init = () => {
 
 		// send joined namespace
 		socket.on('namespace', async (callback) => {
-			if (!socket.data.namespace) return callback(false)
+			if (!socket.data.namespace) return callback(false, 'No namespace found')
 
 			const token = await generateAccessToken(socket.data.user, socket.data.namespace)
 			callback(true, { robot: socket.data.namespace, token })

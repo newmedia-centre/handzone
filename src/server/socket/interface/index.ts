@@ -13,6 +13,11 @@ import type env from '@/server/environment'
 
 type RobotInfo = typeof env['ROBOTS'][number]
 
+type CallbackFn<T> = {
+	(success: true, payload: T): void
+	(success: false, message: string): void
+}
+
 // declare socket.io interfaces
 export interface ServerToClientEvents {
 	message: (message: string) => void
@@ -25,9 +30,10 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
 	message: (message: string) => void
-	virtual: (callback: (success: boolean, payload?: JoinSessionOut) => void) => void
+	real: (callback: CallbackFn<JoinSessionOut>) => void
+	virtual: (callback: CallbackFn<JoinSessionOut>) => void
 	join: (address: string, callback: (success: boolean, payload?: JoinSessionOut) => void) => void
-	namespace: (callback: (success: boolean, payload?: JoinSessionOut) => void) => void
+	namespace: (callback: CallbackFn<JoinSessionOut>) => void
 	achievement: () => void
 	afk: () => void
 }
