@@ -21,8 +21,8 @@ public class NetworkManager : MonoBehaviour
             Destroy(gameObject);
         }
         
-        WebClient.OnUnityPendant += OnUnityPendant;
-        WebClient.OnUnityPlayerData += UnityPlayerData;
+        RobotClient.OnUnityPendant += OnUnityPendant;
+        RobotClient.OnUnityPlayerData += UnityPlayerData;
     }
 
     private void OnUnityPendant(UnityPendantIn obj)

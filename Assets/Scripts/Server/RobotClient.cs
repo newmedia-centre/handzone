@@ -1,21 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
-using Robots;
-using Schema.Socket.Motion;
 using UnityEngine;
 using Schema.Socket.Realtime;
 using Schema.Socket.Unity;
 using SocketIO.Serializer.NewtonsoftJson;
 using Schema.Socket.Internals;
-using Unity.VisualScripting;
+using SocketIOClient;
 
-public class WebClient : MonoBehaviour
+public class RobotClient : MonoBehaviour
 {
     [HideInInspector] public string url;
 
@@ -26,7 +23,6 @@ public class WebClient : MonoBehaviour
     
     public bool vncConnected { get; private set; }
 
-    public string[] Robots { get; private set; }
     public MemoryStream vncStream { get; private set; }
     public Semaphore vncLock = new(1, 1);
     
@@ -44,14 +40,13 @@ public class WebClient : MonoBehaviour
     public event Action OnSessionJoined;
     public event Action OnSessionLeft;
 
-    public static WebClient Instance { get; private set; }
+    public static RobotClient Instance { get; private set; }
     
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -63,9 +58,15 @@ public class WebClient : MonoBehaviour
     {
         _cameraFeedTexture = new Texture2D(2, 2);
         vncStream = new MemoryStream();
-
         _dataQueue = new Queue<RealtimeDataOut>();
-        _client = new SocketIOClient.SocketIO(url);
+
+        if (GlobalClient.Instance?.Session != null)
+            url = GlobalClient.Instance.url + GlobalClient.Instance.Session.Robot.Name;
+        
+        _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
+        {
+            Auth = new { token = GlobalClient.Instance?.Session?.Token }
+        });
         var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
@@ -176,6 +177,7 @@ public class WebClient : MonoBehaviour
             RealtimeDataOut data = response.GetValue<RealtimeDataOut>();
             if (data == null) return;
 
+            Debug.Log(data.QActual[0]);
             _dataQueue.Enqueue(data);
         });
 

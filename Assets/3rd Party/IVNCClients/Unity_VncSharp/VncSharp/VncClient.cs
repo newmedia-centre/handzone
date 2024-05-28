@@ -26,8 +26,7 @@ using VNCScreen.Drawing;
 
 using System.Diagnostics;
 using System.Security.Cryptography;
-using PimDeWitte.UnityMainThreadDispatcher;
-using UnityEditor.Search;
+
 using VNCScreen;
 using UnityVncSharp.Encodings;
 using UnityVncSharp.Internal;
@@ -61,6 +60,8 @@ namespace UnityVncSharp
         /// Raised when the connection to the remote host is lost.
         /// </summary>
         public event EventHandler ConnectionLost;
+
+
 
         /// <summary>
         /// Raised when the connection to the remote host is set or not
@@ -121,6 +122,31 @@ namespace UnityVncSharp
             get { return new Size(bufferInfos.Width, bufferInfos.Height); }
         }
 
+
+        /// <summary>
+        /// Gets the hostname of the remote desktop
+        /// </summary>
+        public string HostName
+        {
+            get
+            {
+                return BufferInfos.DesktopName;
+            }
+        }
+
+        /// <summary>
+        /// Returns True if the VncClient object is View-Only, meaning no mouse/keyboard events are being sent.
+        /// </summary>
+        public bool IsViewOnly
+        {
+            get
+            {
+                return inputPolicy != null && inputPolicy is VncViewInputPolicy;
+            }
+        }
+
+   
+
         string host;
         int port;
 
@@ -131,6 +157,7 @@ namespace UnityVncSharp
         /// <param name="display">The Display number (used on Unix hosts).</param>
         /// <param name="port">The Port number used by the Host, usually 5900.</param>
         /// <param name="viewOnly">True if mouse/keyboard events are to be ignored.</param>
+        /// <param name="token1"></param>
         /// <returns>Returns True if the VNC Host requires a Password to be sent after Connect() is called, otherwise False.</returns>
         public void Connect(string host, int display, int port, bool viewOnly)
         {
@@ -155,13 +182,12 @@ namespace UnityVncSharp
 
             this.host = host;
             this.port = port;
-     
+         
             // Lauch connecting thread
             connectingThread = new Thread(new ThreadStart(this.Connection));
             connectingThread.SetApartmentState(ApartmentState.STA);
             connectingThread.IsBackground = true;
             connectingThread.Start();
-        
         }
 
         /// <summary>
@@ -191,6 +217,33 @@ namespace UnityVncSharp
         }
 
         /// <summary>
+        /// Examines a list of Security Types supported by a VNC Server and chooses one that the Client supports.  See 6.1.2 of the RFB Protocol document v. 3.8.
+        /// </summary>
+        /// <param name="types">An array of bytes representing the Security Types supported by the VNC Server.</param>
+        /// <returns>A byte that represents the Security Type to be used by the Client.</returns>
+        protected byte GetSupportedSecurityType(byte[] types)
+        {
+            // Pick the first match in the list of given types.  If you want to add support for new
+            // security types, do it here:
+            for (int i = 0; i < types.Length; ++i)
+            {
+                if (types[i] == 1   // None
+                    || types[i] == 2    // VNC Authentication
+                                        // TODO: None of the following are currently supported -------------------
+                                        //					|| types[i] == 5	// RA2
+                                        //					|| types[i] == 6    // RA2ne
+                                        //					|| types[i] == 16   // Tight
+                                        //					|| types[i] == 17 	// Ultra
+                                        //					|| types[i] == 18 	// TLS
+                   ) return types[i];
+            }
+            return 0;
+        }
+
+
+
+
+        /// <summary>
         /// Use a password to authenticate with a VNC Host. NOTE: This is only necessary if Connect() returns TRUE.
         /// </summary>
         /// <param name="password">The password to use.</param>
@@ -210,6 +263,21 @@ namespace UnityVncSharp
             {
                 throw new NotSupportedException("Unable to Authenticate with Server. The Server uses an Authentication scheme unknown to the client.");
             }
+
+            if (rfb.ReadSecurityResult() == 0)
+            {
+                onPassword(true); 
+            }
+            else
+            {
+                // Authentication failed, and if the server is using Protocol version 3.8, a 
+                // plain text message follows indicating why the error happend.  I'm not 
+                // currently using this message, but it is read here to clean out the stream.
+                // In earlier versions of the protocol, the server will just drop the connection.
+                if (rfb.ServerVersion == 3.8) rfb.ReadSecurityFailureReason();
+                rfb.Close();    // TODO: Is this the right place for this???
+                onPassword(false);
+            }
         }
 
         /// <summary>
@@ -219,6 +287,7 @@ namespace UnityVncSharp
         protected void PerformVncAuthentication(string password)
         {
             byte[] challenge = rfb.ReadSecurityChallenge();
+            rfb.WriteSecurityResponse(EncryptChallenge(password, challenge));
         }
 
         /// <summary>
@@ -270,20 +339,20 @@ namespace UnityVncSharp
         /// </summary>
         public void Initialize()
         {
-            Debug.Log("Initialize VNCSharpClient");
             // Finish initializing protocol with host
+            rfb.WriteClientInitialisation(false);
             bufferInfos = rfb.ReadServerInit();
 
             theBitmap = new Bitmap(bufferInfos.Width, bufferInfos.Height);
 
-            // rfb.WriteSetPixelFormat(bufferInfos);    // just use the server's framebuffer format
+            rfb.WriteSetPixelFormat(bufferInfos);    // just use the server's framebuffer format
 
-           //  rfb.WriteSetEncodings(new uint[] {  RfbProtocol.ZRLE_ENCODING,
-           //                                      RfbProtocol.HEXTILE_ENCODING, 
-											// //	RfbProtocol.CORRE_ENCODING, // CoRRE is buggy in some hosts, so don't bother using
-											// 	RfbProtocol.RRE_ENCODING,
-           //                                      RfbProtocol.COPYRECT_ENCODING,
-           //                                      RfbProtocol.RAW_ENCODING });
+            rfb.WriteSetEncodings(new uint[] {  RfbProtocol.ZRLE_ENCODING,
+                                                RfbProtocol.HEXTILE_ENCODING, 
+											//	RfbProtocol.CORRE_ENCODING, // CoRRE is buggy in some hosts, so don't bother using
+												RfbProtocol.RRE_ENCODING,
+                                                RfbProtocol.COPYRECT_ENCODING,
+                                                RfbProtocol.RAW_ENCODING });
 
             // Create an EncodedRectangleFactory so that EncodedRectangles can be built according to set pixel layout
             factory = new EncodedRectangleFactory(rfb);
@@ -313,6 +382,18 @@ namespace UnityVncSharp
             // Stop the worker thread.
             done.Set();
 
+            // BUG FIX: Simon.Phillips@warwick.ac.uk for UltraVNC disconnect issue
+            // Request a tiny screen update to flush the blocking read
+            try
+            {
+                rfb.WriteFramebufferUpdateRequest(0, 0, 1, 1, false);
+            }
+            catch
+            {
+                // this may not work, as Disconnect can get called in response to the
+                // VncClient raising a ConnectionLost event (e.g., the remote host died).
+            }
+
             worker.Join(3000);  // this number is arbitrary, just so that it doesn't block forever....
 
             rfb.Close();
@@ -332,8 +413,49 @@ namespace UnityVncSharp
             try
             {
                 rfb.Connect(host, port);
-               
-                onConnection(null, true);
+                rfb.ReadProtocolVersion();
+                rfb.WriteProtocolVersion();
+
+                // Figure out which type of authentication the server uses
+                byte[] types = rfb.ReadSecurityTypes();
+
+                // Based on what the server sends back in the way of supported Security Types, one of
+                // two things will need to be done: either the server will reject the connection (i.e., type = 0),
+                // or a list of supported types will be sent, of which we need to choose and use one.
+                if (types.Length > 0)
+                {
+                    if (types[0] == 0)
+                    {
+                        // The server is not able (or willing) to accept the connection.
+                        // A message follows indicating why the connection was dropped.
+                        throw new VncProtocolException("Connection Failed. The server rejected the connection for the following reason: " + rfb.ReadSecurityFailureReason());
+                    }
+                    else
+                    {
+                        securityType = GetSupportedSecurityType(types);
+                        System.Diagnostics.Debug.Assert(securityType > 0, "Unknown Security Type(s)", "The server sent one or more unknown Security Types.");
+
+                        rfb.WriteSecurityType(securityType);
+
+                        // Protocol 3.8 states that a SecurityResult is still sent when using NONE (see 6.2.1)
+                        if (rfb.ServerVersion == 3.8f && securityType == 1)
+                        {
+                            if (rfb.ReadSecurityResult() > 0)
+                            {
+                                // For some reason, the server is not accepting the connection.  Get the
+                                // reason and throw an exception
+                                throw new VncProtocolException("Unable to Connecto to the Server. The Server rejected the connection for the following reason: " + rfb.ReadSecurityFailureReason());
+                            }
+                        }
+
+                        onConnection(null, (securityType > 1) ? true : false);
+                    }
+                }
+                else
+                {
+                    onConnection(new VncProtocolException("Protocol Error Connecting to Server. The Server didn't send any Security Types during the initial handshake."), false);
+
+                }
             }
             catch (Exception e)
             {
@@ -353,39 +475,18 @@ namespace UnityVncSharp
 
             // Get the initial destkop from the host
             RequestScreenUpdate(true);
-            
+
             while (true)
             {
-                
                 if (CheckIfThreadDone())
                     break;
 
-                WebClient.Instance.vncLock.WaitOne();
-                // Debug.Log("Read lock acquired");
-
-                if(WebClient.Instance.vncStream.Length != 0)
-                    Debug.Log("Stream Length: " + WebClient.Instance.vncStream.Length);
-                
-                if (WebClient.Instance.IsVncStreamAtEnd() || WebClient.Instance.vncStream.Length == 0)
-                {
-                    // Clear the stream
-                    WebClient.Instance.vncStream.SetLength(0);
-                    WebClient.Instance.vncStream.Position = 0;
-                    WebClient.Instance.vncLock.Release();
-                    continue;
-                }
-
-                Debug.Log("Reading from stream");
-                Debug.Log(WebClient.Instance.vncStream.Position + " / " + WebClient.Instance.vncStream.Length);
-
-                
                 try
                 {
                     switch (rfb.ReadServerMessageType())
                     {
                         case RfbProtocol.FRAMEBUFFER_UPDATE:
                             rectangles = rfb.ReadFramebufferUpdate();
-                            Debug.Log("Reading framebuffer update");
 
                             if (CheckIfThreadDone())
                                 break;
@@ -429,16 +530,8 @@ namespace UnityVncSharp
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning(e.Message);
-                    // OnConnectionLost(e);
+                    OnConnectionLost(e);
                 }
-                
-                // Clear the stream
-                WebClient.Instance.vncStream.SetLength(0);
-                WebClient.Instance.vncStream.Position = 0;
-                WebClient.Instance.vncLock.Release();
-                
-                Thread.Sleep(1000);
             }
         }
 
@@ -450,7 +543,6 @@ namespace UnityVncSharp
         protected void OnConnectionLost(Exception e)
         {
             ConnectionLost(this, new ErrorEventArg(e));
-            // ConnectionLost(this, new ErrorEventArg(e));
         }
 
         protected void OnServerCutText()

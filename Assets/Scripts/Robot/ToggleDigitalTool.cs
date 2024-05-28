@@ -6,6 +6,6 @@ public class ToggleDigitalTool : MonoBehaviour
 
     public void ToggleToolDigitalOut()
     {
-        _digitalOutput = WebClient.Instance.ToggleToolDigitalOut(_digitalOutput);
+        _digitalOutput = RobotClient.Instance.ToggleToolDigitalOut(_digitalOutput);
     }
 }

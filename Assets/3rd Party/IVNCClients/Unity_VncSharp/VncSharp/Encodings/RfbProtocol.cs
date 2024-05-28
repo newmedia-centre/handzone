@@ -19,16 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 using System;
-using System.Buffers.Binary;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Net.Security;
 using System.Net.Sockets;
-
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using UnityEngine;
 using VNCScreen.Drawing;
 using UnityVncSharp.Imaging;
-using Debug = UnityEngine.Debug;
 
 namespace UnityVncSharp.Encodings
 {
@@ -62,9 +61,13 @@ namespace UnityVncSharp.Encodings
 		protected int verMajor;	// Major version of Protocol--probably 3
 		protected int verMinor; // Minor version of Protocol--probably 3, 7, or 8
 
-		protected MemoryStream stream;	// Stream object used to send/receive data
+		protected TcpClient tcp;		// Network object used to communicate with host
+		protected Stream stream;	// Stream object used to send/receive data
 		protected BinaryReader reader;	// Integral rather than Byte values are typically
+		protected BinaryWriter writer;	// sent and received, so these handle this.
 		protected ZRLECompressedReader zrleReader;
+
+		private bool secure = false;
 
 		public RfbProtocol()
 		{
@@ -94,23 +97,79 @@ namespace UnityVncSharp.Encodings
                 return zrleReader;
             }
         }
+        
+        // The following method is invoked by the RemoteCertificateValidationDelegate.
+        public static bool ValidateServerCertificate(object sender, X509Certificate certificate,
+	        X509Chain chain, SslPolicyErrors sslPolicyErrors) {
+	        if (sslPolicyErrors == SslPolicyErrors.None)
+		        return true;
+	        
+	        // Do not allow this client to communicate with unauthenticated servers.
+	        return false;
+        }
 
-		/// <summary>
-		/// Attempt to connect to a remote VNC Host.
-		/// </summary>
-		/// <param name="host">The IP Address or Host Name of the VNC Host.</param>
-		/// <param name="port">The Port number on which to connect.  Usually this will be 5900, except in the case that the VNC Host is running on a different Display, in which case the Display number should be added to 5900 to determine the correct port.</param>
-		public void Connect(string host, int port)
+        /// <summary>
+        /// Attempt to connect to a remote VNC Host.
+        /// </summary>
+        /// <param name="host">The IP Address or Host Name of the VNC Host.</param>
+        /// <param name="port">The Port number on which to connect.  Usually this will be 5900, except in the case that the VNC Host is running on a different Display, in which case the Display number should be added to 5900 to determine the correct port.</param>
+        /// <param name="token"></param>
+        public void Connect(string host, int port)
 		{
 			if (host == null) throw new ArgumentNullException("host");
+
+			// Try to connect, passing any exceptions up to the caller, and if successful, 
+			// wrap a big endian Binary Reader and Binary Writer around the resulting stream.
+			tcp = new TcpClient();
+			tcp.NoDelay = true;  
+
+            // turn-off Nagle's Algorithm for better interactive performance with host.                     
+            //need to tell unity to let me use the port im about to use
+
           
-            stream = WebClient.Instance.vncStream;
+            tcp.Connect(host, port);
+            if (secure)
+            {
+	            SslStream sslStream = new SslStream(
+		            tcp.GetStream(),
+		            false,
+		            new RemoteCertificateValidationCallback (ValidateServerCertificate),
+		            null
+	            );
+	            // The server name must match the name on the server certificate.
+	            try
+	            {
+			          sslStream.AuthenticateAsClient(host);
+			          stream = sslStream;
+	            }
+	            catch (AuthenticationException e)
+	            {
+		            Console.WriteLine("Exception: {0}", e.Message);
+		            if (e.InnerException != null)
+		            {
+			            Console.WriteLine("Inner exception: {0}", e.InnerException.Message);
+		            }
+		            Console.WriteLine ("Authentication failed - closing the connection.");
+		            tcp.Close();
+		            return;
+	            }
+            }
+            else
+            {
+				stream = tcp.GetStream();
+            }
 
 			// Most of the RFB protocol uses Big-Endian byte order, while
 			// .NET uses Little-Endian. These wrappers convert between the
 			// two.  See BigEndianReader and BigEndianWriter below for more details.
 			reader = new BigEndianBinaryReader(stream);
+			writer = new BigEndianBinaryWriter(stream);
 			zrleReader = new ZRLECompressedReader(stream);
+			
+			// Send token back to server
+			var token = GlobalClient.Instance?.Session?.Token ?? "";
+            writer.Write(Encoding.UTF8.GetBytes(token));
+            writer.Flush();
 		}
 
 		/// <summary>
@@ -119,8 +178,10 @@ namespace UnityVncSharp.Encodings
 		public void Close()
 		{
 			try {
+				writer.Close();
 				reader.Close();
 				stream.Close();
+				tcp.Close();
 			}
             catch (Exception ex)
             {
@@ -187,6 +248,42 @@ namespace UnityVncSharp.Encodings
 		}
 
 		/// <summary>
+		/// Send the Protocol Version supported by the client.  Will be highest supported by server (see RFB Doc v. 3.8 section 6.1.1).
+		/// </summary>
+		public void WriteProtocolVersion()
+		{
+			// We will use which ever version the server understands, be it 3.3, 3.7, or 3.8.
+			Debug.AssertFormat(verMinor == 3 || verMinor == 7 || verMinor == 8, "Wrong Protocol Version!",
+						 string.Format("Protocol Version should be 3.3, 3.7, or 3.8 but is {0}.{1}", verMajor.ToString(), verMinor.ToString()));
+
+			writer.Write(GetBytes(string.Format("RFB 003.00{0}\n", verMinor.ToString())));
+			writer.Flush();
+		}
+
+		/// <summary>
+		/// Determine the type(s) of authentication that the server supports. See RFB Doc v. 3.8 section 6.1.2.
+		/// </summary>
+		/// <returns>An array of bytes containing the supported Security Type(s) of the server.</returns>
+		public byte[] ReadSecurityTypes()
+		{
+			// Read and return the types of security supported by the server (see protocol doc 6.1.2)
+			byte[] types = null;
+			
+			// Protocol Version 3.7 onward supports multiple security types, while 3.3 only 1
+			if (verMinor == 3) {
+				types = new byte[] { (byte) reader.ReadUInt32() };
+			} else {
+				byte num = reader.ReadByte();
+				types = new byte[num];
+				
+				for (int i = 0; i < num; ++i) {
+					types[i] = reader.ReadByte();
+				}
+			}
+			return types;
+		}
+
+		/// <summary>
 		/// If the server has rejected the connection during Authentication, a reason is given. See RFB Doc v. 3.8 section 6.1.2.
 		/// </summary>
 		/// <returns>Returns a string containing the reason for the server rejecting the connection.</returns>
@@ -195,7 +292,22 @@ namespace UnityVncSharp.Encodings
 			int length = (int) reader.ReadUInt32();
 			return GetString(reader.ReadBytes(length));
 		}
-		
+
+		/// <summary>
+		/// Indicate to the server which type of authentication will be used. See RFB Doc v. 3.8 section 6.1.2.
+		/// </summary>
+		/// <param name="type">The type of Authentication to be used, 1 (None) or 2 (VNC Authentication).</param>
+		public void WriteSecurityType(byte type)
+		{
+            Debug.AssertFormat(type >= 1, "Wrong Security Type", "The Security Type must be one that requires authentication.");
+			
+			// Only bother writing this byte if the version of the server is 3.7
+			if (verMinor >= 7) {
+				writer.Write(type);
+				writer.Flush();			
+			}
+		}
+
 		/// <summary>
 		/// When the server uses Security Type 2 (i.e., VNC Authentication), a Challenge/Response 
 		/// mechanism is used to authenticate the user. See RFB Doc v. 3.8 section 6.1.2 and 6.2.2.
@@ -207,6 +319,37 @@ namespace UnityVncSharp.Encodings
 		}
 
 		/// <summary>
+		/// Sends the encrypted Response back to the server. See RFB Doc v. 3.8 section 6.1.2.
+		/// </summary>
+		/// <param name="response">The DES password encrypted challege sent by the server.</param>
+		public void WriteSecurityResponse(byte[] response)
+		{
+			writer.Write(response, 0, response.Length);
+			writer.Flush();
+		}
+
+		/// <summary>
+		/// When the server uses VNC Authentication, after the Challege/Response, the server
+		/// sends a status code to indicate whether authentication worked. See RFB Doc v. 3.8 section 6.1.3.
+		/// </summary>
+		/// <returns>An integer indicating the status of authentication: 0 = OK; 1 = Failed; 2 = Too Many (deprecated).</returns>
+		public uint ReadSecurityResult()
+		{
+			return reader.ReadUInt32();
+		}
+
+		/// <summary>
+		/// Sends an Initialisation message to the server. See RFB Doc v. 3.8 section 6.1.4.
+		/// </summary>
+		/// <param name="shared">True if the server should allow other clients to connect, otherwise False.</param>
+		public void WriteClientInitialisation(bool shared)
+		{
+			// Non-zero if TRUE, zero if FALSE
+			writer.Write((byte)(shared ? 1 : 0));
+			writer.Flush();
+		}
+		
+		/// <summary>
 		/// Reads the server's Initialization message, specifically the remote Framebuffer's properties. See RFB Doc v. 3.8 section 6.1.5.
 		/// </summary>
 		/// <returns>Returns a Framebuffer object representing the geometry and properties of the remote host.</returns>
@@ -214,8 +357,7 @@ namespace UnityVncSharp.Encodings
 		{
 			int w = (int) reader.ReadUInt16();
 			int h = (int) reader.ReadUInt16();
-            
-			FrameBufferInfos buffer = FrameBufferInfos.FromPixelFormat(reader.ReadBytes(16), w, h);
+            FrameBufferInfos buffer = FrameBufferInfos.FromPixelFormat(reader.ReadBytes(16), w, h);
 			int length = (int) reader.ReadUInt32();
 
 			buffer.DesktopName = GetString(reader.ReadBytes(length));
@@ -229,12 +371,10 @@ namespace UnityVncSharp.Encodings
 		/// <param name="buffer">A Framebuffer telling the server how to encode pixel data. Typically this will be the same one sent by the server during initialization.</param>
 		public void WriteSetPixelFormat(FrameBufferInfos infos)
 		{
-			List<byte> msg = new List<byte>();
-
-			msg.Add(SET_PIXEL_FORMAT);
-			msg.AddRange(new byte[] { 0, 0, 0 });			
-			msg.AddRange(infos.ToPixelFormat()); // 16-byte Pixel Format
-			WebClient.Instance.WriteVNCPixelFormat(msg.ToArray());
+			writer.Write(SET_PIXEL_FORMAT);
+			WritePadding(3);
+			writer.Write(infos.ToPixelFormat());		// 16-byte Pixel Format
+			writer.Flush();
 		}
 
 		/// <summary>
@@ -243,17 +383,15 @@ namespace UnityVncSharp.Encodings
 		/// <param name="encodings">An array of integers indicating the encoding types supported.  The order indicates preference, where the first item is the first preferred.</param>
 		public void WriteSetEncodings(uint[] encodings)
 		{
-			List<byte> msg = new List<byte>();
-			
-			msg.Add(SET_ENCODINGS);
-			msg.AddRange(new byte[] {0} );
-			msg.AddRange(BitConverter.GetBytes((ushort) encodings.Length).Reverse());
+			writer.Write(SET_ENCODINGS);
+			WritePadding(1);
+			writer.Write((ushort)encodings.Length);
 			
 			for (int i = 0; i < encodings.Length; i++) {
-				msg.AddRange(BitConverter.GetBytes(encodings[i]).Reverse());
+				writer.Write(encodings[i]);
 			}
 
-			WebClient.Instance.WriteVNC(msg.ToArray());
+			writer.Flush();
 		}
 
 		/// <summary>
@@ -266,16 +404,13 @@ namespace UnityVncSharp.Encodings
 		/// <param name="incremental">Indicates whether only changes to the client's data should be sent or the entire desktop.</param>
 		public void WriteFramebufferUpdateRequest(ushort x, ushort y, ushort width, ushort height, bool incremental)
 		{
-			List<byte> msg = new List<byte>();
-			
-			msg.Add(FRAMEBUFFER_UPDATE_REQUEST);
-			msg.Add((byte)(incremental ? 1 : 0));
-			msg.AddRange(BitConverter.GetBytes(x).Reverse());
-			msg.AddRange(BitConverter.GetBytes(y).Reverse());
-			msg.AddRange(BitConverter.GetBytes(width).Reverse());
-			msg.AddRange(BitConverter.GetBytes(height).Reverse());
-			
-			WebClient.Instance.WriteVNC(msg.ToArray());
+			writer.Write(FRAMEBUFFER_UPDATE_REQUEST);
+			writer.Write((byte)(incremental ? 1 : 0));
+			writer.Write(x);
+			writer.Write(y);
+			writer.Write(width);
+			writer.Write(height);
+			writer.Flush();
 		}
 
 		/// <summary>
@@ -285,14 +420,11 @@ namespace UnityVncSharp.Encodings
 		/// <param name="pressed"></param>
 		public void WriteKeyEvent(uint keysym, bool pressed)
 		{
-			List<byte> msg = new List<byte>();
-			
-			msg.Add(KEY_EVENT);
-			msg.Add((byte)(pressed ? 1 : 0));
-			msg.AddRange(new byte[] {0, 0});
-			msg.AddRange(BitConverter.GetBytes(keysym).Reverse());
-			
-			WebClient.Instance.WriteVNC(msg.ToArray());
+			writer.Write(KEY_EVENT);
+			writer.Write( (byte) (pressed ? 1 : 0));
+			WritePadding(2);
+			writer.Write(keysym);
+			writer.Flush();
 		}
 
 		/// <summary>
@@ -302,14 +434,11 @@ namespace UnityVncSharp.Encodings
 		/// <param name="point">The location of the mouse cursor.</param>
 		public void WritePointerEvent(byte buttonMask, Point point)
 		{
-			List<byte> msg = new List<byte>();
-			
-			msg.Add(POINTER_EVENT);
-			msg.Add(buttonMask);
-			msg.AddRange( BitConverter.GetBytes((ushort)point.X).Reverse());
-			msg.AddRange( BitConverter.GetBytes((ushort)point.Y).Reverse());
-			
-			WebClient.Instance.WriteVNC(msg.ToArray());
+			writer.Write(POINTER_EVENT);
+			writer.Write(buttonMask);
+			writer.Write( (ushort) point.X);
+			writer.Write( (ushort) point.Y);
+			writer.Flush();
 		}
 
 		/// <summary>
@@ -318,12 +447,11 @@ namespace UnityVncSharp.Encodings
 		/// <param name="text">The text to be sent to the server.</param></param>
 		public void WriteClientCutText(string text)
 		{
-			List<byte> msg = new List<byte>();
-			
-			msg.Add(CLIENT_CUT_TEXT);
-			msg.AddRange(new byte[] {0, 0, 0});
-			msg.AddRange( BitConverter.GetBytes((uint)text.Length).Reverse());
-			msg.AddRange(GetBytes(text));
+			writer.Write(CLIENT_CUT_TEXT);
+			WritePadding(3);
+			writer.Write( (uint) text.Length);
+			writer.Write(GetBytes(text));
+			writer.Flush();
 		}
 
 		/// <summary>
@@ -332,11 +460,6 @@ namespace UnityVncSharp.Encodings
 		/// <returns>Returns the message type as an integer.</returns>
 		public int ReadServerMessageType()
 		{
-			if (!BitConverter.IsLittleEndian)
-			{
-				return (int) BinaryPrimitives.ReverseEndianness(reader.ReadByte());
-			}
-
 			return (int) reader.ReadByte();
 		}
 
@@ -347,12 +470,6 @@ namespace UnityVncSharp.Encodings
 		public int ReadFramebufferUpdate()
 		{
 			ReadPadding(1);
-			
-			if(!BitConverter.IsLittleEndian)
-			{
-				return (int) BinaryPrimitives.ReverseEndianness(reader.ReadUInt16());
-			}
-			
 			return (int) reader.ReadUInt16();
 		}
 
@@ -364,22 +481,11 @@ namespace UnityVncSharp.Encodings
 		public void ReadFramebufferUpdateRectHeader(out Rectangle rectangle, out int encoding)
 		{
 			rectangle = new Rectangle();
-			if (!BitConverter.IsLittleEndian)
-			{
-				rectangle.X = (int) BinaryPrimitives.ReverseEndianness(reader.ReadUInt16());
-				rectangle.Y = (int) BinaryPrimitives.ReverseEndianness(reader.ReadUInt16());
-				rectangle.Width = (int) BinaryPrimitives.ReverseEndianness(reader.ReadUInt16());
-				rectangle.Height = (int) BinaryPrimitives.ReverseEndianness(reader.ReadUInt16());
-				encoding = (int) BinaryPrimitives.ReverseEndianness(reader.ReadUInt32());
-			}
-			else
-			{
-				rectangle.X = (int) reader.ReadUInt16();
-				rectangle.Y = (int) reader.ReadUInt16();
-				rectangle.Width = (int) reader.ReadUInt16();
-				rectangle.Height = (int) reader.ReadUInt16();
-				encoding = (int) reader.ReadUInt32();
-			}
+			rectangle.X = (int) reader.ReadUInt16();
+			rectangle.Y = (int) reader.ReadUInt16();
+			rectangle.Width = (int) reader.ReadUInt16();
+			rectangle.Height = (int) reader.ReadUInt16();
+			encoding = (int) reader.ReadUInt32();
 		}
 		
         // TODO: this colour map code should probably go in Framebuffer.cs
@@ -397,15 +503,14 @@ namespace UnityVncSharp.Encodings
         public void ReadColourMapEntry()
         {
             ReadPadding(1);
-
             ushort firstColor = ReadUInt16();
             ushort nbColors = ReadUInt16();
 
             for (int i = 0; i < nbColors; i++, firstColor++)
             {
-	            mapEntries[firstColor, 0] = (byte)(ReadUInt16() * byte.MaxValue / ushort.MaxValue); // R
-	            mapEntries[firstColor, 1] = (byte)(ReadUInt16() * byte.MaxValue / ushort.MaxValue); // G
-	            mapEntries[firstColor, 2] = (byte)(ReadUInt16() * byte.MaxValue / ushort.MaxValue); // B
+                mapEntries[firstColor, 0] = (byte)(ReadUInt16() * byte.MaxValue / ushort.MaxValue);    // R
+                mapEntries[firstColor, 1] = (byte)(ReadUInt16() * byte.MaxValue / ushort.MaxValue);    // G
+                mapEntries[firstColor, 2] = (byte)(ReadUInt16() * byte.MaxValue / ushort.MaxValue);    // B
             }
         } 
 
@@ -416,16 +521,7 @@ namespace UnityVncSharp.Encodings
 		public string ReadServerCutText()
 		{
 			ReadPadding(3);
-
-			int length;
-			
-			if (!BitConverter.IsLittleEndian)
-			{
-				length = (int) BinaryPrimitives.ReverseEndianness(reader.ReadUInt32());
-				return GetString(reader.ReadBytes(length));
-			}
-			
-			length = (int) reader.ReadUInt32();
+			int length = (int) reader.ReadUInt32();
 			return GetString(reader.ReadBytes(length));
 		}
 
@@ -438,11 +534,6 @@ namespace UnityVncSharp.Encodings
 		/// <returns>Returns a UInt32 value.</returns>
 	    public uint ReadUint32()
 		{
-			if (!BitConverter.IsLittleEndian)
-			{
-				return BinaryPrimitives.ReverseEndianness(reader.ReadUInt32());
-			}
-			
 			return reader.ReadUInt32(); 
 		}
 		
@@ -452,10 +543,6 @@ namespace UnityVncSharp.Encodings
 		/// <returns>Returns a UInt16 value.</returns>
 		public ushort ReadUInt16()
 		{
-			if (!BitConverter.IsLittleEndian)
-			{
-				return BinaryPrimitives.ReverseEndianness(reader.ReadUInt16());
-			}
 			return reader.ReadUInt16(); 
 		}
 		
@@ -465,10 +552,6 @@ namespace UnityVncSharp.Encodings
 		/// <returns>Returns a Byte value.</returns>
 		public byte ReadByte()
 		{
-			if (!BitConverter.IsLittleEndian)
-			{
-				return BinaryPrimitives.ReverseEndianness(reader.ReadByte());
-			}
 			return reader.ReadByte();
 		}
 		
@@ -479,13 +562,34 @@ namespace UnityVncSharp.Encodings
 		/// <returns>Returns a Byte Array containing the values read.</returns>
 		public byte[] ReadBytes(int count)
 		{
-			byte[] bytes = reader.ReadBytes(count);
-			if (!BitConverter.IsLittleEndian)
-			{
-				Array.Reverse(bytes);
-			}
+			return reader.ReadBytes(count);
+		}
 
-			return bytes;
+		/// <summary>
+		/// Writes a single UInt32 value to the server, taking care of Little- to Big-Endian conversion.
+		/// </summary>
+		/// <param name="value">The UInt32 value to be written.</param>
+		public void WriteUint32(uint value)
+		{
+			writer.Write(value);
+		}
+
+		/// <summary>
+		/// Writes a single UInt16 value to the server, taking care of Little- to Big-Endian conversion.
+		/// </summary>
+		/// <param name="value">The UInt16 value to be written.</param>
+		public void WriteUInt16(ushort value)
+		{
+			writer.Write(value);
+		}
+		
+		/// <summary>
+		/// Writes a single Byte value to the server.
+		/// </summary>
+		/// <param name="value">The UInt32 value to be written.</param>
+		public void WriteByte(byte value)
+		{
+			writer.Write(value);
 		}
 
 		/// <summary>
@@ -504,7 +608,7 @@ namespace UnityVncSharp.Encodings
 		protected void WritePadding(int length)
 		{
 			byte [] padding = new byte[length];
-			WebClient.Instance.WriteVNC(padding);
+			writer.Write(padding, 0, padding.Length);
 		}
 
 		/// <summary>
@@ -547,7 +651,6 @@ namespace UnityVncSharp.Encodings
 			public override ushort ReadUInt16()
 			{
 				FillBuff(2);
-				
 				return (ushort)(((uint)buff[1]) | ((uint)buff[0]) << 8);
 				
 			}
@@ -575,8 +678,7 @@ namespace UnityVncSharp.Encodings
 				int bytesRead = 0;
 				int n = 0;
 
-				do
-				{
+				do {
 					n = BaseStream.Read(buff, bytesRead, totalBytes - bytesRead);
 					
 					if (n == 0)

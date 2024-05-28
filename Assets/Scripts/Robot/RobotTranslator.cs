@@ -1,23 +1,25 @@
 using Schema.Socket.Internals;
 using Schema.Socket.Realtime;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RobotTranslator : MonoBehaviour
 {
     public Transform[] robotPivots;
     public Vector3[] rotationDirection;
-    public double[] qActualJoints;
+    public List<double> qActualJoints;
     
     private GameObject[] _currentTransforms;
     
     private void Awake()
     {
         // Keep track of the current joint angles
-        qActualJoints = new double[robotPivots.Length];
+        qActualJoints = new List<double>(robotPivots.Length);
         
-        WebClient.OnRealtimeData += UpdateJointsFromPolyscope;
-        WebClient.OnKinematicCallback += UpdateJointsFromGrabbing;
+        RobotClient.OnRealtimeData += UpdateJointsFromPolyscope;
+        RobotClient.OnKinematicCallback += UpdateJointsFromGrabbing;
     }
     
     void SetCurrentJoint(int index, float angle)
@@ -33,14 +35,14 @@ public class RobotTranslator : MonoBehaviour
         }
     }
 
-    public void UpdateFromInverseKinematics(double[] target, Action function)
+    public void UpdateFromInverseKinematics(List<double> target, Action function)
     {
         InternalsGetInverseKinIn data = new InternalsGetInverseKinIn();
         data.Qnear = qActualJoints;
         data.MaxPositionError = 0.001;
         data.X = target;
 
-        WebClient.Instance.SendInverseKinematicsRequest(data, function);
+        RobotClient.Instance.SendInverseKinematicsRequest(data, function);
     }
 
     public void UpdateJointsFromPolyscope(RealtimeDataOut data)
@@ -57,11 +59,11 @@ public class RobotTranslator : MonoBehaviour
         UpdateJoints(data.Ik);
     }
 
-    private void UpdateJoints(double[] data)
+    private void UpdateJoints(List<double> data)
     {
         if (data == null) return;
 
-        for (int i = 0; i < data.Length; i++)
+        for (int i = 0; i < data.Count; i++)
         {
             qActualJoints[i] = data[i];
             float angle = (float)(qActualJoints[i] * Mathf.Rad2Deg);
