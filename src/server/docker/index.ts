@@ -148,7 +148,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 
 	// get the current capacity of the semaphore
 	getCapacity = () => {
-		return { current: this._semaphore.getPermits(), max: env.DOCKER.MAX_VIRTUAL }
+		return { current: env.DOCKER.MAX_VIRTUAL - this._semaphore.getPermits(), max: env.DOCKER.MAX_VIRTUAL }
 	}
 }
 
