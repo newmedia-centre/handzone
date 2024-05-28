@@ -10,39 +10,19 @@ namespace Schema.Socket.Index
     /// <summary>
     /// Information about all the robot sessions currently available
     /// </summary>
-    public partial class RobotsOut
+    public partial class SessionsOut
     {
         /// <summary>
-        /// The real robot that the user is allowed to join, can be null
+        /// the capacity for new virtual robots
         /// </summary>
-        [JsonProperty("real")]
-        public RobotInfo Real { get; set; }
+        [JsonProperty("capacity")]
+        public double Capacity { get; set; }
 
         /// <summary>
-        /// The available sessions
+        /// The available virtual robot sessions
         /// </summary>
         [JsonProperty("sessions")]
         public List<RobotSession> Sessions { get; set; }
-    }
-
-    /// <summary>
-    /// Information about a real robot
-    ///
-    /// The address of the socket namespace this session runs on.
-    /// </summary>
-    public partial class RobotInfo
-    {
-        /// <summary>
-        /// The address of the robot
-        /// </summary>
-        [JsonProperty("address")]
-        public string Address { get; set; }
-
-        /// <summary>
-        /// The name of the robot
-        /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
     }
 
     /// <summary>
@@ -85,6 +65,26 @@ namespace Schema.Socket.Index
         /// </summary>
         [JsonProperty("token")]
         public string Token { get; set; }
+    }
+
+    /// <summary>
+    /// Information about a real robot
+    ///
+    /// The address of the socket namespace this session runs on.
+    /// </summary>
+    public partial class RobotInfo
+    {
+        /// <summary>
+        /// The address of the robot
+        /// </summary>
+        [JsonProperty("address")]
+        public string Address { get; set; }
+
+        /// <summary>
+        /// The name of the robot
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
     }
 
     /// <summary>
