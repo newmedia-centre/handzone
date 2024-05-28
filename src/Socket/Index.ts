@@ -1,8 +1,8 @@
 /** Information about all the robot sessions currently available */
-export type RobotsOut = {
-	/** The real robot that the user is allowed to join, can be null */
-	real: RobotInfo | null
-	/** The available sessions */
+export type SessionsOut = {
+	/** the capacity for new virtual robots */
+	capacity: number
+	/** The available virtual robot sessions */
 	sessions: RobotSession[]
 }
 
