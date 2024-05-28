@@ -5,17 +5,22 @@ using UnityEngine;
 public class SessionMenu : MonoBehaviour
 {
     public GameObject sessionButtonPrefab;
+    public GameObject sessionPlayerNamePrefab;
     
     private List<GameObject> _sessionButtons = new();
     private string _selectedSessionAddress;
-    
     private UnityEngine.UI.Button _joinSessionButton;
 
     // Start is called before the first frame update
     void Start()
     {
-        GlobalClient.Instance.OnRobotsReceived += UpdateMenu;
-        _joinSessionButton = transform.GetChild(1).GetComponent<UnityEngine.UI.Button>();
+        if(GlobalClient.Instance.Sessions != null)
+        {
+            return;
+        }
+        
+        GlobalClient.Instance.OnSessionsReceived += UpdateMenu;
+        _joinSessionButton = transform.Find("SessionPanel/Buttons/JoinButton").GetComponent<UnityEngine.UI.Button>();
         _joinSessionButton.onClick.AddListener(() =>
         {
             SessionClient.Instance?.JoinSession(_selectedSessionAddress);
@@ -24,32 +29,55 @@ public class SessionMenu : MonoBehaviour
 
     void OnDestroy()
     {
-        GlobalClient.Instance.OnRobotsReceived -= UpdateMenu;
+        GlobalClient.Instance.OnSessionsReceived -= UpdateMenu;
     }
 
-    private void UpdateMenu(RobotsOut receivedSessions)
+    private void UpdateMenu(SessionsOut receivedSessions)
     {
-        foreach (var button in _sessionButtons)
+        // Clear existing session buttons
+        foreach (var sessionButton in _sessionButtons)
         {
-            Destroy(button);
+            Destroy(sessionButton);
         }
         _sessionButtons.Clear();
-
+        
         if (receivedSessions == null || receivedSessions.Sessions == null)
         {
             return;
         }
-
-        foreach (var session in receivedSessions.Sessions)
+        
+        // Update the session capacity label
+        var _sessionAvailabilityGroup = transform.Find("SessionPanel/AvailabilityGroup").gameObject;
+        _sessionAvailabilityGroup.transform.Find("AvailabilityCapacityLabel").GetComponent<TMPro.TextMeshProUGUI>().text = receivedSessions.Capacity.ToString();
+        
+        // Create new session buttons
+        foreach (var receivedSession in receivedSessions.Sessions)
         {
-            var sessionButton = Instantiate(sessionButtonPrefab, transform);
-            sessionButton.GetComponent<SessionButton>().SetButton(session);
+            var sessionsGroup = transform.Find("SessionPanel/SessionsGroup").gameObject;
+            var sessionButton = Instantiate(sessionButtonPrefab, sessionsGroup.transform);
+            sessionButton.GetComponent<SessionButton>().SetButton(receivedSession);
             _sessionButtons.Add(sessionButton);
             
+            // Find the Text tabel in the Session Button to set the session name
+            var _sessionName = sessionButton.transform.Find("SessionName").gameObject;
+            _sessionName.GetComponent<TMPro.TextMeshProUGUI>().text = receivedSession.Name;
+            
+            // Find the SessionPlayerNamesGroup object in this object's children
+            var _sessionPlayerNamesGroup = sessionButton.transform.Find("UsersPanel").gameObject;
+            
+            // Fill the session player names to the Session Button
+            foreach (var user in receivedSession.Users)
+            {
+                var sessionPlayerName = Instantiate(sessionPlayerNamePrefab, _sessionPlayerNamesGroup.transform);
+                sessionPlayerName.GetComponent<TMPro.TextMeshProUGUI>().text = user;
+            }
+            
+            // Add a listener to the session button to set the selected session address
             sessionButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() =>
             {
-                _selectedSessionAddress = session.Address;
-            });
+                _selectedSessionAddress = receivedSession.Address;
+                Debug.Log(_selectedSessionAddress);
+            });            
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
+using PimDeWitte.UnityMainThreadDispatcher;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
@@ -16,32 +18,44 @@ public class GlobalClientLoginButton : MonoBehaviour
         
         GlobalClient.Instance.OnConnecting += () =>
         {
-            loginButton.interactable = false;
-            pinInputField.interactable = false;
-            loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connecting...";
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                loginButton.interactable = false;
+                pinInputField.interactable = false;
+                loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connecting...";
+            });
         };
         
         GlobalClient.Instance.OnConnected += () =>
         {
-            loginButton.interactable = true;
-            pinInputField.text = "";
-            pinInputField.interactable = false;
-            loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connected";
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                loginButton.interactable = true;
+                pinInputField.text = "";
+                pinInputField.interactable = false;
+                loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connected";
+            });
         };
         
         GlobalClient.Instance.OnDisconnected += () =>
         {
-            loginButton.interactable = true;
-            pinInputField.interactable = true;
-            loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                loginButton.interactable = true;
+                pinInputField.interactable = true;
+                loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
+            });
         };
         
         GlobalClient.Instance.OnError += (error) =>
         {
-            loginButton.interactable = true;
-            pinInputField.interactable = true;
-            loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
-            Debug.LogError($"An error occurred: {error}");
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                loginButton.interactable = true;
+                pinInputField.interactable = true;
+                loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
+                Debug.LogError($"An error occurred: {error}");
+            });
         };
     }
     

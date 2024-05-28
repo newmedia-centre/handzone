@@ -30,7 +30,7 @@ public class GlobalClient : MonoBehaviour
     /// <summary>
     /// Latest robot data received from the server.
     /// </summary>
-    public RobotsOut Robots { get; private set; }
+    public SessionsOut Sessions { get; private set; }
 
     private SocketIOClient.SocketIO _client;
 
@@ -44,7 +44,7 @@ public class GlobalClient : MonoBehaviour
     public event Action OnSessionLeft;
     
     // Data reception events
-    public event Action<RobotsOut> OnRobotsReceived;
+    public event Action<SessionsOut> OnSessionsReceived;
     public event Action<JoinSessionOut> OnSessionReceived;
     
     /// <summary>
@@ -102,14 +102,15 @@ public class GlobalClient : MonoBehaviour
             OnError?.Invoke(s);
         };
 
-        _client.On("robots", response =>
+        _client.On("sessions", response =>
         {
-            var robots = response.GetValue<RobotsOut>();
-            if (robots == null) return;
+            var session = response.GetValue<SessionsOut>();
+            if (session == null) return;
             
-            OnRobotsReceived?.Invoke(robots);
-            Debug.Log($"Received robots: {robots.Real?.Address}");
-            Debug.Log("Received robots sessions: " + robots.Sessions.Count);
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                OnSessionsReceived?.Invoke(session);
+            });
         });
         
         await _client.ConnectAsync();
@@ -120,7 +121,6 @@ public class GlobalClient : MonoBehaviour
         _client.EmitAsync("virtual", response =>
         {
             var success = response.GetValue<bool>(0);
-            Debug.Log(success);
             if (success)
             {
                 Session = response.GetValue<JoinSessionOut>(1);

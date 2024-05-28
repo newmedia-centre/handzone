@@ -146,7 +146,6 @@ public class SessionClient : MonoBehaviour
             RealtimeDataOut data = response.GetValue<RealtimeDataOut>();
             if (data == null) return;
 
-            Debug.Log(data.QActual[0]);
             _dataQueue.Enqueue(data);
         });
 
@@ -156,14 +155,14 @@ public class SessionClient : MonoBehaviour
 
         #region Unity events
 
+        // Events whenever a session is joined, client receives player data and pendant data
         _client.On("unity:message", response =>
         {
-
             Debug.Log("Hello from Web server! " +  response.GetValue<string>());
             OnUnityMessage?.Invoke(response.GetValue<string>());
         });
         
-        _client.On("unity:player", response =>
+        _client.On("unity:players", response =>
         {
             OnUnityPlayerData?.Invoke(response.GetValue<UnityPlayersOut>());
         });
@@ -253,7 +252,7 @@ public class SessionClient : MonoBehaviour
     
     public void SendUnityPosition(UnityPlayerIn unityPlayer)
     {
-        _client.EmitAsync("unity:player", unityPlayer);
+        _client.EmitAsync("unity:players", unityPlayer);
     }
     
     public void SendUnityPendant(Vector6D message)
