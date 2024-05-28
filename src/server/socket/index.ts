@@ -1,5 +1,4 @@
 // import dependencies
-import type { Namespace } from 'socket.io'
 import { Server } from 'socket.io'
 import { initNamespace } from './namespace'
 import { robots } from '@/server/robot'
@@ -16,8 +15,10 @@ import type {
 	SocketData,
 	NamespaceClientToServerEvents,
 	NamespaceServerToClientEvents,
-	NamespaceSocketData
+	NamespaceSocketData,
+	RobotNamespace
 } from './interface'
+import type { Namespace } from 'socket.io'
 
 // create socket.io server
 export const init = () => {
@@ -51,23 +52,30 @@ export const init = () => {
 
 	// forward read and write events
 	robots.on('join', (robot) => {
-		server.emit('robots', { real: null, sessions: [] })
-
 		// create the namespace if it doesn't exist
-		server._nsps.has(`/${robot.info.name}`) || initNamespace((server.of(`/${robot.info.name}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot)
+		if (!namespaces.has(robot.info.name)) {
+			const nsp = initNamespace((server.of(`/${robot.info.name}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot)
+			namespaces.set(robot.info.name, { robot, nsp })
+		}
+
+		// send the new robot list if the robot is virtual
+		if (robot.virtual) {
+			server.emit('sessions', { capacity: 0, sessions: [] })
+		}
 	})
 
-	robots.on('leave', (address) => {
-		server.emit('robots', { real: null, sessions: [] })
+	robots.on('leave', (robot) => {
+		server.emit('sessions', { capacity: 0, sessions: [] })
 
 		// delete the namespace if it exists
-		server._nsps.has(`/${address}`) && server._nsps.delete(`/${address}`)
+		namespaces.delete(robot.info.name)
+		server._nsps.delete(`/${robot.info.name}`)
 	})
 
 	// handle connection events
 	server.on('connection', (socket) => {
 		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected`)
-		socket.emit('robots', { real: null, sessions: [] })
+		socket.emit('sessions', { capacity: 0, sessions: [] })
 
 		// join robot session
 		socket.on('join', async (name, callback) => {
@@ -110,8 +118,9 @@ export const init = () => {
 
 // init socket.io server
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData> = global.io ?? init()
+export const [io, namespaces]: [Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, Map<string, RobotNamespace>] = [global.io ?? init(), global.namespaces ?? new Map()]
 export default io
 
 // fix global instancing in production // TODO
 global.io = io
+global.namespaces = namespaces

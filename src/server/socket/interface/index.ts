@@ -1,5 +1,5 @@
 // import types
-import type { Socket as BareSocket, Server as BareServer } from 'socket.io'
+import type { Socket as BareSocket, Server as BareServer, Namespace } from 'socket.io'
 import type { MotionClientToServer } from './motion'
 import type { GrasshopperClientToServer, GrasshopperServerToClient } from './grasshopper'
 import type { UnityClientToServer, UnityServerToClient } from './unity'
@@ -7,7 +7,7 @@ import type { InterfacesClientToServer } from './interfaces'
 import type { InternalsClientToServer } from './internals'
 import type { RealtimeServerToClient } from './realtime'
 import type { RobotConnection } from '@/server/robot'
-import type { RobotsOut, JoinSessionOut } from '@/types/Socket/Index'
+import type { SessionsOut, JoinSessionOut } from '@/types/Socket/Index'
 import type { User } from '@prisma/client'
 import type env from '@/server/environment'
 
@@ -16,7 +16,7 @@ type RobotInfo = typeof env['ROBOTS'][number]
 // declare socket.io interfaces
 export interface ServerToClientEvents {
 	message: (message: string) => void
-	robots: (payload: RobotsOut) => void
+	sessions: (payload: SessionsOut) => void
 	join: (payload: JoinSessionOut) => void
 	queue: (position: number) => void
 	afk: () => void
@@ -68,3 +68,9 @@ export interface NamespaceSocketData {
 // create the socket type
 export type Socket = BareSocket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>
 export type Server = BareServer<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>
+
+// export namespace type
+export type RobotNamespace = {
+	robot: RobotConnection
+	nsp: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>
+}

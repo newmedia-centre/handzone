@@ -79,5 +79,5 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 	}, 200)
 
 	console.log('Namespace initialized:', robot.info.name)
-
+	return namespace
 }

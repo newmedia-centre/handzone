@@ -93,7 +93,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 			camera: []
 		}
 
-		this._tryCreateRobotConnection(info)
+		this._tryCreateRobotConnection(info, true)
 		return info
 	}
 
@@ -111,7 +111,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	}
 
 	/** Starts the TCP Client */
-	_tryCreateRobotConnection(robot: RobotInfo) {
+	_tryCreateRobotConnection(robot: RobotInfo, virtual = false) {
 		// create the TCP client
 		const socket = new Socket()
 		socket.setTimeout(5000)
@@ -131,7 +131,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 		// add clients when connected
 		socket.on('connect', () => {
-			const connection = new RobotConnection(socket, robot)
+			const connection = new RobotConnection(socket, robot, virtual)
 			this.connections.set(robot.name, connection)
 			this.emit('join', connection, this.connections)
 			console.info(`[ROBOT:${robot.name}] Connected`)
@@ -154,6 +154,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 /** Listens for data from a robot over a TCP socket */
 export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	/** The TCP socket for reading data */
+	virtual: boolean
 	socket: Socket
 	vnc?: VNCProxy
 	interval?: NodeJS.Timeout
@@ -161,11 +162,12 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	video?: Set<VideoConnection>
 	info: RobotInfo
 
-	constructor(robot: Socket, info: RobotInfo) {
+	constructor(robot: Socket, info: RobotInfo, virtual: boolean) {
 		// initialize the EventEmitter
 		super()
 
 		// initialize the class variables
+		this.virtual = virtual
 		this.socket = robot
 		this.video = new Set()
 		this.info = info
