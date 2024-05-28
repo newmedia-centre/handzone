@@ -1,10 +1,7 @@
 /** Information about all the robot sessions currently available */
 export type SessionsOut = {
 	/** the capacity for new virtual robots */
-	capacity: {
-		current: number
-		max: number
-	}
+	capacity: number
 	/** The available virtual robot sessions */
 	sessions: RobotSession[]
 }

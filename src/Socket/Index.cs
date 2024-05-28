@@ -16,25 +16,13 @@ namespace Schema.Socket.Index
         /// the capacity for new virtual robots
         /// </summary>
         [JsonProperty("capacity")]
-        public Capacity Capacity { get; set; }
+        public double Capacity { get; set; }
 
         /// <summary>
         /// The available virtual robot sessions
         /// </summary>
         [JsonProperty("sessions")]
         public List<RobotSession> Sessions { get; set; }
-    }
-
-    /// <summary>
-    /// the capacity for new virtual robots
-    /// </summary>
-    public partial class Capacity
-    {
-        [JsonProperty("current")]
-        public double Current { get; set; }
-
-        [JsonProperty("max")]
-        public double Max { get; set; }
     }
 
     /// <summary>
