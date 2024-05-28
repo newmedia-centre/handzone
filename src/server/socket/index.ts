@@ -65,6 +65,7 @@ export const init = () => {
 			const sessions: RobotSession[] = Array.from(namespaces.values()).filter(n => n.robot.virtual).map(n => ({
 				name: n.robot.info.name,
 				address: n.robot.info.address,
+				type: n.robot.virtual ?? 'sandbox',
 				users: Array.from(n.nsp.sockets.values()).map(s => s.data.user.name ?? '')
 			}))
 
@@ -90,6 +91,7 @@ export const init = () => {
 			const sessions: RobotSession[] = Array.from(namespaces.values()).filter(n => n.robot.virtual).map(n => ({
 				name: n.robot.info.name,
 				address: n.robot.info.address,
+				type: n.robot.virtual ?? 'sandbox',
 				users: Array.from(n.nsp.sockets.values()).map(s => s.data.user.name ?? '')
 			}))
 
@@ -107,6 +109,7 @@ export const init = () => {
 		const sessions: RobotSession[] = Array.from(namespaces.values()).filter(n => n.robot.virtual).map(n => ({
 			name: n.robot.info.name,
 			address: n.robot.info.address,
+			type: n.robot.virtual ?? 'sandbox',
 			users: Array.from(n.nsp.sockets.values()).map(s => s.data.user.name ?? '')
 		}))
 
@@ -127,13 +130,13 @@ export const init = () => {
 		})
 
 		// spawn virtual robot
-		socket.on('virtual', async (callback) => {
+		socket.on('virtual', async (type, callback) => {
 			// try to spawn a virtual robot
 			const robot = await docker.requestVirtualRobot()
 
 			// connect to the virtual robot
 			console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
-			const info = await robots.connectVirtualRobot(robot)
+			const info = await robots.connectVirtualRobot(robot, type)
 
 			// generate the access token
 			const token = await generateAccessToken(socket.data.user, info)

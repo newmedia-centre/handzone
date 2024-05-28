@@ -7,7 +7,7 @@ import type { InterfacesClientToServer } from './interfaces'
 import type { InternalsClientToServer } from './internals'
 import type { RealtimeServerToClient } from './realtime'
 import type { RobotConnection } from '@/server/robot'
-import type { SessionsOut, JoinSessionOut } from '@/types/Socket/Index'
+import type { SessionsOut, JoinSessionOut, SessionType } from '@/types/Socket/Index'
 import type { User } from '@prisma/client'
 import type env from '@/server/environment'
 
@@ -31,7 +31,7 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
 	message: (message: string) => void
 	real: (callback: CallbackFn<JoinSessionOut>) => void
-	virtual: (callback: CallbackFn<JoinSessionOut>) => void
+	virtual: (type: SessionType, callback: CallbackFn<JoinSessionOut>) => void
 	join: (address: string, callback: (success: boolean, payload?: JoinSessionOut) => void) => void
 	namespace: (callback: CallbackFn<JoinSessionOut>) => void
 	achievement: () => void

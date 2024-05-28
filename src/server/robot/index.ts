@@ -12,6 +12,7 @@ import env from '../environment'
 import type { ChildProcess } from 'child_process'
 import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
+import type { SessionType } from '@/types/Socket/Index'
 
 type RobotInfo = typeof env['ROBOTS'][number]
 type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
@@ -81,7 +82,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	}
 
 	/** Tries to connect to an endpoint */
-	async connectVirtualRobot(container: ContainerInspectInfo) {
+	async connectVirtualRobot(container: ContainerInspectInfo, virtual: SessionType) {
 		// get the robot slot
 		const slot = container.Config.Labels['slot']
 		if (!slot) throw new Error('Found container without slot label')
@@ -97,7 +98,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 			camera: []
 		}
 
-		this._tryCreateRobotConnection(info, true)
+		this._tryCreateRobotConnection(info, virtual)
 		return info
 	}
 
@@ -115,7 +116,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	}
 
 	/** Starts the TCP Client */
-	_tryCreateRobotConnection(robot: RobotInfo, virtual = false) {
+	_tryCreateRobotConnection(robot: RobotInfo, virtual: SessionType | null = null) {
 		// create the TCP client
 		const socket = new Socket()
 		socket.setTimeout(5000)
@@ -158,7 +159,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 /** Listens for data from a robot over a TCP socket */
 export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	/** The TCP socket for reading data */
-	virtual: boolean
+	virtual: SessionType | null
 	socket: Socket
 	vnc?: VNCProxy
 	interval?: NodeJS.Timeout
@@ -166,7 +167,7 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	video?: Set<VideoConnection>
 	info: RobotInfo
 
-	constructor(robot: Socket, info: RobotInfo, virtual: boolean) {
+	constructor(robot: Socket, info: RobotInfo, virtual: SessionType | null) {
 		// initialize the EventEmitter
 		super()
 

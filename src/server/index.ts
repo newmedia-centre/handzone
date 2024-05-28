@@ -33,15 +33,15 @@ next.prepare().then(() => {
 			// start the docker manager
 			docker.requestVirtualRobot().then(robot => {
 				console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
-				robots.connectVirtualRobot(robot)
+				robots.connectVirtualRobot(robot, 'sandbox')
 			})
 			docker.requestVirtualRobot().then(robot => {
 				console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
-				robots.connectVirtualRobot(robot)
+				robots.connectVirtualRobot(robot, 'exercises')
 			})
 			docker.requestVirtualRobot().then(robot => {
 				console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
-				robots.connectVirtualRobot(robot)
+				robots.connectVirtualRobot(robot, 'sandbox')
 			})
 
 			// attach the socket.io server
