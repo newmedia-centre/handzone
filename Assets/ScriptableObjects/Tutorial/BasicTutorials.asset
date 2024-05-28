@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialMenuData
   data:
   - name: Test
-    videoClip: {fileID: 32900000, guid: 145482fdd8382af40ab1840f28b2f5f8, type: 3}
-    overrider: {fileID: 22100000, guid: 82e1d80ecf99c32478c299cb8805c1ad, type: 2}
+    timeline: {fileID: 11400000, guid: 96d3255e4202d1a4d83cf9ca60a917fe, type: 2}
   - name: AnotherTest
-    videoClip: {fileID: 32900000, guid: 4d7eedb81c6436c42a0603492aa3bc51, type: 3}
-    overrider: {fileID: 22100000, guid: 29fdfc07d2aa7f348b87ef85e505eba1, type: 2}
+    timeline: {fileID: 11400000, guid: 554c4c126f637ff4b9a90f1cbbbe35ff, type: 2}

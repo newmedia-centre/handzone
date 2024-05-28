@@ -84,5 +84,4 @@ public struct TaskData
 public struct ObjectiveData
 {
     public string name;
-    public Constraint constraint;
 }
