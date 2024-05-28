@@ -16,14 +16,14 @@ export const ValidateVRPin = async () => {
 
 
 	return (
-		<form action={validate} className='fixed left-0 top-0 flex w-full justify-center gap-4 border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200  lg:p-4 dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30'>
+		<form action={validate} className='flex flex-col gap-2'>
 			<input
 				type='text'
 				name='pin'
-				className='rounded-lg border border-gray-300 p-2'
+				className='rounded border border-300 p-2 hover:bg-50'
 				placeholder='Enter your VR pin'
 			/>
-			<button className='rounded-lg border border-gray-300 bg-white p-2 hover:bg-gray-100' type='submit'>Check</button>
+			<button className='rounded border border-300 bg-white p-2 hover:bg-200' type='submit'>Check</button>
 		</form>
 	)
 }

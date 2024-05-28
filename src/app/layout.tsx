@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={'flex flex-col size-full container min-h-screen mx-auto ' + inter.className}>
+			<body className={'flex flex-col size-full min-h-screen mx-auto bg-100 ' + inter.className}>
 				<Header />
 				{children}
 				<Footer />

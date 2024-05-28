@@ -1,3 +1,4 @@
+import defaultColors from 'tailwindcss/colors'
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
@@ -7,7 +8,11 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        ...defaultColors.gray,
+      }
+    },
   },
   plugins: [],
 };

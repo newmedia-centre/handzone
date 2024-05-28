@@ -16,7 +16,7 @@ export const ConnectVR = () => {
 
 	return (
 		<div>
-			<button onClick={generatePin} className='rounded border bg-stone-50 p-2 hover:bg-stone-100'>Connect VR</button>
+			<button onClick={generatePin} className='w-24 rounded border bg-white p-2 text-center hover:bg-200'>Get PIN</button>
 			<dialog open={!!pin} className='fixed inset-0 z-50 size-full items-center justify-center bg-black/10 open:flex'>
 				<div className='flex flex-col items-center gap-2 rounded border border-gray-300 bg-white p-4'>
 					<p>{pin}</p>
