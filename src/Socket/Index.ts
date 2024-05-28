@@ -1,7 +1,10 @@
 /** Information about all the robot sessions currently available */
 export type SessionsOut = {
 	/** the capacity for new virtual robots */
-	capacity: number
+	capacity: {
+		current: number
+		max: number
+	}
 	/** The available virtual robot sessions */
 	sessions: RobotSession[]
 }
@@ -16,10 +19,10 @@ export type RobotInfo = {
 
 /** Information about a robot session */
 export type RobotSession = {
-	/** The address of the session */
+	/** The name of the robot */
+	name: string
+	/** The address of the robot */
 	address: string
-	/** The type of the robot used for the session */
-	type: 'virtual' | 'real'
 	/** The names of users in the session */
 	users: string[]
 }

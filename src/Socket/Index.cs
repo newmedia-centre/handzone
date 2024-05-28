@@ -16,7 +16,7 @@ namespace Schema.Socket.Index
         /// the capacity for new virtual robots
         /// </summary>
         [JsonProperty("capacity")]
-        public double Capacity { get; set; }
+        public Capacity Capacity { get; set; }
 
         /// <summary>
         /// The available virtual robot sessions
@@ -26,21 +26,33 @@ namespace Schema.Socket.Index
     }
 
     /// <summary>
+    /// the capacity for new virtual robots
+    /// </summary>
+    public partial class Capacity
+    {
+        [JsonProperty("current")]
+        public double Current { get; set; }
+
+        [JsonProperty("max")]
+        public double Max { get; set; }
+    }
+
+    /// <summary>
     /// Information about a robot session
     /// </summary>
     public partial class RobotSession
     {
         /// <summary>
-        /// The address of the session
+        /// The address of the robot
         /// </summary>
         [JsonProperty("address")]
         public string Address { get; set; }
 
         /// <summary>
-        /// The type of the robot used for the session
+        /// The name of the robot
         /// </summary>
-        [JsonProperty("type")]
-        public TypeEnum Type { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         /// <summary>
         /// The names of users in the session
@@ -85,65 +97,5 @@ namespace Schema.Socket.Index
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
-    }
-
-    /// <summary>
-    /// The type of the robot used for the session
-    /// </summary>
-    public enum TypeEnum { Real, Virtual };
-
-    internal static class Converter
-    {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-        {
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-            Converters =
-            {
-                TypeEnumConverter.Singleton,
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
-        };
-    }
-
-    internal class TypeEnumConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(TypeEnum) || t == typeof(TypeEnum?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "real":
-                    return TypeEnum.Real;
-                case "virtual":
-                    return TypeEnum.Virtual;
-            }
-            throw new Exception("Cannot unmarshal type TypeEnum");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (TypeEnum)untypedValue;
-            switch (value)
-            {
-                case TypeEnum.Real:
-                    serializer.Serialize(writer, "real");
-                    return;
-                case TypeEnum.Virtual:
-                    serializer.Serialize(writer, "virtual");
-                    return;
-            }
-            throw new Exception("Cannot marshal type TypeEnum");
-        }
-
-        public static readonly TypeEnumConverter Singleton = new TypeEnumConverter();
     }
 }
