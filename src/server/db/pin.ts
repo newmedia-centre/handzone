@@ -9,7 +9,7 @@ import type { User } from '@prisma/client'
 
 // init the TOTP controller and pin map
 const pins = global.otpPins || new Map<string, { user: User, secret: ArrayBuffer }>()
-const controller = global.otpController || new TOTPController({ digits: 6, period: new TimeSpan(15, 'm') })
+const controller = global.otpController || new TOTPController({ digits: 4, period: new TimeSpan(15, 'm') })
 
 // generate a pin for the user
 export const generatePin = async (user: User) => {
