@@ -31,12 +31,18 @@ next.prepare().then(() => {
 			console.log(`Server is running on http://localhost:${env.PORT}`)
 
 			// start the docker manager
-			/*
 			docker.requestVirtualRobot().then(robot => {
-				console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, '30103')
-				robots.connectVirtualRobot(robot, 30103, 5901)
+				console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
+				robots.connectVirtualRobot(robot)
 			})
-			*/
+			docker.requestVirtualRobot().then(robot => {
+				console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
+				robots.connectVirtualRobot(robot)
+			})
+			docker.requestVirtualRobot().then(robot => {
+				console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
+				robots.connectVirtualRobot(robot)
+			})
 
 			// attach the socket.io server
 			io.attach(instance, {

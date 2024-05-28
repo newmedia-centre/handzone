@@ -19,6 +19,7 @@ import type {
 	RobotNamespace
 } from './interface'
 import type { Namespace } from 'socket.io'
+import type { RobotSession } from '@/types/Socket/Index'
 
 // create socket.io server
 export const init = () => {
@@ -60,22 +61,58 @@ export const init = () => {
 
 		// send the new robot list if the robot is virtual
 		if (robot.virtual) {
-			server.emit('sessions', { capacity: 0, sessions: [] })
+			// filter the namespaces for virtual robots
+			const sessions: RobotSession[] = Array.from(namespaces.values()).filter(n => n.robot.virtual).map(n => ({
+				name: n.robot.info.name,
+				address: n.robot.info.address,
+				users: Array.from(n.nsp.sockets.values()).map(s => s.data.user.name ?? '')
+			}))
+
+			// send the capacity and sessions
+			const capacity = docker.getCapacity()
+			server.emit('sessions', { capacity, sessions })
 		}
 	})
 
 	robots.on('leave', (robot) => {
-		server.emit('sessions', { capacity: 0, sessions: [] })
-
 		// delete the namespace if it exists
-		namespaces.delete(robot.info.name)
-		server._nsps.delete(`/${robot.info.name}`)
+		const namespace = namespaces.get(robot.info.name)
+		if (namespace) {
+			namespace.nsp.disconnectSockets()
+			namespace.nsp.removeAllListeners()
+			namespaces.delete(robot.info.name)
+			server._nsps.delete(`/${robot.info.name}`)
+		}
+
+		// send the new robot list if the robot is virtual
+		if (robot.virtual) {
+			// filter the namespaces for virtual robots
+			const sessions: RobotSession[] = Array.from(namespaces.values()).filter(n => n.robot.virtual).map(n => ({
+				name: n.robot.info.name,
+				address: n.robot.info.address,
+				users: Array.from(n.nsp.sockets.values()).map(s => s.data.user.name ?? '')
+			}))
+
+			// send the capacity and sessions
+			const capacity = docker.getCapacity()
+			server.emit('sessions', { capacity, sessions })
+		}
 	})
 
 	// handle connection events
 	server.on('connection', (socket) => {
 		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected`)
-		socket.emit('sessions', { capacity: 0, sessions: [] })
+
+		// filter the namespaces for virtual robots
+		const sessions: RobotSession[] = Array.from(namespaces.values()).filter(n => n.robot.virtual).map(n => ({
+			name: n.robot.info.name,
+			address: n.robot.info.address,
+			users: Array.from(n.nsp.sockets.values()).map(s => s.data.user.name ?? '')
+		}))
+
+		// send the capacity and sessions
+		const capacity = docker.getCapacity()
+		server.emit('sessions', { capacity, sessions })
 
 		// join robot session
 		socket.on('join', async (name, callback) => {
@@ -95,8 +132,8 @@ export const init = () => {
 			const robot = await docker.requestVirtualRobot()
 
 			// connect to the virtual robot
-			console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, '30103')
-			const info = await robots.connectVirtualRobot(robot, 30103, 5901)
+			console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
+			const info = await robots.connectVirtualRobot(robot)
 
 			// generate the access token
 			const token = await generateAccessToken(socket.data.user, info)

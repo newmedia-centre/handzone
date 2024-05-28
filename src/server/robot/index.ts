@@ -5,11 +5,10 @@ import { spawn } from 'child_process'
 import { parseRealtimeData } from '@/server/socket/realtime'
 import { Buffer } from 'buffer'
 import { VNCProxy } from './proxy'
-import semaphore from 'semaphore'
+import Semaphore from 'semaphore-async-await'
 import env from '../environment'
 
 // import types
-import type { Semaphore } from 'semaphore'
 import type { ChildProcess } from 'child_process'
 import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
@@ -31,7 +30,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		// initialize the class variables
 		this.connections = new Map()
 		this.vnc = new VNCProxy(this)
-		this._semaphore = semaphore(1)
+		this._semaphore = new Semaphore(1)
 
 		// try to connect to the robots
 		env.ROBOTS.forEach((robot) => {
@@ -48,15 +47,13 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	/** sends an instruction with a callback */
 	async sendCallback(robot: RobotConnection, instruction: string) {
 		// acquire a semaphore
-		await new Promise(resolve => {
-			this._semaphore.take(1, () => resolve(true))
-		})
+		await this._semaphore.acquire()
 
 		const promise = new Promise<Buffer>((resolve, reject) => {
 			// set timeout to 5 seconds
 			const timeout = setTimeout(() => {
 				server.close()
-				server.on('close', () => { this._semaphore.leave(1) })
+				server.on('close', () => { this._semaphore.release() })
 
 				reject('timeout')
 			}, 5000)
@@ -67,7 +64,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 				socket.once('data', data => {
 					clearTimeout(timeout)
 					server.close()
-					server.on('close', () => { this._semaphore.leave(1) })
+					server.on('close', () => { this._semaphore.release() })
 					resolve(data)
 				})
 
@@ -84,7 +81,14 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	}
 
 	/** Tries to connect to an endpoint */
-	async connectVirtualRobot(container: ContainerInspectInfo, port: number, vnc: number) {
+	async connectVirtualRobot(container: ContainerInspectInfo) {
+		// get the robot slot
+		const slot = container.Config.Labels['slot']
+		if (!slot) throw new Error('Found container without slot label')
+
+		const port = parseInt(`3${slot}03`)
+		const vnc = parseInt(`59${slot}`)
+
 		const info: RobotInfo = {
 			name: container.Name.split('/')[1]!,
 			address: env.DOCKER.OPTIONS.host,
