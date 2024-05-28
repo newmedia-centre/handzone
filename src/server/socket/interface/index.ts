@@ -58,7 +58,6 @@ export interface NamespaceClientToServerEvents extends MotionClientToServer, Gra
 export interface NamespaceSocketData {
 	user: User
 	robot: RobotConnection
-	name: string
 	color: string
 	achievements: {
 		id: string

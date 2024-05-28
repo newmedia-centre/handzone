@@ -19,7 +19,7 @@ export const handleUnityEvents = (socket: Socket<NamespaceClientToServerEvents, 
 			hmd,
 			left,
 			right,
-			name: socket.data.name,
+			name: socket.data.user.name ?? '',
 			color: socket.data.color
 		})
 	})

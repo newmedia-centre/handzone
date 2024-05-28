@@ -26,6 +26,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 			// attach the user to the socket
 			socket.data.user = user
 			socket.data.robot = robot
+			socket.data.color = Math.floor(Math.random() * 2e24).toString(16)
 
 			return next()
 		}).catch(e => {
