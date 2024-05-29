@@ -13,7 +13,8 @@ public class GlobalClientLoginButton : MonoBehaviour
     
     private void Start()
     {
-        loginButton = GetComponent<Button>();
+        if(loginButton == null)
+            loginButton = GetComponent<Button>();
         loginButton.onClick.AddListener(GlobalClientLogin);
         
         GlobalClient.Instance.OnConnecting += () =>
