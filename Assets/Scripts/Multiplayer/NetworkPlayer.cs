@@ -48,13 +48,6 @@ public class NetworkPlayer : MonoBehaviour
         nameCard.transform.rotation = Quaternion.LookRotation(delta);
     }
 
-    IEnumerator ExampleCoroutine()
-    {
-        SessionClient.Instance.SendUnityMessage("Hello from Unity client");
-        //yield on a new YieldInstruction that waits for 5 seconds.
-        yield return new WaitForSeconds(1f);
-    }
-
     public void UpdatePositions(PlayerData playerData)
     {
         hmd.transform.position = new((float)playerData.Hmd.Position.X, (float)playerData.Hmd.Position.Y, (float)playerData.Hmd.Position.Z);

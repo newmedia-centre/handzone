@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -39,13 +40,11 @@ public class GlobalClient : MonoBehaviour
     public event Action OnConnected;
     public event Action OnDisconnected;
     public event Action<string> OnError;
-    public event Action OnSessionJoin;
-    public event Action OnSessionJoined;
-    public event Action OnSessionLeft;
     
     // Data reception events
     public event Action<SessionsOut> OnSessionsReceived;
-    public event Action<JoinSessionOut> OnSessionReceived;
+    public event Action<string> OnSessionJoin;
+    public event Action<JoinSessionOut> OnSessionJoined;
     
     /// <summary>
     /// Ensures that only one instance of GlobalClient exists within the application.
@@ -126,15 +125,49 @@ public class GlobalClient : MonoBehaviour
                 Session = response.GetValue<JoinSessionOut>(1);
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
-                    SceneManager.LoadScene("Scenes/UR Robot Scene");   
-                    OnSessionReceived?.Invoke(Session);
+                    StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
+                    OnSessionJoined?.Invoke(Session);
                 });           
             }
             else
             {
-                Debug.LogError("Could not join session.");
+                Debug.LogWarning("Could not join session.");
             }
         });
+    }
+    
+    public void JoinSession(string sessionAddress)
+    {
+        OnSessionJoin?.Invoke(sessionAddress);
+        _client.EmitAsync("join", response =>
+        {
+            var success = response.GetValue<bool>(0);
+            if (success)
+            {
+                Session = response.GetValue<JoinSessionOut>(1);
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
+                    OnSessionJoined?.Invoke(Session);
+                });
+            }
+            else
+            {
+                Debug.LogWarning("Could not join session.");
+            }
+        });
+    }
+    
+    private IEnumerator LoadSceneCoroutine(string sceneName)
+    {
+        // Start loading the scene
+        var asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+        
+        // Wait until the scene is fully loaded
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 
     /// <summary>

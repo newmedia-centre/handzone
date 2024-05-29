@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
@@ -21,10 +20,11 @@ public class SessionClient : MonoBehaviour
     private Queue<RealtimeDataOut> _dataQueue;
     private Texture2D _cameraFeedTexture;
     private bool _digitalOutput;
-    private RobotSession _currentSession;
+    private RobotSession _currentRobotSession;
 
     public MemoryStream vncStream { get; private set; }
-    
+    public string ClientId => _client?.Id;
+
     public event Action<RealtimeDataOut> OnRealtimeData;
     public event Action<Texture2D> OnCameraFeed;
     public event Action<bool> OnDigitalOutputChanged;
@@ -34,9 +34,6 @@ public class SessionClient : MonoBehaviour
     public event Action<InternalsGetInverseKinCallback> OnKinematicCallback;
     public event Action OnConnected;
     public event Action OnDisconnected;
-    public event Action OnSessionJoin;
-    public event Action OnSessionJoined;
-    public event Action OnSessionLeft;
 
     public static SessionClient Instance { get; private set; }
     
@@ -158,35 +155,31 @@ public class SessionClient : MonoBehaviour
         // Events whenever a session is joined, client receives player data and pendant data
         _client.On("unity:message", response =>
         {
-            Debug.Log("Hello from Web server! " +  response.GetValue<string>());
-            OnUnityMessage?.Invoke(response.GetValue<string>());
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("Hello from Web server! " +  response.GetValue<string>());
+                OnUnityMessage?.Invoke(response.GetValue<string>());
+            });
         });
         
         _client.On("unity:players", response =>
         {
-            OnUnityPlayerData?.Invoke(response.GetValue<UnityPlayersOut>());
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                OnUnityPlayerData?.Invoke(response.GetValue<UnityPlayersOut>());
+            });
         });
         
         _client.On("unity:pendant", response =>
         {
-            OnUnityPendant?.Invoke(response.GetValue<UnityPendantIn>());
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                OnUnityPendant?.Invoke(response.GetValue<UnityPendantIn>());
+            });
         });
         #endregion
 
         await _client.ConnectAsync();
-    }
-    
-    public async Task JoinSession(string id)
-    {
-        OnSessionJoin?.Invoke();
-        await _client.EmitAsync("join", new { room = id });
-        OnSessionJoined?.Invoke();
-    }
-
-    public async Task LeaveSession(string id)
-    {
-        await _client.EmitAsync("leave", new { room = id });
-        OnSessionLeft?.Invoke();
     }
 
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)
@@ -250,7 +243,7 @@ public class SessionClient : MonoBehaviour
         _client.EmitAsync("unity:message", data);
     }
     
-    public void SendUnityPosition(UnityPlayerIn unityPlayer)
+    public void SendUnityPlayerIn(UnityPlayerIn unityPlayer)
     {
         _client.EmitAsync("unity:players", unityPlayer);
     }
