@@ -142,7 +142,6 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		// remove all found containers
 		await Promise.all(containers.map(async container => {
 			try {
-				await this.docker.getContainer(container.Id).stop()
 				await this.docker.getContainer(container.Id).remove()
 			} catch (err) {
 				logger.error('Error closing virtual robot', err)
