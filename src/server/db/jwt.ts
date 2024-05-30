@@ -6,7 +6,7 @@ import { databaseLogger } from '../logger'
 
 // import types
 import type { User } from '@prisma/client'
-import type { env } from '../environment'
+import type { RobotInfo } from '@/server/robot/connection'
 
 // create logger
 export const logger = databaseLogger.child({ entity: 'jwt', label: 'DB:JWT' })
@@ -14,8 +14,6 @@ export const logger = databaseLogger.child({ entity: 'jwt', label: 'DB:JWT' })
 // generate secret for signing JWTs
 const generateSecret = async () => { global.jwtSecret = await new HMAC('SHA-256').generateKey() }
 if (!global.jwtSecret) { generateSecret() }
-
-type RobotInfo = typeof env['ROBOTS'][number]
 
 // generate an access token for the user to join a robot session
 export const generateAccessToken = async (user: User, robot: RobotInfo) => await createJWT('HS256', global.jwtSecret, {

@@ -6,12 +6,9 @@ import type { UnityClientToServer, UnityServerToClient } from './unity'
 import type { InterfacesClientToServer } from './interfaces'
 import type { InternalsClientToServer } from './internals'
 import type { RealtimeServerToClient } from './realtime'
-import type { RobotConnection } from '@/server/robot'
+import type { RobotConnection, RobotInfo } from '@/server/robot/connection'
 import type { SessionsOut, JoinSessionOut, SessionType } from '@/types/Socket/Index'
 import type { User } from '@prisma/client'
-import type env from '@/server/environment'
-
-type RobotInfo = typeof env['ROBOTS'][number]
 
 type CallbackFn<T> = {
 	(success: true, payload: T): void

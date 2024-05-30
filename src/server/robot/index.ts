@@ -1,21 +1,17 @@
 // import dependencies
 import { EventEmitter } from 'events'
 import { Socket, createServer } from 'net'
-import { spawn } from 'child_process'
-import { parseRealtimeData } from '@/server/socket/realtime'
 import { Buffer } from 'buffer'
 import Semaphore from 'semaphore-async-await'
 import { VNCProxy } from './proxy'
 import env from '../environment'
+import { RobotConnection } from './connection'
 
 // import types
-import type { ChildProcess } from 'child_process'
-import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
+import type { ManagerEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
 import type { SessionType } from '@/types/Socket/Index'
-
-type RobotInfo = typeof env['ROBOTS'][number]
-type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
+import type { RobotInfo } from './connection'
 
 /** The TCP Server for communicating with the robots */
 export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
@@ -148,126 +144,6 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		})
 	}
 
-}
-
-/** Listens for data from a robot over a TCP socket */
-export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
-	/** The TCP socket for reading data */
-	virtual: SessionType | null
-	socket: Socket
-	vnc?: VNCProxy
-	interval?: NodeJS.Timeout
-	realtimeBuffer?: Buffer
-	video?: Set<VideoConnection>
-	info: RobotInfo
-
-	constructor(robot: Socket, info: RobotInfo, virtual: SessionType | null) {
-		// initialize the EventEmitter
-		super()
-
-		// initialize the class variables
-		this.virtual = virtual
-		this.socket = robot
-		this.video = new Set()
-		this.info = info
-
-		// initialize the video connection if the robot has a camera
-		info.camera.forEach(camera => {
-			this.video?.add(new VideoConnection(camera))
-		})
-
-		// start the interval at 25hz which should be enough for most applications
-		this.interval = setInterval(() => this.handleRealtimeData(), 40)
-
-		// handle incoming messages
-		this.socket.on('data', (data) => {
-			// check if the data is realtime data
-			const header = this.getRealtimeHeader(data)
-
-			// check if the buffer length is the length of the realtime buffer
-			if (header) {
-				this.realtimeBuffer = data
-			} else {
-				// parse the data
-
-				// emit the message
-				this.emit('response', data)
-			}
-		})
-
-	}
-
-	clear() {
-		clearTimeout(this.interval)
-	}
-
-	async handleRealtimeData() {
-		// get the latest buffer
-		const data = this.realtimeBuffer
-		if (!data) return
-
-		// emit the raw realtime data
-		this.emit('realtime:raw', data)
-
-		// parse the realtime data
-		const parsed = await parseRealtimeData(data)
-		this.emit('realtime:parsed', parsed)
-	}
-
-	getRealtimeHeader(data: Buffer) {
-		// verify the size of the package, realtime data has a fixed size of 1220 bytes, if so, return true
-		return data.length % 1220 === 0
-	}
-
-	/** Sends an instruction to the robot */
-	async send(instruction: string) {
-		// send the instruction as a utf-8 buffer
-		this.socket.write(Buffer.from(instruction, 'utf-8'))
-	}
-}
-
-export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
-	process?: ChildProcess
-	camera: CameraInfo
-
-	constructor(camera: CameraInfo) {
-		// initialize the EventEmitter
-		super()
-
-		this.camera = camera
-
-		// initialize the ffmpeg process
-		console.log('Starting ffmpeg process...')
-		const process = spawn('ffmpeg', [
-			'-rtsp_transport', 'tcp',
-			'-i', camera.address,
-			'-f', 'image2',
-			'-update', '1',
-			'-loglevel', 'quiet',
-			'pipe:1'], {
-			stdio: ['inherit', 'pipe', 'inherit']
-		})
-
-		let buffer = Buffer.alloc(0)
-
-		// log once the process has received data
-		process.stdout.once('data', () => {
-			console.log('ffmpeg process started')
-		})
-
-		// read image frames from ffmpeg stdout and send to connected clients
-		process.stdout.on('data', (data: Buffer) => {
-			if (data.length === 8192) {
-				buffer = Buffer.concat([buffer, data])
-			} else {
-				buffer = Buffer.concat([buffer, data])
-				this.emit('frame', buffer)
-				buffer = Buffer.alloc(0)
-			}
-		})
-
-		this.process = process
-	}
 }
 
 // init tcp server

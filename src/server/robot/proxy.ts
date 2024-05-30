@@ -6,8 +6,7 @@ import env from '../environment'
 // import types
 import type { Server } from 'net'
 import type { RobotManager } from '.'
-
-type RobotInfo = typeof env['ROBOTS'][number]
+import type { RobotInfo } from './connection'
 
 export class VNCProxy {
 	server: Server
