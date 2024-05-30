@@ -74,6 +74,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		const container = await this.docker.createContainer({
 			Image: 'ghcr.io/newmedia-centre/ursim_cb3:3.15.8',
 			HostConfig: {
+				RestartPolicy: { Name: 'always' },
 				PortBindings: {
 					'30001/tcp': [{ HostPort: `3${slot.toString().padStart(2, '0')}01` }],
 					'30002/tcp': [{ HostPort: `3${slot.toString().padStart(2, '0')}02` }],
@@ -100,7 +101,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 			Labels: {
 				'slot': `${slot.toString().padStart(2, '0')}`,
 				'handzone': 'virtual'
-			}
+			},
 		})
 
 		// start container
