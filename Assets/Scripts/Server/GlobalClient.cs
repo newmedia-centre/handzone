@@ -104,11 +104,16 @@ public class GlobalClient : MonoBehaviour
         _client.On("sessions", response =>
         {
             var session = response.GetValue<SessionsOut>();
-            if (session == null) return;
+            if (session == null)
+            {
+                Debug.LogError("Could not parse sessions.");
+                return;
+            }
             
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
                 OnSessionsReceived?.Invoke(session);
+                Debug.Log("Sessions received: " + session.Sessions.Count);
             });
         });
         
@@ -127,6 +132,7 @@ public class GlobalClient : MonoBehaviour
                 {
                     StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
                     OnSessionJoined?.Invoke(Session);
+                    Debug.Log("Virtual session created and joined." + Session.Robot.Name);
                 });           
             }
             else

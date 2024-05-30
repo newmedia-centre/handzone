@@ -19,7 +19,7 @@ public class SessionMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(GlobalClient.Instance.Sessions != null)
+        if(GlobalClient.Instance != null)
         {
             return;
         }
