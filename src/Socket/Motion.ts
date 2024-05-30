@@ -85,6 +85,11 @@ export type MotionEncoderUnwindDeltaTickCountIn = {
 	delta_tick_count: number
 }
 
+export type MotionEncoderUnwindDeltaTickCountCallback = {
+	/** The unwound delta_tick_count (float). */
+	count: number
+}
+
 /**
  * Set robot to be controlled in force mode.
  */

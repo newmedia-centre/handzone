@@ -172,6 +172,15 @@ namespace Schema.Socket.Motion
         public double EncoderIndex { get; set; }
     }
 
+    public partial class MotionEncoderUnwindDeltaTickCountCallback
+    {
+        /// <summary>
+        /// The unwound delta_tick_count (float).
+        /// </summary>
+        [JsonProperty("count")]
+        public double Count { get; set; }
+    }
+
     /// <summary>
     /// Set robot to be controlled in force mode.
     /// </summary>
