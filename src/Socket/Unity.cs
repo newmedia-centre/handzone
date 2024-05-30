@@ -67,6 +67,12 @@ namespace Schema.Socket.Unity
     public partial class UnityPlayerIn
     {
         /// <summary>
+        /// The player's cursor position on the pendant
+        /// </summary>
+        [JsonProperty("cursor")]
+        public Vector2D Cursor { get; set; }
+
+        /// <summary>
         /// The player's head-mounted display position.
         /// </summary>
         [JsonProperty("hmd")]
@@ -83,6 +89,26 @@ namespace Schema.Socket.Unity
         /// </summary>
         [JsonProperty("right")]
         public SixDofPosition Right { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a 2D vector consisting of two components
+    ///
+    /// The player's cursor position on the pendant
+    /// </summary>
+    public partial class Vector2D
+    {
+        /// <summary>
+        /// X-axis
+        /// </summary>
+        [JsonProperty("x")]
+        public double X { get; set; }
+
+        /// <summary>
+        /// Y-axis
+        /// </summary>
+        [JsonProperty("y")]
+        public double Y { get; set; }
     }
 
     /// <summary>
@@ -115,10 +141,6 @@ namespace Schema.Socket.Unity
     /// The position vector.
     ///
     /// The rotation vector.
-    ///
-    /// The pendant's position.
-    ///
-    /// The pendant's rotation.
     /// </summary>
     public partial class Vector3D
     {
@@ -139,24 +161,6 @@ namespace Schema.Socket.Unity
         /// </summary>
         [JsonProperty("z")]
         public double Z { get; set; }
-    }
-
-    /// <summary>
-    /// Grabs ownership and sends the position of the pendant.
-    /// </summary>
-    public partial class UnityPendantIn
-    {
-        /// <summary>
-        /// The pendant's position.
-        /// </summary>
-        [JsonProperty("position")]
-        public Vector3D Position { get; set; }
-
-        /// <summary>
-        /// The pendant's rotation.
-        /// </summary>
-        [JsonProperty("rotation")]
-        public Vector3D Rotation { get; set; }
     }
 
     /// <summary>
@@ -195,6 +199,12 @@ namespace Schema.Socket.Unity
         public string Color { get; set; }
 
         /// <summary>
+        /// The player's cursor position on the pendant
+        /// </summary>
+        [JsonProperty("cursor")]
+        public Vector2D Cursor { get; set; }
+
+        /// <summary>
         /// The player's head-mounted display position.
         /// </summary>
         [JsonProperty("hmd")]
@@ -226,26 +236,14 @@ namespace Schema.Socket.Unity
     }
 
     /// <summary>
-    /// Sends the current position of the pendant.
+    /// Sends the current ownership of the pendant.
     /// </summary>
     public partial class UnityPendantOut
     {
         /// <summary>
-        /// The owner of the pendant.
+        /// The player's ID of the owner of the pendant.
         /// </summary>
         [JsonProperty("owner")]
         public string Owner { get; set; }
-
-        /// <summary>
-        /// The pendant's position.
-        /// </summary>
-        [JsonProperty("position")]
-        public Vector3D Position { get; set; }
-
-        /// <summary>
-        /// The pendant's rotation.
-        /// </summary>
-        [JsonProperty("rotation")]
-        public Vector3D Rotation { get; set; }
     }
 }

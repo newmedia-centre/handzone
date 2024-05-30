@@ -43,6 +43,12 @@ namespace Schema.Socket.Index
         public string Name { get; set; }
 
         /// <summary>
+        /// The session type
+        /// </summary>
+        [JsonProperty("type")]
+        public SessionTypeEnum Type { get; set; }
+
+        /// <summary>
         /// The names of users in the session
         /// </summary>
         [JsonProperty("users")]
@@ -85,5 +91,65 @@ namespace Schema.Socket.Index
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
+    }
+
+    /// <summary>
+    /// The session type
+    /// </summary>
+    public enum SessionTypeEnum { Exercises, Sandbox };
+
+    internal static class Converter
+    {
+        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters =
+            {
+                SessionTypeEnumConverter.Singleton,
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
+    }
+
+    internal class SessionTypeEnumConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(SessionTypeEnum) || t == typeof(SessionTypeEnum?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "exercises":
+                    return SessionTypeEnum.Exercises;
+                case "sandbox":
+                    return SessionTypeEnum.Sandbox;
+            }
+            throw new Exception("Cannot unmarshal type SessionTypeEnum");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (SessionTypeEnum)untypedValue;
+            switch (value)
+            {
+                case SessionTypeEnum.Exercises:
+                    serializer.Serialize(writer, "exercises");
+                    return;
+                case SessionTypeEnum.Sandbox:
+                    serializer.Serialize(writer, "sandbox");
+                    return;
+            }
+            throw new Exception("Cannot marshal type SessionTypeEnum");
+        }
+
+        public static readonly SessionTypeEnumConverter Singleton = new SessionTypeEnumConverter();
     }
 }

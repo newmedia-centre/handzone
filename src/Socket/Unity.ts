@@ -24,12 +24,21 @@ export type Vector3D = {
 	z: number
 }
 
+/** Represents a 2D vector consisting of two components */
+export type Vector2D = {
+	/** X-axis */
+	x: number
+	/** Y-axis */
+	y: number
+}
+
+
 /**
  * Represents a 6 degrees of freedom position with position and rotation vectors.
  */
 export type SixDofPosition = {
 	/** The position vector. */
-	position: Vector3D,
+	position: Vector3D
 	/** The rotation vector. */
 	rotation: Vector3D
 }
@@ -39,15 +48,17 @@ export type SixDofPosition = {
  */
 export type PlayerData = {
 	/** The player's ID. */
-	id: string,
+	id: string
 	/** The player's head-mounted display position. */
-	hmd: SixDofPosition,
+	hmd: SixDofPosition
 	/** The player's left hand position. */
-	left: SixDofPosition,
+	left: SixDofPosition
 	/** The player's right hand position. */
-	right: SixDofPosition,
+	right: SixDofPosition
+	/** The player's cursor position on the pendant */
+	cursor: Vector2D
 	/** The player's name. */
-	name: string,
+	name: string
 	/** The player's color. */
 	color: string
 }
@@ -70,16 +81,8 @@ export type UnityPlayerIn = {
 	left: SixDofPosition
 	/** The player's right hand position. */
 	right: SixDofPosition
-}
-
-/**
- * Grabs ownership and sends the position of the pendant.
- */
-export type UnityPendantIn = {
-	/** The pendant's position. */
-	position: Vector3D
-	/** The pendant's rotation. */
-	rotation: Vector3D
+	/** The player's cursor position on the pendant */
+	cursor: Vector2D
 }
 
 /**
@@ -99,13 +102,9 @@ export type UnityPlayersOut = {
 }
 
 /**
- * Sends the current position of the pendant.
+ * Sends the current ownership of the pendant.
  */
 export type UnityPendantOut = {
-	/** The owner of the pendant. */
-	owner: string,
-	/** The pendant's position. */
-	position: Vector3D,
-	/** The pendant's rotation. */
-	rotation: Vector3D
+	/** The player's ID of the owner of the pendant. */
+	owner: string
 }
