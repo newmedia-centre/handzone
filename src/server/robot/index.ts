@@ -1,7 +1,6 @@
 // import dependencies
 import { EventEmitter } from 'events'
-import { Socket, createServer } from 'net'
-import { Buffer } from 'buffer'
+import { Socket } from 'net'
 import Semaphore from 'semaphore-async-await'
 import { VNCProxy } from './proxy'
 import env from '../environment'
@@ -33,42 +32,6 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		env.ROBOTS.forEach((robot) => {
 			this._tryCreateRobotConnection(robot)
 		})
-	}
-
-	/** sends an instruction with a callback */
-	async sendCallback(robot: RobotConnection, instruction: string) {
-		// acquire a semaphore
-		await this._semaphore.acquire()
-
-		const promise = new Promise<Buffer>((resolve, reject) => {
-			// set timeout to 5 seconds
-			const timeout = setTimeout(() => {
-				server.close()
-				server.on('close', () => { this._semaphore.release() })
-
-				reject('timeout')
-			}, 5000)
-
-			// create a tcp server receive values from the robot and listen on port 4000
-			const server = createServer(socket => {
-
-				socket.once('data', data => {
-					clearTimeout(timeout)
-					server.close()
-					server.on('close', () => { this._semaphore.release() })
-					resolve(data)
-				})
-
-				socket.on('error', () => { })
-			})
-			server.maxConnections = 1
-			server.listen(4000)
-		})
-
-		// send the instruction as a utf-8 buffer
-		robot.socket.write(Buffer.from(instruction, 'utf-8'))
-
-		return promise
 	}
 
 	/** Tries to connect to an endpoint */

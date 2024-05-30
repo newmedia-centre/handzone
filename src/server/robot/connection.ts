@@ -1,8 +1,10 @@
 // import dependencies
 import { EventEmitter } from 'events'
+import { createServer } from 'net'
 import { Buffer } from 'buffer'
 import { parseRealtimeData } from '@/server/socket/realtime'
 import { VideoConnection } from './video'
+import { robots } from '.'
 
 // import types
 import type { RobotEmitter } from './events'
@@ -86,5 +88,42 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	async send(instruction: string) {
 		// send the instruction as a utf-8 buffer
 		this.socket.write(Buffer.from(instruction, 'utf-8'))
+	}
+
+
+	/** sends an instruction with a callback */
+	async sendCallback(instruction: string) {
+		// acquire a semaphore
+		await robots._semaphore.acquire()
+
+		const promise = new Promise<Buffer>((resolve, reject) => {
+			// set timeout to 5 seconds
+			const timeout = setTimeout(() => {
+				server.close()
+				server.on('close', () => { robots._semaphore.release() })
+
+				reject('timeout')
+			}, 5000)
+
+			// create a tcp server receive values from the robot and listen on port 4000
+			const server = createServer(socket => {
+
+				socket.once('data', data => {
+					clearTimeout(timeout)
+					server.close()
+					server.on('close', () => { robots._semaphore.release() })
+					resolve(data)
+				})
+
+				socket.on('error', () => { })
+			})
+			server.maxConnections = 1
+			server.listen(4000)
+		})
+
+		// send the instruction as a utf-8 buffer
+		this.socket.write(Buffer.from(instruction, 'utf-8'))
+
+		return promise
 	}
 }
