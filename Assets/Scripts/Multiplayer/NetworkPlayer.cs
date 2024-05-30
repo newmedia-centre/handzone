@@ -8,17 +8,25 @@ public class NetworkPlayer : MonoBehaviour
 {
     public string Id { get; set; }
 
-    [Header("Client reference")] public GameObject clientHMD;
+    [Header("Client reference")] 
+    public GameObject clientHMD;
 
-    [Header("Network Transforms")] public GameObject hmd;
+    public GameObject cursorPlacementSlot;
+
+    [Header("Network Transforms")] 
+    public GameObject hmd;
     public GameObject left;
     public GameObject right;
+    public GameObject vncCursor;
 
-    [Header("Name Card")] public GameObject nameCard;
+    [Header("Name Card")] 
+    public GameObject nameCard;
     public TMP_Text playerNameCard;
 
-    [Header("Player material")] public string color;
+    [Header("Player material")] 
+    public Color color;
     public Renderer playerRenderer;
+    private Renderer _vncCursorRenderer;
 
     private void Start()
     {
@@ -26,6 +34,7 @@ public class NetworkPlayer : MonoBehaviour
         clientHMD = Camera.main.gameObject;
 
         playerRenderer = hmd.GetComponent<Renderer>();
+        _vncCursorRenderer = vncCursor.GetComponent<Renderer>();
     }
 
     public void SetNameCard(string playerName)
@@ -33,11 +42,12 @@ public class NetworkPlayer : MonoBehaviour
         playerNameCard.SetText(playerName);
     }
 
-    public void SetColor(string color)
-    {
-        this.color = color;
-        playerRenderer.material.color =
-            ColorUtility.TryParseHtmlString(color, out var newColor) ? newColor : Color.white;
+    public void SetColor(string colorString)
+    { 
+        color = ColorUtility.TryParseHtmlString(colorString, out var newColor) ? newColor : Color.white;
+
+        playerRenderer.material.color = color;
+        _vncCursorRenderer.material.color = color;
     }
 
     void Update()

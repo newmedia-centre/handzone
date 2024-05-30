@@ -42,3 +42,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: VNCScreen
+    uniqueID: 3126188227
+    locked: 0
+  - name: VNCCursor
+    uniqueID: 990967813
+    locked: 0

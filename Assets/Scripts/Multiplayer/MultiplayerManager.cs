@@ -1,14 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Schema.Socket.Unity;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class MultiplayerManager : MonoBehaviour
 {
     public static MultiplayerManager Instance { get; private set; }
-    
     public GameObject networkPlayerPrefab;
     
     private Dictionary<string, NetworkPlayer> _playerDictionary = new();
@@ -25,8 +22,14 @@ public class MultiplayerManager : MonoBehaviour
             Destroy(gameObject);
         }
         
-        SessionClient.Instance.OnUnityPendant += UpdatePendant;
+        if(SessionClient.Instance == null)
+        {
+            Debug.LogWarning("SessionClient instance is null. Make sure to have a SessionClient instance in the scene.");
+            return;
+        }
+        
         SessionClient.Instance.OnUnityPlayerData += UpdateNetworkPlayers;
+        SessionClient.Instance.OnUnityPendant += UpdateNetworkPendant;
         
         // Clear the player dictionary
         ClearPlayers();
@@ -43,17 +46,16 @@ public class MultiplayerManager : MonoBehaviour
     
     private void OnDestroy()
     {
-        SessionClient.Instance.OnUnityPendant -= UpdatePendant;
         SessionClient.Instance.OnUnityPlayerData -= UpdateNetworkPlayers;
         
         ClearPlayers();
     }
 
-    private void UpdatePendant(UnityPendantIn obj)
+    private void UpdateNetworkPendant(UnityPendantOut incomingPendantData)
     {
-        Debug.Log("Pendant data received");
+        
     }
-
+    
     private void UpdateNetworkPlayers(UnityPlayersOut incomingPlayersData)
     {
         // Remove players that are not in the incoming data
@@ -74,7 +76,7 @@ public class MultiplayerManager : MonoBehaviour
             }
         }
 
-        // Update existing players and add new players
+        // Update existing players and add new players when necessary
         foreach (var incomingPlayerData in incomingPlayersData.Players)
         {
             if (_playerDictionary.TryGetValue(incomingPlayerData.Id, out var player))
@@ -97,6 +99,9 @@ public class MultiplayerManager : MonoBehaviour
             newPlayer.SetNameCard(playerData.Name);
             newPlayer.SetColor(playerData.Color);
             _playerDictionary.Add(newPlayer.Id, newPlayer);
+            
+            // Create cursor for the player
+            
         }
         else
         {

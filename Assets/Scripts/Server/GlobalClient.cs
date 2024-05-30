@@ -155,7 +155,7 @@ public class GlobalClient : MonoBehaviour
             {
                 Debug.LogWarning("Could not join session.");
             }
-        });
+        }, sessionAddress);
     }
     
     private IEnumerator LoadSceneCoroutine(string sceneName)

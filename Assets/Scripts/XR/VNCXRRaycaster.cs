@@ -3,7 +3,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 namespace VNCScreen
 {
-
     /// <summary>
     /// Represents a component that acts as a mouse cursor to the VncScreen using the XRTK interactor.
     /// This component should be attached to a small sphere or any other object.
@@ -40,6 +39,9 @@ namespace VNCScreen
                     {
                         var textureCoord = raycastHit.Value.textureCoord;
                         vnc.UpdateMouse(textureCoord, _xrRayInteractor.isSelectActive);
+                        
+                        // TODO: Change pendent payload to accept Vector2 & bool
+                        // SessionClient.Instance.SendPendantData(textureCoord, _xrRayInteractor.isSelectActive);
                     }
                 }
             }

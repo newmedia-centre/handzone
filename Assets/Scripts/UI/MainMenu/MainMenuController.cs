@@ -10,8 +10,7 @@ public enum MenuName
     Login,
     Main,
     Options,
-    RealRobotSession,
-    VirtualRobotSessions
+    Sessions
 }
 
 public class MainMenuController : MonoBehaviour
@@ -19,7 +18,6 @@ public class MainMenuController : MonoBehaviour
     public GameObject loginMenu;
     public GameObject mainMenu;
     public GameObject optionsMenu;
-    public GameObject realRobotMenu;
     public GameObject sessionsMenu;
     
     // Variable to store the previous menu
@@ -32,10 +30,9 @@ public class MainMenuController : MonoBehaviour
         menuDictionary.Add(MenuName.Login, loginMenu);
         menuDictionary.Add(MenuName.Main, mainMenu);
         menuDictionary.Add(MenuName.Options, optionsMenu);
-        menuDictionary.Add(MenuName.RealRobotSession, realRobotMenu);
-        menuDictionary.Add(MenuName.VirtualRobotSessions, sessionsMenu);
+        menuDictionary.Add(MenuName.Sessions, sessionsMenu);
 
-        ChangeMenu(MenuName.Main);
+        ChangeMenu(MenuName.Login);
     }
 
     public void SetScene(string sceneName)
@@ -43,10 +40,6 @@ public class MainMenuController : MonoBehaviour
         if (SceneManager.GetSceneByName(sceneName) != null)
         {
             SceneManager.LoadScene(sceneName);
-        }
-        else
-        {
-            Debug.LogError("Scene " + sceneName + " does not exist.");
         }
     }
 

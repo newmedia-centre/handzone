@@ -30,7 +30,7 @@ public class SessionClient : MonoBehaviour
     public event Action<bool> OnDigitalOutputChanged;
     public event Action<string> OnUnityMessage;
     public event Action<UnityPlayersOut> OnUnityPlayerData;
-    public event Action<UnityPendantIn> OnUnityPendant;
+    public event Action<UnityPendantOut> OnUnityPendant;
     public event Action<InternalsGetInverseKinCallback> OnKinematicCallback;
     public event Action OnConnected;
     public event Action OnDisconnected;
@@ -174,7 +174,7 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                OnUnityPendant?.Invoke(response.GetValue<UnityPendantIn>());
+                OnUnityPendant?.Invoke(response.GetValue<UnityPendantOut>());
             });
         });
         #endregion
@@ -189,6 +189,11 @@ public class SessionClient : MonoBehaviour
             OnKinematicCallback?.Invoke(response.GetValue<InternalsGetInverseKinCallback>());
             function?.Invoke();
         }, data);
+    }
+
+    public void SendPendantData(UnityPendantIn pendantIn)
+    {
+        
     }
     
     public void Speedl(Vector3 translateDirection, Vector3 rotateAxis, float a, float t)

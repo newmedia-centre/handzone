@@ -63,6 +63,7 @@ namespace VNCScreen
         public string password;
         public Material disconnectedScreen;
         public Material connectedMaterial;
+        public Vector2 mousePosition;
 
         private Size _screenSize;
         private bool _passwordPending = false;            // After Connect() is called, a password might be required.
@@ -434,6 +435,9 @@ namespace VNCScreen
 
         public void UpdateMouse(Point pos, bool button0, bool button1, bool button2)
         {
+            if (!IsConnected) return;
+            
+            mousePosition = new Vector2(pos.X, pos.Y);
             vnc.UpdateMouse(pos, button0, button1, button2);
         }
 
