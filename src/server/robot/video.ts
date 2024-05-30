@@ -7,21 +7,24 @@ import type env from '../environment'
 // import types
 import type { ChildProcess } from 'child_process'
 import type { VideoEmitter } from './events'
+import type { Logger } from 'winston'
 
 export type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
 
 export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
 	process?: ChildProcess
 	camera: CameraInfo
+	logger: Logger
 
-	constructor(camera: CameraInfo) {
+	constructor(camera: CameraInfo, logger: Logger) {
 		// initialize the EventEmitter
 		super()
 
 		this.camera = camera
+		this.logger = logger
 
 		// initialize the ffmpeg process
-		console.log('Starting ffmpeg process...')
+		logger.info('Starting ffmpeg process...', camera)
 		const process = spawn('ffmpeg', [
 			'-rtsp_transport', 'tcp',
 			'-i', camera.address,
@@ -36,8 +39,11 @@ export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
 
 		// log once the process has received data
 		process.stdout.once('data', () => {
-			console.log('ffmpeg process started')
+			logger.info('ffmpeg process started', camera)
 		})
+
+		// log any errors from the ffmpeg process
+		process.on('error', err => this.logger.error('ffmpeg process error', err))
 
 		// read image frames from ffmpeg stdout and send to connected clients
 		process.stdout.on('data', (data: Buffer) => {

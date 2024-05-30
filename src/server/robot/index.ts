@@ -99,7 +99,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 		// add clients when connected
 		socket.on('connect', () => {
-			const connection = new RobotConnection(socket, robot, virtual)
+			const connection = new RobotConnection(socket, robot, virtual, robotLogger)
 			this.connections.set(robot.name, connection)
 			this.emit('join', connection, this.connections)
 			robotLogger.info(`Connected`)

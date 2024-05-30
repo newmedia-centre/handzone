@@ -11,6 +11,7 @@ import type { RobotEmitter } from './events'
 import type { SessionType } from '@/types/Socket/Index'
 import type { VNCProxy } from './proxy'
 import type { Socket } from 'net'
+import type { Logger } from 'winston'
 import type env from '../environment'
 
 export type RobotInfo = typeof env['ROBOTS'][number]
@@ -25,8 +26,9 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	realtimeBuffer?: Buffer
 	video?: Set<VideoConnection>
 	info: RobotInfo
+	logger: Logger
 
-	constructor(robot: Socket, info: RobotInfo, virtual: SessionType | null) {
+	constructor(robot: Socket, info: RobotInfo, virtual: SessionType | null, logger: Logger) {
 		// initialize the EventEmitter
 		super()
 
@@ -35,10 +37,11 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 		this.socket = robot
 		this.video = new Set()
 		this.info = info
+		this.logger = logger
 
 		// initialize the video connection if the robot has a camera
 		info.camera.forEach(camera => {
-			this.video?.add(new VideoConnection(camera))
+			this.video?.add(new VideoConnection(camera, logger))
 		})
 
 		// start the interval at 25hz which should be enough for most applications
@@ -53,8 +56,6 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 			if (header) {
 				this.realtimeBuffer = data
 			} else {
-				// parse the data
-
 				// emit the message
 				this.emit('response', data)
 			}
@@ -86,6 +87,8 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 
 	/** Sends an instruction to the robot */
 	async send(instruction: string) {
+		this.logger.http(`Sending instruction: ${instruction}`, { instruction })
+
 		// send the instruction as a utf-8 buffer
 		this.socket.write(Buffer.from(instruction, 'utf-8'))
 	}
@@ -93,6 +96,8 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 
 	/** sends an instruction with a callback */
 	async sendCallback(instruction: string) {
+		this.logger.http(`Sending instruction with callback: ${instruction}`, { instruction })
+
 		// acquire a semaphore
 		await robots._semaphore.acquire()
 
@@ -112,6 +117,8 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 					clearTimeout(timeout)
 					server.close()
 					server.on('close', () => { robots._semaphore.release() })
+
+					this.logger.http(`Received callback for instruction: ${instruction}`, { instruction, data })
 					resolve(data)
 				})
 
