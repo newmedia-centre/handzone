@@ -57,7 +57,7 @@ next.prepare().then(() => {
 			})
 		})
 	} catch (e) {
-		logger.error('Error starting server', e)
+		logger.error('Error starting server', { error: e })
 		process.exit(1)
 	}
 })

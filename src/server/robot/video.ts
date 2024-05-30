@@ -43,7 +43,7 @@ export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
 		})
 
 		// log any errors from the ffmpeg process
-		process.on('error', err => this.logger.error('ffmpeg process error', err))
+		process.on('error', err => this.logger.error('ffmpeg process error', { error: err }))
 
 		// read image frames from ffmpeg stdout and send to connected clients
 		process.stdout.on('data', (data: Buffer) => {
