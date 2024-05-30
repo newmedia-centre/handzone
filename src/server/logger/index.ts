@@ -1,6 +1,8 @@
 // import dependencies
 import { createLogger, format, transports } from 'winston'
-import path from 'path'
+import DailyRotateFile from 'winston-daily-rotate-file'
+import env from '../environment'
+import fs from 'fs'
 
 // create logger
 export const logger = global.logger ?? createLogger({
@@ -20,11 +22,16 @@ export const logger = global.logger ?? createLogger({
 			),
 		}),
 		new transports.File({
-			filename: path.resolve(process.cwd(), 'logs', `${new Date(Date.now()).toISOString()}.errors.log`),
+			stream: fs.createWriteStream(`${env.LOGS_PATH}/errors.log`, { flags: 'a' }),
 			level: 'error'
 		}),
-		new transports.File({
-			filename: path.resolve(process.cwd(), 'logs', `${new Date(Date.now()).toISOString()}.log`)
+		new DailyRotateFile({
+			filename: `${env.LOGS_PATH}/%DATE%.log`,
+			datePattern: 'YYYY-MM-DD',
+			zippedArchive: true,
+			maxSize: '20m',
+			maxFiles: '7d',
+			level: 'info',
 		}),
 	],
 	exitOnError: false

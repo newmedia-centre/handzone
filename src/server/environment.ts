@@ -18,6 +18,7 @@ const envSchema = {
 
 	/** Path to the config.json file */
 	CONFIG_PATH: z.string().default('config.json'),
+	LOGS_PATH: z.string().default('logs'),
 
 	DATABASE_URL: z.string(),
 

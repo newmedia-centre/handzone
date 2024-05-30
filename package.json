@@ -29,6 +29,7 @@
     "tsc-alias": "^1.8.8",
     "typed-emitter": "^2.1.0",
     "winston": "^3.13.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "znv": "^0.4.0",
     "zod": "^3.22.4"
   },
