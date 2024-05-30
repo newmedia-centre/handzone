@@ -1,12 +1,11 @@
 // import dependencies
 import { createLogger, format, transports } from 'winston'
 import path from 'path'
-import env from '../environment'
 
 // create logger
-export const logger = global.logger || createLogger({
+export const logger = global.logger ?? createLogger({
 	format: format.combine(
-		format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
+		format.timestamp(),
 		format.errors({ stack: true }),
 		format.json()
 	),
@@ -14,23 +13,30 @@ export const logger = global.logger || createLogger({
 		new transports.Console({
 			format: format.combine(
 				format.colorize(),
-				format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
 				format.errors({ stack: true }),
-				format.printf(({ level, message, timestamp, stack }) => {
-					return `${timestamp} ${level}: ${stack || message}`
+				format.printf(({ level, message, stack, label, meta }) => {
+					return `[${label}] ${level}: ${stack || message}${meta ? (', ' + JSON.stringify(meta)) : ''}`
 				})
 			),
 		}),
 		new transports.File({
-			filename: path.resolve(process.cwd(), 'logs', `${Date.now()}.errors.log`),
+			filename: path.resolve(process.cwd(), 'logs', `${new Date(Date.now()).toISOString()}.errors.log`),
 			level: 'error'
 		}),
 		new transports.File({
-			filename: path.resolve(process.cwd(), 'logs', `${Date.now()}.log`)
+			filename: path.resolve(process.cwd(), 'logs', `${new Date(Date.now()).toISOString()}.log`)
 		}),
 	],
+	exitOnError: false
 })
 
-if (env.NODE_ENV !== 'production') {
-	global.logger = logger
-}
+// create child loggers
+export const databaseLogger = logger.child({ entity: 'db', category: 'db', label: 'DB' })
+export const socketLogger = logger.child({ entity: 'socket', category: 'socket', label: 'SOCKET' })
+export const dockerLogger = logger.child({ entity: 'docker', category: 'docker', label: 'DOCKER' })
+export const robotLogger = logger.child({ entity: 'robot', category: 'robot', label: 'ROBOT' })
+export const webLogger = logger.child({ entity: 'web', category: 'web', label: 'WEB' })
+
+// fix global instancing in production // TODO
+global.logger = logger
+export default logger
