@@ -116,7 +116,9 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 				// try to reconnect
 				robotLogger.info(`Disconnected, retrying...`)
-				this._tryCreateRobotConnection(robot, virtual)
+				setTimeout(() => {
+					this._tryCreateRobotConnection(robot, virtual)
+				}, 5000)
 			}
 		})
 	}
