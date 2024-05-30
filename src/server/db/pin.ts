@@ -3,9 +3,13 @@ import { TOTPController } from 'oslo/otp'
 import { TimeSpan } from 'oslo'
 import { HMAC } from 'oslo/crypto'
 import { env } from '@/server/environment'
+import { databaseLogger } from '../logger'
 
 // import types
 import type { User } from '@prisma/client'
+
+// create logger
+export const logger = databaseLogger.child({ entity: 'pin', label: 'DB:PIN' })
 
 // init the TOTP controller and pin map
 const pins = global.otpPins || new Map<string, { user: User, secret: ArrayBuffer }>()
@@ -24,6 +28,7 @@ export const generatePin = async (user: User) => {
 	const secret = await new HMAC('SHA-256').generateKey()
 	const otp = await controller.generate(secret)
 	pins.set(otp, { user, secret })
+	logger.info('Generated pin for user', user.id, otp)
 
 	// set a timeout to delete the pin after it expires
 	setTimeout(() => { pins.delete(otp) }, 15 * 60 * 1000)
@@ -36,14 +41,15 @@ export const validatePin = async (otp: string) => {
 	// get the user and secret
 	const data = pins.get(otp)
 	if (!data) {
-		console.log('Invalid pin (not found)', otp, pins.keys())
+		logger.info('Log in attempt without valid pin (not found)', otp, pins.keys())
 		throw new Error('Invalid pin (not found)')
 	}
 
 	// verify the pin
 	const valid = await controller.verify(otp, data.secret)
 	if (!valid) {
-		throw new Error('Invalid pin (not verified)')
+		logger.info('Log in attempt without valid pin (invalid)')
+		throw new Error('Invalid pin (invalid)')
 	}
 
 	// return the user

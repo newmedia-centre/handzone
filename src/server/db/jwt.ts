@@ -2,10 +2,14 @@
 import { HMAC } from 'oslo/crypto'
 import { createJWT, validateJWT } from 'oslo/jwt'
 import { TimeSpan } from 'oslo'
-import type { env } from '../environment'
+import { databaseLogger } from '../logger'
 
 // import types
 import type { User } from '@prisma/client'
+import type { env } from '../environment'
+
+// create logger
+export const logger = databaseLogger.child({ entity: 'jwt', label: 'DB:JWT' })
 
 // generate secret for signing JWTs
 const generateSecret = async () => { global.jwtSecret = await new HMAC('SHA-256').generateKey() }
@@ -28,6 +32,7 @@ export const validateAccessToken = async (token: string) => {
 	const payload = jwt.payload as { user: User, robot: RobotInfo }
 
 	if (!payload.user || !payload.robot) {
+		logger.info('Log in attempt without valid jwt')
 		throw new Error('Invalid access token')
 	}
 
