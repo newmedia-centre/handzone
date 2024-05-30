@@ -11,7 +11,7 @@ import { validateAccessToken } from '@/server/db/jwt'
 import type { Namespace } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
 import type { PlayerData } from '@/types/Socket/Unity'
-import type { RobotConnection } from '../robot'
+import type { RobotConnection } from '../robot/connection'
 
 /** Initialize a new namespace by handling all the required events */
 export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot: RobotConnection) => {
