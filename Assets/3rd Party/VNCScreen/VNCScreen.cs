@@ -82,6 +82,10 @@ namespace VNCScreen
 
             setDisconnectedMaterial();
 
+            SessionClient.Instance.OnConnected += () =>
+            {
+                Connect();
+            };
             Connect();
         }
 
@@ -146,9 +150,9 @@ namespace VNCScreen
         public void Connect()
         {
             // Ignore attempts to use invalid port numbers
-            if (port < 1 | port > 65535) port = 5900;
+            if (this.port < 1 | this.port > 65535) this.port = 5900;
             if (display < 0) display = 0;
-            if (host == null) throw new ArgumentNullException("host");
+            if (this.host == null) throw new ArgumentNullException("host");
 
             StartCoroutine(Connection());
         }
