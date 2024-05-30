@@ -21,6 +21,7 @@ public class SessionMenu : MonoBehaviour
     {
         if(GlobalClient.Instance != null)
         {
+            Debug.LogError("GlobalClient instance is not null. Make sure to have a GlobalClient instance in the scene.");
             return;
         }
         
