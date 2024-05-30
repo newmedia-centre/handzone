@@ -31,7 +31,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		// ping docker to check connection
 		this.docker.ping(async (err) => {
 			if (err) {
-				logger.crit('Error connecting to docker', err)
+				logger.error('Error connecting to docker', { error: err })
 			} else {
 				logger.info('Connected to docker')
 
