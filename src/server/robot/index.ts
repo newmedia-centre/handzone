@@ -86,6 +86,8 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		robotLogger.info(`Connecting to robot...`)
 		socket.connect(robot.port, robot.address)
 
+		let stable: NodeJS.Timeout
+
 		// retry until a connection is established
 		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
@@ -101,7 +103,9 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		socket.on('connect', () => {
 			const connection = new RobotConnection(socket, robot, virtual, robotLogger)
 			this.connections.set(robot.name, connection)
-			this.emit('join', connection, this.connections)
+			stable = setTimeout(() => {
+				this.emit('join', connection, this.connections)
+			}, 10000)
 			robotLogger.info(`Connected`)
 		})
 
@@ -116,6 +120,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 				// try to reconnect
 				robotLogger.info(`Disconnected, retrying...`)
+				clearTimeout(stable)
 				setTimeout(() => {
 					this._tryCreateRobotConnection(robot, virtual)
 				}, 5000)

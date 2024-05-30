@@ -20,6 +20,7 @@ import type {
 } from './interface'
 import type { Namespace } from 'socket.io'
 import type { RobotSession } from '@/types/Socket/Index'
+import type { RobotConnection } from '../robot/connection'
 
 // create socket.io server
 export const init = () => {
@@ -80,6 +81,7 @@ export const init = () => {
 		// delete the namespace if it exists
 		const namespace = namespaces.get(robot.info.name)
 		if (namespace) {
+			logger.info('Removing namespace', { robot: robot.info })
 			namespace.nsp.disconnectSockets()
 			namespace.nsp.removeAllListeners()
 			namespaces.delete(robot.info.name)
@@ -143,6 +145,20 @@ export const init = () => {
 			// generate the access token
 			const token = await generateAccessToken(socket.data.user, info)
 			socket.data.namespace = info
+
+			// wait for the robot to be ready
+			await new Promise((resolve) => {
+				const listen = (connection: RobotConnection) => {
+					if (connection.info.name === info.name) {
+						robots.off('join', listen)
+
+						// wait for an additional second to be sure
+						setTimeout(() => resolve(true), 1000)
+					}
+				}
+				robots.on('join', listen)
+			})
+
 			callback(true, { robot: info, token })
 		})
 
