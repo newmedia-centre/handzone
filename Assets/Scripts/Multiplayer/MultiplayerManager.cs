@@ -21,7 +21,10 @@ public class MultiplayerManager : MonoBehaviour
             Debug.LogWarning("Multiple instances of NetworkManager detected. Destroying the duplicate instance.");
             Destroy(gameObject);
         }
-        
+    }
+    
+    private void Start()
+    {
         if(SessionClient.Instance == null)
         {
             Debug.LogWarning("SessionClient instance is null. Make sure to have a SessionClient instance in the scene.");
@@ -47,6 +50,7 @@ public class MultiplayerManager : MonoBehaviour
     private void OnDestroy()
     {
         SessionClient.Instance.OnUnityPlayerData -= UpdateNetworkPlayers;
+        SessionClient.Instance.OnUnityPendant -= UpdateNetworkPendant;
         
         ClearPlayers();
     }

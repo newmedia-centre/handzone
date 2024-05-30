@@ -54,14 +54,25 @@ public class SessionClient : MonoBehaviour
         _cameraFeedTexture = new Texture2D(2, 2);
         vncStream = new MemoryStream();
         _dataQueue = new Queue<RealtimeDataOut>();
+        
+        if (GlobalClient.Instance == null)
+        {
+            Debug.LogError("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene.");
+            return;
+        }
 
-        if (GlobalClient.Instance?.Session != null)
-            url = GlobalClient.Instance.url + GlobalClient.Instance.Session.Robot.Name;
+        if (GlobalClient.Instance.Session == null)
+        {
+            Debug.LogError("No session is currently active. Make sure to have an active session.");
+            return;
+        }
+        
+        url = GlobalClient.Instance.url + GlobalClient.Instance.Session?.Robot.Name;
         
         // Create a new Socket.IO client with an authentication token from the global client
         _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
         {
-            Auth = new { token = GlobalClient.Instance?.Session?.Token }
+            Auth = new { token = GlobalClient.Instance.Session?.Token }
         });
         
         // Setup the JSON serializer to handle object references

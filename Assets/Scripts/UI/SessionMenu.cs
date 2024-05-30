@@ -19,9 +19,9 @@ public class SessionMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(GlobalClient.Instance != null)
+        if(GlobalClient.Instance == null)
         {
-            Debug.LogError("GlobalClient instance is not null. Make sure to have a GlobalClient instance in the scene.");
+            Debug.LogError("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene.");
             return;
         }
         
@@ -36,7 +36,7 @@ public class SessionMenu : MonoBehaviour
         _joinSessionButton.interactable = false;
         _joinSessionButton.onClick.AddListener(() =>
         {
-            GlobalClient.Instance?.JoinSession(_selectedSessionAddress);
+            GlobalClient.Instance.JoinSession(_selectedSessionAddress);
         });
         
         // Init the create session button
@@ -44,8 +44,13 @@ public class SessionMenu : MonoBehaviour
         _createSessionButton.interactable = false;
         _createSessionButton.onClick.AddListener(() =>
         {
-            GlobalClient.Instance?.RequestVirtual();
+            GlobalClient.Instance.RequestVirtual();
         });
+    }
+
+    private void OnEnable()
+    {
+        UpdateMenu(GlobalClient.Instance.Sessions);   
     }
 
     void OnDestroy()
@@ -72,8 +77,8 @@ public class SessionMenu : MonoBehaviour
         }
         
         // Update the session capacity label
-        var _sessionAvailabilityGroup = transform.Find("SessionPanel/AvailabilityGroup").gameObject;
-        _sessionAvailabilityGroup.transform.Find("AvailabilityCapacityLabel").GetComponent<TMPro.TextMeshProUGUI>().text = receivedSessions.Capacity.ToString();
+        var sessionAvailabilityGroup = transform.Find("SessionPanel/AvailabilityGroup").gameObject;
+        sessionAvailabilityGroup.transform.Find("AvailabilityCapacityLabel").GetComponent<TMPro.TextMeshProUGUI>().text = receivedSessions.Capacity.ToString();
         
         // Make create session button interactable if capacity is not full
         if (receivedSessions.Capacity > 0)
@@ -95,16 +100,16 @@ public class SessionMenu : MonoBehaviour
             _sessionButtons.Add(sessionButton);
             
             // Find the Text tabel in the Session Button to set the session name
-            var _sessionName = sessionButton.transform.Find("SessionName").gameObject;
-            _sessionName.GetComponent<TMPro.TextMeshProUGUI>().text = receivedSession.Name;
+            var sessionName = sessionButton.transform.Find("SessionName").gameObject;
+            sessionName.GetComponent<TMPro.TextMeshProUGUI>().text = receivedSession.Name;
             
             // Find the SessionPlayerNamesGroup object in this object's children
-            var _sessionPlayerNamesGroup = sessionButton.transform.Find("UsersPanel").gameObject;
+            var sessionPlayerNamesGroup = sessionButton.transform.Find("UsersPanel").gameObject;
             
             // Fill the session player names to the Session Button
             foreach (var user in receivedSession.Users)
             {
-                var sessionPlayerName = Instantiate(sessionPlayerNamePrefab, _sessionPlayerNamesGroup.transform);
+                var sessionPlayerName = Instantiate(sessionPlayerNamePrefab, sessionPlayerNamesGroup.transform);
                 sessionPlayerName.GetComponent<TMPro.TextMeshProUGUI>().text = user;
             }
         }

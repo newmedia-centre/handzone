@@ -74,52 +74,64 @@ public class GlobalClient : MonoBehaviour
             Auth = new{pin}
         });
         
-        var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+        _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
         });
         
-        _client.Serializer = jsonSerializer;
         Debug.Log("Connecting to global server...");
         OnConnecting?.Invoke();
 
         _client.OnConnected += (sender, args) =>
         {
-            Debug.Log("Connected to server");
-            OnConnected?.Invoke();
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("Connected to server");
+                OnConnected?.Invoke();
+            });
         };
 
         _client.OnDisconnected += (sender, s) =>
         {
-            Debug.Log("Disconnected from server");
-            OnDisconnected?.Invoke();
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("Disconnected from server");
+                OnDisconnected?.Invoke();
+            });
         };
 
         _client.OnError += (sender, s) =>
         {
-            Debug.Log($@"Received error from server: {s}");
-            OnError?.Invoke(s);
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log($@"Received error from server: {s}");
+                OnError?.Invoke(s);
+            });
         };
 
         _client.On("sessions", response =>
         {
-            var session = response.GetValue<SessionsOut>();
-            if (session == null)
-            {
-                Debug.LogError("Could not parse sessions.");
-                return;
-            }
-            
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                OnSessionsReceived?.Invoke(session);
-                Debug.Log("Sessions received: " + session.Sessions.Count);
+                var sessions = response.GetValue<SessionsOut>();
+                if (sessions == null)
+                {
+                    Debug.LogError("Could not parse sessions.");
+                    return;
+                }
+                
+                Sessions = sessions;
+                OnSessionsReceived?.Invoke(sessions);
+                Debug.Log("Sessions received: " + sessions.Sessions.Count);
             });
         });
         
         await _client.ConnectAsync();
     }
 
+    /// <summary>
+    /// Requests a virtual robot session from the server and join it.
+    /// </summary>
     public void RequestVirtual()
     {
         _client.EmitAsync("virtual", response =>
@@ -142,6 +154,10 @@ public class GlobalClient : MonoBehaviour
         });
     }
     
+    /// <summary>
+    /// Join a session with the provided session address.
+    /// </summary>
+    /// <param name="sessionAddress"></param>
     public void JoinSession(string sessionAddress)
     {
         OnSessionJoin?.Invoke(sessionAddress);
@@ -150,9 +166,9 @@ public class GlobalClient : MonoBehaviour
             var success = response.GetValue<bool>(0);
             if (success)
             {
-                Session = response.GetValue<JoinSessionOut>(1);
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
+                    Session = response.GetValue<JoinSessionOut>(1);
                     StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
                     OnSessionJoined?.Invoke(Session);
                 });
@@ -164,6 +180,11 @@ public class GlobalClient : MonoBehaviour
         }, sessionAddress);
     }
     
+    /// <summary>
+    /// Loads a scene asynchronously.
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <returns></returns>
     private IEnumerator LoadSceneCoroutine(string sceneName)
     {
         // Start loading the scene
