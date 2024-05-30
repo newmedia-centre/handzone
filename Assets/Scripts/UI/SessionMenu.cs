@@ -32,7 +32,7 @@ public class SessionMenu : MonoBehaviour
         OnSessionSelected += SetSelectedSession;
         
         // Init the join session button
-        _joinSessionButton = transform.Find("SessionPanel/Buttons/JoinButton").GetComponent<Button>();
+        transform.Find("SessionPanel/Buttons/JoinButton").TryGetComponent(out _joinSessionButton);
         _joinSessionButton.interactable = false;
         _joinSessionButton.onClick.AddListener(() =>
         {
@@ -40,7 +40,7 @@ public class SessionMenu : MonoBehaviour
         });
         
         // Init the create session button
-        _createSessionButton = transform.Find("SessionPanel/Buttons/CreateButton").GetComponent<Button>();
+        transform.Find("SessionPanel/Buttons/CreateButton").TryGetComponent(out _createSessionButton);
         _createSessionButton.interactable = false;
         _createSessionButton.onClick.AddListener(() =>
         {
@@ -50,7 +50,8 @@ public class SessionMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        UpdateMenu(GlobalClient.Instance.Sessions);   
+        if(GlobalClient.Instance?.Sessions != null || GlobalClient.Instance != null)
+            UpdateMenu(GlobalClient.Instance.Sessions);
     }
 
     void OnDestroy()
@@ -71,7 +72,7 @@ public class SessionMenu : MonoBehaviour
         }
         _sessionButtons.Clear();
         
-        if (receivedSessions == null || receivedSessions.Sessions == null)
+        if (receivedSessions == null)
         {
             return;
         }
@@ -81,7 +82,7 @@ public class SessionMenu : MonoBehaviour
         sessionAvailabilityGroup.transform.Find("AvailabilityCapacityLabel").GetComponent<TMPro.TextMeshProUGUI>().text = receivedSessions.Capacity.ToString();
         
         // Make create session button interactable if capacity is not full
-        if (receivedSessions.Capacity > 0)
+        if (receivedSessions.Capacity > 0 && _createSessionButton)
         {
             if(_createSessionButton.interactable == false)
                 _createSessionButton.interactable = true;

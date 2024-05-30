@@ -32,6 +32,7 @@ public class SessionClient : MonoBehaviour
     public event Action<UnityPlayersOut> OnUnityPlayerData;
     public event Action<UnityPendantOut> OnUnityPendant;
     public event Action<InternalsGetInverseKinCallback> OnKinematicCallback;
+    public event Action<string> OnPlayerInvitation;
     public event Action OnConnected;
     public event Action OnDisconnected;
 
@@ -110,17 +111,17 @@ public class SessionClient : MonoBehaviour
 
         #region General connection events
 
-        Debug.Log("Connecting to web server...");
+        Debug.Log("Connecting to session...");
 
         _client.OnConnected += (sender, args) =>
         {
-            Debug.Log("Connected to server");
+            Debug.Log("Connected to session");
             OnConnected?.Invoke();
         };
 
         _client.OnDisconnected += (sender, s) =>
         {
-            Debug.Log("Disconnected from server");
+            Debug.Log("Disconnected from session");
             OnDisconnected?.Invoke();
         };
 
@@ -177,7 +178,17 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
+                Debug.Log("Received player data from server...");
                 OnUnityPlayerData?.Invoke(response.GetValue<UnityPlayersOut>());
+            });
+        });
+
+        _client.On("unity:invite", response =>
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("Received invitation from server...");
+                OnPlayerInvitation?.Invoke(response.GetValue<string>());
             });
         });
         
@@ -185,6 +196,7 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
+                Debug.Log("received pendant data from server...");
                 OnUnityPendant?.Invoke(response.GetValue<UnityPendantOut>());
             });
         });
@@ -200,11 +212,6 @@ public class SessionClient : MonoBehaviour
             OnKinematicCallback?.Invoke(response.GetValue<InternalsGetInverseKinCallback>());
             function?.Invoke();
         }, data);
-    }
-
-    public void SendPendantData(UnityPendantIn pendantIn)
-    {
-        
     }
     
     public void Speedl(Vector3 translateDirection, Vector3 rotateAxis, float a, float t)

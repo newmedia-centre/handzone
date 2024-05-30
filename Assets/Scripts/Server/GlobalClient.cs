@@ -86,7 +86,7 @@ public class GlobalClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log("Connected to server");
+                Debug.Log("Connected to global server");
                 OnConnected?.Invoke();
             });
         };
@@ -95,7 +95,7 @@ public class GlobalClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log("Disconnected from server");
+                Debug.Log("Disconnected from global server");
                 OnDisconnected?.Invoke();
             });
         };
@@ -104,7 +104,7 @@ public class GlobalClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log($@"Received error from server: {s}");
+                Debug.Log($@"Received error from global server: {s}");
                 OnError?.Invoke(s);
             });
         };
@@ -151,7 +151,7 @@ public class GlobalClient : MonoBehaviour
             {
                 Debug.LogWarning("Could not join session.");
             }
-        });
+        }, "sandbox");
     }
     
     /// <summary>
