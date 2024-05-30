@@ -15,7 +15,7 @@ export const logger = global.logger ?? createLogger({
 				format.colorize(),
 				format.errors({ stack: true }),
 				format.printf(({ level, message, stack, label, meta }) => {
-					return `[${label}] ${level}: ${stack || message}${meta ? (', ' + JSON.stringify(meta)) : ''}`
+					return `[${label}] ${level}: ${stack || message}${meta ? (', ' + JSON.stringify(meta, null, 2)) : ''}`
 				})
 			),
 		}),
