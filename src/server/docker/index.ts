@@ -3,6 +3,7 @@ import Docker from 'dockerode'
 import env from '../environment'
 import EventEmitter from 'events'
 import Semaphore from 'semaphore-async-await'
+import { dockerLogger as logger } from '../logger'
 
 // import types
 import type { DockerEmitter } from './events'
@@ -18,7 +19,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		super()
 
 		// create the dockerode instance
-		console.log('Connecting to docker...')
+		logger.info('Connecting to docker...')
 		this.docker = new Docker(env.DOCKER.OPTIONS)
 		this.containers = new Map()
 		this._semaphore = new Semaphore(env.DOCKER.MAX_VIRTUAL)
@@ -30,15 +31,15 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		// ping docker to check connection
 		this.docker.ping(async (err) => {
 			if (err) {
-				console.error('Error connecting to docker:', err)
+				logger.crit('Error connecting to docker', err)
 			} else {
-				console.log('Connected to docker!')
+				logger.info('Connected to docker')
 
 				// close all virtual robots that are still running on start
-				console.log('Closing all virtual robots on start...')
+				logger.info('Closing all virtual robots on start...')
 				await this.closeAllVirtualRobots()
 
-				console.log('Docker available!')
+				logger.info('Docker available')
 				for (let i = 0; i < env.DOCKER.MAX_VIRTUAL; i++) {
 					this._semaphore.release()
 				}
@@ -48,27 +49,28 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 
 	// request a new virtual polyscope instance, which will be spawned once it is available
 	requestVirtualRobot = async () => {
-		console.log('Requesting virtual robot...')
+		logger.info('Requesting virtual robot...')
 
 		// emit a capacity event if the semaphore is full
 		if (this._semaphore.getPermits() <= 0) {
-			console.log('Virtual robot capacity reached!')
+			logger.info('Virtual robot capacity reached')
 			this.emit('capacity')
 		}
 
 		// acquire a semaphore
-		console.log('Waiting for virtual robot capacity...')
+		logger.info('Waiting for virtual robot capacity...')
 		await this._semaphore.acquire()
-		console.log('Virtual robot capacity acquired!', this._semaphore.getPermits())
+		logger.info('Virtual robot capacity acquired', this._semaphore.getPermits())
 
 		// aquire next available slot from the slot machine
 		const slot = [...this._slotMachine.values()][0]
 		if (!slot || !this._slotMachine.delete(slot)) {
-			throw new Error('No available slots in the slot machine!')
+			logger.error('No available slots in the slot machine')
+			throw new Error('No available slots in the slot machine')
 		}
 
 		// create container
-		console.log('Creating virtual robot...')
+		logger.info('Creating virtual robot...')
 		const container = await this.docker.createContainer({
 			Image: 'ghcr.io/newmedia-centre/ursim_cb3:3.15.8',
 			HostConfig: {
@@ -120,6 +122,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 			// release the slot from the slot machine
 			const slot = (await container.inspect()).Config.Labels['slot']
 			if (!slot) {
+				logger.error('Found container without slot label!')
 				throw new Error('Found container without slot label')
 			}
 			this._slotMachine.add(parseInt(slot))
@@ -145,7 +148,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 				await this.docker.getContainer(container.Id).stop()
 				await this.docker.getContainer(container.Id).remove()
 			} catch (err) {
-				console.error('Error closing virtual robot:', err)
+				logger.error('Error closing virtual robot', err)
 			}
 		}))
 	}
