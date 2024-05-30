@@ -5,7 +5,7 @@ import { robots } from '@/server/robot'
 import { docker } from '@/server/docker'
 import { validatePin } from '@/server/db/pin'
 import { generateAccessToken } from '@/server/db/jwt'
-import { env } from '@/server/environment'
+import { socketLogger as logger } from '../logger'
 
 // import types
 import type {
@@ -36,9 +36,10 @@ export const init = () => {
 
 	// set up the index server middleware
 	server.use((socket, next) => {
+		logger.http(`Incoming connection from ${socket.handshake.address}`)
+
 		// get the pin number
 		const pin = socket.handshake.auth.pin as string
-		console.log('Socket User middleware running', socket.handshake.auth, pin.length)
 
 		// check if the pin is valid
 		validatePin(pin).then(user => {
@@ -46,7 +47,7 @@ export const init = () => {
 			socket.data.user = user
 			return next()
 		}).catch(e => {
-			console.log('Could not authenticate user', e)
+			logger.warn('Could not authenticate user', { error: e })
 			return next(new Error('User not authenticated'))
 		})
 	})
@@ -55,7 +56,7 @@ export const init = () => {
 	robots.on('join', (robot) => {
 		// create the namespace if it doesn't exist
 		if (!namespaces.has(robot.info.name)) {
-			const nsp = initNamespace((server.of(`/${robot.info.name}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot)
+			const nsp = initNamespace((server.of(`/${robot.info.name}`) as unknown) as Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot, logger.child({ entity: 'namespace', robot: robot.info, label: `SOCKET:NSP:${robot.info.name}` }))
 			namespaces.set(robot.info.name, { robot, nsp })
 		}
 
@@ -103,7 +104,7 @@ export const init = () => {
 
 	// handle connection events
 	server.on('connection', (socket) => {
-		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected`)
+		logger.http(`Socket ${socket.id} connected`, { user: socket.data.user })
 
 		// filter the namespaces for virtual robots
 		const sessions: RobotSession[] = Array.from(namespaces.values()).filter(n => n.robot.virtual).map(n => ({
@@ -131,11 +132,12 @@ export const init = () => {
 
 		// spawn virtual robot
 		socket.on('virtual', async (type, callback) => {
+			logger.info('Virtual robot requested', { user: socket.data.user })
+
 			// try to spawn a virtual robot
 			const robot = await docker.requestVirtualRobot()
 
 			// connect to the virtual robot
-			console.log('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
 			const info = await robots.connectVirtualRobot(robot, type)
 
 			// generate the access token
@@ -146,7 +148,7 @@ export const init = () => {
 
 		// send joined namespace
 		socket.on('namespace', async (callback) => {
-			if (!socket.data.namespace) return callback(false, 'No namespace found')
+			if (!socket.data.namespace) return callback(false, 'No namespace found for user')
 
 			const token = await generateAccessToken(socket.data.user, socket.data.namespace)
 			callback(true, { robot: socket.data.namespace, token })

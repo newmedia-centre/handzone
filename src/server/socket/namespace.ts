@@ -12,9 +12,10 @@ import type { Namespace } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
 import type { PlayerData } from '@/types/Socket/Unity'
 import type { RobotConnection } from '../robot/connection'
+import type { Logger } from 'winston'
 
 /** Initialize a new namespace by handling all the required events */
-export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot: RobotConnection) => {
+export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, robot: RobotConnection, logger: Logger) => {
 
 	// set up the namespace middleware
 	namespace.use((socket, next) => {
@@ -30,7 +31,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 
 			return next()
 		}).catch(e => {
-			console.log('Could not authenticate user', e)
+			logger.warn('Could not authenticate user', { error: e })
 			return next(new Error('User not authenticated'))
 		})
 	})
@@ -40,7 +41,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
-		console.log(`Socket ${socket.handshake.address}, ${socket.id} connected to namespace ${robot.info.address}`)
+		logger.http(`Socket ${socket.id} connected`, { user: socket.data.user })
 
 		socket.data.robot = robot
 		socket.data.user = { name: 'user', email: '', id: '0' }
@@ -78,6 +79,6 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		namespace.emit('unity:players', { players: Array.from(positions.values()) })
 	}, 200)
 
-	console.log('Namespace initialized:', robot.info.name)
+	logger.info('Namespace initialized')
 	return namespace
 }
