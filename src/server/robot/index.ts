@@ -5,6 +5,7 @@ import Semaphore from 'semaphore-async-await'
 import { VNCProxy } from './proxy'
 import env from '../environment'
 import { RobotConnection } from './connection'
+import { robotLogger as logger } from '../logger'
 
 // import types
 import type { ManagerEmitter } from './events'
@@ -38,7 +39,10 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	async connectVirtualRobot(container: ContainerInspectInfo, virtual: SessionType) {
 		// get the robot slot
 		const slot = container.Config.Labels['slot']
-		if (!slot) throw new Error('Found container without slot label')
+		if (!slot) {
+			logger.error('Found container without slot label')
+			throw new Error('Found container without slot label')
+		}
 
 		const port = parseInt(`3${slot}03`)
 		const vnc = parseInt(`59${slot}`)
@@ -59,7 +63,10 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 	/** Parses the given RemoteAddress into an IPv4 Address */
 	_parseAddress(address?: string) {
-		if (!address) throw new Error('Address is undefined')
+		if (!address) {
+			logger.error('Address is undefined while parsing IPv4 address')
+			throw new Error('Address is undefined while parsing IPv4 address')
+		}
 
 		if (address.includes(':')) {
 			return address.replace(/^.*:/, '')
@@ -70,17 +77,20 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 	/** Starts the TCP Client */
 	_tryCreateRobotConnection(robot: RobotInfo, virtual: SessionType | null = null) {
+		// create the logger for the robot
+		const robotLogger = logger.child({ entity: 'robot', robot, label: `ROBOT:${robot.name}` })
+
 		// create the TCP client
 		const socket = new Socket()
 		socket.setTimeout(5000)
-		console.info(`[ROBOT:${robot.name}] Connecting...`)
+		robotLogger.info(`Connecting to robot...`)
 		socket.connect(robot.port, robot.address)
 
 		// retry until a connection is established
 		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
 				return setTimeout(() => {
-					console.info(`[ROBOT:${robot.name}] Retrying...`)
+					robotLogger.info(`Connection failed, retrying...`)
 					socket.connect(robot.port, robot.address)
 				}, socket.timeout || 1000)
 			}
@@ -92,17 +102,21 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 			const connection = new RobotConnection(socket, robot, virtual)
 			this.connections.set(robot.name, connection)
 			this.emit('join', connection, this.connections)
-			console.info(`[ROBOT:${robot.name}] Connected`)
+			robotLogger.info(`Connected`)
 		})
 
 		// remove from clients when closed
 		socket.on('close', () => {
-			if (this.connections.has(robot.name)) {
-				const connection = this.connections.get(robot.name)
-				this.emit('leave', connection!, this.connections)
-				connection?.clear()
+			const connection = this.connections.get(robot.name)
+			if (connection) {
+				// remove the connection
+				this.emit('leave', connection, this.connections)
+				connection.clear()
 				this.connections.delete(robot.name)
-				console.info(`[ROBOT:${robot.name}] Disconnected`)
+
+				// try to reconnect
+				robotLogger.info(`Disconnected, retrying...`)
+				this._tryCreateRobotConnection(robot, virtual)
 			}
 		})
 	}

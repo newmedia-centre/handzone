@@ -34,7 +34,7 @@ export const logger = global.logger ?? createLogger({
 export const databaseLogger = logger.child({ entity: 'db', category: 'db', label: 'DB' })
 export const socketLogger = logger.child({ entity: 'socket', category: 'socket', label: 'SOCKET' })
 export const dockerLogger = logger.child({ entity: 'docker', category: 'docker', label: 'DOCKER' })
-export const robotLogger = logger.child({ entity: 'robot', category: 'robot', label: 'ROBOT' })
+export const robotLogger = logger.child({ entity: 'robots', category: 'robot', label: 'ROBOT' })
 export const webLogger = logger.child({ entity: 'web', category: 'web', label: 'WEB' })
 
 // fix global instancing in production // TODO

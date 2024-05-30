@@ -106,9 +106,6 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		// start container
 		await container.start()
 
-		// wait some time for the container to start
-		await new Promise(resolve => setTimeout(resolve, 20000))
-
 		// return the container info
 		this.containers.set(container.id, container)
 		return await container.inspect()
