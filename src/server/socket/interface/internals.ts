@@ -3,7 +3,8 @@ import type {
 	InternalsGetInverseKinIn,
 	InternalsGetInverseKinCallback
 } from '@/types/Socket/Internals'
+import type { CallbackFn } from '.'
 
 export interface InternalsClientToServer {
-	'internals:get_inverse_kin': (payload: InternalsGetInverseKinIn, callback: (success: boolean, payload?: InternalsGetInverseKinCallback) => void) => void
+	'internals:get_inverse_kin': (payload: InternalsGetInverseKinIn, callback: CallbackFn<InternalsGetInverseKinCallback>) => void
 }

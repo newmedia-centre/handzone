@@ -10,7 +10,7 @@ import type { RobotConnection, RobotInfo } from '@/server/robot/connection'
 import type { SessionsOut, JoinSessionOut, SessionType } from '@/types/Socket/Index'
 import type { User } from '@prisma/client'
 
-type CallbackFn<T> = {
+export type CallbackFn<T> = {
 	(success: true, payload: T): void
 	(success: false, message: string): void
 }

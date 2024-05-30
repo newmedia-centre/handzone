@@ -1,3 +1,6 @@
+// import dependencies
+import { env } from '@/server/environment'
+
 // import types
 import type { Socket } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
@@ -20,8 +23,17 @@ export const handleMotionEvents = (socket: Socket<NamespaceClientToServerEvents,
 	})
 
 	// handle the motion:encoder_get_tick_count event
-	socket.on('motion:encoder_get_tick_count', () => {
-		throw new Error('Get requests not implemented')
+	socket.on('motion:encoder_get_tick_count', async ({ encoder_index }, callback) => {
+		const instruction = `def get_value():\nsocket_open("${env.HOSTNAME}", ${env.TCP_PORT}, "socket_value")\nvalue=encoder_get_tick_count(${encoder_index})\nsocket_send_string(to_str(value), "socket_value")\nend\n`
+		console.log('instruction:', instruction)
+		try {
+			const res = await socket.data.robot.sendCallback(instruction)
+			const count = JSON.parse(res.toString('utf8'))
+			callback(true, { count })
+		} catch (e) {
+			console.log(e)
+			callback(false, 'Error getting inverse kinematics')
+		}
 	})
 
 	// handle the motion:set_pose event
@@ -35,8 +47,17 @@ export const handleMotionEvents = (socket: Socket<NamespaceClientToServerEvents,
 	})
 
 	// handle the motion:encoder_unwind_delta_tick_count event
-	socket.on('motion:encoder_unwind_delta_tick_count', () => {
-		throw new Error('Get requests not implemented')
+	socket.on('motion:encoder_unwind_delta_tick_count', async ({ encoder_index, delta_tick_count }, callback) => {
+		const instruction = `def get_value():\nsocket_open("${env.HOSTNAME}", ${env.TCP_PORT}, "socket_value")\nvalue=encoder_unwind_delta_tick_count(${encoder_index}, ${delta_tick_count})\nsocket_send_string(to_str(value), "socket_value")\nend\n`
+		console.log('instruction:', instruction)
+		try {
+			const res = await socket.data.robot.sendCallback(instruction)
+			const count = JSON.parse(res.toString('utf8'))
+			callback(true, { count })
+		} catch (e) {
+			console.log(e)
+			callback(false, 'Error getting inverse kinematics')
+		}
 	})
 
 	// handle the motion:end_force_mode event
@@ -75,18 +96,45 @@ export const handleMotionEvents = (socket: Socket<NamespaceClientToServerEvents,
 	})
 
 	// handle the motion:get_conveyor_tick_count event
-	socket.on('motion:get_conveyor_tick_count', () => {
-		throw new Error('Get requests not implemented')
+	socket.on('motion:get_conveyor_tick_count', async (callback) => {
+		const instruction = `def get_value():\nsocket_open("${env.HOSTNAME}", ${env.TCP_PORT}, "socket_value")\nvalue=get_conveyor_tick_count()\nsocket_send_string(to_str(value), "socket_value")\nend\n`
+		console.log('instruction:', instruction)
+		try {
+			const res = await socket.data.robot.sendCallback(instruction)
+			const count = JSON.parse(res.toString('utf8'))
+			callback(true, { count })
+		} catch (e) {
+			console.log(e)
+			callback(false, 'Error getting inverse kinematics')
+		}
 	})
 
 	// handle the motion:get_target_tcp_pose_along_path event
-	socket.on('motion:get_target_tcp_pose_along_path', () => {
-		throw new Error('Get requests not implemented')
+	socket.on('motion:get_target_tcp_pose_along_path', async (callback) => {
+		const instruction = `def get_value():\nsocket_open("${env.HOSTNAME}", ${env.TCP_PORT}, "socket_value")\nvalue=get_target_tcp_pose_along_path()\nsocket_send_string(to_str(value), "socket_value")\nend\n`
+		console.log('instruction:', instruction)
+		try {
+			const res = await socket.data.robot.sendCallback(instruction)
+			const pose = JSON.parse(res.toString('utf8'))
+			callback(true, { pose })
+		} catch (e) {
+			console.log(e)
+			callback(false, 'Error getting inverse kinematics')
+		}
 	})
 
 	// handle the motion:get_target_tcp_speed_along_path event
-	socket.on('motion:get_target_tcp_speed_along_path', () => {
-		throw new Error('Get requests not implemented')
+	socket.on('motion:get_target_tcp_speed_along_path', async (callback) => {
+		const instruction = `def get_value():\nsocket_open("${env.HOSTNAME}", ${env.TCP_PORT}, "socket_value")\nvalue=get_target_tcp_speed_along_path()\nsocket_send_string(to_str(value), "socket_value")\nend\n`
+		console.log('instruction:', instruction)
+		try {
+			const res = await socket.data.robot.sendCallback(instruction)
+			const speed = JSON.parse(res.toString('utf8'))
+			callback(true, { speed })
+		} catch (e) {
+			console.log(e)
+			callback(false, 'Error getting inverse kinematics')
+		}
 	})
 
 	// handle the motion:movec event

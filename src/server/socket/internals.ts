@@ -15,7 +15,7 @@ export const handleInternalsEvents = (socket: Socket<NamespaceClientToServerEven
 			callback(true, { ik })
 		} catch (e) {
 			console.log(e)
-			callback(false)
+			callback(false, 'Error getting inverse kinematics')
 		}
 	})
 }
