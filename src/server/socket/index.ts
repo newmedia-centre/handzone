@@ -121,7 +121,7 @@ export const init = () => {
 		socket.on('join', async (name, callback) => {
 			// get the robot
 			const robot = robots.connections.get(name)
-			if (!robot) return callback(false)
+			if (!robot) return callback(false, 'Robot not found')
 
 			// generate the access token
 			const token = await generateAccessToken(socket.data.user, robot.info)

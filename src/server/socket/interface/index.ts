@@ -32,7 +32,7 @@ export interface ClientToServerEvents {
 	message: (message: string) => void
 	real: (callback: CallbackFn<JoinSessionOut>) => void
 	virtual: (type: SessionType, callback: CallbackFn<JoinSessionOut>) => void
-	join: (address: string, callback: (success: boolean, payload?: JoinSessionOut) => void) => void
+	join: (address: string, callback: CallbackFn<JoinSessionOut>) => void
 	namespace: (callback: CallbackFn<JoinSessionOut>) => void
 	achievement: () => void
 	afk: () => void
