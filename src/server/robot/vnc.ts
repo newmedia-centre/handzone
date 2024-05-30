@@ -1,64 +1,75 @@
 // import dependencies
 import { Socket, createServer } from 'net'
 import { validateAccessToken } from '../db/jwt'
+import { robotLogger } from '../logger'
 import env from '../environment'
 
 // import types
 import type { Server } from 'net'
 import type { RobotManager } from '.'
 import type { RobotInfo } from './connection'
+import type { Logger } from 'winston'
 
+// create the vnc proxy manager
 export class VNCProxy {
 	server: Server
 	clients: Set<VNCClient>
 
 	constructor(robots: RobotManager) {
+		// create logger
+		const logger = robotLogger.child({ entity: 'vnc', label: 'ROBOTS:VNC' })
+
 		this.clients = new Set()
 		this.server = createServer(client => {
-			console.info(`[ROBOT-VNC]: Client Connected`)
+			logger.info(`Client Connected`)
 
-			this.clients.add(new VNCClient(client, robots))
+			this.clients.add(new VNCClient(client, robots, logger))
 		})
 
 		// start the server on the vnc port
 		this.server.listen(env.VNC_PORT, () => {
-			console.info(`[ROBOT-VNC]: VNC proxy listening on port ${env.VNC_PORT}`)
+			logger.info(`VNC proxy listening on port ${env.VNC_PORT}`)
 		})
 	}
 }
 
+// create the vnc proxy client
 export class VNCClient {
 	manager: RobotManager
 	robot?: RobotInfo
 	_client: Socket
 	_vnc?: Socket
+	_logger?: Logger
 
-	constructor(client: Socket, manager: RobotManager) {
+	constructor(client: Socket, manager: RobotManager, vncLogger: Logger) {
 		this.manager = manager
 		this._client = client
 
 		// check if the first message is a valid auth token
 		this._client.once('data', async (message) => {
 			const token = message.toString('utf8')
-			const { user, robot } = await validateAccessToken(token)
+			const { robot } = await validateAccessToken(token)
 
 			if (robot && robot.vnc) {
-				console.info(`[ROBOT-VNC]: User ${user.name} Authenticated for robot: ${robot.name}`)
+				// create a logger for the robot vnc proxy
+				this._logger = vncLogger.child({ entity: 'vnc', label: `ROBOT:VNC:${robot.name}`, robot })
+
+				this._logger.info('User Authenticated for robot')
 
 				// connect to robot vnc server
 				this._vnc = new Socket()
 				this._vnc.setTimeout(5000)
-				console.info(`[ROBOT-VNC]: Connecting to robot: ${robot.name}...`)
+				this._logger.info('Connecting to robot...')
 				this._vnc.connect(robot.vnc, robot.address)
 
 				// retry until a connection is established
 				this._vnc.on('error', (error: NodeJS.ErrnoException) => {
 					// log any errors
-					console.error(error)
+					this._logger?.error(error.message, { error })
 				})
 
 				this._vnc.on('connect', () => {
-					console.info(`[ROBOT-VNC]: Connected to robot: ${robot.name}...`)
+					this._logger?.info('Connected to robot')
 
 					// pipe the sockets to each other
 					this._vnc!.pipe(this._client)
@@ -66,14 +77,14 @@ export class VNCClient {
 				})
 
 				this._vnc.on('close', () => {
-					console.info(`[ROBOT-VNC]: Robot closed the connection to robot: ${robot.name}...`)
+					this._logger?.info('Robot closed the connection')
 					this._client.destroy()
 					this._vnc?.destroy()
 				})
 
 				this.robot = robot
 			} else {
-				console.info(`[ROBOT-VNC]: Authentication failed`)
+				vncLogger.info('Authentication failed', { token })
 				this._client.destroy()
 				this._vnc?.destroy()
 			}
@@ -81,12 +92,12 @@ export class VNCClient {
 
 		this._client.on('error', (error: NodeJS.ErrnoException) => {
 			// log any errors
-			console.error(error)
+			this._logger?.error(error.message, { error })
 		})
 
 		// remove from clients when closed
 		this._client.on('close', () => {
-			console.info(`[ROBOT-VNC]: Disconnected from robot: ${this.robot?.name}...`)
+			this._logger?.info('Disconnected from robot')
 			this._client.destroy()
 			this._vnc?.destroy()
 		})

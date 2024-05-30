@@ -2,7 +2,7 @@
 import { EventEmitter } from 'events'
 import { Socket } from 'net'
 import Semaphore from 'semaphore-async-await'
-import { VNCProxy } from './proxy'
+import { VNCProxy } from './vnc'
 import env from '../environment'
 import { RobotConnection } from './connection'
 import { robotLogger as logger } from '../logger'
