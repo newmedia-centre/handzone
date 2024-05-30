@@ -4,8 +4,8 @@ import { Socket, createServer } from 'net'
 import { spawn } from 'child_process'
 import { parseRealtimeData } from '@/server/socket/realtime'
 import { Buffer } from 'buffer'
-import { VNCProxy } from './proxy'
 import Semaphore from 'semaphore-async-await'
+import { VNCProxy } from './proxy'
 import env from '../environment'
 
 // import types
@@ -37,12 +37,6 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		env.ROBOTS.forEach((robot) => {
 			this._tryCreateRobotConnection(robot)
 		})
-	}
-
-	/** Sends an instruction to the robot */
-	async send(robot: RobotConnection, instruction: string) {
-		// send the instruction as a utf-8 buffer
-		robot.socket.write(Buffer.from(instruction, 'utf-8'))
 	}
 
 	/** sends an instruction with a callback */
@@ -223,6 +217,12 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	getRealtimeHeader(data: Buffer) {
 		// verify the size of the package, realtime data has a fixed size of 1220 bytes, if so, return true
 		return data.length % 1220 === 0
+	}
+
+	/** Sends an instruction to the robot */
+	async send(instruction: string) {
+		// send the instruction as a utf-8 buffer
+		this.socket.write(Buffer.from(instruction, 'utf-8'))
 	}
 }
 

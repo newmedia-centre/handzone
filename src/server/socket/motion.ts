@@ -1,6 +1,3 @@
-// import dependencies
-import { robots } from '@/server/robot'
-
 // import types
 import type { Socket } from 'socket.io'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
@@ -9,17 +6,17 @@ export const handleMotionEvents = (socket: Socket<NamespaceClientToServerEvents,
 
 	// handle the motion:conveyor_pulse_decode event
 	socket.on('motion:conveyor_pulse_decode', ({ type, A, B }) => {
-		robots.send(socket.data.robot, `conveyor_pulse_decode(${type},${A},${B})\n`)
+		socket.data.robot.send(`conveyor_pulse_decode(${type},${A},${B})\n`)
 	})
 
 	// handle the motion:encoder_enable_pulse_decode event
 	socket.on('motion:encoder_enable_pulse_decode', ({ encoder_index, decoder_type, A, B }) => {
-		robots.send(socket.data.robot, `encoder_enable_pulse_decode(${encoder_index},${decoder_type},${A},${B})\n`)
+		socket.data.robot.send(`encoder_enable_pulse_decode(${encoder_index},${decoder_type},${A},${B})\n`)
 	})
 
 	// handle the motion:encoder_enable_set_tick_count event
 	socket.on('motion:encoder_enable_set_tick_count', ({ encoder_index, range_id }) => {
-		robots.send(socket.data.robot, `encoder_enable_set_tick_count(${encoder_index},${range_id})\n`)
+		socket.data.robot.send(`encoder_enable_set_tick_count(${encoder_index},${range_id})\n`)
 	})
 
 	// handle the motion:encoder_get_tick_count event
@@ -29,12 +26,12 @@ export const handleMotionEvents = (socket: Socket<NamespaceClientToServerEvents,
 
 	// handle the motion:set_pose event
 	socket.on('motion:set_tcp', (pose) => {
-		robots.send(socket.data.robot, `set_tcp(p[${pose}])\n`)
+		socket.data.robot.send(`set_tcp(p[${pose}])\n`)
 	})
 
 	// handle the motion:encoder_set_tick_count event
 	socket.on('motion:encoder_set_tick_count', ({ encoder_index, count }) => {
-		robots.send(socket.data.robot, `encoder_set_tick_count(${encoder_index},${count})\n`)
+		socket.data.robot.send(`encoder_set_tick_count(${encoder_index},${count})\n`)
 	})
 
 	// handle the motion:encoder_unwind_delta_tick_count event
@@ -44,37 +41,37 @@ export const handleMotionEvents = (socket: Socket<NamespaceClientToServerEvents,
 
 	// handle the motion:end_force_mode event
 	socket.on('motion:end_force_mode', () => {
-		robots.send(socket.data.robot, `end_force_mode()\n`)
+		socket.data.robot.send(`end_force_mode()\n`)
 	})
 
 	// handle the motion:end_freedrive_mode event
 	socket.on('motion:end_freedrive_mode', () => {
-		robots.send(socket.data.robot, `end_freedrive_mode()\n`)
+		socket.data.robot.send(`end_freedrive_mode()\n`)
 	})
 
 	// handle the motion:end_teach_mode event
 	socket.on('motion:end_teach_mode', () => {
-		robots.send(socket.data.robot, `end_teach_mode()\n`)
+		socket.data.robot.send(`end_teach_mode()\n`)
 	})
 
 	// handle the motion:force_mode event
 	socket.on('motion:force_mode', ({ task_frame, selection_vector, wrench, type, limits }) => {
-		robots.send(socket.data.robot, `force_mode([${task_frame}],[${selection_vector}],[${wrench}],${type},[${limits}])\n`)
+		socket.data.robot.send(`force_mode([${task_frame}],[${selection_vector}],[${wrench}],${type},[${limits}])\n`)
 	})
 
 	// handle the motion:force_mode_set_damping event
 	socket.on('motion:force_mode_set_damping', (damping) => {
-		robots.send(socket.data.robot, `force_mode_set_damping(${damping})\n`)
+		socket.data.robot.send(`force_mode_set_damping(${damping})\n`)
 	})
 
 	// handle the motion:freedrive_mode event
 	socket.on('motion:freedrive_mode', () => {
-		robots.send(socket.data.robot, `freedrive_mode()\n`)
+		socket.data.robot.send(`freedrive_mode()\n`)
 	})
 
 	// handle the motion:freedrive_mode_no_incorrect_payload_check event
 	socket.on('motion:freedrive_mode_no_incorrect_payload_check', () => {
-		robots.send(socket.data.robot, `freedrive_mode_no_incorrect_payload_check()\n`)
+		socket.data.robot.send(`freedrive_mode_no_incorrect_payload_check()\n`)
 	})
 
 	// handle the motion:get_conveyor_tick_count event
@@ -94,97 +91,97 @@ export const handleMotionEvents = (socket: Socket<NamespaceClientToServerEvents,
 
 	// handle the motion:movec event
 	socket.on('motion:movec', ({ pose_via, pose_to, a, v, r, mode }) => {
-		robots.send(socket.data.robot, `movec([${pose_via}],[${pose_to}],a=${a},v=${v},r=${r},mode=${mode})\n`)
+		socket.data.robot.send(`movec([${pose_via}],[${pose_to}],a=${a},v=${v},r=${r},mode=${mode})\n`)
 	})
 
 	// handle the motion:movej event
 	socket.on('motion:movej', ({ q, a, v, t, r }) => {
-		robots.send(socket.data.robot, `movej([${q}],a=${a},v=${v},t=${t},r=${r})\n`)
+		socket.data.robot.send(`movej([${q}],a=${a},v=${v},t=${t},r=${r})\n`)
 	})
 
 	// handle the motion:movel event
 	socket.on('motion:movel', ({ pose, a, v, t, r }) => {
-		robots.send(socket.data.robot, `movel([${pose}], a=${a}, v=${v}, t=${t}, r=${r})\n`)
+		socket.data.robot.send(`movel([${pose}], a=${a}, v=${v}, t=${t}, r=${r})\n`)
 	})
 
 	// handle the motion:movep event
 	socket.on('motion:movep', ({ pose, a, v, r }) => {
-		robots.send(socket.data.robot, `movep([${pose}], a=${a}, v=${v}, r=${r})\n`)
+		socket.data.robot.send(`movep([${pose}], a=${a}, v=${v}, r=${r})\n`)
 	})
 
 	// handle the motion:pause_on_error_code event
 	socket.on('motion:pause_on_error_code', ({ code, argument }) => {
-		robots.send(socket.data.robot, `pause_on_error_code(${code}${argument ? `, ${argument}` : ''})\n`)
+		socket.data.robot.send(`pause_on_error_code(${code}${argument ? `, ${argument}` : ''})\n`)
 	})
 
 	// handle the motion:position_deviation_warning event
 	socket.on('motion:position_deviation_warning', ({ enabled, threshold }) => {
-		robots.send(socket.data.robot, `position_deviation_warning(${enabled}${threshold ? `, ${threshold}` : ''})\n`)
+		socket.data.robot.send(`position_deviation_warning(${enabled}${threshold ? `, ${threshold}` : ''})\n`)
 	})
 
 	// handle the motion:reset_revolution_counter event
 	socket.on('motion:reset_revolution_counter', (qNear) => {
-		robots.send(socket.data.robot, `reset_revolution_counter(${qNear ? `qNear=[${qNear}]` : ''})\n`)
+		socket.data.robot.send(`reset_revolution_counter(${qNear ? `qNear=[${qNear}]` : ''})\n`)
 	})
 
 	// handle the motion:servoj event
 	socket.on('motion:servoj', ({ q, a, v, t, lookahead_time, gain }) => {
-		robots.send(socket.data.robot, `servoj([${q}], a=${a}, v=${v}${t ? `, t=${t}` : ''}${lookahead_time ? `, lookahead_time=${lookahead_time}` : ''}${gain ? `, gain=${gain}` : ''})\n`)
+		socket.data.robot.send(`servoj([${q}], a=${a}, v=${v}${t ? `, t=${t}` : ''}${lookahead_time ? `, lookahead_time=${lookahead_time}` : ''}${gain ? `, gain=${gain}` : ''})\n`)
 	})
 
 	// handle the motion:set_conveyor_tick_count event
 	socket.on('motion:set_conveyor_tick_count', ({ tick_count, absolute_encoder_resolution }) => {
-		robots.send(socket.data.robot, `set_conveyor_tick_count(${tick_count}${absolute_encoder_resolution ? `, absolute_encoder_resolution=${absolute_encoder_resolution}` : ''})\n`)
+		socket.data.robot.send(`set_conveyor_tick_count(${tick_count}${absolute_encoder_resolution ? `, absolute_encoder_resolution=${absolute_encoder_resolution}` : ''})\n`)
 	})
 
 	// handle the motion:set_pos event
 	socket.on('motion:set_pos', (q) => {
-		robots.send(socket.data.robot, `set_pos([${q}])\n`)
+		socket.data.robot.send(`set_pos([${q}])\n`)
 	})
 
 	// handle the motion:set_safety_mode_transition_hardness event
 	socket.on('motion:set_safety_mode_transition_hardness', (type) => {
-		robots.send(socket.data.robot, `set_safety_mode_transition_hardness(${type})\n`)
+		socket.data.robot.send(`set_safety_mode_transition_hardness(${type})\n`)
 	})
 
 	// handle the motion:speedj event
 	socket.on('motion:speedj', ({ qd, a, t }) => {
-		robots.send(socket.data.robot, `speedj([${qd}],a=${a}${t ? `,t=${t}` : ''})\n`)
+		socket.data.robot.send(`speedj([${qd}],a=${a}${t ? `,t=${t}` : ''})\n`)
 	})
 
 	// handle the motion:speedl event
 	socket.on('motion:speedl', ({ xd, a, t, aRot }) => {
-		robots.send(socket.data.robot, `speedl([${xd}],a=${a}${t && `,t=${t}`}${aRot ? `,aRot=${aRot}` : ''})\n`)
+		socket.data.robot.send(`speedl([${xd}],a=${a}${t && `,t=${t}`}${aRot ? `,aRot=${aRot}` : ''})\n`)
 	})
 
 	// handle the motion:stop_conveyor_tracking event
 	socket.on('motion:stop_conveyor_tracking', (a) => {
-		robots.send(socket.data.robot, `stop_conveyor_tracking(${a ? `a=[${a}]` : ''})\n`)
+		socket.data.robot.send(`stop_conveyor_tracking(${a ? `a=[${a}]` : ''})\n`)
 	})
 
 	// handle the motion:stopj event
 	socket.on('motion:stopj', (a) => {
-		robots.send(socket.data.robot, `stopj(${a})\n`)
+		socket.data.robot.send(`stopj(${a})\n`)
 	})
 
 	// handle the motion:stopl event
 	socket.on('motion:stopl', ({ a, aRot }) => {
-		robots.send(socket.data.robot, `stopl(${a}${aRot ? `,aRot=${aRot}` : ''})\n`)
+		socket.data.robot.send(`stopl(${a}${aRot ? `,aRot=${aRot}` : ''})\n`)
 	})
 
 	// handle the motion:teach_mode event
 	socket.on('motion:teach_mode', () => {
-		robots.send(socket.data.robot, `teach_mode()\n`)
+		socket.data.robot.send(`teach_mode()\n`)
 	})
 
 	// handle the motion:track_conveyor_circular event
 	socket.on('motion:track_conveyor_circular', ({ center, ticksPerRevolution, rotateTool, encoderIndex }) => {
-		robots.send(socket.data.robot, `track_conveyor_circular([${center}], ${ticksPerRevolution}, ${rotateTool}${encoderIndex ? `, encoder_index=${encoderIndex}` : ''})\n`)
+		socket.data.robot.send(`track_conveyor_circular([${center}], ${ticksPerRevolution}, ${rotateTool}${encoderIndex ? `, encoder_index=${encoderIndex}` : ''})\n`)
 	})
 
 	// handle the motion:track_conveyor_linear event
 	socket.on('motion:track_conveyor_linear', ({ direction, ticksPerMeter, encoderIndex }) => {
-		robots.send(socket.data.robot, `track_conveyor_linear([${direction}], ${ticksPerMeter}${encoderIndex ? `, encoder_index=${encoderIndex}` : ''})\n`)
+		socket.data.robot.send(`track_conveyor_linear([${direction}], ${ticksPerMeter}${encoderIndex ? `, encoder_index=${encoderIndex}` : ''})\n`)
 	})
 
 }
