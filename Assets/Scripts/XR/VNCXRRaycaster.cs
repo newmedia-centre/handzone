@@ -12,15 +12,18 @@ namespace VNCScreen
     public class VNCXRRaycaster : MonoBehaviour
     {
         
-        private Vector2 textureCoord;  
+        private Vector2 _textureCoord;  
         private XRRayInteractor _xrRayInteractor;
+        
         public Vector2D TextureCoord
         {
             get
             {
-                var vector2D = new Vector2D();
-                vector2D.X = textureCoord.x;
-                vector2D.Y = textureCoord.y;
+                var vector2D = new Vector2D
+                {
+                    X = _textureCoord.x,
+                    Y = _textureCoord.y
+                };
                 return vector2D;
             }
         }
@@ -32,6 +35,7 @@ namespace VNCScreen
         void Awake()
         {
             _xrRayInteractor = GetComponent<XRRayInteractor>();
+            _textureCoord = new Vector2();
         }
 
         /// <summary>
@@ -55,8 +59,8 @@ namespace VNCScreen
                     raycastHit.Value.collider.TryGetComponent<VNCScreen>(out var vnc);
                     if(vnc != null)
                     {
-                        textureCoord = raycastHit.Value.textureCoord;
-                        vnc.UpdateMouse(textureCoord, _xrRayInteractor.isSelectActive);
+                        _textureCoord = raycastHit.Value.textureCoord;
+                        vnc.UpdateMouse(_textureCoord, _xrRayInteractor.isSelectActive);
                     }
                 }
             }

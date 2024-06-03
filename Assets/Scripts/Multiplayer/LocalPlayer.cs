@@ -61,8 +61,11 @@ public class LocalPlayer : MonoBehaviour
             Right = Utility.TransformToSixDofPosition(rightControllerRef.transform),
             Cursor = cursorRef.TextureCoord
         };
-        
-        // Send local player data to the server
-        SendPlayerData(playerIn);
+
+        if (playerIn != null)
+        {
+            // Send local player data to the server
+            SendPlayerData(playerIn);
+        }
     }
 }
