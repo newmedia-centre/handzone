@@ -44,6 +44,5 @@ export const dockerLogger = logger.child({ entity: 'docker', category: 'docker',
 export const robotLogger = logger.child({ entity: 'robots', category: 'robot', label: 'ROBOT' })
 export const webLogger = logger.child({ entity: 'web', category: 'web', label: 'WEB' })
 
-// fix global instancing in production // TODO
 global.logger = logger
 export default logger
