@@ -33,11 +33,8 @@ public class MultiplayerManager : MonoBehaviour
         
         SessionClient.Instance.OnUnityPlayerData += UpdateNetworkPlayers;
         SessionClient.Instance.OnUnityPendant += UpdateNetworkPendant;
-        
-        // Clear the player dictionary
-        ClearPlayers();
     }
-
+    
     private void ClearPlayers()
     {
         foreach (var player in _playerDictionary.Values)

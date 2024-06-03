@@ -21,6 +21,9 @@ public class GlobalClientLoginButton : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
+                if(loginButton == null || pinInputField == null)
+                    return;
+                
                 loginButton.interactable = false;
                 pinInputField.interactable = false;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connecting...";
@@ -31,6 +34,9 @@ public class GlobalClientLoginButton : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
+                if(loginButton == null || pinInputField == null)
+                    return;
+                
                 loginButton.interactable = true;
                 pinInputField.text = "";
                 pinInputField.interactable = false;
@@ -42,6 +48,9 @@ public class GlobalClientLoginButton : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
+                if(loginButton == null || pinInputField == null)
+                    return;
+                
                 loginButton.interactable = true;
                 pinInputField.interactable = true;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
@@ -52,6 +61,9 @@ public class GlobalClientLoginButton : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
+                if(loginButton == null || pinInputField == null)
+                    return;
+                
                 loginButton.interactable = true;
                 pinInputField.interactable = true;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";

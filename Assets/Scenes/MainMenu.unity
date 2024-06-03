@@ -14828,7 +14828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96862dd7c5ac6874ca9ad07666951c32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loginButton: {fileID: 0}
+  loginButton: {fileID: 1571945238}
   pinInputField: {fileID: 1548377152}
 --- !u!114 &1571945238
 MonoBehaviour:

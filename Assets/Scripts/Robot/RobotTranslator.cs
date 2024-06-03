@@ -12,11 +12,8 @@ public class RobotTranslator : MonoBehaviour
     
     private GameObject[] _currentTransforms;
     
-    private void Awake()
+    private void Start()
     {
-        // Keep track of the current joint angles
-        qActualJoints = new List<double>(robotPivots.Length);
-        
         if(SessionClient.Instance == null)
         {
             Debug.LogWarning("SessionClient instance is null. Make sure to have a SessionClient instance in the scene.");

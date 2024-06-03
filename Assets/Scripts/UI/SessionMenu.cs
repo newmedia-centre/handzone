@@ -16,6 +16,8 @@ public class SessionMenu : MonoBehaviour
     private Button _joinSessionButton;
     private Button _createSessionButton;
 
+    private GameObject _sessionAvailabilityGroup;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +32,9 @@ public class SessionMenu : MonoBehaviour
         
         // Subscribe to the session selected event
         OnSessionSelected += SetSelectedSession;
+        
+        // Init the session availability group
+        _sessionAvailabilityGroup = transform.Find("SessionPanel/AvailabilityGroup/AvailabilityCapacityLabel").gameObject;
         
         // Init the join session button
         transform.Find("SessionPanel/Buttons/JoinButton").TryGetComponent(out _joinSessionButton);
@@ -65,6 +70,10 @@ public class SessionMenu : MonoBehaviour
     /// <param name="receivedSessions"></param>
     private void UpdateMenu(SessionsOut receivedSessions)
     {
+        // Only update the menu if the menu is enabled
+        if(enabled == false)
+            return;
+        
         // Clear existing session buttons
         foreach (var sessionButton in _sessionButtons)
         {
@@ -78,8 +87,7 @@ public class SessionMenu : MonoBehaviour
         }
         
         // Update the session capacity label
-        var sessionAvailabilityGroup = transform.Find("SessionPanel/AvailabilityGroup").gameObject;
-        sessionAvailabilityGroup.transform.Find("AvailabilityCapacityLabel").GetComponent<TMPro.TextMeshProUGUI>().text = receivedSessions.Capacity.ToString();
+        _sessionAvailabilityGroup.GetComponent<TMPro.TextMeshProUGUI>().text = receivedSessions.Capacity.ToString();
         
         // Make create session button interactable if capacity is not full
         if (receivedSessions.Capacity > 0 && _createSessionButton)
@@ -96,7 +104,8 @@ public class SessionMenu : MonoBehaviour
         foreach (var receivedSession in receivedSessions.Sessions)
         {
             var sessionsGroup = transform.Find("SessionPanel/SessionsGroup").gameObject;
-            var sessionButton = Instantiate(sessionButtonPrefab, sessionsGroup.transform).GetComponent<SessionButton>();
+            var sessionButtonGb = Instantiate(sessionButtonPrefab, sessionsGroup.transform);
+            var sessionButton = sessionButtonGb.GetComponent<SessionButton>();
             sessionButton.GetComponent<SessionButton>().SetButton(receivedSession);
             _sessionButtons.Add(sessionButton);
             

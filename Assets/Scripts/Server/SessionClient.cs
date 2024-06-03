@@ -178,7 +178,6 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log("Received player data from server...");
                 OnUnityPlayerData?.Invoke(response.GetValue<UnityPlayersOut>());
             });
         });
