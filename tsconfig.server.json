@@ -1,12 +1,12 @@
 {
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"module": "commonjs",
+		"module": "ESNext",
 		"outDir": "dist",
 		"target": "ESNext",
-		"isolatedModules": false,
+		"isolatedModules": true,
 		"noEmit": false,
-		"moduleResolution": "node",
+		"moduleResolution": "Bundler",
 	},
 	"include": [
 		"src/types",
@@ -20,4 +20,8 @@
 	"files": [
 		"./src/server/index.ts"
 	],
+	"tsc-alias": {
+		"verbose": true,
+		"resolveFullPaths": true,
+	}
 }

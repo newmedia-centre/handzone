@@ -2,16 +2,19 @@
 import Docker from 'dockerode'
 import env from '../environment'
 import EventEmitter from 'events'
-import Semaphore from 'semaphore-async-await'
+import SemaphoreMod from 'semaphore-async-await'
 import { dockerLogger as logger } from '../logger'
 
 // import types
-import type { DockerEmitter } from './events'
+import type { DockerEmitter } from './emitter'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Semaphore = (SemaphoreMod as any)['default']
 
 export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 	docker: Docker
 	containers: Map<string, Docker.Container>
-	_semaphore: Semaphore
+	_semaphore: SemaphoreMod
 	_slotMachine: Set<number>
 
 	constructor() {

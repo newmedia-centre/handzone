@@ -6,7 +6,7 @@ import type env from '../environment'
 
 // import types
 import type { ChildProcess } from 'child_process'
-import type { VideoEmitter } from './events'
+import type { VideoEmitter } from './emitter'
 import type { Logger } from 'winston'
 
 export type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
