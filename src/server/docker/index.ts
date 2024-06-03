@@ -161,5 +161,4 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 export const docker: DockerManager = global.docker ?? new DockerManager()
 export default docker
 
-// fix global instancing in production // TODO
 global.docker = docker

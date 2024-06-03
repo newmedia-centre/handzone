@@ -57,7 +57,5 @@ export const validatePin = async (otp: string) => {
 	return data.user
 }
 
-if (env.NODE_ENV !== 'production') {
-	global.otpPins = pins
-	global.otpController = controller
-}
+global.otpPins = pins
+global.otpController = controller

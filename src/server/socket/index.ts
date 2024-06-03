@@ -179,6 +179,5 @@ export const init = () => {
 export const [io, namespaces]: [Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>, Map<string, RobotNamespace>] = [global.io ?? init(), global.namespaces ?? new Map()]
 export default io
 
-// fix global instancing in production // TODO
 global.io = io
 global.namespaces = namespaces

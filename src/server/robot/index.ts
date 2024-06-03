@@ -138,5 +138,4 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 export const robots: RobotManager = global.robots ?? new RobotManager()
 export default robots
 
-// fix global instancing in production // TODO
 global.robots = robots
