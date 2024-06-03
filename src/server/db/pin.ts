@@ -28,7 +28,7 @@ export const generatePin = async (user: User) => {
 	const secret = await new HMAC('SHA-256').generateKey()
 	const otp = await controller.generate(secret)
 	pins.set(otp, { user, secret })
-	logger.info('Generated pin for user', user.id, otp)
+	logger.info('Generated pin for user', { user: user.id, otp })
 
 	// set a timeout to delete the pin after it expires
 	setTimeout(() => { pins.delete(otp) }, 15 * 60 * 1000)
@@ -41,7 +41,7 @@ export const validatePin = async (otp: string) => {
 	// get the user and secret
 	const data = pins.get(otp)
 	if (!data) {
-		logger.info('Log in attempt without valid pin (not found)', otp, pins.keys())
+		logger.info('Log in attempt without valid pin (not found)', { otp, pins: pins.keys() })
 		throw new Error('Invalid pin (not found)')
 	}
 

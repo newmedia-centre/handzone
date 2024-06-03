@@ -51,6 +51,9 @@ services:
       - type: bind
         source: /app/config.json
         target: /app/config.json
+      - type: bind
+        source: /app/logs
+        target: /app/logs
     depends_on:
       - db
       - docker
