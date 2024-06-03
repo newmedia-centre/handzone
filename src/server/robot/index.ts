@@ -95,7 +95,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
 				return setTimeout(() => {
-					robotLogger.info(`Connection failed, retrying...`)
+					robotLogger.http(`Connection failed, retrying...`)
 					socket.connect(robot.port, robot.address)
 				}, socket.timeout || 1000)
 			}

@@ -31,7 +31,7 @@ export const logger = global.logger ?? createLogger({
 			zippedArchive: true,
 			maxSize: '20m',
 			maxFiles: '7d',
-			level: 'info',
+			level: 'http',
 		}),
 	],
 	exitOnError: false
