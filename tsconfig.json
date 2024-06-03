@@ -24,9 +24,6 @@
         "name": "next"
       }
     ],
-    "types": [
-      "react/next"
-    ],
     "paths": {
       "@/*": [
         "./src/*"
