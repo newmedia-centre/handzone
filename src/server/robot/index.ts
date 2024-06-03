@@ -1,21 +1,17 @@
 // import dependencies
 import { EventEmitter } from 'events'
-import { Socket, createServer } from 'net'
-import { spawn } from 'child_process'
-import { parseRealtimeData } from '@/server/socket/realtime'
-import { Buffer } from 'buffer'
-import { VNCProxy } from './proxy'
-import semaphore from 'semaphore'
+import { Socket } from 'net'
+import Semaphore from 'semaphore-async-await'
+import { VNCProxy } from './vnc'
 import env from '../environment'
+import { RobotConnection } from './connection'
+import { robotLogger as logger } from '../logger'
 
 // import types
-import type { Semaphore } from 'semaphore'
-import type { ChildProcess } from 'child_process'
-import type { RobotEmitter, ManagerEmitter, VideoEmitter } from './events'
+import type { ManagerEmitter } from './events'
 import type { ContainerInspectInfo } from 'dockerode'
-
-type RobotInfo = typeof env['ROBOTS'][number]
-type CameraInfo = typeof env['ROBOTS'][number]['camera'][number]
+import type { SessionType } from '@/types/Socket/Index'
+import type { RobotInfo } from './connection'
 
 /** The TCP Server for communicating with the robots */
 export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
@@ -31,7 +27,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		// initialize the class variables
 		this.connections = new Map()
 		this.vnc = new VNCProxy(this)
-		this._semaphore = semaphore(1)
+		this._semaphore = new Semaphore(1)
 
 		// try to connect to the robots
 		env.ROBOTS.forEach((robot) => {
@@ -39,66 +35,38 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		})
 	}
 
-	/** Sends an instruction to the robot */
-	async send(robot: RobotConnection, instruction: string) {
-		// send the instruction as a utf-8 buffer
-		robot.socket.write(Buffer.from(instruction, 'utf-8'))
-	}
-
-	/** sends an instruction with a callback */
-	async sendCallback(robot: RobotConnection, instruction: string) {
-		// acquire a semaphore
-		await new Promise(resolve => {
-			this._semaphore.take(1, () => resolve(true))
-		})
-
-		const promise = new Promise<Buffer>((resolve, reject) => {
-			// set timeout to 5 seconds
-			const timeout = setTimeout(() => {
-				server.close()
-				server.on('close', () => { this._semaphore.leave(1) })
-
-				reject('timeout')
-			}, 5000)
-
-			// create a tcp server receive values from the robot and listen on port 4000
-			const server = createServer(socket => {
-
-				socket.once('data', data => {
-					clearTimeout(timeout)
-					server.close()
-					server.on('close', () => { this._semaphore.leave(1) })
-					resolve(data)
-				})
-
-				socket.on('error', () => { })
-			})
-			server.maxConnections = 1
-			server.listen(4000)
-		})
-
-		// send the instruction as a utf-8 buffer
-		robot.socket.write(Buffer.from(instruction, 'utf-8'))
-
-		return promise
-	}
-
 	/** Tries to connect to an endpoint */
-	async connectVirtualRobot(container: ContainerInspectInfo) {
-		this._tryCreateRobotConnection({
-			name: container.Id,
-			address: this._parseAddress(container.NetworkSettings.Networks[env.DOCKER_NETWORK]?.IPAddress),
-			port: 30003,
-			vnc: 5900,
+	async connectVirtualRobot(container: ContainerInspectInfo, virtual: SessionType) {
+		// get the robot slot
+		const slot = container.Config.Labels['slot']
+		if (!slot) {
+			logger.error('Found container without slot label')
+			throw new Error('Found container without slot label')
+		}
+
+		const port = parseInt(`3${slot}03`)
+		const vnc = parseInt(`59${slot}`)
+
+		const info: RobotInfo = {
+			name: container.Name.split('/')[1]!,
+			address: env.DOCKER.OPTIONS.host,
+			port,
+			vnc,
 			camera: []
-		})
+		}
+
+		this._tryCreateRobotConnection(info, virtual)
+		return info
 	}
 
 	// private methods
 
 	/** Parses the given RemoteAddress into an IPv4 Address */
 	_parseAddress(address?: string) {
-		if (!address) throw new Error('Address is undefined')
+		if (!address) {
+			logger.error('Address is undefined while parsing IPv4 address')
+			throw new Error('Address is undefined while parsing IPv4 address')
+		}
 
 		if (address.includes(':')) {
 			return address.replace(/^.*:/, '')
@@ -108,18 +76,23 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	}
 
 	/** Starts the TCP Client */
-	_tryCreateRobotConnection(robot: RobotInfo) {
+	_tryCreateRobotConnection(robot: RobotInfo, virtual: SessionType | null = null) {
+		// create the logger for the robot
+		const robotLogger = logger.child({ entity: 'robot', robot, label: `ROBOT:${robot.name}` })
+
 		// create the TCP client
 		const socket = new Socket()
 		socket.setTimeout(5000)
-		console.info(`[ROBOT:${robot.address}] Connecting...`)
+		robotLogger.info(`Connecting to robot...`)
 		socket.connect(robot.port, robot.address)
+
+		let stable: NodeJS.Timeout
 
 		// retry until a connection is established
 		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
 				return setTimeout(() => {
-					console.info(`[ROBOT:${robot.address}] Retrying...`)
+					robotLogger.info(`Connection failed, retrying...`)
 					socket.connect(robot.port, robot.address)
 				}, socket.timeout || 1000)
 			}
@@ -128,136 +101,33 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 
 		// add clients when connected
 		socket.on('connect', () => {
-			const connection = new RobotConnection(socket, robot)
-			this.connections.set(robot.address, connection)
-			this.emit('join', connection, this.connections)
-			console.info(`[ROBOT:${robot.address}] Connected`)
+			const connection = new RobotConnection(socket, robot, virtual, robotLogger)
+			this.connections.set(robot.name, connection)
+			stable = setTimeout(() => {
+				this.emit('join', connection, this.connections)
+			}, 10000)
+			robotLogger.info(`Connected`)
 		})
 
 		// remove from clients when closed
 		socket.on('close', () => {
-			if (this.connections.has(robot.address)) {
-				const connection = this.connections.get(robot.address)
-				this.emit('leave', connection!, this.connections)
-				connection?.clear()
-				this.connections.delete(robot.address)
-				console.info(`[ROBOT:${robot.address}] Disconnected`)
+			const connection = this.connections.get(robot.name)
+			if (connection) {
+				// remove the connection
+				this.emit('leave', connection, this.connections)
+				connection.clear()
+				this.connections.delete(robot.name)
+
+				// try to reconnect
+				robotLogger.info(`Disconnected, retrying...`)
+				clearTimeout(stable)
+				setTimeout(() => {
+					this._tryCreateRobotConnection(robot, virtual)
+				}, 5000)
 			}
 		})
 	}
 
-}
-
-/** Listens for data from a robot over a TCP socket */
-export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
-	/** The TCP socket for reading data */
-	socket: Socket
-	vnc?: VNCProxy
-	interval?: NodeJS.Timeout
-	realtimeBuffer?: Buffer
-	video?: Set<VideoConnection>
-	info: RobotInfo
-
-	constructor(robot: Socket, info: RobotInfo) {
-		// initialize the EventEmitter
-		super()
-
-		// initialize the class variables
-		this.socket = robot
-		this.video = new Set()
-		this.info = info
-
-		// initialize the video connection if the robot has a camera
-		info.camera.forEach(camera => {
-			this.video?.add(new VideoConnection(camera))
-		})
-
-		// start the interval at 25hz which should be enough for most applications
-		this.interval = setInterval(() => this.handleRealtimeData(), 40)
-
-		// handle incoming messages
-		this.socket.on('data', (data) => {
-			// check if the data is realtime data
-			const header = this.getRealtimeHeader(data)
-
-			// check if the buffer length is the length of the realtime buffer
-			if (header) {
-				this.realtimeBuffer = data
-			} else {
-				// parse the data
-
-				// emit the message
-				this.emit('response', data)
-			}
-		})
-
-	}
-
-	clear() {
-		clearTimeout(this.interval)
-	}
-
-	async handleRealtimeData() {
-		// get the latest buffer
-		const data = this.realtimeBuffer
-		if (!data) return
-
-		// emit the raw realtime data
-		this.emit('realtime:raw', data)
-
-		// parse the realtime data
-		const parsed = await parseRealtimeData(data)
-		this.emit('realtime:parsed', parsed)
-	}
-
-	getRealtimeHeader(data: Buffer) {
-		// verify the size of the package, realtime data has a fixed size of 1220 bytes, if so, return true
-		return data.length % 1220 === 0
-	}
-}
-
-export class VideoConnection extends (EventEmitter as new () => VideoEmitter) {
-	process?: ChildProcess
-	camera: CameraInfo
-
-	constructor(camera: CameraInfo) {
-		// initialize the EventEmitter
-		super()
-
-		this.camera = camera
-
-		// initialize the ffmpeg process
-		console.log('Starting ffmpeg process...')
-		const process = spawn('ffmpeg', [
-			'-rtsp_transport', 'tcp',
-			'-i', camera.address,
-			'-f', 'image2',
-			'-update', '1',
-			'-loglevel', 'quiet',
-			'pipe:1'], {
-			stdio: ['inherit', 'pipe', 'inherit']
-		})
-
-		let buffer = Buffer.alloc(0)
-
-		// log once the process has received data
-		process.stdout.once('data', () => {
-			console.log('ffmpeg process started')
-		})
-
-		// read image frames from ffmpeg stdout and send to connected clients
-		process.stdout.on('data', (data: Buffer) => {
-			if (data.length === 8192) {
-				buffer = Buffer.concat([buffer, data])
-			} else {
-				buffer = Buffer.concat([buffer, data])
-				this.emit('frame', buffer)
-				buffer = Buffer.alloc(0)
-			}
-		})
-
-		this.process = process
-	}
 }
 
 // init tcp server

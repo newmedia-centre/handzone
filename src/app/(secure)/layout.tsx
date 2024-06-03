@@ -2,6 +2,9 @@
 import { redirect } from 'next/navigation'
 import { validateRequest } from '@/server/db/auth'
 
+// import components
+import { UserProvider } from '@/hooks/user'
+
 // export layout
 export default async function Layout({
 	children,
@@ -13,11 +16,13 @@ export default async function Layout({
 
 	// redirect to login if user is not available
 	if (!user) {
-		return redirect('/login')
+		return redirect('/about')
 	}
 
 	// show the website after securing
 	return (
-		<>{children}</>
+		<UserProvider user={user}>
+			{children}
+		</UserProvider>
 	)
 }

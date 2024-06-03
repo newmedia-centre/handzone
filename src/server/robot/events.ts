@@ -1,6 +1,6 @@
 // import types
 import type TypedEmitter from 'typed-emitter'
-import type { RobotConnection } from '.'
+import type { RobotConnection } from './connection'
 import type { RealtimeDataOut } from '@/types/Socket/Realtime'
 
 // type all the TCP events

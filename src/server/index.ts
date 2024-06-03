@@ -6,6 +6,7 @@ import { io } from './socket'
 import { docker } from './docker'
 import { robots } from './robot'
 import { env } from './environment'
+import { webLogger as logger } from './logger'
 
 // create the nextjs webserver
 const dev = env.NODE_ENV !== 'production'
@@ -28,12 +29,20 @@ next.prepare().then(() => {
 
 		// listen on port 3000
 		const instance = server.listen(env.PORT, () => {
-			console.log(`Server is running on http://localhost:${env.PORT}`)
+			logger.info(`Server is running on http://localhost:${env.PORT}`)
 
 			// start the docker manager
 			docker.requestVirtualRobot().then(robot => {
-				console.log('Virtual Robot:', robot.NetworkSettings.Networks[env.DOCKER_NETWORK]?.IPAddress)
-				robots.connectVirtualRobot(robot)
+				logger.debug('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
+				robots.connectVirtualRobot(robot, 'sandbox')
+			})
+			docker.requestVirtualRobot().then(robot => {
+				logger.debug('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
+				robots.connectVirtualRobot(robot, 'exercises')
+			})
+			docker.requestVirtualRobot().then(robot => {
+				logger.debug('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
+				robots.connectVirtualRobot(robot, 'sandbox')
 			})
 
 			// attach the socket.io server
@@ -48,7 +57,7 @@ next.prepare().then(() => {
 			})
 		})
 	} catch (e) {
-		console.error(e)
+		logger.error('Error starting server', { error: e })
 		process.exit(1)
 	}
 })

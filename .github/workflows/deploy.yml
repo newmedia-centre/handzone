@@ -73,7 +73,7 @@ jobs:
           proxy_host: ${{ secrets.SSH_PROXY_HOST }}
           proxy_username: ${{ secrets.SSH_PROXY_USER }}
           proxy_key: ${{ secrets.SSH_PROXY_KEY }}
-          source: "./docker-compose.yml,./.env,./config.json,./entrypoint.sh"
+          source: "./docker-compose.yml,./.env"
           target: "/app"
 
       - name: remote docker-compose up via ssh

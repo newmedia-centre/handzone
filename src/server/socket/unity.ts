@@ -13,19 +13,20 @@ export const handleUnityEvents = (socket: Socket<NamespaceClientToServerEvents, 
 	})
 
 	// handle the unity:position event
-	socket.on('unity:player', ({ hmd, left, right }) => {
+	socket.on('unity:player', ({ hmd, left, right, cursor }) => {
 		players.set(socket.id, {
 			id: socket.id,
 			hmd,
 			left,
 			right,
-			name: socket.data.name,
+			cursor,
+			name: socket.data.user.name ?? '',
 			color: socket.data.color
 		})
 	})
 
 	// handle the unity:pendant event
-	socket.on('unity:pendant', ({ position, rotation }) => {
-		socket.broadcast.emit('unity:pendant', { owner: socket.id, position, rotation })
+	socket.on('unity:pendant', () => {
+		socket.nsp.emit('unity:pendant', { owner: socket.id })
 	})
 }

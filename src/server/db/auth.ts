@@ -6,9 +6,13 @@ import { cookies } from 'next/headers'
 import { cache } from 'react'
 import { prisma } from '.'
 import { env } from '../environment'
+import { databaseLogger } from '../logger'
 
 // import types
 import type { User } from '@prisma/client'
+
+// create logger
+export const logger = databaseLogger.child({ entity: 'auth', label: 'DB:AUTH' })
 
 // connect auth to the database using prisma
 const adapter = new PrismaAdapter(prisma.session, prisma.user)
@@ -56,7 +60,10 @@ export const getUserInfo = async (accessToken: string) => {
 // does not verify id tokens
 export const decodeIdToken = (idToken: string) => {
 	const idTokenParts = idToken.split('.')
-	if (idTokenParts.length !== 3) throw new Error('')
+	if (idTokenParts.length !== 3) {
+		logger.error('Invalid id token')
+		throw new Error('Invalid id token')
+	}
 	const base64UrlPayload = idTokenParts[1]!
 	const payload = JSON.parse(atob(base64UrlPayload)) as {
 		aud: string
@@ -105,7 +112,9 @@ export const validateRequest = cache(
 				const sessionCookie = lucia.createBlankSessionCookie()
 				cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
 			}
-		} catch { }
+		} catch {
+			logger.warn('Failed to set session cookie')
+		}
 		return {
 			user: result.user as User,
 			session: result.session

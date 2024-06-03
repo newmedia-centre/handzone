@@ -4,9 +4,7 @@ import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, Inte
 
 export const handleGrasshopperEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>) => {
 	// handle the grasshopper:program event
-	socket.on('grasshopper:program', (json) => {
-
-		// send the json payload to the TCP server
-		socket.broadcast.emit('grasshopper:program', (json))
+	socket.on('grasshopper:program', (data) => {
+		socket.data.robot.send(data.program + '\n')
 	})
 }

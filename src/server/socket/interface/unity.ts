@@ -2,7 +2,6 @@
 import type {
 	UnityMessageIn,
 	UnityMessageOut,
-	UnityPendantIn,
 	UnityPendantOut,
 	UnityPlayerIn,
 	UnityPlayersOut
@@ -11,7 +10,7 @@ import type {
 export interface UnityClientToServer {
 	'unity:message': (payload: UnityMessageIn) => void
 	'unity:player': (payload: UnityPlayerIn) => void
-	'unity:pendant': (payload: UnityPendantIn) => void
+	'unity:pendant': () => void
 }
 
 export interface UnityServerToClient {

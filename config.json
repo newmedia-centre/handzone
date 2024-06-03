@@ -1,9 +1,9 @@
 {
 	"ROBOTS": [
 		{
-			"name": "Robot 1",
+			"name": "robot-1",
 			"port": 30003,
-			"vnc": 5901,
+			"vnc": 5999,
 			"address": "172.19.14.251",
 			"camera": [
 				{
@@ -15,9 +15,10 @@
 	],
 	"DOCKER": {
 		"OPTIONS": {
-			"host": "docker",
+			"host": "172.19.14.251",
 			"port": 2375
-		}
+		},
+		"MAX_VIRTUAL": 5
 	},
 	"OAUTH": {
 		"name": "SURFconext",
