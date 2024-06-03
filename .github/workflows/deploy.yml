@@ -64,6 +64,7 @@ jobs:
           echo "OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}" >> .env
 
           echo "CONFIG_PATH=/app/config.json" >> .env
+          echo "LOGS_PATH=/app/logs/" >> .env
 
       - name: copy files to target server via scp
         uses: appleboy/scp-action@v0.1.3
