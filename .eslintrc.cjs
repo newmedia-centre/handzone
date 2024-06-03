@@ -7,7 +7,7 @@ module.exports = {
 	parserOptions: {
 		ecmaVersion: 'latest', sourceType: 'module', project: ['./tsconfig.json']
 	},
-	ignorePatterns: ['*.config.js', '*.config.ts', 'schema/generate.ts'],
+	ignorePatterns: ['*.config.js', '*.config.cjs', '*.config.ts', 'schema/generate.ts'],
 	plugins: ['react', '@typescript-eslint', 'node', '@stylistic'],
 	settings: {
 		react: {

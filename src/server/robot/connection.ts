@@ -7,7 +7,7 @@ import { VideoConnection } from './video'
 import { robots } from '.'
 
 // import types
-import type { RobotEmitter } from './events'
+import type { RobotEmitter } from './emitter'
 import type { SessionType } from '@/types/Socket/Index'
 import type { VNCProxy } from './vnc'
 import type { Socket } from 'net'

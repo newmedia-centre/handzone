@@ -1,24 +1,27 @@
 // import dependencies
 import { EventEmitter } from 'events'
 import { Socket } from 'net'
-import Semaphore from 'semaphore-async-await'
+import SemaphoreMod from 'semaphore-async-await'
 import { VNCProxy } from './vnc'
 import env from '../environment'
 import { RobotConnection } from './connection'
 import { robotLogger as logger } from '../logger'
 
 // import types
-import type { ManagerEmitter } from './events'
+import type { ManagerEmitter } from './emitter'
 import type { ContainerInspectInfo } from 'dockerode'
 import type { SessionType } from '@/types/Socket/Index'
 import type { RobotInfo } from './connection'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Semaphore = (SemaphoreMod as any)['default']
 
 /** The TCP Server for communicating with the robots */
 export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 	/** The TCP Sockets for sending messages through the TCP Server */
 	connections: Map<string, RobotConnection>
 	vnc: VNCProxy
-	_semaphore: Semaphore
+	_semaphore: SemaphoreMod
 
 	constructor() {
 		// initialize the EventEmitter
