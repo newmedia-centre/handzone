@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Schema.Socket.Unity;
+using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
 namespace VNCScreen
@@ -7,9 +8,22 @@ namespace VNCScreen
     /// Represents a component that acts as a mouse cursor to the VncScreen using the XRTK interactor.
     /// This component should be attached to a small sphere or any other object.
     /// </summary>
+    
     public class VNCXRRaycaster : MonoBehaviour
     {
+        
+        private Vector2 textureCoord;  
         private XRRayInteractor _xrRayInteractor;
+        public Vector2D TextureCoord
+        {
+            get
+            {
+                var vector2D = new Vector2D();
+                vector2D.X = textureCoord.x;
+                vector2D.Y = textureCoord.y;
+                return vector2D;
+            }
+        }
 
         /// <summary>
         /// The Awake method is called when the script instance is being loaded.
@@ -27,9 +41,13 @@ namespace VNCScreen
         /// </summary>
         void Update()
         {
-            if (_xrRayInteractor == null)
+            if (_xrRayInteractor == null || SessionClient.Instance == null)
                 return;
-
+            
+            // Check if user has permission to control the robot
+            if(SessionClient.Instance.PendantOwner != SessionClient.Instance.ClientId)
+                return;
+            
             if (_xrRayInteractor.TryGetCurrentRaycast(out var raycastHit, out _, out _, out _, out _))
             {
                 if (raycastHit != null)
@@ -37,11 +55,8 @@ namespace VNCScreen
                     raycastHit.Value.collider.TryGetComponent<VNCScreen>(out var vnc);
                     if(vnc != null)
                     {
-                        var textureCoord = raycastHit.Value.textureCoord;
+                        textureCoord = raycastHit.Value.textureCoord;
                         vnc.UpdateMouse(textureCoord, _xrRayInteractor.isSelectActive);
-                        
-                        // TODO: Change pendent payload to accept Vector2 & bool
-                        // SessionClient.Instance.SendPendantData(textureCoord, _xrRayInteractor.isSelectActive);
                     }
                 }
             }

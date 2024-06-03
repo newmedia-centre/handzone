@@ -32,7 +32,6 @@ public class MultiplayerManager : MonoBehaviour
         }
         
         SessionClient.Instance.OnUnityPlayerData += UpdateNetworkPlayers;
-        SessionClient.Instance.OnUnityPendant += UpdateNetworkPendant;
     }
     
     private void ClearPlayers()
@@ -47,14 +46,8 @@ public class MultiplayerManager : MonoBehaviour
     private void OnDestroy()
     {
         SessionClient.Instance.OnUnityPlayerData -= UpdateNetworkPlayers;
-        SessionClient.Instance.OnUnityPendant -= UpdateNetworkPendant;
         
         ClearPlayers();
-    }
-
-    private void UpdateNetworkPendant(UnityPendantOut incomingPendantData)
-    {
-        
     }
     
     private void UpdateNetworkPlayers(UnityPlayersOut incomingPlayersData)

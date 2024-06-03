@@ -1573,6 +1573,7 @@ MonoBehaviour:
   hmdRef: {fileID: 620860026}
   leftControllerRef: {fileID: 620860033}
   rightControllerRef: {fileID: 620860032}
+  cursorRef: {fileID: 2116344456}
 --- !u!224 &642670259 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4051750483564722589, guid: b470a71241fdca0418d6ce7c1eea092f,
@@ -7207,6 +7208,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1431351506}
     m_Modifications:
+    - target: {fileID: 1335575827152178418, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.0001
+      objectReference: {fileID: 0}
     - target: {fileID: 2626309022048445929, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
         type: 3}
       propertyPath: m_Mesh

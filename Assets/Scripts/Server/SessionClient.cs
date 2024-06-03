@@ -21,9 +21,11 @@ public class SessionClient : MonoBehaviour
     private Texture2D _cameraFeedTexture;
     private bool _digitalOutput;
     private RobotSession _currentRobotSession;
+    private UnityPendantOut _pendantData;
 
     public MemoryStream vncStream { get; private set; }
     public string ClientId => _client?.Id;
+    public string PendantOwner => _pendantData?.Owner;
 
     public event Action<RealtimeDataOut> OnRealtimeData;
     public event Action<Texture2D> OnCameraFeed;

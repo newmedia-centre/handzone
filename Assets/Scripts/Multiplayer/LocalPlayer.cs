@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using Schema.Socket.Unity;
 using UnityEngine;
-using UnityEngine.Serialization;
+using VNCScreen;
 
 public class LocalPlayer : MonoBehaviour
 {
     public Transform hmdRef;
     public Transform leftControllerRef;
     public Transform rightControllerRef;
+    public VNCXRRaycaster cursorRef;
     
     public static LocalPlayer Instance { get; private set; }
     
@@ -59,7 +58,8 @@ public class LocalPlayer : MonoBehaviour
         {
             Hmd = Utility.TransformToSixDofPosition(hmdRef.transform),
             Left = Utility.TransformToSixDofPosition(leftControllerRef.transform),
-            Right = Utility.TransformToSixDofPosition(rightControllerRef.transform)
+            Right = Utility.TransformToSixDofPosition(rightControllerRef.transform),
+            Cursor = cursorRef.TextureCoord
         };
         
         // Send local player data to the server
