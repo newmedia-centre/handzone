@@ -21,7 +21,7 @@ export const logger = global.logger ?? createLogger({
 				})
 			),
 		}),
-		new transports.File({
+		new transports.Stream({
 			stream: fs.createWriteStream(`${env.LOGS_PATH}/errors.log`, { flags: 'a' }),
 			level: 'error'
 		}),
