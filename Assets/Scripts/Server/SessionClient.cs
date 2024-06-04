@@ -59,7 +59,12 @@ public class SessionClient : MonoBehaviour
         });
         
         // Setup the JSON serializer to handle object references
-        _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings());
+        _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+        {
+            PreserveReferencesHandling = PreserveReferencesHandling.None,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore
+        });
         
         if (Instance == null)
         {

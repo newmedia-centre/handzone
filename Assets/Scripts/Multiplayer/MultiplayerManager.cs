@@ -10,6 +10,7 @@ public class MultiplayerManager : MonoBehaviour
     public GameObject playerCursorPrefab;
     
     private Dictionary<string, NetworkPlayer> _playerDictionary = new();
+    private UnityPlayersOut _previousPlayersData;
 
     private void Awake()
     {
@@ -53,21 +54,19 @@ public class MultiplayerManager : MonoBehaviour
     
     private void UpdateNetworkPlayers(UnityPlayersOut incomingPlayersData)
     {
-        // Remove players that are not in the incoming data
-        HashSet<string> playerIds = new HashSet<string>(incomingPlayersData.Players.Select(x => x.Id));
+        // Find players that are not in the incoming data
+        var playerIds = new HashSet<string>(incomingPlayersData.Players.Select(x => x.Id));
         
         // Also filter out the local player from the dictionary
         playerIds.Remove(SessionClient.Instance.ClientId);
         
-        foreach (var player in _playerDictionary.Values)
+        // Compare the current player dictionary with the incoming player data and remove players that are not in the incoming data
+        var playersToRemove = _playerDictionary.Values.Where(x => !playerIds.Contains(x.Id)).ToList();
+        foreach (var player in playersToRemove)
         {
-            if (!playerIds.Contains(player.Id))
-            {
-                RemovePlayer(player);
-                _playerDictionary.Remove(player.Id);
-            }
+            RemovePlayer(player);
         }
-
+        
         // Update existing players and add new players when necessary
         foreach (var incomingPlayerData in incomingPlayersData.Players)
         {
