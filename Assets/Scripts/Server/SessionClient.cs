@@ -43,6 +43,13 @@ public class SessionClient : MonoBehaviour
     
     private void Awake()
     {
+        if (GlobalClient.Instance == null)
+        {
+            Debug.LogWarning("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene. " +
+                             "SessionClient will not be created ");
+            return;
+        }
+
         url = GlobalClient.Instance.url + GlobalClient.Instance.Session?.Robot.Name;
         
         // Create a new Socket.IO client with an authentication token from the global client
@@ -52,10 +59,7 @@ public class SessionClient : MonoBehaviour
         });
         
         // Setup the JSON serializer to handle object references
-        _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
-        {
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        });
+        _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings());
         
         if (Instance == null)
         {
@@ -181,7 +185,10 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                OnUnityPlayerData?.Invoke(response.GetValue<UnityPlayersOut>());
+                UnityPlayersOut players = response.GetValue<UnityPlayersOut>();
+                if(players == null) return;
+                
+                OnUnityPlayerData?.Invoke(players);
             });
         });
 
@@ -275,7 +282,7 @@ public class SessionClient : MonoBehaviour
     
     public void SendUnityPlayerIn(UnityPlayerIn unityPlayer)
     {
-        _client.EmitAsync("unity:players", unityPlayer);
+        _client.EmitAsync("unity:player", unityPlayer);
     }
     
     public void SendUnityPendant(Vector6D message)

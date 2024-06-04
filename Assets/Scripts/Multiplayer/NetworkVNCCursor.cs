@@ -1,30 +1,19 @@
 using Schema.Socket.Unity;
+using TMPro;
 using UnityEngine;
 
 public class NetworkVNCCursor : MonoBehaviour
 {
-    void Start()
-    {
-        SessionClient.Instance.OnUnityPendant += UpdateVNCCursor;
-    }
-
-    private void UpdateVNCCursor(UnityPendantOut pendantOut)
-    {
-        // Check if the pendant data is from this client
-        if(pendantOut.Owner == SessionClient.Instance.ClientId)
-        {
-            return;
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField] private Renderer coloredCursor;
+    [SerializeField] private TMP_Text playerName;
     
-    private void OnDestroy()
+    public Color Color
+    { 
+        set => coloredCursor.material.color = value;
+    }
+
+    public string PlayerNameLabel
     {
-        SessionClient.Instance.OnUnityPendant -= UpdateVNCCursor;
+        set => playerName.SetText(value);
     }
 }

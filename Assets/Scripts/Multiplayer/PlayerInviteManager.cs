@@ -17,17 +17,19 @@ public class PlayerInviteManager : MonoBehaviour
         if(playerInvitesAnchor == null)
             Debug.LogWarning("Player invites anchor is not set, invites will not be parented.");
         
-        SessionClient.Instance.OnPlayerInvitation += InstanceOnOnPlayerInvitation;
+        if(SessionClient.Instance == null)
+        {
+            Debug.LogWarning("SessionClient instance is null. Make sure to have a SessionClient instance in the scene.");
+            return;
+        }
+        
+        SessionClient.Instance.OnPlayerInvitation += CreatePlayerInvitation;
     }
 
-    private void InstanceOnOnPlayerInvitation(string playerId)
+    private void CreatePlayerInvitation(string playerId)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        var go = Instantiate(playerInvitePrefab, playerInvitesAnchor);
+        go.GetComponent<PlayerInvite>().playerNameText.text = playerId;
+        playerInvites.Add(go);
     }
 }

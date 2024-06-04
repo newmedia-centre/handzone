@@ -7,6 +7,7 @@ public class MultiplayerManager : MonoBehaviour
 {
     public static MultiplayerManager Instance { get; private set; }
     public GameObject networkPlayerPrefab;
+    public GameObject playerCursorPrefab;
     
     private Dictionary<string, NetworkPlayer> _playerDictionary = new();
 
@@ -55,11 +56,8 @@ public class MultiplayerManager : MonoBehaviour
         // Remove players that are not in the incoming data
         HashSet<string> playerIds = new HashSet<string>(incomingPlayersData.Players.Select(x => x.Id));
         
-        // Also filter the local player from the dictionary
-        if(incomingPlayersData.Players.All(x => x.Id != SessionClient.Instance.ClientId))
-        {
-            playerIds.Add(SessionClient.Instance.ClientId);
-        }
+        // Also filter out the local player from the dictionary
+        playerIds.Remove(SessionClient.Instance.ClientId);
         
         foreach (var player in _playerDictionary.Values)
         {
@@ -88,6 +86,7 @@ public class MultiplayerManager : MonoBehaviour
     {
         if (!_playerDictionary.ContainsKey(playerData.Id))
         {
+            // Create a new player instance
             NetworkPlayer newPlayer = Instantiate(networkPlayerPrefab).GetComponent<NetworkPlayer>();
             newPlayer.Id = playerData.Id;
             newPlayer.SetNameCard(playerData.Name);
@@ -95,7 +94,9 @@ public class MultiplayerManager : MonoBehaviour
             _playerDictionary.Add(newPlayer.Id, newPlayer);
             
             // Create cursor for the player
-            
+            NetworkVNCCursor cursor = Instantiate(playerCursorPrefab, newPlayer.transform).GetComponent<NetworkVNCCursor>();
+            cursor.Color = newPlayer.color;
+            cursor.PlayerNameLabel = playerData.Name;
         }
         else
         {

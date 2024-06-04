@@ -2774,6 +2774,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkPlayerPrefab: {fileID: 3367445790290403257, guid: 89812722be5016f489df95e1e6c688d4,
     type: 3}
+  playerCursorPrefab: {fileID: 3638110740886910129, guid: 16b438c47006fc84e8a0359416d3d882,
+    type: 3}
 --- !u!4 &976970257
 Transform:
   m_ObjectHideFlags: 0

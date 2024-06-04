@@ -14,8 +14,15 @@ public class PermissionRequestButton : MonoBehaviour
             Debug.LogWarning("SessionClient instance is null. Make sure to have a SessionClient instance in the scene.");
             return;
         }
-        
-        _button.onClick.AddListener(RequestPermission);
+
+        if (TryGetComponent(out _button)) 
+        {
+            _button.onClick.AddListener(RequestPermission);
+        }
+        else
+        {
+            Debug.LogWarning("Button component not found.");
+        }
     }
 
     private void RequestPermission()
