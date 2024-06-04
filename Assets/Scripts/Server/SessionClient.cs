@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
+using Schema.Socket.Index;
 using UnityEngine;
 using Schema.Socket.Realtime;
 using Schema.Socket.Unity;
@@ -12,7 +12,7 @@ using SocketIO.Serializer.NewtonsoftJson;
 using Schema.Socket.Internals;
 using SocketIOClient;
 
-public class RobotClient : MonoBehaviour
+public class SessionClient : MonoBehaviour
 {
     [HideInInspector] public string url;
 
@@ -20,30 +20,43 @@ public class RobotClient : MonoBehaviour
     private Queue<RealtimeDataOut> _dataQueue;
     private Texture2D _cameraFeedTexture;
     private bool _digitalOutput;
-    
-    public bool vncConnected { get; private set; }
+    private RobotSession _currentRobotSession;
+    private UnityPendantOut _pendantData;
 
     public MemoryStream vncStream { get; private set; }
-    public Semaphore vncLock = new(1, 1);
+    public string ClientId => _client?.Id;
+    public string PendantOwner => _pendantData?.Owner;
+    public bool IsConnected => _client.Connected;
     
-    public static event Action<RealtimeDataOut> OnRealtimeData;
-    public static event Action<Texture2D> OnCameraFeed;
-    public static event Action<bool> OnDigitalOutputChanged;
-    public static event Action<string> OnUnityMessage;
-    public static event Action<PlayerData> OnUnityPlayerData;
-    public static event Action<UnityPendantIn> OnUnityPendant;
-    public static event Action<InternalsGetInverseKinCallback> OnKinematicCallback;
-
+    public event Action<RealtimeDataOut> OnRealtimeData;
+    public event Action<Texture2D> OnCameraFeed;
+    public event Action<bool> OnDigitalOutputChanged;
+    public event Action<string> OnUnityMessage;
+    public event Action<UnityPlayersOut> OnUnityPlayerData;
+    public event Action<UnityPendantOut> OnUnityPendant;
+    public event Action<InternalsGetInverseKinCallback> OnKinematicCallback;
+    public event Action<string> OnPlayerInvitation;
     public event Action OnConnected;
     public event Action OnDisconnected;
-    public event Action OnSessionJoin;
-    public event Action OnSessionJoined;
-    public event Action OnSessionLeft;
 
-    public static RobotClient Instance { get; private set; }
+    public static SessionClient Instance { get; private set; }
     
     private void Awake()
     {
+        url = GlobalClient.Instance.url + GlobalClient.Instance.Session?.Robot.Name;
+        
+        // Create a new Socket.IO client with an authentication token from the global client
+        _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
+        {
+            Auth = new { token = GlobalClient.Instance.Session?.Token }
+        });
+        
+        // Setup the JSON serializer to handle object references
+        _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+        {
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects
+        });
+        
         if (Instance == null)
         {
             Instance = this;
@@ -59,23 +72,23 @@ public class RobotClient : MonoBehaviour
         _cameraFeedTexture = new Texture2D(2, 2);
         vncStream = new MemoryStream();
         _dataQueue = new Queue<RealtimeDataOut>();
-
-        if (GlobalClient.Instance?.Session != null)
-            url = GlobalClient.Instance.url + GlobalClient.Instance.Session.Robot.Name;
         
-        _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
+        if (GlobalClient.Instance == null)
         {
-            Auth = new { token = GlobalClient.Instance?.Session?.Token }
-        });
-        var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
-        {
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        });
-        _client.Serializer = jsonSerializer;
+            Debug.LogError("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene.");
+            return;
+        }
 
+        if (GlobalClient.Instance.Session == null)
+        {
+            Debug.LogError("No session is currently active. Make sure to have an active session.");
+            return;
+        }
+
+        // Attempt to connect to the session
         try
         {
-            await TryConnectToWebServer();
+            await TryConnectToSession();
         }
         catch (Exception ex)
         {
@@ -94,24 +107,24 @@ public class RobotClient : MonoBehaviour
         }
     }
 
-    public async Task TryConnectToWebServer()
+    public async Task TryConnectToSession()
     {
 
         // Register general events for the web client, such as connection, disconnection, and errors
 
         #region General connection events
 
-        Debug.Log("Connecting to web server...");
+        Debug.Log("Connecting to session...");
 
         _client.OnConnected += (sender, args) =>
         {
-            Debug.Log("Connected to server");
+            Debug.Log("Connected to session");
             OnConnected?.Invoke();
         };
 
         _client.OnDisconnected += (sender, s) =>
         {
-            Debug.Log("Disconnected from server");
+            Debug.Log("Disconnected from session");
             OnDisconnected?.Invoke();
         };
 
@@ -130,39 +143,7 @@ public class RobotClient : MonoBehaviour
                 OnCameraFeed?.Invoke(_cameraFeedTexture);
             });
         });
-        
-        // Register event for the web client that are specific to the VNC connection
-        _client.On("vnc", response =>
-        {
-            var base64 = response.GetValue<string>();
-            // Debug.Log("vnc event: " + Convert.FromBase64String(base64).Length);
 
-            vncLock.WaitOne();
-            Debug.Log("Writing to stream");
-            vncStream.SetLength(Convert.FromBase64String(base64).Length);
-            vncStream.Position = 0;
-            vncStream.Write(Convert.FromBase64String(base64));
-            vncStream.Flush();
-            vncStream.Position = 0;
-            vncLock.Release();
-        });
-        
-        // Register event for the web client that are specific to the VNC ServerInit
-        _client.On("vnc:init", response =>
-        {
-            var base64 = response.GetValue<string>();
-            // Debug.Log("vnc:init event: " + Convert.FromBase64String(base64).Length);
-            
-            vncLock.WaitOne();
-            Debug.Log("Writing to stream");
-            vncConnected = true;
-            vncStream.SetLength(Convert.FromBase64String(base64).Length);
-            vncStream.Position = 0;
-            vncStream.Write(Convert.FromBase64String(base64));
-            vncStream.Flush();
-            vncStream.Position = 0;
-            vncLock.Release();
-        });
         // Register events for the web client that are specific to Grasshopper
 
         # region Grasshopper events
@@ -177,7 +158,6 @@ public class RobotClient : MonoBehaviour
             RealtimeDataOut data = response.GetValue<RealtimeDataOut>();
             if (data == null) return;
 
-            Debug.Log(data.QActual[0]);
             _dataQueue.Enqueue(data);
         });
 
@@ -187,43 +167,44 @@ public class RobotClient : MonoBehaviour
 
         #region Unity events
 
+        // Events whenever a session is joined, client receives player data and pendant data
         _client.On("unity:message", response =>
         {
-
-            Debug.Log("Hello from Web server! " +  response.GetValue<string>());
-            OnUnityMessage?.Invoke(response.GetValue<string>());
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("Hello from Web server! " +  response.GetValue<string>());
+                OnUnityMessage?.Invoke(response.GetValue<string>());
+            });
         });
         
-        _client.On("unity:player", response =>
+        _client.On("unity:players", response =>
         {
-            OnUnityPlayerData?.Invoke(response.GetValue<PlayerData>());
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                OnUnityPlayerData?.Invoke(response.GetValue<UnityPlayersOut>());
+            });
+        });
+
+        _client.On("unity:invite", response =>
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("Received invitation from server...");
+                OnPlayerInvitation?.Invoke(response.GetValue<string>());
+            });
         });
         
         _client.On("unity:pendant", response =>
         {
-            OnUnityPendant?.Invoke(response.GetValue<UnityPendantIn>());
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("received pendant data from server...");
+                OnUnityPendant?.Invoke(response.GetValue<UnityPendantOut>());
+            });
         });
         #endregion
 
         await _client.ConnectAsync();
-    }
-    
-    public bool IsVncStreamAtEnd()
-    {
-        return vncStream.Position >= vncStream.Length;
-    }
-
-    public async Task JoinSession(string id)
-    {
-        OnSessionJoin?.Invoke();
-        await _client.EmitAsync("join", new { room = id });
-        OnSessionJoined?.Invoke();
-    }
-
-    public async Task LeaveSession(string id)
-    {
-        await _client.EmitAsync("leave", new { room = id });
-        OnSessionLeft?.Invoke();
     }
 
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)
@@ -235,21 +216,6 @@ public class RobotClient : MonoBehaviour
         }, data);
     }
     
-    public void WriteVNC(byte[] data)
-    {
-        _client.EmitAsync("vnc", Convert.ToBase64String(data));
-    }
-
-    public void WriteVNC(byte data)
-    {
-        _client.EmitAsync("vnc", Convert.ToBase64String(new byte[] { data }));
-    }
-
-    public void WriteVNCPixelFormat(byte[] data)
-    {
-        _client.EmitAsync("vnc:pixelformat", Convert.ToBase64String(data));
-    }
-
     public void Speedl(Vector3 translateDirection, Vector3 rotateAxis, float a, float t)
     {
         double[] xd =
@@ -302,9 +268,9 @@ public class RobotClient : MonoBehaviour
         _client.EmitAsync("unity:message", data);
     }
     
-    public void SendUnityPosition(UnityPlayerIn unityPlayer)
+    public void SendUnityPlayerIn(UnityPlayerIn unityPlayer)
     {
-        _client.EmitAsync("unity:player", unityPlayer);
+        _client.EmitAsync("unity:players", unityPlayer);
     }
     
     public void SendUnityPendant(Vector6D message)

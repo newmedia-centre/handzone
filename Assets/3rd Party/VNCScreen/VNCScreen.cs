@@ -63,6 +63,7 @@ namespace VNCScreen
         public string password;
         public Material disconnectedScreen;
         public Material connectedMaterial;
+        public Vector2 mousePosition;
 
         private Size _screenSize;
         private bool _passwordPending = false;            // After Connect() is called, a password might be required.
@@ -81,6 +82,10 @@ namespace VNCScreen
 
             setDisconnectedMaterial();
 
+            SessionClient.Instance.OnConnected += () =>
+            {
+                Connect();
+            };
             Connect();
         }
 
@@ -145,9 +150,9 @@ namespace VNCScreen
         public void Connect()
         {
             // Ignore attempts to use invalid port numbers
-            if (port < 1 | port > 65535) port = 5900;
+            if (this.port < 1 | this.port > 65535) this.port = 5900;
             if (display < 0) display = 0;
-            if (host == null) throw new ArgumentNullException("host");
+            if (this.host == null) throw new ArgumentNullException("host");
 
             StartCoroutine(Connection());
         }
@@ -434,6 +439,9 @@ namespace VNCScreen
 
         public void UpdateMouse(Point pos, bool button0, bool button1, bool button2)
         {
+            if (!IsConnected) return;
+            
+            mousePosition = new Vector2(pos.X, pos.Y);
             vnc.UpdateMouse(pos, button0, button1, button2);
         }
 

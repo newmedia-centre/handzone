@@ -2,7 +2,6 @@ using Schema.Socket.Internals;
 using Schema.Socket.Realtime;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class RobotTranslator : MonoBehaviour
@@ -13,13 +12,15 @@ public class RobotTranslator : MonoBehaviour
     
     private GameObject[] _currentTransforms;
     
-    private void Awake()
+    private void Start()
     {
-        // Keep track of the current joint angles
-        qActualJoints = new List<double>(robotPivots.Length);
-        
-        RobotClient.OnRealtimeData += UpdateJointsFromPolyscope;
-        RobotClient.OnKinematicCallback += UpdateJointsFromGrabbing;
+        if(SessionClient.Instance == null)
+        {
+            Debug.LogWarning("SessionClient instance is null. Make sure to have a SessionClient instance in the scene.");
+            return;
+        }
+        SessionClient.Instance.OnRealtimeData += UpdateJointsFromPolyscope;
+        SessionClient.Instance.OnKinematicCallback += UpdateJointsFromGrabbing;
     }
     
     void SetCurrentJoint(int index, float angle)
@@ -42,7 +43,7 @@ public class RobotTranslator : MonoBehaviour
         data.MaxPositionError = 0.001;
         data.X = target;
 
-        RobotClient.Instance.SendInverseKinematicsRequest(data, function);
+        SessionClient.Instance.SendInverseKinematicsRequest(data, function);
     }
 
     public void UpdateJointsFromPolyscope(RealtimeDataOut data)

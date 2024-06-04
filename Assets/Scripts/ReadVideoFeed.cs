@@ -14,7 +14,7 @@ public class ReadVideoFeed : MonoBehaviour
 
         if (_meshRenderer != null)
         {
-            RobotClient.OnCameraFeed += LoadVideoFeed;
+            SessionClient.Instance.OnCameraFeed += LoadVideoFeed;
         }
         else
         {

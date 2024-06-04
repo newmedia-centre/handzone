@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ public class GlobalClient : MonoBehaviour
     /// <summary>
     /// Latest robot data received from the server.
     /// </summary>
-    public RobotsOut Robots { get; private set; }
+    public SessionsOut Sessions { get; private set; }
 
     private SocketIOClient.SocketIO _client;
 
@@ -39,13 +40,11 @@ public class GlobalClient : MonoBehaviour
     public event Action OnConnected;
     public event Action OnDisconnected;
     public event Action<string> OnError;
-    public event Action OnSessionJoin;
-    public event Action OnSessionJoined;
-    public event Action OnSessionLeft;
     
     // Data reception events
-    public event Action<RobotsOut> OnRobotsReceived;
-    public event Action<JoinSessionOut> OnSessionReceived;
+    public event Action<SessionsOut> OnSessionsReceived;
+    public event Action<string> OnSessionJoin;
+    public event Action<JoinSessionOut> OnSessionJoined;
     
     /// <summary>
     /// Ensures that only one instance of GlobalClient exists within the application.
@@ -68,99 +67,134 @@ public class GlobalClient : MonoBehaviour
     /// Registers connection, disconnection, and error handling events.
     /// </summary>
     /// <param name="pin">The PIN used for secure connection.</param>
-    public async Task TryConnectToWebServer(String pin)
+    public async Task TryConnectToGlobalServer(String pin)
     {
         _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
         {
             Auth = new{pin}
         });
         
-        var jsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+        _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
         });
         
-        _client.Serializer = jsonSerializer;
         Debug.Log("Connecting to global server...");
         OnConnecting?.Invoke();
 
         _client.OnConnected += (sender, args) =>
         {
-            Debug.Log("Connected to server");
-            OnConnected?.Invoke();
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("Connected to global server");
+                OnConnected?.Invoke();
+            });
         };
 
         _client.OnDisconnected += (sender, s) =>
         {
-            Debug.Log("Disconnected from server");
-            OnDisconnected?.Invoke();
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("Disconnected from global server");
+                OnDisconnected?.Invoke();
+            });
         };
 
         _client.OnError += (sender, s) =>
         {
-            Debug.Log($@"Received error from server: {s}");
-            OnError?.Invoke(s);
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log($@"Received error from global server: {s}");
+                OnError?.Invoke(s);
+            });
         };
 
-        _client.On("robots", response =>
+        _client.On("sessions", response =>
         {
-            var robots = response.GetValue<RobotsOut>();
-            if (robots == null) return;
-            
-            OnRobotsReceived?.Invoke(robots);
-            Debug.Log($"Received robots: {robots.Real?.Address}");
-            Debug.Log("Received robots sessions: " + robots.Sessions.Count);
-        });
-
-        _client.On("session", response =>
-        {
-            // Handle session data reception here
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                var sessions = response.GetValue<SessionsOut>();
+                if (sessions == null)
+                {
+                    Debug.LogError("Could not parse sessions.");
+                    return;
+                }
+                
+                Sessions = sessions;
+                OnSessionsReceived?.Invoke(sessions);
+                Debug.Log("Sessions received: " + sessions.Sessions.Count);
+            });
         });
         
         await _client.ConnectAsync();
     }
-    
-    /// <summary>
-    /// Joins a session with the specified ID.
-    /// </summary>
-    /// <param name="id">The session ID to join.</param>
-    public async Task JoinSession(string id)
-    {
-        OnSessionJoin?.Invoke();
-        await _client.EmitAsync("join", new { room = id });
-        OnSessionJoined?.Invoke();
-    }
 
+    /// <summary>
+    /// Requests a virtual robot session from the server and join it.
+    /// </summary>
     public void RequestVirtual()
     {
         _client.EmitAsync("virtual", response =>
         {
             var success = response.GetValue<bool>(0);
-            Debug.Log(success);
             if (success)
             {
                 Session = response.GetValue<JoinSessionOut>(1);
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
-                    SceneManager.LoadScene("Scenes/UR Robot Scene");   
-                    OnSessionReceived?.Invoke(Session);
+                    StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
+                    OnSessionJoined?.Invoke(Session);
+                    Debug.Log("Virtual session created and joined." + Session.Robot.Name);
                 });           
             }
             else
             {
-                Debug.LogError("Could not join session.");
+                Debug.LogWarning("Could not join session.");
             }
-        });
+        }, "sandbox");
     }
     
     /// <summary>
-    /// Leaves a session with the specified ID.
+    /// Join a session with the provided session address.
     /// </summary>
-    /// <param name="id">The session ID to leave.</param>
-    public async Task LeaveSession(string id)
+    /// <param name="sessionAddress"></param>
+    public void JoinSession(string sessionAddress)
     {
-        await _client.EmitAsync("leave", new { room = id });
-        OnSessionLeft?.Invoke();
+        OnSessionJoin?.Invoke(sessionAddress);
+        _client.EmitAsync("join", response =>
+        {
+            var success = response.GetValue<bool>(0);
+            if (success)
+            {
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    Session = response.GetValue<JoinSessionOut>(1);
+                    StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
+                    OnSessionJoined?.Invoke(Session);
+                });
+            }
+            else
+            {
+                Debug.LogWarning("Could not join session.");
+            }
+        }, sessionAddress);
+    }
+    
+    /// <summary>
+    /// Loads a scene asynchronously.
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <returns></returns>
+    private IEnumerator LoadSceneCoroutine(string sceneName)
+    {
+        // Start loading the scene
+        var asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+        
+        // Wait until the scene is fully loaded
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 
     /// <summary>

@@ -133,7 +133,7 @@ namespace UnityVncSharp.Encodings
 	            SslStream sslStream = new SslStream(
 		            tcp.GetStream(),
 		            false,
-		            new RemoteCertificateValidationCallback (ValidateServerCertificate),
+		            ValidateServerCertificate,
 		            null
 	            );
 	            // The server name must match the name on the server certificate.
