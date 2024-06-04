@@ -206,6 +206,11 @@ public class SessionClient : MonoBehaviour
 
         await _client.ConnectAsync();
     }
+    
+    public void RequestPermission()
+    {
+        _client.EmitAsync("unity:request_permission", ClientId);
+    }
 
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)
     {
