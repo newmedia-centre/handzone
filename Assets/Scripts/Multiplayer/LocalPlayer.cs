@@ -47,7 +47,10 @@ public class LocalPlayer : MonoBehaviour
     
     public void SendPlayerData(UnityPlayerIn playerIn)
     {
-        SessionClient.Instance.SendUnityPlayerIn(playerIn);
+        if (SessionClient.Instance != null && SessionClient.Instance.IsConnected)
+        {
+            SessionClient.Instance.SendUnityPlayerIn(playerIn);
+        }
     }
 
     // Update is called once per frame
@@ -62,10 +65,7 @@ public class LocalPlayer : MonoBehaviour
             Cursor = cursorRef.TextureCoord
         };
 
-        if (playerIn != null)
-        {
-            // Send local player data to the server
-            SendPlayerData(playerIn);
-        }
+        // Send local player data to the server
+        SendPlayerData(playerIn);
     }
 }

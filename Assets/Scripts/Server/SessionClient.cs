@@ -26,7 +26,8 @@ public class SessionClient : MonoBehaviour
     public MemoryStream vncStream { get; private set; }
     public string ClientId => _client?.Id;
     public string PendantOwner => _pendantData?.Owner;
-
+    public bool IsConnected => _client.Connected;
+    
     public event Action<RealtimeDataOut> OnRealtimeData;
     public event Action<Texture2D> OnCameraFeed;
     public event Action<bool> OnDigitalOutputChanged;
@@ -42,6 +43,20 @@ public class SessionClient : MonoBehaviour
     
     private void Awake()
     {
+        url = GlobalClient.Instance.url + GlobalClient.Instance.Session?.Robot.Name;
+        
+        // Create a new Socket.IO client with an authentication token from the global client
+        _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
+        {
+            Auth = new { token = GlobalClient.Instance.Session?.Token }
+        });
+        
+        // Setup the JSON serializer to handle object references
+        _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+        {
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects
+        });
+        
         if (Instance == null)
         {
             Instance = this;
@@ -69,20 +84,6 @@ public class SessionClient : MonoBehaviour
             Debug.LogError("No session is currently active. Make sure to have an active session.");
             return;
         }
-        
-        url = GlobalClient.Instance.url + GlobalClient.Instance.Session?.Robot.Name;
-        
-        // Create a new Socket.IO client with an authentication token from the global client
-        _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
-        {
-            Auth = new { token = GlobalClient.Instance.Session?.Token }
-        });
-        
-        // Setup the JSON serializer to handle object references
-        _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
-        {
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        });
 
         // Attempt to connect to the session
         try
