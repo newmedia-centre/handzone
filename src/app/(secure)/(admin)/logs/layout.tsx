@@ -12,8 +12,8 @@ export default async function Layout({ children, params }: Readonly<{ children: 
 	const files = sync(path.resolve(env.LOGS_PATH, '**', '????-??-??*'))
 
 	return (
-		<main className='flex grow flex-col overflow-hidden p-8'>
-			<div className='flex flex-col divide-y divide-300 overflow-hidden rounded border border-300 bg-white'>
+		<main className='container mx-auto flex grow flex-col overflow-hidden p-8'>
+			<div className='flex flex-col divide-y divide-300 overflow-hidden rounded border border-300 bg-white shadow-md'>
 				<div className='flex shrink-0 items-center justify-between p-2'>
 					<h2 className='text-2xl leading-none'>LOGS: {params.date}</h2>
 					<div className='flex gap-2'>

@@ -3,7 +3,7 @@ export default async function Page() {
 	return (
 		<main className='container mx-auto flex grow gap-8'>
 			<div className='flex flex-1 shrink-0 grow flex-col items-center justify-center'>
-				<div className='flex h-2/3 w-full items-center justify-center rounded-xl border border-300 bg-white text-400'>Picture</div>
+				<div className='flex h-2/3 w-full items-center justify-center rounded-xl border border-300 bg-white text-400 shadow-md'>Picture</div>
 			</div>
 			<div className='flex flex-1 shrink-0 grow flex-col items-center justify-center'>
 				<div className='flex w-2/3 flex-col gap-4'>
