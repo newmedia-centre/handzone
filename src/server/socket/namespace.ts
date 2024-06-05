@@ -74,7 +74,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 	// emit the positions data
 	setInterval(() => {
 		namespace.emit('unity:players', { players: Array.from(players.values()) })
-	}, 200)
+	}, 100)
 
 	logger.info('Namespace initialized')
 	return namespace

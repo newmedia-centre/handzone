@@ -162,6 +162,24 @@ export const init = () => {
 			callback(true, { robot: info, token })
 		})
 
+		// join real robot
+		socket.on('real', async (callback) => {
+			logger.info('Real robot requested', { user: socket.data.user })
+
+			// check if the user has access to a real robot
+
+
+			// get the real robot
+			const robot = robots.connections.get('real')
+			if (!robot) return callback(false, 'Real robot not found')
+
+			// generate the access token
+			const token = await generateAccessToken(socket.data.user, robot.info)
+			socket.data.namespace = robot.info
+			callback(true, { robot: robot.info, token })
+
+		})
+
 		// send joined namespace
 		socket.on('namespace', async (callback) => {
 			if (!socket.data.namespace) return callback(false, 'No namespace found for user')
