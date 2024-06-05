@@ -124,7 +124,7 @@ const getLevelColor = (level: string) => {
 export const LogTable = ({ data }: { data: LogData[] }) => {
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
-		pageSize: 100,
+		pageSize: 1000,
 	})
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
 		[]
