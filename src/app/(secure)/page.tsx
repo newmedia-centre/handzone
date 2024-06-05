@@ -117,7 +117,7 @@ const TeacherRequestDashboard = () => {
 	)
 }
 
-export const TeacherCalendarBlockTool = () => {
+const TeacherCalendarBlockTool = () => {
 	return (
 		<>
 			<div className='flex shrink-0 items-center justify-between p-2'>
