@@ -289,6 +289,9 @@ namespace VNCScreen
             {
                 Debug.Log("VncDesktop_ConnectionLost");
             }
+            
+            Thread.Sleep(100);
+            Connect();
         }
 
         List<RuntimeState> stateChanges = new List<RuntimeState>();
