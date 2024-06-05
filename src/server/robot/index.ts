@@ -6,6 +6,7 @@ import { VNCProxy } from './vnc'
 import env from '../environment'
 import { RobotConnection } from './connection'
 import { robotLogger as logger } from '../logger'
+import { prisma } from '@/server/db'
 
 // import types
 import type { ManagerEmitter } from './emitter'
@@ -32,9 +33,12 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		this.vnc = new VNCProxy(this)
 		this._semaphore = new Semaphore(1)
 
-		// try to connect to the robots
-		env.ROBOTS.forEach((robot) => {
-			this._tryCreateRobotConnection(robot)
+		// sync the robots with the database
+		this._syncRobots().then(robots => {
+			robots.forEach(robot => {
+				// try to connect to the robots
+				robot && this._tryCreateRobotConnection(robot)
+			})
 		})
 	}
 
@@ -95,7 +99,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		socket.on('error', (error: NodeJS.ErrnoException) => {
 			if (error.code === 'ECONNREFUSED') {
 				return setTimeout(() => {
-					robotLogger.info(`Connection failed, retrying...`)
+					robotLogger.http(`Connection failed, retrying...`)
 					socket.connect(robot.port, robot.address)
 				}, socket.timeout || 1000)
 			}
@@ -131,6 +135,64 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 		})
 	}
 
+	/** Syncs the robots with the database */
+	async _syncRobots() {
+		// disable all robots
+		await prisma.robot.updateMany({
+			data: {
+				active: false
+			}
+		})
+
+		// iterate through the env robots
+		const tasks = env.ROBOTS.map(async (robot) => {
+			try {
+
+				// find the robot in the database
+				const updated = await prisma.robot.update({
+					where: {
+						name: robot.name
+					},
+					data: {
+						active: true
+					}
+				}).catch(error => {
+					// check if the robot was not found
+					if (error.code === 'P2025') {
+						logger.info(`Robot ${robot.name} not found in the database, creating...`, { robot })
+					} else {
+						throw error
+					}
+				})
+
+				if (!updated) {
+					// create the robot in the database
+					await prisma.robot.create({
+						data: {
+							name: robot.name,
+							type: 'URSIM_CB3_3_15_8',
+							active: true
+						}
+					})
+
+					logger.info(`Inserted robot ${robot.name} from the env into the database`, { robot })
+				} else {
+					logger.info(`Activated robot ${robot.name}`, { robot })
+				}
+
+				return robot
+			} catch (error) {
+				logger.error(`Error syncing robot ${robot.name} with the database`, { error, robot })
+			}
+		})
+
+		// wait for all tasks to complete
+		logger.info('Syncing robots with the database...')
+		const res = await Promise.all(tasks)
+		logger.info('Synced robots with the database!')
+
+		return res
+	}
 }
 
 // init tcp server

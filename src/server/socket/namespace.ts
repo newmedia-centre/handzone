@@ -36,8 +36,8 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		})
 	})
 
-	// create a map to store position data
-	const positions = new Map<string, PlayerData>()
+	// create a map to store player data
+	const players = new Map<string, PlayerData>()
 
 	// handle the connection to the namespace
 	namespace.on('connection', socket => {
@@ -57,7 +57,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		handleRealtimeEvents(socket)
 		handleInterfacesEvents(socket)
 		handleInternalsEvents(socket)
-		handleUnityEvents(socket, positions)
+		handleUnityEvents(socket, players)
 
 		// forward video events
 		robot.video?.forEach(video => {
@@ -76,7 +76,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 
 	// emit the positions data
 	setInterval(() => {
-		namespace.emit('unity:players', { players: Array.from(positions.values()) })
+		namespace.emit('unity:players', { players: Array.from(players.values()) })
 	}, 200)
 
 	logger.info('Namespace initialized')

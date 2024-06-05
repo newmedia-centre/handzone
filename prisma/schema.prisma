@@ -21,16 +21,12 @@ model Session {
 }
 
 model User {
-  id       String    @id
+  id       String                @id
   name     String?
-  email    String?   @unique
+  email    String?               @unique
+  admin    Boolean               @default(false)
   sessions Session[]
-  admin    Admin?
-}
-
-model Admin {
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @id @unique
+  requests RobotSessionRequest[]
 }
 
 enum RobotType {
@@ -38,7 +34,44 @@ enum RobotType {
 }
 
 model Robot {
-  id   String    @id
-  name String
-  type RobotType
+  id           String         @id @default(uuid())
+  name         String         @unique
+  type         RobotType
+  availability Availability[]
+  sessions     RobotSession[]
+  active       Boolean        @default(false)
+}
+
+model Availability {
+  id      String   @id @default(uuid())
+  robot   Robot    @relation(fields: [robotId], references: [id])
+  robotId String
+  start   DateTime
+  end     DateTime
+}
+
+model RobotSession {
+  id       String                @id @default(uuid())
+  requests RobotSessionRequest[]
+  robot    Robot                 @relation(fields: [robotId], references: [id])
+  robotId  String
+  start    DateTime
+  end      DateTime
+}
+
+model RobotSessionRequest {
+  session   RobotSession  @relation(fields: [sessionId], references: [id])
+  sessionId String
+  user      User          @relation(fields: [userId], references: [id])
+  userId    String
+  status    RequestStatus @default(REQUESTED)
+
+  @@unique([sessionId, userId])
+}
+
+enum RequestStatus {
+  REQUESTED
+  ACCEPTED
+  REJECTED
+  AVAILABLE
 }

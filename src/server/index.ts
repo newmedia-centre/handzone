@@ -36,14 +36,6 @@ next.prepare().then(() => {
 				logger.debug('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
 				robots.connectVirtualRobot(robot, 'sandbox')
 			})
-			docker.requestVirtualRobot().then(robot => {
-				logger.debug('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
-				robots.connectVirtualRobot(robot, 'exercises')
-			})
-			docker.requestVirtualRobot().then(robot => {
-				logger.debug('Virtual Robot:', env.DOCKER.OPTIONS.host, robot.Config.Labels['slot'])
-				robots.connectVirtualRobot(robot, 'sandbox')
-			})
 
 			// attach the socket.io server
 			io.attach(instance, {

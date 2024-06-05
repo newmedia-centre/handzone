@@ -13,7 +13,7 @@ export const Header = async () => {
 	const admin = user?.id === 'dc35f37334f3d9d881f1e3276295d37ca0944d64'
 
 	return (
-		<header className='flex items-center justify-between border-b border-300 bg-white p-2'>
+		<header className='flex shrink-0 items-center justify-between border-b border-300 bg-white p-2 shadow-md'>
 			<div className='flex flex-1 items-center justify-start gap-2 px-2'>
 				<a href='/tutorials' className='w-24 rounded border bg-white p-2 text-center hover:bg-200'>Tutorials</a>
 				{user && (
