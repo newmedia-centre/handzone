@@ -38,7 +38,7 @@ public class MultiplayerManager : MonoBehaviour
     
     private void ClearPlayers()
     {
-        foreach (var player in _playerDictionary.Values)
+        foreach (var player in _playerDictionary.Values.Where(player => player != null))
         {
             Destroy(player.gameObject);
         }
