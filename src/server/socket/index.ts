@@ -6,6 +6,7 @@ import { docker } from '@/server/docker'
 import { validatePin } from '@/server/db/pin'
 import { generateAccessToken } from '@/server/db/jwt'
 import { socketLogger as logger } from '../logger'
+import { prisma } from '@/server/db'
 
 // import types
 import type {
@@ -167,17 +168,44 @@ export const init = () => {
 			logger.info('Real robot requested', { user: socket.data.user })
 
 			// check if the user has access to a real robot
+			const request = await prisma.robotSessionRequest.findFirst({
+				where: {
+					userId: socket.data.user.id,
+					session: {
+						start: {
+							gte: new Date()
+						},
+						end: {
+							lte: new Date()
+						}
+					},
+					status: {
+						in: ['ACCEPTED', 'AVAILABLE']
+					}
+				},
+				include: {
+					session: {
+						include: {
+							robot: true
+						}
+					}
+				}
+			})
 
+			// check if the request was found
+			if (!request) return callback(false, 'Cound not find an approved scheduled session for the user')
+
+			// check if the session is available
+			if (request.status !== 'AVAILABLE') return callback(false, 'Found a scheduled session for the user, but the robot is not yet available')
 
 			// get the real robot
-			const robot = robots.connections.get('real')
-			if (!robot) return callback(false, 'Real robot not found')
+			const robot = robots.connections.get(request.session.robot.name)
+			if (!robot) return callback(false, 'Robot not found')
 
 			// generate the access token
 			const token = await generateAccessToken(socket.data.user, robot.info)
 			socket.data.namespace = robot.info
 			callback(true, { robot: robot.info, token })
-
 		})
 
 		// send joined namespace
