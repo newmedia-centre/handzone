@@ -21,14 +21,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using System.Threading;
-using PimDeWitte.UnityMainThreadDispatcher;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
-using VNCScreen.Drawing;
 using UnityVncSharp;
+using VNCScreen.Drawing;
 
 namespace VNCScreen
 {
@@ -59,15 +55,15 @@ namespace VNCScreen
     {
         public string host;
         public int port = 5900;
-        public int display = 0;
+        public int display;
         public string password;
         public Material disconnectedScreen;
         public Material connectedMaterial;
         public Vector2 mousePosition;
 
         private Size _screenSize;
-        private bool _passwordPending = false;            // After Connect() is called, a password might be required.
-        private bool _fullScreenRefresh = false;		     // Whether or not to request the entire remote screen be sent.
+        private bool _passwordPending;            // After Connect() is called, a password might be required.
+        private bool _fullScreenRefresh;		     // Whether or not to request the entire remote screen be sent.
         private Material _m;
         private Thread _mainThread;
         private bool _secure = false;
@@ -150,9 +146,9 @@ namespace VNCScreen
         public void Connect()
         {
             // Ignore attempts to use invalid port numbers
-            if (this.port < 1 | this.port > 65535) this.port = 5900;
+            if (port < 1 | port > 65535) port = 5900;
             if (display < 0) display = 0;
-            if (this.host == null) throw new ArgumentNullException("host");
+            if (host == null) throw new ArgumentNullException("host");
 
             StartCoroutine(Connection());
         }
@@ -171,7 +167,7 @@ namespace VNCScreen
 
             // Start protocol-level handling and determine whether a password is needed
             vnc = buildVNC();
-            vnc.ConnectionLost += new EventHandler(OnConnectionLost);
+            vnc.ConnectionLost += OnConnectionLost;
             vnc.onConnection += Vnc_onConnection;
             connectionReceived = false;
             SetState(RuntimeState.Connecting);
@@ -213,7 +209,7 @@ namespace VNCScreen
                 OnConnectionLost(this, new ErrorEventArg(errorConnection));
                 return;
             }
-            this.connectionReceived = true;
+            connectionReceived = true;
             this.needPassword = needPassword;
         }
 
@@ -325,8 +321,6 @@ namespace VNCScreen
                 case RuntimeState.Error:
                     setDisconnectedMaterial();
                     break;
-                default:
-                    break;
             }
             state = newState;
 
@@ -370,7 +364,7 @@ namespace VNCScreen
                 connectedMaterial = GetComponent<Renderer>().sharedMaterial;
 
             // Set texture onto our material
-            _m = Instantiate(connectedMaterial) as Material;
+            _m = Instantiate(connectedMaterial);
             _m.mainTexture = tex;
             GetComponent<Renderer>().sharedMaterial = _m;
 
@@ -385,7 +379,7 @@ namespace VNCScreen
 
         public void Disconnect()
         {
-            vnc.ConnectionLost -= new EventHandler(OnConnectionLost);
+            vnc.ConnectionLost -= OnConnectionLost;
 
             vnc.Disconnect();
             SetState(RuntimeState.Disconnected);
@@ -500,8 +494,6 @@ namespace VNCScreen
                     PressKeys(new uint[] { 0xffe3, 0xff1b }, true, release); // CTRL, ESC
                     break;
                 // TODO: are there more I should support???
-                default:
-                    break;
             }
         }
 
