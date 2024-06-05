@@ -1,4 +1,5 @@
 // import dependencies
+import { validateRequest } from '@/server/db/auth'
 import { redirect } from 'next/navigation'
 
 // export layout
@@ -7,11 +8,11 @@ export default async function Layout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	// check if the user is admin
-	const admin = true
+	// get the user
+	const { user } = await validateRequest()
 
 	// redirect to login if user is not available
-	if (!admin) {
+	if (!user?.admin) {
 		return redirect('/')
 	}
 
