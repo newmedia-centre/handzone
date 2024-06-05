@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Schema.Socket.Unity;
 using TMPro;
 using UnityEngine;
@@ -22,7 +23,7 @@ public class NetworkPlayer : MonoBehaviour
 
     [Header("Player material")] 
     public Color color;
-    public Renderer playerRenderer;
+    public List<Renderer> playerRenderers;
     
     [Header("Interpolation Settings")]
     public float speed = 5.0F; // Movement speed in units per second.
@@ -43,7 +44,10 @@ public class NetworkPlayer : MonoBehaviour
     { 
         color = ColorUtility.TryParseHtmlString(colorString, out var newColor) ? newColor : Color.white;
 
-        playerRenderer.material.color = color;
+        foreach (var playerRenderer in playerRenderers)
+        {
+            playerRenderer.material.color = color;
+        }
     }
 
     void Update()
