@@ -8,6 +8,7 @@ public class MultiplayerManager : MonoBehaviour
     public static MultiplayerManager Instance { get; private set; }
     public GameObject networkPlayerPrefab;
     public GameObject playerCursorPrefab;
+    public Transform cursorAnchor;
 
     private Dictionary<string, NetworkPlayer> _playerDictionary = new();
     private UnityPlayersOut _previousPlayersData;
@@ -80,6 +81,7 @@ public class MultiplayerManager : MonoBehaviour
             }
             else
             {
+                // TODO: Incoming player data keeps changing per client. Need to find a way to keep the data consistent.
                 AddPlayer(incomingPlayerData);
                 Debug.Log(incomingPlayerData.Id + " is not in the player dictionary.");
                 Debug.Log("Client ID: " + SessionClient.Instance.ClientId);
@@ -99,9 +101,10 @@ public class MultiplayerManager : MonoBehaviour
             _playerDictionary.Add(newPlayer.Id, newPlayer);
             
             // Create cursor for the player
-            NetworkVNCCursor cursor = Instantiate(playerCursorPrefab, newPlayer.transform).GetComponent<NetworkVNCCursor>();
+            NetworkVNCCursor cursor = Instantiate(playerCursorPrefab, cursorAnchor).GetComponent<NetworkVNCCursor>();
             cursor.Color = newPlayer.color;
             cursor.PlayerNameLabel = playerData.Name;
+            
         }
         else
         {
