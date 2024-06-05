@@ -26,6 +26,18 @@ public class GlobalClient : MonoBehaviour
     /// </summary>
     public string url;
     
+    /// <summary>
+    /// Current selected session type by user. Used to determine the type of session to join.
+    /// </summary>
+    public string SessionType
+    {
+        get => _sessionType;
+        set => _sessionType = value;
+    }
+    
+    /// <summary>
+    /// Session data from the global server
+    /// </summary>
     public JoinSessionOut Session { get; private set; }
     
     /// <summary>
@@ -34,6 +46,7 @@ public class GlobalClient : MonoBehaviour
     public SessionsOut Sessions { get; private set; }
 
     private SocketIOClient.SocketIO _client;
+    private string _sessionType;
 
     // Connection lifecycle events
     public event Action OnConnecting;
@@ -151,7 +164,12 @@ public class GlobalClient : MonoBehaviour
             {
                 Debug.LogWarning("Could not join session.");
             }
-        }, "sandbox");
+        }, SessionType);
+    }
+    
+    public void SetSessionType(string sessionType)
+    {
+        Instance.SessionType = sessionType;        
     }
     
     /// <summary>

@@ -55,7 +55,7 @@ public class SessionMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        if(GlobalClient.Instance?.Sessions != null || GlobalClient.Instance != null)
+        if(GlobalClient.Instance.Sessions != null || GlobalClient.Instance != null)
             UpdateMenu(GlobalClient.Instance.Sessions);
     }
 

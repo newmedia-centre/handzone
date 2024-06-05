@@ -6945,6 +6945,18 @@ MonoBehaviour:
           m_StringArgument: UR Robot Scene
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 19092646}
+        m_TargetAssemblyTypeName: GlobalClient, Assembly-CSharp
+        m_MethodName: SetSessionType
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: real
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &785018758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11388,6 +11400,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 19092646}
+        m_TargetAssemblyTypeName: GlobalClient, Assembly-CSharp
+        m_MethodName: SetSessionType
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: sandbox
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1245461321
@@ -17057,6 +17081,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 19092646}
+        m_TargetAssemblyTypeName: GlobalClient, Assembly-CSharp
+        m_MethodName: SetSessionType
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: tasks
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1796361024
