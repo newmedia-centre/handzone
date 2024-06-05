@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
@@ -29,7 +28,7 @@ public class GlobalClient : MonoBehaviour
     /// <summary>
     /// Current selected session type by user. Used to determine the type of session to join.
     /// </summary>
-    public string SessionType
+    public SessionTypeEnum SessionType
     {
         get => _sessionType;
         set => _sessionType = value;
@@ -46,7 +45,7 @@ public class GlobalClient : MonoBehaviour
     public SessionsOut Sessions { get; private set; }
 
     private SocketIOClient.SocketIO _client;
-    private string _sessionType;
+    private SessionTypeEnum _sessionType;
 
     // Connection lifecycle events
     public event Action OnConnecting;
@@ -58,6 +57,7 @@ public class GlobalClient : MonoBehaviour
     public event Action<SessionsOut> OnSessionsReceived;
     public event Action<string> OnSessionJoin;
     public event Action<JoinSessionOut> OnSessionJoined;
+    public event Action<string> OnSessionJoinFailed;
     
     /// <summary>
     /// Ensures that only one instance of GlobalClient exists within the application.
@@ -162,14 +162,41 @@ public class GlobalClient : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Could not join session.");
+                Debug.LogWarning("Could not join virtual session.");
             }
         }, SessionType);
     }
-    
-    public void SetSessionType(string sessionType)
+
+    /// <summary>
+    /// Requests a physical robot session from the server and join it.
+    /// </summary>
+    public void RequestReal()
     {
-        Instance.SessionType = sessionType;        
+        _client.EmitAsync("real", response =>
+        {
+            var success = response.GetValue<bool>(0);
+            if (success)
+            {
+                Session = response.GetValue<JoinSessionOut>(1);
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
+                    OnSessionJoined?.Invoke(Session);
+                    Debug.Log("Real session created and joined." + Session.Robot.Name);
+                });           
+            }
+            else
+            {
+                var error = response.GetValue<string>(1);
+                OnSessionJoinFailed?.Invoke(error);
+                Debug.LogWarning("Could not join real robot session.");
+            }
+        });
+    }
+    
+    public void SetSessionType(SessionTypeOption sessionType)
+    {
+        Instance.SessionType = sessionType.sessionType;        
     }
     
     /// <summary>
