@@ -10,7 +10,8 @@ public enum MenuName
     Login,
     Main,
     Options,
-    Sessions
+    Sessions,
+    RealRobot
 }
 
 public class MainMenuController : MonoBehaviour
@@ -19,6 +20,7 @@ public class MainMenuController : MonoBehaviour
     public GameObject mainMenu;
     public GameObject optionsMenu;
     public GameObject sessionsMenu;
+    public GameObject realRobotMenu;
     
     // Variable to store the previous menu
     private MenuName _previousMenu;
@@ -31,6 +33,7 @@ public class MainMenuController : MonoBehaviour
         menuDictionary.Add(MenuName.Main, mainMenu);
         menuDictionary.Add(MenuName.Options, optionsMenu);
         menuDictionary.Add(MenuName.Sessions, sessionsMenu);
+        menuDictionary.Add(MenuName.RealRobot, realRobotMenu);
 
         ChangeMenu(MenuName.Login);
     }

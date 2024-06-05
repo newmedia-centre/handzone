@@ -98,6 +98,10 @@ public class SessionMenu : MonoBehaviour
         // Create new session buttons
         foreach (var receivedSession in receivedSessions.Sessions)
         {
+            // Only create buttons for current selected session type
+            if (receivedSession.Type != GlobalClient.Instance.SessionType)
+                continue;
+            
             var sessionsGroup = transform.Find("SessionPanel/SessionsGroup").gameObject;
             var sessionButtonGb = Instantiate(sessionButtonPrefab, sessionsGroup.transform);
             var sessionButton = sessionButtonGb.GetComponent<SessionButton>();
