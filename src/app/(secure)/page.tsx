@@ -52,7 +52,7 @@ export default async function Page() {
 	)
 }
 
-export const StudentCalendar = () => {
+const StudentCalendar = () => {
 	return (
 		<>
 			<div className='flex shrink-0 items-center justify-between p-2'>
@@ -65,7 +65,7 @@ export const StudentCalendar = () => {
 	)
 }
 
-export const StudentRequestDashboard = () => {
+const StudentRequestDashboard = () => {
 	return (
 		<>
 			<div className='flex shrink-0 items-center justify-between p-2'>
@@ -78,7 +78,7 @@ export const StudentRequestDashboard = () => {
 	)
 }
 
-export const TeacherRobotMonitoringDashboard = () => {
+const TeacherRobotMonitoringDashboard = () => {
 	return (
 		<>
 			<div className='flex shrink-0 items-center justify-between p-2'>
@@ -91,7 +91,7 @@ export const TeacherRobotMonitoringDashboard = () => {
 	)
 }
 
-export const TeacherCalendar = () => {
+const TeacherCalendar = () => {
 	return (
 		<>
 			<div className='flex shrink-0 items-center justify-between p-2'>
@@ -104,7 +104,7 @@ export const TeacherCalendar = () => {
 	)
 }
 
-export const TeacherRequestDashboard = () => {
+const TeacherRequestDashboard = () => {
 	return (
 		<>
 			<div className='flex shrink-0 items-center justify-between p-2'>

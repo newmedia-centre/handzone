@@ -43,9 +43,6 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 	namespace.on('connection', socket => {
 		logger.http(`Socket ${socket.id} connected`, { user: socket.data.user })
 
-		socket.data.robot = robot
-		socket.data.user = { name: 'user', email: '', id: '0' }
-
 		// handle socket disconnection
 		socket.on('disconnect', () => {
 			// do nothing
