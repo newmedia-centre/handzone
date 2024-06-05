@@ -101,7 +101,7 @@ export class RobotManager extends (EventEmitter as new () => ManagerEmitter) {
 				return setTimeout(() => {
 					robotLogger.http(`Connection failed, retrying...`)
 					socket.connect(robot.port, robot.address)
-				}, socket.timeout || 1000)
+				}, 60000)
 			}
 			console.error(error)
 		})

@@ -28,7 +28,6 @@ export const logger = global.logger ?? createLogger({
 		new DailyRotateFile({
 			filename: `${env.LOGS_PATH}/%DATE%.log`,
 			datePattern: 'YYYY-MM-DD',
-			zippedArchive: true,
 			maxSize: '20m',
 			maxFiles: '7d',
 			level: 'http',
