@@ -69,6 +69,11 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		socket.on('message', (message) => {
 			socket.broadcast.emit('message', message)
 		})
+
+		// remove player data on disconnect
+		socket.on('disconnect', () => {
+			players.delete(socket.id)
+		})
 	})
 
 	// emit the positions data
