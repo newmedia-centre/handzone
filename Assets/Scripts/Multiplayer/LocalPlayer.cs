@@ -9,6 +9,9 @@ public class LocalPlayer : MonoBehaviour
     public Transform rightControllerRef;
     public VNCXRRaycaster cursorRef;
     
+    private float _sendInterval = 0.1f;
+    private float _sendTimer = 0.0f;
+    
     public static LocalPlayer Instance { get; private set; }
     
     private void Awake()
@@ -49,7 +52,15 @@ public class LocalPlayer : MonoBehaviour
     {
         if (SessionClient.Instance != null && SessionClient.Instance.IsConnected)
         {
+            // Send the player data to the server with a time interval
+            if (_sendTimer < _sendInterval)
+            {
+                _sendTimer += Time.deltaTime;
+                return;
+            }
+            
             SessionClient.Instance.SendUnityPlayerIn(playerIn);
+            _sendTimer = 0.0f;
         }
     }
 
