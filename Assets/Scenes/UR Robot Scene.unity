@@ -2129,7 +2129,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 820269620}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a01ea28a9f0ec234ca6a00328d6f7bc4, type: 3}
   m_Name: 
@@ -2776,6 +2776,7 @@ MonoBehaviour:
     type: 3}
   playerCursorPrefab: {fileID: 3638110740886910129, guid: 16b438c47006fc84e8a0359416d3d882,
     type: 3}
+  cursorAnchor: {fileID: 2225032429376532902}
 --- !u!4 &976970257
 Transform:
   m_ObjectHideFlags: 0
@@ -4575,6 +4576,7 @@ GameObject:
   - component: {fileID: 1760753027}
   - component: {fileID: 1760753026}
   - component: {fileID: 1760753025}
+  - component: {fileID: 1760753028}
   m_Layer: 5
   m_Name: RequestPermissionCanvas
   m_TagString: Untagged
@@ -4659,12 +4661,31 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 4
   m_TargetDisplay: 0
+--- !u!114 &1760753028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760753023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 0
+  m_CheckFor2DOcclusion: 0
+  m_CheckFor3DOcclusion: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1
 --- !u!1 &1766615234
 GameObject:
   m_ObjectHideFlags: 0
@@ -7580,6 +7601,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1431351506}
     m_Modifications:
+    - target: {fileID: 1275356813178013101, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1335575827152178418, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7812,6 +7838,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1676662546}
   m_SourcePrefab: {fileID: 100100000, guid: ddc6c6edf5ef12c4aad7a38c57e732b0, type: 3}
+--- !u!4 &2225032429376532902 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2699188187655395392, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+    type: 3}
+  m_PrefabInstance: {fileID: 2225032429376532901}
+  m_PrefabAsset: {fileID: 0}
 --- !u!33 &2311384324768163961
 MeshFilter:
   m_ObjectHideFlags: 0

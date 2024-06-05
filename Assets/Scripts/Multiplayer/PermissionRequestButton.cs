@@ -28,7 +28,6 @@ public class PermissionRequestButton : MonoBehaviour
     private void RequestPermission()
     {
         SessionClient.Instance.RequestPermission();
-        
     }
 
     private void OnDestroy()

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9114708365338049261}
   - component: {fileID: 3969141954131552716}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: CursorOuter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 128815194898283247}
   - component: {fileID: 2238148035833656955}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: CursorColor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -231,7 +231,7 @@ GameObject:
   - component: {fileID: 4662679657954757964}
   - component: {fileID: 6962565464037976155}
   - component: {fileID: 3046930998861912533}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PlayerName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -400,7 +400,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6720645981794110452}
-  m_Layer: 10
+  m_Layer: 2
   m_Name: Cursor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
