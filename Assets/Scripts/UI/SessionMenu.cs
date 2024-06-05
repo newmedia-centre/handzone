@@ -55,7 +55,7 @@ public class SessionMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        if(GlobalClient.Instance.Sessions != null || GlobalClient.Instance != null)
+        if(GlobalClient.Instance?.Sessions != null || GlobalClient.Instance != null)
             UpdateMenu(GlobalClient.Instance.Sessions);
     }
 
@@ -71,7 +71,7 @@ public class SessionMenu : MonoBehaviour
     private void UpdateMenu(SessionsOut receivedSessions)
     {
         // Only update the menu if the menu is enabled
-        if(enabled == false)
+        if(gameObject.activeSelf == false)
             return;
         
         // Clear existing session buttons
@@ -80,11 +80,6 @@ public class SessionMenu : MonoBehaviour
             Destroy(sessionButton);
         }
         _sessionButtons.Clear();
-        
-        if (receivedSessions == null)
-        {
-            return;
-        }
         
         // Update the session capacity label
         _sessionAvailabilityGroup.GetComponent<TMPro.TextMeshProUGUI>().text = receivedSessions.Capacity.ToString();
