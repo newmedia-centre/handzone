@@ -8,7 +8,7 @@ public class MultiplayerManager : MonoBehaviour
     public static MultiplayerManager Instance { get; private set; }
     public GameObject networkPlayerPrefab;
     public GameObject playerCursorPrefab;
-    
+
     private Dictionary<string, NetworkPlayer> _playerDictionary = new();
     private UnityPlayersOut _previousPlayersData;
 
@@ -54,17 +54,21 @@ public class MultiplayerManager : MonoBehaviour
     
     private void UpdateNetworkPlayers(UnityPlayersOut incomingPlayersData)
     {
-        // Find players that are not in the incoming data
-        var playerIds = new HashSet<string>(incomingPlayersData.Players.Select(x => x.Id));
         
-        // Also filter out the local player from the dictionary
-        playerIds.Remove(SessionClient.Instance.ClientId);
+        // Remove the local client from the incoming data
+        incomingPlayersData.Players.RemoveAll(x => x.Id == SessionClient.Instance.ClientId);
         
-        // Compare the current player dictionary with the incoming player data and remove players that are not in the incoming data
-        var playersToRemove = _playerDictionary.Values.Where(x => !playerIds.Contains(x.Id)).ToList();
-        foreach (var player in playersToRemove)
+        // Find players that are not in the incoming data and remove them
+        if (_previousPlayersData != null)
         {
-            RemovePlayer(player);
+            var playersToRemove = _previousPlayersData.Players.Where(x => !incomingPlayersData.Players.Select(y => y.Id).Contains(x.Id)).ToList();
+            foreach (var player in playersToRemove)
+            {
+                if (_playerDictionary.TryGetValue(player.Id, out var playerToRemove))
+                {
+                    RemovePlayer(playerToRemove);
+                }
+            }
         }
         
         // Update existing players and add new players when necessary
@@ -77,6 +81,8 @@ public class MultiplayerManager : MonoBehaviour
             else
             {
                 AddPlayer(incomingPlayerData);
+                Debug.Log(incomingPlayerData.Id + " is not in the player dictionary.");
+                Debug.Log("Client ID: " + SessionClient.Instance.ClientId);
             }
         }
     }
