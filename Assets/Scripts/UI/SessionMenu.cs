@@ -55,7 +55,7 @@ public class SessionMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        if(GlobalClient.Instance?.Sessions != null || GlobalClient.Instance != null)
+        if(GlobalClient.Instance?.Sessions != null)
             UpdateMenu(GlobalClient.Instance.Sessions);
     }
 
@@ -70,14 +70,13 @@ public class SessionMenu : MonoBehaviour
     /// <param name="receivedSessions"></param>
     private void UpdateMenu(SessionsOut receivedSessions)
     {
-        // Only update the menu if the menu is enabled
         if(gameObject.activeSelf == false)
             return;
         
         // Clear existing session buttons
         foreach (var sessionButton in _sessionButtons)
         {
-            Destroy(sessionButton);
+            Destroy(sessionButton.gameObject);
         }
         _sessionButtons.Clear();
         

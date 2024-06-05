@@ -24,6 +24,7 @@ public class RealRobotMenu : MonoBehaviour
 
     private void DisplayError(string error)
     {
-        Debug.LogError(error);
+        _statusText.text = error;
+        Debug.LogWarning(error);
     }
 }
