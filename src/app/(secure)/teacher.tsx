@@ -41,8 +41,10 @@ export const TeacherRequestDashboard = async () => {
 				gte: new Date().toISOString()
 			},
 			requests: {
-				none: {
-					status: 'CANCELLED'
+				some: {
+					NOT: {
+						status: 'CANCELLED'
+					}
 				}
 			}
 		},

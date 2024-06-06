@@ -52,3 +52,34 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 		return Response.json(e, { status: 500 })
 	}
 }
+
+// handle the DELETE request
+export async function DELETE(request: Request, { params }: { params: { id: string } }): Promise<Response> {
+
+	// check the user session
+	const { session, user } = await validateRequest()
+	if (!session) {
+		return new Response(null, {
+			status: 403
+		})
+	}
+
+	try {
+		const res = await prisma.robotSessionRequest.update({
+			where: {
+				sessionId_userId: {
+					sessionId: params.id,
+					userId: user.id
+				}
+			},
+			data: {
+				status: 'CANCELLED'
+			}
+		})
+
+		return Response.json(res)
+	} catch (e) {
+		logger.error((e as Error).message, { error: e })
+		return Response.json(e, { status: 500 })
+	}
+}

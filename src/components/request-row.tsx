@@ -15,6 +15,33 @@ import {
 // import types
 import type { Robot, RobotSession, RobotSessionRequest, User, RequestStatus } from '@prisma/client'
 
+export const RequestRow = ({ request }: { request: RobotSessionRequest & { session: RobotSession & { robot: Robot } } }) => {
+	const router = useRouter()
+
+	const remove = async () => {
+		const res = await fetch(`/api/session/${request.session.id}/status`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+
+		if (res.ok) {
+			router.refresh()
+		}
+	}
+
+	return (
+		<div className='flex items-center justify-between gap-2 border-b border-300 p-2'>
+			<span>{request.session.robot.name}</span>
+			<span>Start: {moment(request.session.start).format('DD-MM-YYYY HH:mm')}</span>
+			<span>End: {moment(request.session.end).format('DD-MM-YYYY HH:mm')}</span>
+			<span>{request.status}</span>
+			<button onClick={remove} disabled={request.status === 'CANCELLED'} className='w-36 rounded border bg-white p-2 text-center enabled:hover:bg-200 disabled:cursor-default disabled:text-400'>Cancel</button>
+		</div>
+	)
+}
+
 export const SessionRequestRow = ({ session }: { session: (RobotSession & { robot: Robot, requests: (RobotSessionRequest & { user: User })[] }) }) => {
 	const router = useRouter()
 
@@ -71,15 +98,14 @@ export const SessionRequestRowUser = ({ request }: { request: RobotSessionReques
 	return (
 		<div className='flex items-center justify-between gap-2 p-2'>
 			<a href={`mailto:${request.user.email}`}>{request.user.name}</a>
-			<Listbox value={request.status} onChange={update}>
-				<ListboxButton className='inline-flex w-36 items-center justify-between rounded border p-2 text-center hover:bg-200'>
+			<Listbox value={request.status} onChange={update} disabled={request.status === 'CANCELLED'}>
+				<ListboxButton className='inline-flex w-36 items-center justify-between rounded border p-2 text-center enabled:hover:bg-200 disabled:cursor-default disabled:text-400'>
 					<span className='capitalize'>{request.status.toLowerCase()}</span>
 					<svg className='ms-3 size-2.5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 10 6'>
 						<path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='m1 1 4 4 4-4' />
 					</svg>
 				</ListboxButton>
 				<ListboxOptions anchor='bottom' className='z-30 mt-1 w-36 rounded border border-300 bg-white text-center'>
-					<ListboxOption value='REQUESTED' className='p-2 text-400' disabled>Requested</ListboxOption>
 					<ListboxOption value='ACCEPTED' className='cursor-pointer p-2 hover:bg-200'>Accepted</ListboxOption>
 					<ListboxOption value='REJECTED' className='cursor-pointer p-2 hover:bg-200'>Rejected</ListboxOption>
 					<ListboxOption value='AVAILABLE' className='cursor-pointer p-2 hover:bg-200'>Available</ListboxOption>

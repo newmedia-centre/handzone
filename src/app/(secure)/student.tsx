@@ -2,8 +2,10 @@
 import { prisma } from '@/server/db'
 
 // import components
+import NoSSR from '@/components/no-ssr'
 import { NewSessionRequest } from '@/components/new-request'
 import { JoinSessionRequest } from '@/components/join-request'
+import { RequestRow } from '@/components/request-row'
 
 // import types
 import type { User } from '@prisma/client'
@@ -58,10 +60,12 @@ export const StudentRequestDashboard = async ({ user }: { user: User }) => {
 					<NewSessionRequest robots={robots} />
 				</div>
 			</div>
-			<div className='grow p-2'>
-				{requests.map((request) => (
-					<span key={request.sessionId}>{request.sessionId}</span>
-				))}
+			<div className='flex grow flex-col'>
+				<NoSSR >
+					{requests.map((request) => (
+						<RequestRow key={request.session.id} request={request} />
+					))}
+				</NoSSR>
 			</div>
 		</>
 	)
