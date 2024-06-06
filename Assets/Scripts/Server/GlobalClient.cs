@@ -28,12 +28,8 @@ public class GlobalClient : MonoBehaviour
     /// <summary>
     /// Current selected session type by user. Used to determine the type of session to join.
     /// </summary>
-    public SessionTypeEnum SessionType
-    {
-        get => _sessionType;
-        set => _sessionType = value;
-    }
-    
+    public SessionTypeEnum SessionType { get; private set; }
+
     /// <summary>
     /// Session data from the global server
     /// </summary>
@@ -45,7 +41,6 @@ public class GlobalClient : MonoBehaviour
     public SessionsOut Sessions { get; private set; }
 
     private SocketIOClient.SocketIO _client;
-    private SessionTypeEnum _sessionType;
 
     // Connection lifecycle events
     public event Action OnConnecting;
@@ -95,7 +90,7 @@ public class GlobalClient : MonoBehaviour
         Debug.Log("Connecting to global server...");
         OnConnecting?.Invoke();
 
-        _client.OnConnected += (sender, args) =>
+        _client.OnConnected += (_, _) =>
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
@@ -104,7 +99,7 @@ public class GlobalClient : MonoBehaviour
             });
         };
 
-        _client.OnDisconnected += (sender, s) =>
+        _client.OnDisconnected += (_, _) =>
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
@@ -113,7 +108,7 @@ public class GlobalClient : MonoBehaviour
             });
         };
 
-        _client.OnError += (sender, s) =>
+        _client.OnError += (_, s) =>
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
@@ -149,7 +144,7 @@ public class GlobalClient : MonoBehaviour
     {
         _client.EmitAsync("virtual", response =>
         {
-            var success = response.GetValue<bool>(0);
+            var success = response.GetValue<bool>();
             if (success)
             {
                 Session = response.GetValue<JoinSessionOut>(1);
@@ -174,7 +169,7 @@ public class GlobalClient : MonoBehaviour
     {
         _client.EmitAsync("real", response =>
         {
-            var success = response.GetValue<bool>(0);
+            var success = response.GetValue<bool>();
             if (success)
             {
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -210,7 +205,7 @@ public class GlobalClient : MonoBehaviour
         OnSessionJoin?.Invoke(sessionAddress);
         _client.EmitAsync("join", response =>
         {
-            var success = response.GetValue<bool>(0);
+            var success = response.GetValue<bool>();
             if (success)
             {
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -238,7 +233,7 @@ public class GlobalClient : MonoBehaviour
         var asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         
         // Wait until the scene is fully loaded
-        while (!asyncLoad.isDone)
+        while (asyncLoad is { isDone: false })
         {
             yield return null;
         }
