@@ -15,14 +15,9 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
 	}
 
 	try {
-		const res = await prisma.robotSessionRequest.updateMany({
+		const res = await prisma.robotSession.delete({
 			where: {
-				session: {
-					id: params.id
-				}
-			},
-			data: {
-				status: 'CANCELLED'
+				id: params.id
 			}
 		})
 

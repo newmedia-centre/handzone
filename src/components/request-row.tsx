@@ -37,7 +37,7 @@ export const RequestRow = ({ request }: { request: RobotSessionRequest & { sessi
 			<span>Start: {moment(request.session.start).format('DD-MM-YYYY HH:mm')}</span>
 			<span>End: {moment(request.session.end).format('DD-MM-YYYY HH:mm')}</span>
 			<span>{request.status}</span>
-			<button onClick={remove} disabled={request.status === 'CANCELLED'} className='w-36 rounded border bg-white p-2 text-center enabled:hover:bg-200 disabled:cursor-default disabled:text-400'>Cancel</button>
+			<button onClick={remove} className='w-36 rounded border bg-white p-2 text-center enabled:hover:bg-200 disabled:cursor-default disabled:text-400'>Delete</button>
 		</div>
 	)
 }
@@ -98,7 +98,7 @@ export const SessionRequestRowUser = ({ request }: { request: RobotSessionReques
 	return (
 		<div className='flex items-center justify-between gap-2 p-2'>
 			<a href={`mailto:${request.user.email}`}>{request.user.name}</a>
-			<Listbox value={request.status} onChange={update} disabled={request.status === 'CANCELLED'}>
+			<Listbox value={request.status} onChange={update}>
 				<ListboxButton className='inline-flex w-36 items-center justify-between rounded border p-2 text-center enabled:hover:bg-200 disabled:cursor-default disabled:text-400'>
 					<span className='capitalize'>{request.status.toLowerCase()}</span>
 					<svg className='ms-3 size-2.5' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 10 6'>

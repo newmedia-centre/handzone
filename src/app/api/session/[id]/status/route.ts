@@ -19,7 +19,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 	// create the request body parser
 	const Data = z.object({
 		user: z.string(),
-		status: z.enum([RequestStatus.REQUESTED, RequestStatus.ACCEPTED, RequestStatus.REJECTED, RequestStatus.AVAILABLE, RequestStatus.CANCELLED])
+		status: z.enum([RequestStatus.REQUESTED, RequestStatus.ACCEPTED, RequestStatus.REJECTED, RequestStatus.AVAILABLE])
 	})
 
 	// parse the request body
@@ -65,15 +65,21 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 	}
 
 	try {
-		const res = await prisma.robotSessionRequest.update({
+		const res = await prisma.robotSessionRequest.delete({
 			where: {
 				sessionId_userId: {
 					sessionId: params.id,
 					userId: user.id
 				}
-			},
-			data: {
-				status: 'CANCELLED'
+			}
+		})
+
+		await prisma.robotSession.delete({
+			where: {
+				id: params.id,
+				requests: {
+					none: {}
+				}
 			}
 		})
 

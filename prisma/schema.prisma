@@ -74,5 +74,4 @@ enum RequestStatus {
   ACCEPTED
   REJECTED
   AVAILABLE
-  CANCELLED
 }

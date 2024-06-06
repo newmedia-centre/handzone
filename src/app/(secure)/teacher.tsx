@@ -39,13 +39,6 @@ export const TeacherRequestDashboard = async () => {
 		where: {
 			end: {
 				gte: new Date().toISOString()
-			},
-			requests: {
-				some: {
-					NOT: {
-						status: 'CANCELLED'
-					}
-				}
 			}
 		},
 		include: {
