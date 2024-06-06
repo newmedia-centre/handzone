@@ -2,7 +2,8 @@
 import { prisma } from '@/server/db'
 
 // import components
-import { RequestSession } from '@/components/request'
+import { NewSessionRequest } from '@/components/new-request'
+import { JoinSessionRequest } from '@/components/join-request'
 
 // import types
 import type { User } from '@prisma/client'
@@ -36,14 +37,25 @@ export const StudentRequestDashboard = async ({ user }: { user: User }) => {
 	})
 
 	// get all robots
-	const robots = await prisma.robot.findMany()
+	const robots = await prisma.robot.findMany({
+		include: {
+			sessions: {
+				where: {
+					end: {
+						gte: new Date().toISOString()
+					}
+				}
+			}
+		}
+	})
 
 	return (
 		<>
 			<div className='flex shrink-0 items-stretch justify-between'>
 				<h2 className='p-2 text-2xl leading-none'>My Requests</h2>
-				<div className='flex justify-end gap-2 divide-x divide-300 border-l border-300'>
-					<RequestSession robots={robots} />
+				<div className='flex justify-end divide-x divide-300 border-l border-300'>
+					<JoinSessionRequest robots={robots} />
+					<NewSessionRequest robots={robots} />
 				</div>
 			</div>
 			<div className='grow p-2'>

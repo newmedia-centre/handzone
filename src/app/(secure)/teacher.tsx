@@ -2,6 +2,10 @@
 import moment from 'moment'
 import { prisma } from '@/server/db'
 
+// import components
+import { NewSessionRequest } from '@/components/new-request'
+import { JoinSessionRequest } from '@/components/join-request'
+
 export const TeacherRobotMonitoringDashboard = async () => {
 	return (
 		<>
@@ -33,7 +37,7 @@ export const TeacherRequestDashboard = async () => {
 	const sessions = await prisma.robotSession.findMany({
 		where: {
 			end: {
-				gte: new Date()
+				gte: new Date().toISOString()
 			}
 		},
 		include: {
@@ -46,11 +50,26 @@ export const TeacherRequestDashboard = async () => {
 		}
 	})
 
+	// get all robots
+	const robots = await prisma.robot.findMany({
+		include: {
+			sessions: {
+				where: {
+					end: {
+						gte: new Date().toISOString()
+					}
+				}
+			}
+		}
+	})
+
 	return (
 		<>
-			<div className='flex shrink-0 items-center justify-between p-2'>
-				<h2 className='text-2xl leading-none'>Request Dashboard</h2>
-				<div className='flex gap-2'>
+			<div className='flex shrink-0 items-stretch justify-between'>
+				<h2 className='p-2 text-2xl leading-none'>Request Dashboard</h2>
+				<div className='flex justify-end divide-x divide-300 border-l border-300'>
+					<JoinSessionRequest robots={robots} />
+					<NewSessionRequest robots={robots} />
 				</div>
 			</div>
 			<div className='flex grow flex-col'>

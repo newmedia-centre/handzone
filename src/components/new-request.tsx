@@ -22,7 +22,7 @@ import {
 import type { Robot } from '@prisma/client'
 
 // connect to vr button
-export const RequestSession = ({ robots }: { robots: Robot[] }) => {
+export const NewSessionRequest = ({ robots }: { robots: Robot[] }) => {
 	const [open, setOpen] = useState(false)
 	const [robot, setRobot] = useState<Robot | null>(null)
 	const [start, setStart] = useState('')
@@ -31,8 +31,6 @@ export const RequestSession = ({ robots }: { robots: Robot[] }) => {
 
 	const create = async () => {
 		if (!robot || !start || !end) return
-
-		console.log(robot, start, end)
 
 		const res = await fetch('/api/request', {
 			method: 'POST',
@@ -50,17 +48,18 @@ export const RequestSession = ({ robots }: { robots: Robot[] }) => {
 		console.log(res, json)
 
 		if (res.ok) {
+			setOpen(false)
 			router.refresh()
 		}
 	}
 
 	return (
 		<>
-			<button onClick={() => setOpen(true)} className='px-4 hover:bg-200'>New Request</button>
+			<button onClick={() => setOpen(true)} className='px-4 hover:bg-200'>New Session</button>
 			<Dialog open={open} onClose={() => setOpen(false)} className='relative z-50'>
 				<div className='fixed inset-0 flex items-center justify-center bg-black/25 p-4'>
 					<DialogPanel className='max-w-lg divide-y divide-300 rounded border border-300 bg-white shadow-md'>
-						<DialogTitle className='flex shrink-0 items-center justify-between p-2 text-xl leading-none'>New Request</DialogTitle>
+						<DialogTitle className='flex shrink-0 items-center justify-between p-2 text-xl leading-none'>New Session</DialogTitle>
 						<div className='flex flex-col gap-2 p-2'>
 							<Field className='flex items-center'>
 								<Label className='w-24'>Robot</Label>
