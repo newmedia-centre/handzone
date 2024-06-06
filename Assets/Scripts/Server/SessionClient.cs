@@ -160,6 +160,8 @@ public class SessionClient : MonoBehaviour
         _client.On("grasshopper:program", response =>
         {
             Debug.Log("Received program from server...");
+            
+            // TODO: Load the program into the robot
         });
 
         _client.On("realtime:data", response =>
@@ -222,6 +224,7 @@ public class SessionClient : MonoBehaviour
     public void RequestPermission()
     {
         _client.EmitAsync("unity:pendant");
+        Debug.Log("Permission requested");
     }
 
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)
