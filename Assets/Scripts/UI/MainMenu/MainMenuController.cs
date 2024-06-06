@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 [Serializable]
 public enum MenuName
@@ -25,32 +23,24 @@ public class MainMenuController : MonoBehaviour
     // Variable to store the previous menu
     private MenuName _previousMenu;
 
-    private Dictionary<MenuName, GameObject> menuDictionary = new();
+    private Dictionary<MenuName, GameObject> _menuDictionary = new();
 
     private void Start()
     {
-        menuDictionary.Add(MenuName.Login, loginMenu);
-        menuDictionary.Add(MenuName.Main, mainMenu);
-        menuDictionary.Add(MenuName.Options, optionsMenu);
-        menuDictionary.Add(MenuName.Sessions, sessionsMenu);
-        menuDictionary.Add(MenuName.RealRobot, realRobotMenu);
+        _menuDictionary.Add(MenuName.Login, loginMenu);
+        _menuDictionary.Add(MenuName.Main, mainMenu);
+        _menuDictionary.Add(MenuName.Options, optionsMenu);
+        _menuDictionary.Add(MenuName.Sessions, sessionsMenu);
+        _menuDictionary.Add(MenuName.RealRobot, realRobotMenu);
 
         ChangeMenu(MenuName.Login);
-    }
-
-    public void SetScene(string sceneName)
-    {
-        if (SceneManager.GetSceneByName(sceneName) != null)
-        {
-            SceneManager.LoadScene(sceneName);
-        }
     }
 
     public void ChangeMenu(MenuControllerOption menuName)
     {
         _previousMenu = menuName.menuName;
         
-        foreach (var menu in menuDictionary)
+        foreach (var menu in _menuDictionary)
         {
             menu.Value.SetActive(menu.Key == menuName.menuName);
         }
@@ -60,7 +50,7 @@ public class MainMenuController : MonoBehaviour
     {
         _previousMenu = menuName;
         
-        foreach (var menu in menuDictionary)
+        foreach (var menu in _menuDictionary)
         {
             menu.Value.SetActive(menu.Key == menuName);
         }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Schema.Socket.Index;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,8 +17,7 @@ public class SessionMenu : MonoBehaviour
     private string _selectedSessionAddress;
     private Button _joinSessionButton;
     private Button _createSessionButton;
-
-    private GameObject _sessionAvailabilityGroup;
+    private TextMeshProUGUI _sessionAvailabilityLabel;
     
     // Start is called before the first frame update
     void Start()
@@ -34,7 +35,7 @@ public class SessionMenu : MonoBehaviour
         OnSessionSelected += SetSelectedSession;
         
         // Init the session availability group
-        _sessionAvailabilityGroup = transform.Find("SessionPanel/AvailabilityGroup/AvailabilityCapacityLabel").gameObject;
+        _sessionAvailabilityLabel = transform.Find("SessionPanel/AvailabilityGroup/AvailabilityCapacityLabel").GetComponent<TextMeshProUGUI>();
         
         // Init the join session button
         transform.Find("SessionPanel/Buttons/JoinButton").TryGetComponent(out _joinSessionButton);
@@ -55,8 +56,10 @@ public class SessionMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        if(GlobalClient.Instance?.Sessions != null)
+        if (GlobalClient.Instance?.Sessions != null)
+        {
             UpdateMenu(GlobalClient.Instance.Sessions);
+        }
     }
 
     void OnDestroy()
@@ -71,9 +74,6 @@ public class SessionMenu : MonoBehaviour
     /// <param name="receivedSessions"></param>
     private void UpdateMenu(SessionsOut receivedSessions)
     {
-        if(gameObject.activeSelf == false)
-            return;
-        
         // Clear existing session buttons
         foreach (var sessionButton in _sessionButtons)
         {
@@ -82,7 +82,7 @@ public class SessionMenu : MonoBehaviour
         _sessionButtons.Clear();
         
         // Update the session capacity label
-        _sessionAvailabilityGroup.GetComponent<TMPro.TextMeshProUGUI>().text = receivedSessions.Capacity.ToString();
+        _sessionAvailabilityLabel.text = receivedSessions.Capacity.ToString(CultureInfo.CurrentCulture);
         
         // Make create session button interactable if capacity is not full
         if (receivedSessions.Capacity > 0 && _createSessionButton)
@@ -98,6 +98,7 @@ public class SessionMenu : MonoBehaviour
         // Create new session buttons
         foreach (var receivedSession in receivedSessions.Sessions)
         {
+            Debug.Log(receivedSession.Type + " " + GlobalClient.Instance.SessionType);
             // Only create buttons for current selected session type
             if (receivedSession.Type != GlobalClient.Instance.SessionType)
                 continue;
@@ -108,9 +109,9 @@ public class SessionMenu : MonoBehaviour
             sessionButton.GetComponent<SessionButton>().SetButton(receivedSession);
             _sessionButtons.Add(sessionButton);
             
-            // Find the Text tabel in the Session Button to set the session name
+            // Find the Text label in the Session Button to set the session name
             var sessionName = sessionButton.transform.Find("SessionName").gameObject;
-            sessionName.GetComponent<TMPro.TextMeshProUGUI>().text = receivedSession.Name;
+            sessionName.GetComponent<TextMeshProUGUI>().text = receivedSession.Name;
             
             // Find the SessionPlayerNamesGroup object in this object's children
             var sessionPlayerNamesGroup = sessionButton.transform.Find("UsersPanel").gameObject;
@@ -119,7 +120,7 @@ public class SessionMenu : MonoBehaviour
             foreach (var user in receivedSession.Users)
             {
                 var sessionPlayerName = Instantiate(sessionPlayerNamePrefab, sessionPlayerNamesGroup.transform);
-                sessionPlayerName.GetComponent<TMPro.TextMeshProUGUI>().text = user;
+                sessionPlayerName.GetComponent<TextMeshProUGUI>().text = user;
             }
         }
     }

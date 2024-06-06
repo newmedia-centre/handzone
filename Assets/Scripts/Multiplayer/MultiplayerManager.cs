@@ -48,7 +48,8 @@ public class MultiplayerManager : MonoBehaviour
     
     private void OnDestroy()
     {
-        SessionClient.Instance.OnUnityPlayerData -= UpdateNetworkPlayers;
+        if(SessionClient.Instance)
+            SessionClient.Instance.OnUnityPlayerData -= UpdateNetworkPlayers;
         
         ClearPlayers();
     }

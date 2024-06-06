@@ -9,6 +9,12 @@ public class RealRobotMenu : MonoBehaviour
     private Button _joinButton;
     private TMP_Text _statusText;
 
+    private void Awake()
+    {
+        transform.Find("SessionPanel/Buttons/JoinButton").TryGetComponent(out _joinButton);
+        transform.Find("SessionPanel/SessionsGroup/Status").TryGetComponent(out _statusText);
+    }
+
     private void OnEnable()
     {
         _statusText.text = "";
@@ -18,9 +24,6 @@ public class RealRobotMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.Find("SessionPanel/Buttons/JoinButton").TryGetComponent(out _joinButton);
-        transform.Find("SessionPanel/SessionsGroup/Status").TryGetComponent(out _statusText);
-        
         _joinButton.onClick.AddListener(() =>
         {
             if (GlobalClient.Instance.Session == null)
@@ -71,7 +74,7 @@ public class RealRobotMenu : MonoBehaviour
         var asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         
         // Wait until the scene is fully loaded
-        while (!asyncLoad.isDone)
+        while (asyncLoad is { isDone: false })
         {
             yield return null;
         }
