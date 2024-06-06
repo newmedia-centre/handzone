@@ -212,8 +212,8 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log("received pendant data from server...");
-                OnUnityPendant?.Invoke(response.GetValue<UnityPendantOut>());
+                _pendantData = response.GetValue<UnityPendantOut>();
+                OnUnityPendant?.Invoke(_pendantData);
             });
         });
         #endregion
@@ -224,7 +224,6 @@ public class SessionClient : MonoBehaviour
     public void RequestPermission()
     {
         _client.EmitAsync("unity:pendant");
-        Debug.Log("Permission requested");
     }
 
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)

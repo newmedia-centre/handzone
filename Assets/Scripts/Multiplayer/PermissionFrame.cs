@@ -42,7 +42,6 @@ public class PermissionFrame : MonoBehaviour
 
     private void OnDestroy()
     {
-        
         if(SessionClient.Instance)
             SessionClient.Instance.OnUnityPendant -= UpdatePermissionFrame;
     }

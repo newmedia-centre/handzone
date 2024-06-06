@@ -161,6 +161,18 @@ public class GlobalClient : MonoBehaviour
             }
         }, SessionType);
     }
+    
+    /// <summary>
+    /// Requests a token from the server to authenticate the client.
+    /// </summary>
+    public async Task RequestToken()
+    {
+        await _client.EmitAsync("unity:token", response =>
+        {
+            Debug.Log("Received token from server...");
+            Instance.Session.Token = response.GetValue<string>();
+        });
+    }
 
     /// <summary>
     /// Requests a physical robot session from the server and join it.
