@@ -84,13 +84,13 @@ public class SessionClient : MonoBehaviour
         
         if (GlobalClient.Instance == null)
         {
-            Debug.LogError("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene.");
+            Debug.LogWarning("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene.");
             return;
         }
 
         if (GlobalClient.Instance.Session == null)
         {
-            Debug.LogError("No session is currently active. Make sure to have an active session.");
+            Debug.LogWarning("No session is currently active. Make sure to have an active session.");
             return;
         }
 
@@ -221,7 +221,7 @@ public class SessionClient : MonoBehaviour
     
     public void RequestPermission()
     {
-        _client.EmitAsync("unity:request_permission", ClientId);
+        _client.EmitAsync("unity:pendant");
     }
 
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)
