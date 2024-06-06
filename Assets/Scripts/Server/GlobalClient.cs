@@ -170,26 +170,28 @@ public class GlobalClient : MonoBehaviour
     /// <summary>
     /// Requests a physical robot session from the server and join it.
     /// </summary>
-    public void RequestReal()
+    public void RequestRealSession()
     {
         _client.EmitAsync("real", response =>
         {
             var success = response.GetValue<bool>(0);
             if (success)
             {
-                Session = response.GetValue<JoinSessionOut>(1);
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
-                    StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
-                    OnSessionJoined?.Invoke(Session);
-                    Debug.Log("Real session created and joined." + Session.Robot.Name);
+                    Session = response.GetValue<JoinSessionOut>(1);
+                    OnSessionJoin?.Invoke(Session.Robot.Name);
+                    Debug.Log("Real session available: " + Session.Robot.Name);
                 });           
             }
             else
             {
-                var error = response.GetValue<string>(1);
-                OnSessionJoinFailed?.Invoke(error);
-                Debug.LogWarning("Could not join real robot session.");
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    var error = response.GetValue<string>(1);
+                    OnSessionJoinFailed?.Invoke(error);
+                    Debug.LogWarning("Could not join real robot session.");
+                });
             }
         });
     }

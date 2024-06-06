@@ -61,7 +61,8 @@ public class SessionMenu : MonoBehaviour
 
     void OnDestroy()
     {
-        GlobalClient.Instance.OnSessionsReceived -= UpdateMenu;
+        if(GlobalClient.Instance)
+            GlobalClient.Instance.OnSessionsReceived -= UpdateMenu;
     }
 
     /// <summary>

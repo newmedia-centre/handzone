@@ -1,12 +1,20 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class RealRobotMenu : MonoBehaviour
 {
     private Button _joinButton;
     private TMP_Text _statusText;
-    
+
+    private void OnEnable()
+    {
+        _statusText.text = "";
+        GlobalClient.Instance.RequestRealSession();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,16 +23,58 @@ public class RealRobotMenu : MonoBehaviour
         
         _joinButton.onClick.AddListener(() =>
         {
-            _statusText.text = "Checking availability...";
-            GlobalClient.Instance.RequestReal();
+            if (GlobalClient.Instance.Session == null)
+            {
+                _statusText.text = "No real robot available. Requesting permission...";
+                GlobalClient.Instance.RequestRealSession();
+                return;
+            }
+            
+            _statusText.text = "Joining...";
+            StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
         });
-        
+
+        GlobalClient.Instance.OnSessionJoin += DisplayAvailability;
         GlobalClient.Instance.OnSessionJoinFailed += DisplayError;
     }
 
+    private void DisplayAvailability(string robotName)
+    {
+        _statusText.text = "Real robot available, press join to connect.";
+    }
+    
     private void DisplayError(string error)
     {
         _statusText.text = error;
         Debug.LogWarning(error);
     }
+    
+    private void OnDestroy()
+    {
+        _joinButton.onClick.RemoveListener(() =>
+        {
+            _statusText.text = "";
+        });
+        
+        GlobalClient.Instance.OnSessionJoin -= DisplayAvailability;
+        GlobalClient.Instance.OnSessionJoinFailed -= DisplayError;
+    }
+    
+    /// <summary>
+    /// Loads a scene asynchronously.
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <returns></returns>
+    private IEnumerator LoadSceneCoroutine(string sceneName)
+    {
+        // Start loading the scene
+        var asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+        
+        // Wait until the scene is fully loaded
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+    }
+
 }

@@ -1003,6 +1003,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 433211259}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &434864642 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 1943772860919253239, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+    type: 3}
+  m_PrefabInstance: {fileID: 2225032429376532901}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &446654570
 GameObject:
   m_ObjectHideFlags: 0
@@ -7152,17 +7158,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 6076477134047365602, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_MaximumScaleRatio
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6076477134047365602, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_MinimumScaleRatio
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7444558860215050317, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
         type: 3}
       propertyPath: m_Name
       value: UR Pendant
       objectReference: {fileID: 0}
+    - target: {fileID: 8240383595201851483, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_Colliders.Array.data[0]
+      value: 
+      objectReference: {fileID: 434864642}
     - target: {fileID: 8595223413597810631, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
         type: 3}
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 620860028}
-    m_RemovedComponents: []
+    - target: {fileID: 9198891285510229553, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 9198891285510229553, guid: ddc6c6edf5ef12c4aad7a38c57e732b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
