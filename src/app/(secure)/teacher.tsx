@@ -1,10 +1,11 @@
 // import dependencies
-import moment from 'moment'
 import { prisma } from '@/server/db'
 
 // import components
+import NoSSR from '@/components/no-ssr'
 import { NewSessionRequest } from '@/components/new-request'
 import { JoinSessionRequest } from '@/components/join-request'
+import { SessionRequestRow } from '@/components/request-row'
 
 export const TeacherRobotMonitoringDashboard = async () => {
 	return (
@@ -73,21 +74,11 @@ export const TeacherRequestDashboard = async () => {
 				</div>
 			</div>
 			<div className='flex grow flex-col'>
-				{sessions.map((session) => (
-					<div key={session.id} className='flex gap-2 p-2'>
-						<span>{session.robot.name}</span>
-						<span>{moment(session.start).format('DD-MM-YYYY HH:mm')}</span>
-						<span>{moment(session.end).format('DD-MM-YYYY HH:mm')}</span>
-						<div className='flex gap-2'>
-							{session.requests.map((request => (
-								<div key={request.userId} className='flex gap-2'>
-									<span>{request.user.name}</span>
-									<span>{request.status}</span>
-								</div>
-							)))}
-						</div>
-					</div>
-				))}
+				<NoSSR >
+					{sessions.map((session) => (
+						<SessionRequestRow key={session.id} session={session} />
+					))}
+				</NoSSR>
 			</div>
 		</>
 	)

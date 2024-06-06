@@ -44,7 +44,7 @@ model Robot {
 
 model Availability {
   id      String   @id @default(uuid())
-  robot   Robot    @relation(fields: [robotId], references: [id])
+  robot   Robot    @relation(fields: [robotId], references: [id], onDelete: Cascade)
   robotId String
   start   DateTime
   end     DateTime
@@ -53,16 +53,16 @@ model Availability {
 model RobotSession {
   id       String                @id @default(uuid())
   requests RobotSessionRequest[]
-  robot    Robot                 @relation(fields: [robotId], references: [id])
+  robot    Robot                 @relation(fields: [robotId], references: [id], onDelete: Cascade)
   robotId  String
   start    DateTime
   end      DateTime
 }
 
 model RobotSessionRequest {
-  session   RobotSession  @relation(fields: [sessionId], references: [id])
+  session   RobotSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId String
-  user      User          @relation(fields: [userId], references: [id])
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   status    RequestStatus @default(REQUESTED)
 

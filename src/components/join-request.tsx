@@ -31,7 +31,7 @@ export const JoinSessionRequest = ({ robots }: { robots: (Robot & { sessions: Ro
 	const create = async () => {
 		if (!robot || !session) return
 
-		const res = await fetch('/api/request', {
+		const res = await fetch('/api/session', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -43,9 +43,6 @@ export const JoinSessionRequest = ({ robots }: { robots: (Robot & { sessions: Ro
 				session: session.id
 			})
 		})
-
-		const json = await res.json()
-		console.log(res, json)
 
 		if (res.ok) {
 			setOpen(false)

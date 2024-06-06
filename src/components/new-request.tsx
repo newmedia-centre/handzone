@@ -32,7 +32,7 @@ export const NewSessionRequest = ({ robots }: { robots: Robot[] }) => {
 	const create = async () => {
 		if (!robot || !start || !end) return
 
-		const res = await fetch('/api/request', {
+		const res = await fetch('/api/session', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -43,9 +43,6 @@ export const NewSessionRequest = ({ robots }: { robots: Robot[] }) => {
 				end: new Date(end).toISOString()
 			})
 		})
-
-		const json = await res.json()
-		console.log(res, json)
 
 		if (res.ok) {
 			setOpen(false)
