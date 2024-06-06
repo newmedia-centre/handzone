@@ -78,10 +78,13 @@ namespace VNCScreen
 
             setDisconnectedMaterial();
 
-            SessionClient.Instance.OnConnected += () =>
+            if (SessionClient.Instance == null)
             {
-                Connect();
-            };
+                Debug.LogWarning("SessionClient instance is null. Make sure to have a SessionClient instance in the scene.");
+                return;
+            }
+            
+            SessionClient.Instance.OnConnected += Connect;
             Connect();
         }
 
