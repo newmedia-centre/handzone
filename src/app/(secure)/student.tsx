@@ -28,6 +28,11 @@ export const StudentRequestDashboard = async ({ user }: { user: User }) => {
 	const requests = await prisma.robotSessionRequest.findMany({
 		where: {
 			userId: user.id,
+			session: {
+				end: {
+					gte: new Date().toISOString()
+				}
+			}
 		},
 		include: {
 			session: {
