@@ -2,6 +2,7 @@
 
 // import dependencies
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 // import components
 import {
@@ -24,6 +25,34 @@ import type { Robot } from '@prisma/client'
 export const RequestSession = ({ robots }: { robots: Robot[] }) => {
 	const [open, setOpen] = useState(false)
 	const [robot, setRobot] = useState<Robot | null>(null)
+	const [start, setStart] = useState('')
+	const [end, setEnd] = useState('')
+	const router = useRouter()
+
+	const create = async () => {
+		if (!robot || !start || !end) return
+
+		console.log(robot, start, end)
+
+		const res = await fetch('/api/request', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				robot: robot.id,
+				start: new Date(start).toISOString(),
+				end: new Date(end).toISOString()
+			})
+		})
+
+		const json = await res.json()
+		console.log(res, json)
+
+		if (res.ok) {
+			router.refresh()
+		}
+	}
 
 	return (
 		<>
@@ -53,13 +82,13 @@ export const RequestSession = ({ robots }: { robots: Robot[] }) => {
 							</Field>
 							<Field className='flex items-center'>
 								<Label className='w-24'>Start Time</Label>
-								<Input type='datetime-local' className='w-56 rounded border p-2 outline-none hover:bg-50' />
+								<Input value={start} onChange={e => setStart(e.target.value)} type='datetime-local' className='w-56 rounded border p-2 outline-none hover:bg-50' />
 							</Field>
 							<Field className='flex items-center'>
 								<Label className='w-24'>End Time</Label>
-								<Input type='datetime-local' className='w-56 rounded border p-2 outline-none hover:bg-50' />
+								<Input value={end} onChange={e => setEnd(e.target.value)} type='datetime-local' className='w-56 rounded border p-2 outline-none hover:bg-50' />
 							</Field>
-							<button className='rounded border bg-white p-2 text-center hover:bg-200' onClick={() => setOpen(false)}>Create Request</button>
+							<button className='rounded border bg-white p-2 text-center hover:bg-200' onClick={create}>Create Request</button>
 						</div>
 					</DialogPanel>
 				</div>
