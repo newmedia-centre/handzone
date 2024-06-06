@@ -1,7 +1,6 @@
 'use client'
 
 // import dependencies
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import moment from 'moment'
 
@@ -19,13 +18,26 @@ import type { Robot, RobotSession, RobotSessionRequest, User, RequestStatus } fr
 export const SessionRequestRow = ({ session }: { session: (RobotSession & { robot: Robot, requests: (RobotSessionRequest & { user: User })[] }) }) => {
 	const router = useRouter()
 
+	const remove = async () => {
+		const res = await fetch(`/api/session/${session.id}`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+
+		if (res.ok) {
+			router.refresh()
+		}
+	}
+
 	return (
 		<div className='flex flex-col divide-y divide-100 border-b border-300'>
-			<div className='flex justify-between gap-2 p-2'>
+			<div className='flex items-center justify-between gap-2 p-2'>
 				<span>{session.robot.name}</span>
 				<span>Start: {moment(session.start).format('DD-MM-YYYY HH:mm')}</span>
 				<span>End: {moment(session.end).format('DD-MM-YYYY HH:mm')}</span>
-				<button>Cancel Session</button>
+				<button onClick={remove} className='w-36 rounded border bg-white p-2 text-center hover:bg-200'>Cancel Session</button>
 			</div>
 			<div className='grid grid-cols-1 divide-x divide-100 lg:grid-cols-2'>
 				{session.requests.map((request => (

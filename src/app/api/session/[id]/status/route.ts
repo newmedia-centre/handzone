@@ -19,7 +19,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 	// create the request body parser
 	const Data = z.object({
 		user: z.string(),
-		status: z.enum([RequestStatus.REQUESTED, RequestStatus.ACCEPTED, RequestStatus.REJECTED, RequestStatus.AVAILABLE])
+		status: z.enum([RequestStatus.REQUESTED, RequestStatus.ACCEPTED, RequestStatus.REJECTED, RequestStatus.AVAILABLE, RequestStatus.CANCELLED])
 	})
 
 	// parse the request body
