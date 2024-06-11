@@ -6569,9 +6569,12 @@ MonoBehaviour:
     type: 3}
   listElement: {fileID: 743630203254345442, guid: dbe9a5a5b38c0c740a95e4dc30d6a089,
     type: 3}
+  multipleChoiceElement: {fileID: 1679165248935054222, guid: 3bb077b182ae9ea47a49ac9bfea97e82,
+    type: 3}
   viewportContent: {fileID: 1979380602}
   objectivesList: {fileID: 1862178637}
   pendantUI: {fileID: 0}
+  SidePanelHeader: {fileID: 2048393113}
 --- !u!1001 &1550905913
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7981,7 +7984,7 @@ RectTransform:
   - {fileID: 1711298645}
   m_Father: {fileID: 918307419}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.0000004172325, y: 0}
+  m_AnchorMin: {x: 0.00000029802322, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -8724,7 +8727,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1923284142}
   m_Direction: 0
   m_Value: 1
-  m_Size: 0.9999996
+  m_Size: 0.9999997
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -20923,3 +20926,4 @@ SceneRoots:
   - {fileID: 1262239485}
   - {fileID: 688628050}
   - {fileID: 892064783}
+  - {fileID: 1134843193}

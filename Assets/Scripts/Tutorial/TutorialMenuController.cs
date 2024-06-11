@@ -62,12 +62,12 @@ public class TutorialMenuController : MonoBehaviour
 
     private void FillTutorialScroller(TutorialData[] tutorialData)
     {
-        foreach(TutorialData _data in tutorialData)
+        foreach (TutorialData _data in tutorialData)
         {
             GameObject _element = Instantiate(listElementPrefab, viewportContent.transform);
             TMP_Text _text = _element.GetComponentInChildren<TMP_Text>();
             _text.text = _data.name;
-            
+
             Button _button = _element.GetComponentInChildren<Button>();
             _button.onClick.AddListener(() => PrepareTutorial(_data));
         }

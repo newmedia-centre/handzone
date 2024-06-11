@@ -1,5 +1,7 @@
+using System;
 using TMPro;
 using Unity.VisualScripting;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,11 +11,13 @@ public class TaskMenuController : MonoBehaviour
     public GameObject normalObjective;
     public GameObject sliderObjective;
     public GameObject listElement;
+    public GameObject multipleChoiceElement;
 
     [Header("References")]
     public GameObject viewportContent;
     public GameObject objectivesList;
     public GameObject pendantUI;
+    public TMP_Text SidePanelHeader;
     
     private TaskData[] tasks;
 
@@ -23,12 +27,14 @@ public class TaskMenuController : MonoBehaviour
         
         FillTaskList();
         
-        pendantUI.SetActive(true);
+        // pendantUI.SetActive(true);
+        
+        testMultipleChoice();
     }
 
     public void Exit()
     {
-        pendantUI.SetActive(false);
+        // pendantUI.SetActive(false);
 
         for (int i = viewportContent.transform.childCount; i > 0; i--)
         {
@@ -51,6 +57,8 @@ public class TaskMenuController : MonoBehaviour
 
     public void ChangeObjectives(int index)
     {
+        SidePanelHeader.text = "Current objectives:";
+        
         FillObjectivesList(index);
         //TODO: reset progress/reset robot???
     }
@@ -62,6 +70,29 @@ public class TaskMenuController : MonoBehaviour
             GameObject _element = Instantiate(normalObjective, objectivesList.transform);
             TMP_Text text = _element.GetComponentInChildren<TMP_Text>();
             text.text = task.name;
+        }
+    }
+
+    public void testMultipleChoice()
+    {
+        MultipleChoiceData data = new MultipleChoiceData();
+        data.options = new[] { "Test", "Another option", "The last option" };
+        FillMultipleChoice(data);
+    }
+
+    public void FillMultipleChoice(MultipleChoiceData data)
+    {
+        SidePanelHeader.text = "Select an option:";
+        
+        int i = 65;
+        
+        foreach(string option in data.options)
+        {
+            GameObject _element = Instantiate(multipleChoiceElement, objectivesList.transform);
+            TMP_Text text = _element.GetComponentInChildren<TMP_Text>();
+            text.text = option;
+            _element.GetNamedChild("OptionLetter").GetComponent<TMP_Text>().text = Char.ConvertFromUtf32(i);
+            i++;
         }
     }
 }
@@ -78,6 +109,12 @@ public struct TaskData
 {
     public string name;
     public ObjectiveData[] objectives;
+}
+
+[System.Serializable]
+public struct MultipleChoiceData
+{
+    public string[] options;
 }
 
 [System.Serializable]

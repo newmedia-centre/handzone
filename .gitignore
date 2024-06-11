@@ -82,3 +82,5 @@ crashlytics-build.properties
 
 # Tumbnail/render texutre for ndi stream
 "Assets/Textures/NDI Render Texture.renderTexture"
+
+/build

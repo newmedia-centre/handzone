@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(GlobalClient))]
 public class GlobalClientEditor : Editor
 {
@@ -24,3 +25,4 @@ public class GlobalClientEditor : Editor
         }
     }
 }
+#endif
