@@ -1,6 +1,7 @@
 // import dependencies
 import { z } from 'zod'
 import { robots } from '@/server/robot'
+import { namespaces } from '@/server/socket'
 import { validateRequest } from '@/server/db/auth'
 
 // handle the POST request
@@ -36,6 +37,11 @@ export async function POST(request: Request, { params }: { params: { id: string 
 		return new Response(parsed.error.message, {
 			status: 400
 		})
+	}
+
+	// kick all users when active is false
+	if (!parsed.data.active) {
+		namespaces.get(params.id)?.nsp.disconnectSockets()
 	}
 
 	robot.active = parsed.data.active
