@@ -108,7 +108,6 @@ export const SessionRequestRowUser = ({ request }: { request: RobotSessionReques
 				<ListboxOptions anchor='bottom' className='z-30 mt-1 w-36 rounded border border-300 bg-white text-center'>
 					<ListboxOption value='ACCEPTED' className='cursor-pointer p-2 hover:bg-200'>Accepted</ListboxOption>
 					<ListboxOption value='REJECTED' className='cursor-pointer p-2 hover:bg-200'>Rejected</ListboxOption>
-					<ListboxOption value='AVAILABLE' className='cursor-pointer p-2 hover:bg-200'>Available</ListboxOption>
 				</ListboxOptions>
 			</Listbox>
 		</div>

@@ -180,7 +180,7 @@ export const init = () => {
 						}
 					},
 					status: {
-						in: ['ACCEPTED', 'AVAILABLE']
+						in: ['ACCEPTED']
 					}
 				},
 				include: {
