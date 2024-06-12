@@ -29,7 +29,7 @@ public class SessionClient : MonoBehaviour
     public bool IsConnected => _client.Connected;
     
     public event Action<RealtimeDataOut> OnRealtimeData;
-    public event Action<Texture2D> OnCameraFeed;
+    public event Action<string, Texture2D> OnCameraFeed;
     public event Action<bool> OnDigitalOutputChanged;
     public event Action<string> OnUnityMessage;
     public event Action<UnityPlayersOut> OnUnityPlayerData;
@@ -147,14 +147,16 @@ public class SessionClient : MonoBehaviour
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
                 // Index 0 = Camera name | Index 1 = Base64 encoded image
+                var cameraName = response.GetValue<string>();
                 var base64 = response.GetValue<string>(1);
-                _cameraFeedTexture.LoadImage(Convert.FromBase64String(base64));
-                OnCameraFeed?.Invoke(_cameraFeedTexture);
+                if (_cameraFeedTexture.LoadImage(Convert.FromBase64String(base64)))
+                {
+                    OnCameraFeed?.Invoke(cameraName, _cameraFeedTexture);
+                }
             });
         });
 
         // Register events for the web client that are specific to Grasshopper
-
         # region Grasshopper events
 
         _client.On("grasshopper:program", response =>

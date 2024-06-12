@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ReadVideoFeed : MonoBehaviour
@@ -8,23 +9,30 @@ public class ReadVideoFeed : MonoBehaviour
     /// This method is called on the frame when a script is enabled just before any of the Update methods are called the first time.
     /// It initializes the MeshRenderer component and subscribes to the OnCameraFeed event from the WebClient.
     /// </summary>
-    private void Start()
+    private void OnEnable()
     {
-        _meshRenderer = GetComponent<MeshRenderer>();
-
-        if (_meshRenderer != null)
+        if (SessionClient.Instance)
         {
             SessionClient.Instance.OnCameraFeed += LoadVideoFeed;
         }
-        else
+
+        if (TryGetComponent(out _meshRenderer) == false)
         {
             Debug.LogError("MeshRenderer component is missing!");
         }
     }
 
-    private void LoadVideoFeed(Texture2D texture2D)
+    private void OnDisable()
     {
-        if (_meshRenderer != null)
+        if(SessionClient.Instance)
+        {
+            SessionClient.Instance.OnCameraFeed -= LoadVideoFeed;
+        }
+    }
+
+    private void LoadVideoFeed(string cameraName, Texture2D texture2D)
+    {
+        if (_meshRenderer)
         {
             _meshRenderer.material.mainTexture = texture2D;
         }
