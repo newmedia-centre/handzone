@@ -78,11 +78,10 @@ public class MultiplayerManager : MonoBehaviour
         {
             if (_playerDictionary.TryGetValue(incomingPlayerData.Id, out var player))
             {
-                player.UpdatePositions(incomingPlayerData);
+                player.UpdatePlayerData(incomingPlayerData);
             }
             else
             {
-                // TODO: Incoming player data keeps changing per client. Need to find a way to keep the data consistent.
                 AddPlayer(incomingPlayerData);
                 Debug.Log(incomingPlayerData.Id + " is not in the player dictionary.");
                 Debug.Log("Client ID: " + SessionClient.Instance.ClientId);
@@ -99,17 +98,14 @@ public class MultiplayerManager : MonoBehaviour
             newPlayer.Id = playerData.Id;
             newPlayer.SetNameCard(playerData.Name);
             newPlayer.SetColor(playerData.Color);
-            _playerDictionary.Add(newPlayer.Id, newPlayer);
             
             // Create cursor for the player
             NetworkVNCCursor cursor = Instantiate(playerCursorPrefab, cursorAnchor).GetComponent<NetworkVNCCursor>();
             cursor.Color = newPlayer.color;
             cursor.PlayerNameLabel = playerData.Name;
+            newPlayer.cursor = cursor;
             
-        }
-        else
-        {
-            Debug.LogWarning("Player with ID " + playerData.Id + " already exists in the dictionary.");
+            _playerDictionary.Add(newPlayer.Id, newPlayer);
         }
     }
     

@@ -14,6 +14,7 @@ namespace VNCScreen
         
         private Vector2 _textureCoord;  
         private XRRayInteractor _xrRayInteractor;
+        private bool _isHitting;
         
         public Vector2D TextureCoord
         {
@@ -26,6 +27,11 @@ namespace VNCScreen
                 };
                 return vector2D;
             }
+        }
+        
+        public bool IsHitting
+        {
+            get => _isHitting;
         }
 
         /// <summary>
@@ -64,8 +70,13 @@ namespace VNCScreen
                             return;
                         }
                         
+                        _isHitting = true;
                         _textureCoord = raycastHit.Value.textureCoord;
                         vnc.UpdateMouse(_textureCoord, _xrRayInteractor.isSelectActive);
+                    }
+                    else // If the raycast hits something that is not a VNCScreen, set the isHitting to false
+                    {
+                        _isHitting = false;
                     }
                 }
             }

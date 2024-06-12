@@ -1,19 +1,20 @@
-using Schema.Socket.Unity;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class NetworkVNCCursor : MonoBehaviour
 {
-    [SerializeField] private Renderer coloredCursor;
+    [SerializeField] private Image coloredCursor;
     [SerializeField] private TMP_Text playerName;
-    
+
     public Color Color
     { 
-        set => coloredCursor.material.color = value;
+        set => coloredCursor.color = value;
     }
 
     public string PlayerNameLabel
     {
-        set => playerName.SetText(value);
+        set => playerName.text = value;
     }
 }

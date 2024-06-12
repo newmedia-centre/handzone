@@ -16,6 +16,7 @@ public class NetworkPlayer : MonoBehaviour
     public GameObject hmd;
     public GameObject left;
     public GameObject right;
+    public NetworkVNCCursor cursor;
 
     [Header("Name Card")] 
     public GameObject nameCard;
@@ -60,6 +61,11 @@ public class NetworkPlayer : MonoBehaviour
         if (_receivedPlayerData == null)
             return;
         
+                
+        // Define the speed of the interpolation
+        float lerpSpeed = speed * Time.deltaTime;
+        float rotationLerpSpeed = rotationSpeed * Time.deltaTime;
+        
         // Define the target positions and rotations
         Vector3 hmdTargetPosition = new Vector3((float)_receivedPlayerData.Hmd.Position.X, (float)_receivedPlayerData.Hmd.Position.Y, (float)_receivedPlayerData.Hmd.Position.Z);
         Quaternion hmdTargetRotation = Quaternion.Euler(new Vector3((float)_receivedPlayerData.Hmd.Rotation.X, (float)_receivedPlayerData.Hmd.Rotation.Y, (float)_receivedPlayerData.Hmd.Rotation.Z));
@@ -69,11 +75,7 @@ public class NetworkPlayer : MonoBehaviour
 
         Vector3 rightTargetPosition = new Vector3((float)_receivedPlayerData.Right.Position.X, (float)_receivedPlayerData.Right.Position.Y, (float)_receivedPlayerData.Right.Position.Z);
         Quaternion rightTargetRotation = Quaternion.Euler(new Vector3((float)_receivedPlayerData.Right.Rotation.X, (float)_receivedPlayerData.Right.Rotation.Y, (float)_receivedPlayerData.Right.Rotation.Z));
-
-        // Define the speed of the interpolation
-        float lerpSpeed = speed * Time.deltaTime;
-        float rotationLerpSpeed = rotationSpeed * Time.deltaTime;
-
+        
         // Interpolate the position and rotation of the hmd, left, and right objects
         hmd.transform.position = Vector3.Lerp(hmd.transform.position, hmdTargetPosition, lerpSpeed);
         hmd.transform.rotation = Quaternion.Lerp(hmd.transform.rotation, hmdTargetRotation, rotationLerpSpeed);
@@ -83,10 +85,15 @@ public class NetworkPlayer : MonoBehaviour
 
         right.transform.position = Vector3.Lerp(right.transform.position, rightTargetPosition, lerpSpeed);
         right.transform.rotation = Quaternion.Lerp(right.transform.rotation, rightTargetRotation, rotationLerpSpeed);
-        
+
+        if (_receivedPlayerData.Cursor.X > 0.001f)
+        {
+            Vector2 cursorPosition = new Vector2((float)_receivedPlayerData.Cursor.X, (float)_receivedPlayerData.Cursor.Y);
+            cursor.transform.localPosition = Vector3.Lerp(cursor.transform.localPosition, cursorPosition, lerpSpeed);
+        }
     }
 
-    public void UpdatePositions(PlayerData playerData)
+    public void UpdatePlayerData(PlayerData playerData)
     {
         _receivedPlayerData = playerData;
     }

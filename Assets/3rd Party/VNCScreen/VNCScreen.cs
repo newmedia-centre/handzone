@@ -445,7 +445,6 @@ namespace VNCScreen
             if (!IsConnected) return;
             
             mousePosition = new Vector2(pos.X, pos.Y);
-            Debug.Log(mousePosition + " VNC Mouse position");
             _vnc.UpdateMouse(pos, button0, button1, button2);
         }
 
