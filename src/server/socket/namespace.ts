@@ -6,6 +6,7 @@ import { handleMotionEvents } from './motion'
 import { handleGrasshopperEvents } from './grasshopper'
 import { handleUnityEvents } from './unity'
 import { validateAccessToken } from '@/server/db/jwt'
+import { docker } from '@/server/docker'
 
 // import types
 import type { Namespace } from 'socket.io'
@@ -73,6 +74,11 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		// remove player data on disconnect
 		socket.on('disconnect', () => {
 			players.delete(socket.id)
+
+			// close the virtual robot connection if no users are connected
+			if (robot.virtual && namespace.sockets.size <= 0) {
+				docker.closeVirtualRobot(robot.info.name)
+			}
 		})
 	})
 
