@@ -30,7 +30,7 @@ const envSchema = {
 const configSchema = z.object({
 	/** Array of robot target objects */
 	ROBOTS: z.array(z.object({
-		name: z.string(),
+		name: z.string().regex(/^[a-z0-9_-]*$/),
 		port: port().default(30003),
 		vnc: port().optional(),
 		address: z.string(),
