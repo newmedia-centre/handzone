@@ -198,17 +198,17 @@ export const init = () => {
 				return callback(false, 'Cound not find an approved scheduled session for the user')
 			}
 
-			// check if the session is available
-			if (request.status !== 'AVAILABLE') {
-				logger.info('Real robot request denied, not yet available', { user: socket.data.user })
-				return callback(false, 'Found a scheduled session for the user, but the robot is not yet available')
-			}
-
 			// get the real robot
 			const robot = robots.connections.get(request.session.robot.name)
 			if (!robot) {
 				logger.info('Real robot request denied, robot not found', { user: socket.data.user })
 				return callback(false, 'Robot not found')
+			}
+
+			// check if the robot is available
+			if (!robot.active) {
+				logger.info('Real robot request denied, not yet available', { user: socket.data.user })
+				return callback(false, 'Found a scheduled session for the user, but the robot is not yet available')
 			}
 
 			// generate the access token
