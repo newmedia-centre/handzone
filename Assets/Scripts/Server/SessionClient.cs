@@ -223,9 +223,10 @@ public class SessionClient : MonoBehaviour
         await _client.ConnectAsync();
     }
     
-    public void RequestPermission()
+    public void TakeControlPermission()
     {
         _client.EmitAsync("unity:pendant");
+        Debug.Log("Take control permission of the robot");
     }
 
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)

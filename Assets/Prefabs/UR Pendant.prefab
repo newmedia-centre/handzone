@@ -196,7 +196,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Request permission
+  m_text: Take permission
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -310,9 +310,9 @@ GameObject:
   - component: {fileID: 1715362295847612634}
   - component: {fileID: 2890444084581799402}
   - component: {fileID: 5660920816962078422}
-  - component: {fileID: 3687465806260559575}
+  - component: {fileID: 8449471235750102116}
   m_Layer: 5
-  m_Name: RequestPermissionButton
+  m_Name: TakePermissionButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -420,7 +420,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3687465806260559575
+--- !u!114 &8449471235750102116
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -539,7 +539,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 8020182998393392721, guid: 2bb9ef606bc1e7843ba8adf3093fb5ee, type: 3}
 --- !u!114 &6882951242940150495
@@ -781,7 +781,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_InteractionLayers:
-    m_Bits: 4294967295
+    m_Bits: 1
   m_DistanceCalculationMode: 1
   m_SelectMode: 1
   m_FocusMode: 1
@@ -1060,7 +1060,7 @@ GameObject:
   - component: {fileID: 7813050038662598693}
   - component: {fileID: 6644401185542468575}
   m_Layer: 5
-  m_Name: RequestPermissionCanvas
+  m_Name: PermissionCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1285,8 +1285,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.52066475, y: 3.3167903, z: 2.4265943}
-  m_Center: {x: -0.2910252, y: 0.13124543, z: 0.0057062516}
+  m_Size: {x: 0.346767, y: 3.3167903, z: 2.4265943}
+  m_Center: {x: -0.20407632, y: 0.13124542, z: 0.0057062176}
 --- !u!4 &5372313169650918024 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 892e7e40d05c3544590a5d4bc99fe71e,

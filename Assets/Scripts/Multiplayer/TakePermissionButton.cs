@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PermissionRequestButton : MonoBehaviour
+public class TakePermissionButton : MonoBehaviour
 {
     private Button _button;
     
@@ -21,7 +21,7 @@ public class PermissionRequestButton : MonoBehaviour
     private void RequestPermission()
     {
         if (SessionClient.Instance)
-            SessionClient.Instance.RequestPermission();
+            SessionClient.Instance.TakeControlPermission();
     }
 
     private void OnDestroy()
