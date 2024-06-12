@@ -21,7 +21,9 @@ export default async function Layout({ children, params }: Readonly<{ children: 
 						<LogSelect options={files} />
 					</div>
 				</div>
-				{children}
+				<div className='overflow-auto'>
+					{children}
+				</div>
 			</div>
 		</main>
 	)
