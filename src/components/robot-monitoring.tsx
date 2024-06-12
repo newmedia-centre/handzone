@@ -65,13 +65,28 @@ export const RobotMonitoringDashboard = ({ robot, status, active, paused }: { ro
 }
 
 export const VirtualRobotMonitoringDashboard = ({ robots }: { robots: (RobotInfo & { status: SessionType | null })[] }) => {
+	const router = useRouter()
+
+	const kill = async (robot: RobotInfo) => {
+		const res = await fetch(`/api/robot/${robot.name}/active`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+
+		if (res.ok) {
+			router.refresh()
+		}
+	}
+
 	return (
 		<div className='flex flex-col divide-y divide-100 border-b border-300'>
 			{robots.map(robot => (
 				<div key={robot.name} className='flex items-center justify-between gap-2 p-2'>
 					<span className='p-2 capitalize'>{robot.name}</span>
 					<div className='flex justify-end gap-2'>
-						<button onClick={() => console.log('kill')} className='w-36 rounded border bg-white p-2 text-center hover:bg-200'>Shut Down</button>
+						<button onClick={() => kill(robot)} className='w-36 rounded border bg-white p-2 text-center hover:bg-200'>Shut Down</button>
 					</div>
 				</div>
 			))}
