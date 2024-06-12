@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
 using UnityVncSharp;
 using VNCScreen.Drawing;
@@ -287,8 +288,11 @@ namespace VNCScreen
             // If the remote host dies, try to request a new token and reconnect 
             if (GlobalClient.Instance)
             {
-                Task.Run(async () => await GlobalClient.Instance.RequestToken());
-                Connect();
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    Task.Run(async () => await GlobalClient.Instance.RequestToken());
+                    Connect();
+                });
             }
         }
 
