@@ -1,22 +1,51 @@
 // import dependencies
 import { prisma } from '@/server/db'
+import { robots } from '@/server/robot'
+import env from '@/server/environment'
 
 // import components
 import NoSSR from '@/components/no-ssr'
 import { NewSessionRequest } from '@/components/new-request'
 import { JoinSessionRequest } from '@/components/join-request'
 import { SessionRequestRow } from '@/components/request-row'
+import { RobotMonitoringDashboard, VirtualRobotMonitoringDashboard } from '@/components/robot-monitoring'
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 
 export const TeacherRobotMonitoringDashboard = async () => {
+	const virtual = Array.from(robots.connections.values()).filter(robot => !!robot.virtual).map(robot => ({ ...robot.info, status: robot.virtual }))
+
 	return (
-		<>
-			<div className='flex shrink-0 items-center justify-between p-2'>
-				<h2 className='text-2xl leading-none'>Robot Monitoring</h2>
-				<div className='flex gap-2'>
-				</div>
+		<TabGroup className='divide-y divide-300'>
+			<div className='flex shrink-0 items-stretch justify-between'>
+				<h2 className='p-2 text-2xl leading-none'>Robot Monitoring</h2>
+				<TabList className='flex justify-end divide-x divide-300 border-l border-300'>
+					{env.ROBOTS.map(robot => (
+						<Tab key={robot.name} className='flex items-center gap-4 px-4 capitalize outline-none hover:bg-200'>
+							<span>{robot.name}</span>
+							{robots.connections.has(robot.name) ? (
+								<div className='size-2 rounded-full bg-green-500'></div>
+							) : (
+								<div className='size-2 rounded-full bg-red-500'></div>
+							)}
+						</Tab>
+					))}
+					<Tab className='px-4 outline-none hover:bg-200'>{`Virtual Robots`}</Tab>
+				</TabList>
 			</div>
-			<div className='grow p-2'></div>
-		</>
+			<TabPanels className='grow'>
+				{env.ROBOTS.map(robot => (
+					<TabPanel key={robot.name}>
+						<RobotMonitoringDashboard robot={robot}
+							status={robots.connections.has(robot.name)}
+							active={robots.connections.get(robot.name)?.active ?? false}
+							paused={robots.connections.get(robot.name)?.paused ?? false} />
+					</TabPanel>
+				))}
+				<TabPanel>
+					<VirtualRobotMonitoringDashboard robots={virtual} />
+				</TabPanel>
+			</TabPanels>
+		</TabGroup>
 	)
 }
 

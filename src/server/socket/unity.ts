@@ -27,6 +27,7 @@ export const handleUnityEvents = (socket: Socket<NamespaceClientToServerEvents, 
 
 	// handle the unity:pendant event
 	socket.on('unity:pendant', () => {
+		if (socket.data.robot.paused) return
 		socket.nsp.emit('unity:pendant', { owner: socket.id })
 	})
 }

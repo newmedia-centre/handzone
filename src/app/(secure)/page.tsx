@@ -12,7 +12,7 @@ export default async function Page() {
 	return (
 		<main className='container mx-auto flex grow flex-col items-center gap-8 overflow-y-auto p-8'>
 			{user!.admin && (
-				<div className='w-full divide-y divide-300 rounded border border-300 bg-white shadow-md'>
+				<div className='w-full rounded border border-300 bg-white shadow-md'>
 					<TeacherRobotMonitoringDashboard />
 				</div>
 			)}
