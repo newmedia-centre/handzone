@@ -22,6 +22,7 @@ public class MainMenuController : MonoBehaviour
     
     // Variable to store the previous menu
     private MenuName _previousMenu;
+    private MenuName _currentMenu;
 
     private Dictionary<MenuName, GameObject> _menuDictionary = new();
 
@@ -38,21 +39,16 @@ public class MainMenuController : MonoBehaviour
 
     public void ChangeMenu(MenuControllerOption menuName)
     {
-        _previousMenu = menuName.menuName;
-        
-        foreach (var menu in _menuDictionary)
-        {
-            menu.Value.SetActive(menu.Key == menuName.menuName);
-        }
+        ChangeMenu(menuName.menuName);
     }
     
     public void ChangeMenu(MenuName menuName)
     {
-        _previousMenu = menuName;
-        
+        _previousMenu = _currentMenu;
+        _currentMenu = menuName;
         foreach (var menu in _menuDictionary)
         {
-            menu.Value.SetActive(menu.Key == menuName);
+            menu.Value.SetActive(menu.Key == _currentMenu);
         }
     }
     
