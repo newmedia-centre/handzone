@@ -195,6 +195,7 @@ public class SessionClient : MonoBehaviour
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
                 UnityPlayersOut players = response.GetValue<UnityPlayersOut>();
+                Debug.Log("Received player data from server...");
                 if(players == null) return;
                 
                 OnUnityPlayerData?.Invoke(players);
@@ -226,7 +227,6 @@ public class SessionClient : MonoBehaviour
     public void TakeControlPermission()
     {
         _client.EmitAsync("unity:pendant");
-        Debug.Log("Take control permission of the robot");
     }
 
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)

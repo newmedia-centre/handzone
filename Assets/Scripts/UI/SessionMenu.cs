@@ -36,10 +36,7 @@ public class SessionMenu : MonoBehaviour
         
         // Subscribe to the session selected event
         OnSessionSelected += SetSelectedSession;
-        
-        // Init the session availability group
-        _sessionAvailabilityLabel = transform.Find("SessionPanel/AvailabilityGroup/AvailabilityCapacityLabel").GetComponent<TextMeshProUGUI>();
-        
+
         // Init the join session button
         transform.Find("SessionPanel/Buttons/JoinButton").TryGetComponent(out _joinSessionButton);
         _joinSessionButton.interactable = false;
@@ -59,6 +56,10 @@ public class SessionMenu : MonoBehaviour
 
     private void OnEnable()
     {
+        // Init the session availability group
+        if(_sessionAvailabilityLabel == null)                
+            _sessionAvailabilityLabel = transform.Find("SessionPanel/AvailabilityGroup/AvailabilityCapacityLabel").GetComponent<TextMeshProUGUI>();
+
         if (GlobalClient.Instance?.Sessions != null)
         {
             Debug.Log("Updating available sessions in menu...");
