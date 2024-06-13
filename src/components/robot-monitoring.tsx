@@ -6,9 +6,13 @@ import { useRouter } from 'next/navigation'
 // import types
 import type { RobotInfo } from '@/server/robot/connection'
 import type { SessionType } from '@/types/Socket/Index'
+import type { User } from '@prisma/client'
 
-export const RobotMonitoringDashboard = ({ robot, status, active, paused }: { robot: RobotInfo, status?: boolean, active: boolean, paused: boolean }) => {
+export const RobotMonitoringDashboard = ({ robot, users, status, active, paused }: { robot: RobotInfo, users: (User & { paused: boolean })[], status?: boolean, active: boolean, paused: boolean }) => {
 	const router = useRouter()
+
+	// filter users
+	const uniqueUsers = users.filter((value, index, array) => array.findIndex(x => x.id === value.id) === index)
 
 	const activate = async () => {
 		const res = await fetch(`/api/robot/${robot.name}/active`, {
@@ -57,8 +61,57 @@ export const RobotMonitoringDashboard = ({ robot, status, active, paused }: { ro
 					<button onClick={activate} className='w-36 rounded border bg-white p-2 text-center hover:bg-200'>{active ? 'Close' : 'Activate'}</button>
 				</div>
 			</div>
-			<div className='grid grid-cols-1 divide-x divide-100 p-2 lg:grid-cols-2'>
-				Users
+			<div className='grid grid-cols-1 divide-x divide-100 lg:grid-cols-2'>
+				{uniqueUsers.map(user => (
+					<RobotMonitoringUser key={user.id} robot={robot} user={user} />
+				))}
+			</div>
+		</div>
+	)
+}
+
+const RobotMonitoringUser = ({ robot, user }: { robot: RobotInfo, user: User & { paused: boolean } }) => {
+	const router = useRouter()
+
+	const pause = async () => {
+		const res = await fetch(`/api/robot/${robot.name}/user`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				id: user.id,
+				paused: !user.paused
+			})
+		})
+
+		if (res.ok) {
+			router.refresh()
+		}
+	}
+
+	const kick = async () => {
+		const res = await fetch(`/api/robot/${robot.name}/user`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				id: user.id,
+			})
+		})
+
+		if (res.ok) {
+			router.refresh()
+		}
+	}
+
+	return (
+		<div className='flex items-center justify-between gap-2 p-2'>
+			<a href={`mailto:${user.email}`}>{user.name}</a>
+			<div className='flex justify-end gap-2'>
+				<button onClick={pause} className='w-36 rounded border bg-white p-2 text-center hover:bg-200'>{user.paused ? 'Resume' : 'Pause'}</button>
+				<button onClick={kick} className='w-36 rounded border bg-white p-2 text-center hover:bg-200'>Kick</button>
 			</div>
 		</div>
 	)

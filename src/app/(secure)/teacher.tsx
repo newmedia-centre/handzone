@@ -1,6 +1,7 @@
 // import dependencies
 import { prisma } from '@/server/db'
 import { robots } from '@/server/robot'
+import { namespaces } from '@/server/socket'
 import env from '@/server/environment'
 
 // import components
@@ -39,6 +40,7 @@ export const TeacherRobotMonitoringDashboard = async () => {
 				{env.ROBOTS.map(robot => (
 					<TabPanel key={robot.name}>
 						<RobotMonitoringDashboard robot={robot}
+							users={Array.from(namespaces.get(robot.name)?.nsp.sockets.values() ?? []).map(socket => ({ ...socket.data.user, paused: socket.data.paused }))}
 							status={robots.connections.has(robot.name)}
 							active={robots.connections.get(robot.name)?.active ?? false}
 							paused={robots.connections.get(robot.name)?.paused ?? false} />
