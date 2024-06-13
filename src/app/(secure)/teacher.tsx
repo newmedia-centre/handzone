@@ -23,8 +23,11 @@ export const TeacherRobotMonitoringDashboard = async () => {
 						<Tab key={robot.name} className='flex items-center gap-4 px-4 capitalize outline-none hover:bg-200'>
 							<span>{robot.name}</span>
 							{robots.connections.has(robot.name) ? (
-								<div className='size-2 rounded-full bg-green-500'></div>
-							) : (
+								robots.connections.get(robot.name)!.active ? (
+									<div className='size-2 rounded-full bg-green-500'></div>
+								) : (
+									<div className='size-2 rounded-full bg-yellow-500'></div>
+								)) : (
 								<div className='size-2 rounded-full bg-red-500'></div>
 							)}
 						</Tab>
