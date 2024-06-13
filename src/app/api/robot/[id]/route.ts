@@ -1,7 +1,7 @@
 // import dependencies
 import { robots } from '@/server/robot'
 import { docker } from '@/server/docker'
-import { validateRequest } from '@/server/db/auth'
+import { validateRequest } from '@/server/db/auth-next'
 
 // handle the DELETE request
 export async function DELETE(request: Request, { params }: { params: { id: string } }): Promise<Response> {

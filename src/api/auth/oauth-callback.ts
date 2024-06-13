@@ -1,6 +1,5 @@
 // import dependencies
 import { OAuth2RequestError } from 'oslo/oauth2'
-import { cookies } from 'next/headers'
 import { oauth, lucia, getUserInfo, decodeIdToken } from '@/server/db/auth'
 import { prisma } from '@/server/db'
 import { env } from '@/server/environment'
@@ -15,8 +14,8 @@ export const oauthCallback = async (req: Request, res: Response) => {
 
 	const code = url.searchParams.get('code')
 	const state = url.searchParams.get('state')
-	const storedState = cookies().get('oauth_state')?.value ?? null
-	const storedCodeVerifier = cookies().get('oauth_code_verifier')?.value ?? null
+	const storedState = req.cookies['oauth_state']?.value ?? null
+	const storedCodeVerifier = req.cookies['oauth_code_verifier']?.value ?? null
 	if (!code || !state || !storedState || !storedCodeVerifier || state !== storedState) {
 		return res.status(400).send()
 	}
@@ -41,7 +40,7 @@ export const oauthCallback = async (req: Request, res: Response) => {
 			// create a session
 			const session = await lucia.createSession(existingUser.id, {})
 			const sessionCookie = lucia.createSessionCookie(session.id)
-			cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
+			res.cookie(sessionCookie.name, sessionCookie.serialize())
 		} else {
 			// get the user info
 			const user = await getUserInfo(tokens.access_token)
@@ -57,12 +56,12 @@ export const oauthCallback = async (req: Request, res: Response) => {
 
 			const session = await lucia.createSession(user.id, {})
 			const sessionCookie = lucia.createSessionCookie(session.id)
-			cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
+			res.cookie(sessionCookie.name, sessionCookie.serialize())
 		}
 
 		// clear the cookies
-		cookies().delete('oauth_state')
-		cookies().delete('oauth_code_verifier')
+		res.clearCookie('oauth_state')
+		res.clearCookie('oauth_code_verifier')
 
 		// redirect to the home page
 		return res.status(302).redirect('/')

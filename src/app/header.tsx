@@ -1,6 +1,6 @@
 // import dependencies
 import { env } from '@/server/environment'
-import { validateRequest } from '@/server/db/auth'
+import { validateRequest } from '@/server/db/auth-next'
 
 // import components
 import { ConnectVR } from '@/components/connect'

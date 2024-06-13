@@ -1,6 +1,6 @@
 // import dependencies
 import { redirect } from 'next/navigation'
-import { validateRequest } from '@/server/db/auth'
+import { validateRequest } from '@/server/db/auth-next'
 
 // import components
 import { UserProvider } from '@/hooks/user'

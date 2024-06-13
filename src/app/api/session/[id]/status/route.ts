@@ -1,7 +1,7 @@
 // import dependencies
 import { z } from 'zod'
 import { prisma } from '@/server/db'
-import { validateRequest } from '@/server/db/auth'
+import { validateRequest } from '@/server/db/auth-next'
 import { webLogger as logger } from '@/server/logger'
 import { RequestStatus } from '@prisma/client'
 

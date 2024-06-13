@@ -1,6 +1,6 @@
 // import dependencies
 import { cookies } from 'next/headers'
-import { lucia, validateRequest } from '@/server/db/auth'
+import { lucia, validateRequest } from '@/server/db/auth-next'
 
 // handle the GET request
 export async function GET(): Promise<Response> {

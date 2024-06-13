@@ -1,6 +1,6 @@
 // import dependencies
 import { prisma } from '@/server/db'
-import { validateRequest } from '@/server/db/auth'
+import { validateRequest } from '@/server/db/auth-next'
 import { webLogger as logger } from '@/server/logger'
 
 // handle the DELETE request

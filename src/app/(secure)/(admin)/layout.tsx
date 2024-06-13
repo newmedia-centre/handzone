@@ -1,5 +1,5 @@
 // import dependencies
-import { validateRequest } from '@/server/db/auth'
+import { validateRequest } from '@/server/db/auth-next'
 import { redirect } from 'next/navigation'
 
 // export layout

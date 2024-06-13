@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import { robots } from '@/server/robot'
 import { namespaces } from '@/server/socket'
-import { validateRequest } from '@/server/db/auth'
+import { validateRequest } from '@/server/db/auth-next'
 
 // handle the POST request
 export async function POST(request: Request, { params }: { params: { id: string } }): Promise<Response> {
