@@ -1,5 +1,6 @@
 // import dependencies
 import { OAuth2RequestError } from 'oslo/oauth2'
+import { parseCookies, serializeCookie } from 'oslo/cookie'
 import { oauth, lucia, getUserInfo, decodeIdToken } from '@/server/db/auth'
 import { prisma } from '@/server/db'
 import { env } from '@/server/environment'
@@ -10,12 +11,12 @@ import type { TokenResponseBody } from 'oslo/oauth2'
 
 // create the oauth route
 export const oauthCallback = async (req: Request, res: Response) => {
-	const url = new URL(req.url)
+	const code = req.query.code?.toString() ?? null
+	const state = req.query.state?.toString() ?? null
 
-	const code = url.searchParams.get('code')
-	const state = url.searchParams.get('state')
-	const storedState = req.cookies['oauth_state']?.value ?? null
-	const storedCodeVerifier = req.cookies['oauth_code_verifier']?.value ?? null
+	const storedState = parseCookies(req.headers.cookie ?? '').get('oauth_state') ?? null
+	const storedCodeVerifier = parseCookies(req.headers.cookie ?? '').get('oauth_code_verifier') ?? null
+
 	if (!code || !state || !storedState || !storedCodeVerifier || state !== storedState) {
 		return res.status(400).send()
 	}
@@ -40,7 +41,7 @@ export const oauthCallback = async (req: Request, res: Response) => {
 			// create a session
 			const session = await lucia.createSession(existingUser.id, {})
 			const sessionCookie = lucia.createSessionCookie(session.id)
-			res.cookie(sessionCookie.name, sessionCookie.serialize())
+			res.appendHeader('Set-Cookie', serializeCookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes))
 		} else {
 			// get the user info
 			const user = await getUserInfo(tokens.access_token)
@@ -56,7 +57,7 @@ export const oauthCallback = async (req: Request, res: Response) => {
 
 			const session = await lucia.createSession(user.id, {})
 			const sessionCookie = lucia.createSessionCookie(session.id)
-			res.cookie(sessionCookie.name, sessionCookie.serialize())
+			res.appendHeader('Set-Cookie', serializeCookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes))
 		}
 
 		// clear the cookies

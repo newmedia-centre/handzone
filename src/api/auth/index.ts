@@ -21,5 +21,3 @@ auth.get('/oauth', oauth)
 
 // create the oauth callback route
 auth.get('/oauth/callback', oauthCallback)
-
-auth.get('/test', (req, res) => res.send('Hello, World!'))

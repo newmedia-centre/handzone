@@ -2,6 +2,7 @@
 import { Lucia } from 'lucia'
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma'
 import { OAuth2Client } from 'oslo/oauth2'
+import { parseCookies, serializeCookie } from 'oslo/cookie'
 import { prisma } from '.'
 import { env } from '../environment'
 import { databaseLogger } from '../logger'
@@ -88,7 +89,7 @@ export const validateApi = async (req: Request, res: Response) => {
 	if (tokenId) sessionId = tokenId
 
 	// try get the session id from the cookie
-	const cookieId = lucia.readSessionCookie(req.cookies[lucia.sessionCookieName] ?? '')
+	const cookieId = parseCookies(req.headers.cookie ?? '').get(lucia.sessionCookieName) ?? null
 	if (cookieId) sessionId = cookieId
 
 	// if no session id was found, return null, user is not authenticated
@@ -104,11 +105,11 @@ export const validateApi = async (req: Request, res: Response) => {
 	try {
 		if (result.session && result.session.fresh) {
 			const sessionCookie = lucia.createSessionCookie(result.session.id)
-			res.cookie(sessionCookie.name, sessionCookie.serialize())
+			res.appendHeader('Set-Cookie', serializeCookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes))
 		}
 		if (!result.session) {
 			const sessionCookie = lucia.createBlankSessionCookie()
-			res.cookie(sessionCookie.name, sessionCookie.serialize())
+			res.appendHeader('Set-Cookie', serializeCookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes))
 		}
 	} catch {
 		logger.warn('Failed to set session cookie')
