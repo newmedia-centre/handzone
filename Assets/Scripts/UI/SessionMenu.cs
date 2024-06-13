@@ -18,6 +18,7 @@ public class SessionMenu : MonoBehaviour
     private Button _joinSessionButton;
     private Button _createSessionButton;
     private TextMeshProUGUI _sessionAvailabilityLabel;
+    private GameObject sessionsGroup;
     
     // Start is called before the first frame update
     void Start()
@@ -27,6 +28,8 @@ public class SessionMenu : MonoBehaviour
             Debug.LogError("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene.");
             return;
         }
+
+        sessionsGroup = transform.Find("SessionPanel/SessionsGroup").gameObject;
         
         // Subscribe to the sessions received event
         GlobalClient.Instance.OnSessionsReceived += UpdateMenu;
@@ -58,6 +61,7 @@ public class SessionMenu : MonoBehaviour
     {
         if (GlobalClient.Instance?.Sessions != null)
         {
+            Debug.Log("Updating available sessions in menu...");
             UpdateMenu(GlobalClient.Instance.Sessions);
         }
     }
@@ -103,7 +107,6 @@ public class SessionMenu : MonoBehaviour
             if (receivedSession.Type != GlobalClient.Instance.SessionType)
                 continue;
             
-            var sessionsGroup = transform.Find("SessionPanel/SessionsGroup").gameObject;
             var sessionButtonGb = Instantiate(sessionButtonPrefab, sessionsGroup.transform);
             var sessionButton = sessionButtonGb.GetComponent<SessionButton>();
             sessionButton.GetComponent<SessionButton>().SetButton(receivedSession);
