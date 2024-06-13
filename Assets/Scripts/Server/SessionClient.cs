@@ -300,6 +300,11 @@ public class SessionClient : MonoBehaviour
         _client.EmitAsync("unity:pendant", message);
     }
 
+    public void EmergencyStop()
+    {
+        _client.EmitAsync("motion:emergency_stop");
+    }
+
     private async void OnDestroy()
     {
         await vncStream.DisposeAsync();
