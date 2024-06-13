@@ -12,7 +12,7 @@ export const RobotMonitoringDashboard = ({ robot, status, active, paused }: { ro
 
 	const activate = async () => {
 		const res = await fetch(`/api/robot/${robot.name}/active`, {
-			method: 'PUT',
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -27,8 +27,8 @@ export const RobotMonitoringDashboard = ({ robot, status, active, paused }: { ro
 	}
 
 	const pause = async () => {
-		const res = await fetch(`/api/robot/${robot.name}/active`, {
-			method: 'PUT',
+		const res = await fetch(`/api/robot/${robot.name}/pause`, {
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -53,8 +53,8 @@ export const RobotMonitoringDashboard = ({ robot, status, active, paused }: { ro
 			<div className='flex items-center justify-between gap-2 p-2'>
 				<span className='p-2 capitalize'>{robot.name}</span>
 				<div className='flex justify-end gap-2'>
-					<button onClick={pause} disabled={!active} className='w-36 rounded border bg-white p-2 text-center enabled:hover:bg-200 disabled:text-400'>Pause</button>
-					<button onClick={activate} className='w-36 rounded border bg-white p-2 text-center hover:bg-200'>{active ? 'Kill' : 'Activate'}</button>
+					<button onClick={pause} disabled={!active} className='w-36 rounded border bg-white p-2 text-center enabled:hover:bg-200 disabled:text-400'>{paused ? 'Resume' : 'Pause'}</button>
+					<button onClick={activate} className='w-36 rounded border bg-white p-2 text-center hover:bg-200'>{active ? 'Close' : 'Activate'}</button>
 				</div>
 			</div>
 			<div className='grid grid-cols-1 divide-x divide-100 p-2 lg:grid-cols-2'>
@@ -68,7 +68,7 @@ export const VirtualRobotMonitoringDashboard = ({ robots }: { robots: (RobotInfo
 	const router = useRouter()
 
 	const kill = async (robot: RobotInfo) => {
-		const res = await fetch(`/api/robot/${robot.name}/active`, {
+		const res = await fetch(`/api/robot/${robot.name}`, {
 			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/json'
