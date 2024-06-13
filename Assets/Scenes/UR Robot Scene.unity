@@ -7223,6 +7223,31 @@ PrefabInstance:
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 620860028}
+    - target: {fileID: 9124276597010513866, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 0.2399537
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124276597010513866, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_Center.x
+      value: 0.0015961297
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124276597010513866, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_Center.y
+      value: -0.0012862085
+      objectReference: {fileID: 0}
+    - target: {fileID: 9124276597010513866, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0.08698702
+      objectReference: {fileID: 0}
+    - target: {fileID: 9158821956052547579, guid: ddc6c6edf5ef12c4aad7a38c57e732b0,
+        type: 3}
+      propertyPath: m_SmoothingSpeed
+      value: 1.8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

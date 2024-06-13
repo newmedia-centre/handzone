@@ -8,11 +8,28 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class GlobalClientLoginButton : MonoBehaviour
 {
+    public MainMenuController mainMenuController;
     public Button loginButton;
     public TMP_InputField pinInputField;
+    public GameObject logPanel;
+    
+    private MenuControllerOption _menuControllerOption;
+    private TMP_Text _logText;
     
     private void Start()
     {
+        if(mainMenuController == null)
+            mainMenuController = FindObjectOfType<MainMenuController>();
+
+        TryGetComponent(out _menuControllerOption);
+        
+        if(logPanel == null)
+            logPanel = GameObject.Find("LogPanel");
+        
+        _logText = logPanel.GetComponentInChildren<TMP_Text>();
+        logPanel.SetActive(false);
+        _logText.text = "";
+        
         if(loginButton == null)
             loginButton = GetComponent<Button>();
         loginButton.onClick.AddListener(GlobalClientLogin);
@@ -68,26 +85,39 @@ public class GlobalClientLoginButton : MonoBehaviour
                 pinInputField.interactable = true;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
                 Debug.LogError($"An error occurred: {error}");
+                _logText.text = $"An error occurred: {error}";
             });
         };
     }
     
-    public async void GlobalClientLogin()
+    /// <summary>
+    /// Button click event to login to the global server. It makes sure to check if the PIN is empty.
+    /// It also changes the main menu.
+    /// </summary>
+    private async void GlobalClientLogin()
     {
         string pin = pinInputField.text;
         if (string.IsNullOrEmpty(pin))
         {
-            Debug.LogError("PIN is empty.");
+            Debug.LogWarning("PIN is empty.");
+            logPanel.SetActive(true);
+            _logText.text = "PIN is empty. Please enter a PIN.";
             return;
         }
+
+        if (logPanel.activeSelf)
+            logPanel.SetActive(false);
         
         try
         {
             await GlobalClient.Instance.TryConnectToGlobalServer(pin);
+            mainMenuController.ChangeMenu(_menuControllerOption);
         }
         catch (Exception ex)
         {
             Debug.LogError($"An error occurred: {ex.Message}");
+            logPanel.SetActive(true);
+            _logText.text = $"An error occurred: {ex.Message}";
         }
     }
 }
