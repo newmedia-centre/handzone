@@ -2,27 +2,18 @@
 
 // import dependencies
 import { useState } from 'react'
-import { validateRequest } from '@/server/db/auth'
-import { validatePin } from '@/server/db/pin'
 
 // connect to vr button
 export const ConnectVR = () => {
 	const [open, setOpen] = useState<boolean>()
+	const [pin, setPin] = useState<string>()
 
 	// validate a pin as the logged in user
-	const validate = async (formData: FormData) => {
-		'use server'
-
-		// get the user
-		const { user } = await validateRequest()
-		if (!user) return
-
-		// get the pin
-		const pin = formData.get('pin')
-
-		// validate the pin
-		await validatePin(pin as string, user)
-		console.log('User', user)
+	const validate = async () => {
+		await fetch('/api/pin', {
+			method: 'PUT',
+			body: JSON.stringify({ pin }),
+		})
 	}
 
 	return (
@@ -33,6 +24,8 @@ export const ConnectVR = () => {
 					<input
 						type='text'
 						name='pin'
+						value={pin}
+						onChange={e => setPin(e.target.value)}
 						className='rounded border border-300 p-2 hover:bg-50'
 						placeholder='Enter the given pin'
 					/>
