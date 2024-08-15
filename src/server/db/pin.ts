@@ -1,7 +1,7 @@
 // import dependencies
 import { TOTPController } from 'oslo/otp'
 import { TimeSpan } from 'oslo'
-import { HMAC } from 'oslo/crypto'
+import { base64 } from 'oslo/encoding'
 import { env } from '@/server/environment'
 import { databaseLogger } from '../logger'
 
@@ -12,23 +12,16 @@ import type { User } from '@prisma/client'
 export const logger = databaseLogger.child({ entity: 'pin', label: 'DB:PIN' })
 
 // init the TOTP controller and pin map
-const pins = global.otpPins || new Map<string, { user: User, secret: ArrayBuffer }>()
+const pins = global.otpPins || new Map<string, { user?: User }>()
 const controller = global.otpController || new TOTPController({ digits: env.NODE_ENV === 'development' ? 2 : 4, period: new TimeSpan(15, 'm') })
 
 // generate a pin for the user
-export const generatePin = async (user: User) => {
-	// delete any existing pins for the user
-	for (const [otp, data] of pins) {
-		if (data.user.id === user.id) {
-			pins.delete(otp)
-		}
-	}
+export const generatePin = async (signature: string) => {
 
 	// generate a new pin
-	const secret = await new HMAC('SHA-256').generateKey()
-	const otp = await controller.generate(secret)
-	pins.set(otp, { user, secret })
-	logger.info('Generated pin for user', { user: user.id, otp })
+	const otp = await controller.generate(base64.decode(signature))
+	pins.set(otp, {})
+	logger.info('Generated pin', { otp })
 
 	// set a timeout to delete the pin after it expires
 	setTimeout(() => { pins.delete(otp) }, 15 * 60 * 1000)
@@ -36,24 +29,43 @@ export const generatePin = async (user: User) => {
 	return otp
 }
 
-// validate the pin and return the user
-export const validatePin = async (otp: string) => {
+// claims the pin for the given user
+export const validatePin = async (otp: string, user: User) => {
 	// get the user and secret
 	const data = pins.get(otp)
 	if (!data) {
-		logger.info('Log in attempt without valid pin (not found)', { otp, pins: pins.keys() })
+		logger.info('Invalid pin (not found)', { otp, pins: pins.keys() })
+		throw new Error('Invalid pin (not found)')
+	}
+
+	// check if the pin is already claimed
+	if (data.user) {
+		logger.info('Pin already validated', { otp, user: data.user })
+		throw new Error('Pin already validated')
+	}
+
+	// claim the pin
+	data.user = user
+	pins.set(otp, data)
+}
+
+// verify the pin and return the user
+export const verifyPin = async (otp: string, signature: string) => {
+	// get the user and secret
+	const data = pins.get(otp)
+	if (!data) {
+		logger.info('Verification attempt without valid pin (not found)', { otp, pins: pins.keys() })
 		throw new Error('Invalid pin (not found)')
 	}
 
 	// verify the pin
-	const valid = await controller.verify(otp, data.secret)
+	const valid = await controller.verify(otp, base64.decode(signature))
 	if (!valid) {
-		logger.info('Log in attempt without valid pin (invalid)')
+		logger.info('Verification attempt without valid pin (invalid)')
 		throw new Error('Invalid pin (invalid)')
 	}
 
-	// return the user
-	pins.delete(otp)
+	// return the user and the access token
 	return data.user
 }
 

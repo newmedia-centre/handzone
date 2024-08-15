@@ -3,7 +3,7 @@ import { Server } from 'socket.io'
 import { initNamespace } from './namespace'
 import { robots } from '@/server/robot'
 import { docker } from '@/server/docker'
-import { validatePin } from '@/server/db/pin'
+import { verifyPin } from '@/server/db/pin'
 import { generateAccessToken } from '@/server/db/jwt'
 import { socketLogger as logger } from '../logger'
 
@@ -39,11 +39,14 @@ export const init = () => {
 	server.use((socket, next) => {
 		logger.http(`Incoming connection from ${socket.handshake.address}`)
 
-		// get the pin number
-		const pin = socket.handshake.auth.pin as string
+		// get the otp pin and signature
+		const otp = socket.handshake.auth.pin as string
+		const signature = socket.handshake.auth.signature as string
 
 		// check if the pin is valid
-		validatePin(pin).then(user => {
+		verifyPin(otp, signature).then(user => {
+			if (!user) return next(new Error('Pin not claimed'))
+
 			// attach the user to the socket
 			socket.data.user = user
 			return next()

@@ -1,4 +1,5 @@
 // import dependencies
+import { validateRequest } from '@/server/db/auth'
 import { validatePin } from '@/server/db/pin'
 
 export const ValidateVRPin = async () => {
@@ -6,11 +7,15 @@ export const ValidateVRPin = async () => {
 	const validate = async (formData: FormData) => {
 		'use server'
 
+		// get the user
+		const { user } = await validateRequest()
+		if (!user) return
+
 		// get the pin
 		const pin = formData.get('pin')
 
 		// validate the pin
-		const user = await validatePin(pin as string)
+		await validatePin(pin as string, user)
 		console.log('User', user)
 	}
 

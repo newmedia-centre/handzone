@@ -1,9 +1,27 @@
 // import dependencies
 import { validateRequest } from '@/server/db/auth'
-import { generatePin } from '@/server/db/pin'
+import { generatePin, validatePin } from '@/server/db/pin'
 
-// handle the GET request
-export async function GET(): Promise<Response> {
+// handle the POST request
+export async function POST(request: Request): Promise<Response> {
+	// get the signature
+	const { signature } = await request.json()
+
+	// generate and send the pin
+	try {
+		const pin = await generatePin(signature)
+		return new Response(pin, {
+			status: 200
+		})
+	} catch (error) {
+		return new Response((error as Error).message, {
+			status: 400
+		})
+	}
+}
+
+// handle the PUT request
+export async function PUT(request: Request): Promise<Response> {
 	// check the user session
 	const { session, user } = await validateRequest()
 	if (!session) {
@@ -12,9 +30,11 @@ export async function GET(): Promise<Response> {
 		})
 	}
 
-	// generate and send the pin
-	const pin = await generatePin(user)
-	return new Response(pin, {
+	// claim the pin
+	const { pin } = await request.json()
+	await validatePin(pin, user)
+
+	return new Response(null, {
 		status: 200
 	})
 }

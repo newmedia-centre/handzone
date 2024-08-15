@@ -21,7 +21,7 @@ declare global {
 	var docker: DockerManager // eslint-disable-line no-var
 	var prisma: PrismaClient // eslint-disable-line no-var
 	var logger: Logger // eslint-disable-line no-var
-	var otpPins: Map<string, { user: User, secret: ArrayBuffer }> // eslint-disable-line no-var
+	var otpPins: Map<string, { user?: User }> // eslint-disable-line no-var
 	var otpController: TOTPController // eslint-disable-line no-var
 	var jwtSecret: ArrayBuffer// eslint-disable-line no-var
 }
