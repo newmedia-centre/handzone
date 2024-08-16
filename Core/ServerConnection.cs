@@ -1,5 +1,7 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using Schema.Socket.Index;
 
 namespace Handzone.Core
 {
@@ -62,6 +64,32 @@ namespace Handzone.Core
             
             // try connect to server
             _client.ConnectAsync();
+        }
+
+        internal JoinSessionOut GetActiveSession()
+        {
+            var tcs = new TaskCompletionSource<(JoinSessionOut, string)>();
+            
+            _client.EmitAsync("namespace", response =>
+            {
+                var success = response.GetValue<bool>();
+                if (success)
+                {
+                    tcs.SetResult((response.GetValue<JoinSessionOut>(1), null));
+                }
+                else
+                {
+                    tcs.SetResult((null, response.GetValue<string>(1)));
+                }
+            });
+            
+            var result = tcs.Task.GetAwaiter().GetResult();
+            if (result.Item1 == null)
+            {
+                throw new Exception(result.Item2);
+            }
+
+            return result.Item1;
         }
     }
 }

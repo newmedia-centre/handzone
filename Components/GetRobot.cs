@@ -5,9 +5,10 @@ using System.Text.Json;
 using Grasshopper.Kernel;
 using Handzone.Core;
 
+
 namespace Handzone.Components
 {
-    public class GetPinComponent : GH_Component
+    public class GetRobotComponent : GH_Component
     {
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
@@ -16,9 +17,9 @@ namespace Handzone.Components
         /// Subcategory the panel. If you use non-existing tab or panel names, 
         /// new tabs/panels will automatically be created.
         /// </summary>
-        public GetPinComponent()
-            : base("Get HANDZONe PIN", "Get PIN",
-                "Get a PIN code for the HANDZONe authentication process.",
+        public GetRobotComponent()
+            : base("Get Robot", "Get Robot",
+                "Gets the robot that the user is currently connected to in VR",
                 "HANDZONe", "Connection")
         {
         }
@@ -26,51 +27,29 @@ namespace Handzone.Components
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_InputParamManager input)
+        protected override void RegisterInputParams(GH_Component.GH_InputParamManager input)
         {
         }
 
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_OutputParamManager output)
+        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager output)
         {
-            output.AddTextParameter("PIN", "P", "The PIN code to enter on the HANDZONe website", GH_ParamAccess.item);
+            output.AddTextParameter("Name", "N", "The name of the robot", GH_ParamAccess.item);
         }
 
         /// <summary>
         /// This is the method that actually does the work.
         /// </summary>
-        /// <param name="io">The DA object can be used to retrieve data from input parameters and 
+        /// <param name="DA">The DA object can be used to retrieve data from input parameters and 
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess io)
         {
             try
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    // encode the data as JSON
-                    string jsonData = JsonSerializer.Serialize(new
-                    {
-                        signature = State.NewSignature()
-                    });
-                    StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                    
-                    // make the POST request and block until the result is returned
-                    HttpResponseMessage response = client.PostAsync("https://handzone.tudelft.nl/api/auth/pin", content).Result;
-
-                    // get the pin from the response
-                    response.EnsureSuccessStatusCode();
-                    string pin = response.Content.ReadAsStringAsync().Result;
-                    
-                    // set the output
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Enter the PIN after logging in on https://handzone.tudelft.nl");
-                    io.SetData(0, pin);
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Request error: {e.Message}");
+                var session = State.ServerConnection.GetActiveSession();
+                io.SetData(0, session.Robot.Name);
             }
             catch (Exception e)
             {
@@ -91,6 +70,6 @@ namespace Handzone.Components
         /// It is vital this Guid doesn't change otherwise old ghx files 
         /// that use the old ID will partially fail during loading.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("e278e181-d5dd-434c-8d88-6dc85b2952c8");
+        public override Guid ComponentGuid => new Guid("45b8d103-8a21-47b0-94da-0e4f1b1e1038");
     }
 }
