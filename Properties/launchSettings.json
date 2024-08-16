@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "Windows Rhino 7": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\Rhino 7\\System\\Rhino.exe",
+      "commandLineArgs": ""
+    },
+    "Mac Rhino 7": {
+      "commandName": "Executable",
+      "executablePath": "/Applications/Rhino 7.app/Contents/MacOS/Rhinoceros",
+      "commandLineArgs": "-runscript=_Grasshopper",
+      "workingDirectory": "$(ProjectDir)",
+      "environmentVariables": {
+        "RHINO_PACKAGE_DIRS": "$(ProjectDir)/bin/Debug/"
+      }
+    }
+  }
+}
