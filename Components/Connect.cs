@@ -36,6 +36,7 @@ namespace Handzone.Components
         protected override void RegisterOutputParams(GH_OutputParamManager output)
         {
             output.AddTextParameter("Status", "S", "The status of the connection", GH_ParamAccess.item);
+            output.AddTextParameter("Robot", "R", "The connected robot", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -72,15 +73,33 @@ namespace Handzone.Components
             
             // connect to server
             State.ServerConnection.Connect(_pin);
+            Console.WriteLine("Connecting to Server...");
 
             // wait for connection to establish
-            while (!State.ServerConnection.IsConnected || !State.ServerConnection.IsErrored || _seconds >= MaxSeconds)
+            while (!State.ServerConnection.IsConnected && !State.ServerConnection.IsErrored && _seconds < MaxSeconds)
             {
                 status(Id, (double)_seconds / MaxSeconds);
                 
                 // sleep for 1 second
                 Thread.Sleep(1000);
                 _seconds++;
+                
+                // Checking for cancellation
+                if (CancellationToken.IsCancellationRequested) { return; }
+            }
+            
+            // set status to 1
+            status(Id, 1);
+
+            // connect to the robot
+            var session = State.ServerConnection.GetActiveSession();
+            State.NewRobotConnection(session);
+            Console.WriteLine("Connected to Robot...");
+            
+            // wait for connection to establish
+            while (!State.RobotConnection.IsConnected && !State.RobotConnection.IsErrored)
+            {
+                Thread.Sleep(1000);
                 
                 // Checking for cancellation
                 if (CancellationToken.IsCancellationRequested) { return; }
@@ -102,6 +121,7 @@ namespace Handzone.Components
         {
             if (CancellationToken.IsCancellationRequested) return;
             io.SetData(0, State.ServerConnection.Status);
+            io.SetData(1, State.RobotConnection.Info.Name);
         }
     }
 }

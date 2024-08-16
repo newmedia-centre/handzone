@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Schema.Socket.Index;
@@ -8,30 +9,33 @@ namespace Handzone.Core
     public class ServerConnection
     {
         // private variables
-        private SocketIOClient.SocketIO _client;
-        private bool _isConnected;
-        private bool _isErrored;
+        private readonly SocketIOClient.SocketIO _client;
         private string _status;
         
         // public accessors
-        public bool IsConnected => _isConnected;
-        public bool IsErrored => _isErrored;
+        public bool IsConnected { get; private set; }
+
+        public bool IsErrored { get; private set; }
+        
+        public List<RobotSession> Sessions { get; private set; }
+
         public string Status => _status;
 
         internal ServerConnection()
         {
             _client = new SocketIOClient.SocketIO("https://handzone.tudelft.nl");
+            Sessions = new List<RobotSession>();
 
             _client.OnConnected += (sender, args) =>
             {
-                _isConnected = true;
+                IsConnected = true;
                 _status = "Connected to server";
                 Console.WriteLine("Connected to server");
             };
         
             _client.OnDisconnected += (sender, s) =>
             {
-                _isConnected = false;
+                IsConnected = false;
                 _status = "Disconnected from server";
                 Console.WriteLine("Disconnected from server");
             };
@@ -46,11 +50,24 @@ namespace Handzone.Core
                 }
                 else
                 {
-                    _isErrored = true;
+                    IsErrored = true;
                     _status = s;
                     Console.WriteLine($"Error: {s}");
                 }
             };
+            
+            _client.On("sessions", response =>
+            {
+                var sessions = response.GetValue<SessionsOut>();
+                if (sessions == null)
+                {
+                    Sessions = new List<RobotSession>();
+                }
+                else
+                {
+                    Sessions = sessions.Sessions;
+                }
+            });
         }
 
         internal void Connect(string pin)

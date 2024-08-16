@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using Grasshopper.Kernel;
 using Handzone.Core;
+using Handzone.Params;
 
 
 namespace Handzone.Components
@@ -36,7 +37,7 @@ namespace Handzone.Components
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager output)
         {
-            output.AddTextParameter("Name", "N", "The name of the robot", GH_ParamAccess.item);
+            output.AddParameter(new SessionParameter(), "Sessions", "S", "The session that the user is connected to in VR", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -46,6 +47,12 @@ namespace Handzone.Components
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess io)
         {
+            if (!State.ServerConnection.IsConnected)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to server");
+                return;
+            }
+            
             try
             {
                 var session = State.ServerConnection.GetActiveSession();
