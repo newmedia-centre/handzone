@@ -1,9 +1,5 @@
 using System;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Security.Cryptography;
-using Grasshopper.Kernel;
 
 namespace Handzone.Core
 {
@@ -11,9 +7,7 @@ namespace Handzone.Core
     {
         // define state singletons
         private static string _signature;
-        private static SettingsServer _settingsServer;
-
-        // Room for other instaces, e.g. FooServer or BarServer
+        private static ServerConnection _serverConnection;
 
         // Private constructor.
         private State()
@@ -23,19 +17,19 @@ namespace Handzone.Core
         public static string Signature => _signature ?? (_signature = NewSignature());
 
         // Settings server accessor that allows only one instance.
-        public static SettingsServer SettingsServer
+        public static ServerConnection ServerConnection
         {
             get
             {
-                if (_settingsServer == null)
-                    _settingsServer = new SettingsServer();
+                if (_serverConnection == null)
+                    _serverConnection = new ServerConnection();
 
-                return _settingsServer;
+                return _serverConnection;
             }
         }
         
         // generate a secure signature to identify the auth flow with
-        public static string NewSignature()
+        internal static string NewSignature()
         {
             byte[] signature = new byte[32];
             
@@ -48,11 +42,5 @@ namespace Handzone.Core
             _signature = encoded;
             return encoded;
         }
-    }
-
-    public class SettingsServer
-    {
-        // Constructor
-        public SettingsServer(){}
     }
 }

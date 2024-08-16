@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using Grasshopper.Kernel;
 using GrasshopperAsyncComponent;
+using Handzone.Core;
+
 
 namespace Handzone.Components
 {
@@ -23,18 +25,17 @@ namespace Handzone.Components
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager input)
+        protected override void RegisterInputParams(GH_InputParamManager input)
         {
-            input.AddBooleanParameter("Run", "R", "Runs this component", GH_ParamAccess.item);
+            input.AddTextParameter("PIN", "P", "The PIN code to entered on the HANDZONe website", GH_ParamAccess.item);
         }
 
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager output)
+        protected override void RegisterOutputParams(GH_OutputParamManager output)
         {
             output.AddTextParameter("Status", "S", "The status of the connection", GH_ParamAccess.item);
-            output.AddTextParameter("PIN", "P", "The PIN code to enter on the HANDZONe website", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -58,57 +59,49 @@ namespace Handzone.Components
     
     public class ConnectWorker : WorkerInstance
     {
-        private bool _connected;
-        private bool _run;
-        private bool _running;
+        private string _pin;
+        private int _seconds;
+        private const int MaxSeconds = 60 * 15;
 
         public ConnectWorker() : base(null) { }
 
-        public override void DoWork(Action<string, double> ReportProgress, Action Done)
+        public override void DoWork(Action<string, double> status, Action done)
         {
             // Checking for cancellation
             if (CancellationToken.IsCancellationRequested) { return; }
             
-            // Only connect when run is true
-            if (!_run && !_running) { return; }
+            // connect to server
+            State.ServerConnection.Connect(_pin);
 
-            int i = 0;
-            _running = true;
-
-            while (!_connected)
+            // wait for connection to establish
+            while (!State.ServerConnection.IsConnected || !State.ServerConnection.IsErrored || _seconds >= MaxSeconds)
             {
-                ReportProgress(Id, i + 1);
-                i++;
-
-                if (i > 100)
-                {
-                    _connected = true;
-                }
+                status(Id, (double)_seconds / MaxSeconds);
                 
+                // sleep for 1 second
                 Thread.Sleep(1000);
-
+                _seconds++;
+                
                 // Checking for cancellation
                 if (CancellationToken.IsCancellationRequested) { return; }
             }
 
-            _running = false;
-
-            Done();
+            done();
         }
 
         public override WorkerInstance Duplicate() => new ConnectWorker();
 
-        public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params)
+        public override void GetData(IGH_DataAccess io, GH_ComponentParamServer paramServer)
         {
             if (CancellationToken.IsCancellationRequested) return;
 
-            DA.GetData(0, ref _run);
+            io.GetData(0, ref _pin);
         }
 
-        public override void SetData(IGH_DataAccess DA)
+        public override void SetData(IGH_DataAccess io)
         {
             if (CancellationToken.IsCancellationRequested) return;
-            DA.SetData(0, $"Hello world. Worker {Id} has status {_connected}");
+            io.SetData(0, State.ServerConnection.Status);
         }
     }
 }
