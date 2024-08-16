@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
-using Grasshopper;
+using System.Threading;
 using Grasshopper.Kernel;
-using Rhino.Geometry;
 using GrasshopperAsyncComponent;
 
 namespace Handzone.Components
 {
-    public class Connect : GH_AsyncComponent
+    public class ConnectComponent : GH_AsyncComponent
     {
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
@@ -16,38 +14,27 @@ namespace Handzone.Components
         /// Subcategory the panel. If you use non-existing tab or panel names, 
         /// new tabs/panels will automatically be created.
         /// </summary>
-        public Connect()
-            : base("Connect to HANDZONe Server", "Connect",
-                "Initializes the log in process to connect to the HANDZONe Server",
-                "HANDZONe", "Connection")
+        public ConnectComponent()
+            : base("Connect to Server", "Connect", "Initializes the log in process to connect to the HANDZONe Server", "HANDZONe", "Connection")
         {
+            BaseWorker = new ConnectWorker();
         }
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams(GH_Component.GH_InputParamManager input)
         {
-            pManager.AddBooleanParameter("Run", "R", "Runs this component", GH_ParamAccess.item);
+            input.AddBooleanParameter("Run", "R", "Runs this component", GH_ParamAccess.item);
         }
 
         /// <summary>
         /// Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager output)
         {
-            pManager.AddTextParameter("Status", "S", "The status of the connection", GH_ParamAccess.item);
-            pManager.AddTextParameter("PIN", "P", "The PIN code to enter on the HANDZONe website", GH_ParamAccess.item);
-        }
-
-        /// <summary>
-        /// This is the method that actually does the work.
-        /// </summary>
-        /// <param name="DA">The DA object can be used to retrieve data from input parameters and 
-        /// to store data in output parameters.</param>
-        protected override void SolveInstance(IGH_DataAccess DA)
-        {
-            Console.WriteLine("Debug Statement");
+            output.AddTextParameter("Status", "S", "The status of the connection", GH_ParamAccess.item);
+            output.AddTextParameter("PIN", "P", "The PIN code to enter on the HANDZONe website", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -63,6 +50,65 @@ namespace Handzone.Components
         /// It is vital this Guid doesn't change otherwise old ghx files 
         /// that use the old ID will partially fail during loading.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("1732fd84-1b8c-4260-b890-fd44bf50bf8a");
+        public override Guid ComponentGuid => new Guid("a988b35b-382b-4596-bd95-5f3050f66f0f");
+        
+        
+        public override GH_Exposure Exposure => GH_Exposure.primary;
+    }
+    
+    public class ConnectWorker : WorkerInstance
+    {
+        private bool _connected;
+        private bool _run;
+        private bool _running;
+
+        public ConnectWorker() : base(null) { }
+
+        public override void DoWork(Action<string, double> ReportProgress, Action Done)
+        {
+            // Checking for cancellation
+            if (CancellationToken.IsCancellationRequested) { return; }
+            
+            // Only connect when run is true
+            if (!_run && !_running) { return; }
+
+            int i = 0;
+            _running = true;
+
+            while (!_connected)
+            {
+                ReportProgress(Id, i + 1);
+                i++;
+
+                if (i > 100)
+                {
+                    _connected = true;
+                }
+                
+                Thread.Sleep(1000);
+
+                // Checking for cancellation
+                if (CancellationToken.IsCancellationRequested) { return; }
+            }
+
+            _running = false;
+
+            Done();
+        }
+
+        public override WorkerInstance Duplicate() => new ConnectWorker();
+
+        public override void GetData(IGH_DataAccess DA, GH_ComponentParamServer Params)
+        {
+            if (CancellationToken.IsCancellationRequested) return;
+
+            DA.GetData(0, ref _run);
+        }
+
+        public override void SetData(IGH_DataAccess DA)
+        {
+            if (CancellationToken.IsCancellationRequested) return;
+            DA.SetData(0, $"Hello world. Worker {Id} has status {_connected}");
+        }
     }
 }
