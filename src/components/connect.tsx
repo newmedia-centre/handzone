@@ -5,22 +5,24 @@ import { useState } from 'react'
 
 // connect to vr button
 export const ConnectVR = () => {
-	const [open, setOpen] = useState<boolean>()
-	const [pin, setPin] = useState<string>()
+	const [open, setOpen] = useState(false)
+	const [pin, setPin] = useState('')
 
 	// validate a pin as the logged in user
 	const validate = async () => {
-		await fetch('/api/pin', {
+		await fetch('/api/auth/pin', {
 			method: 'PUT',
 			body: JSON.stringify({ pin }),
 		})
+		setPin('')
+		setOpen(false)
 	}
 
 	return (
 		<div>
 			<button onClick={() => setOpen(true)} className='w-24 rounded border bg-white p-2 text-center hover:bg-200'>Validate PIN</button>
 			<dialog open={open} className='fixed inset-0 z-50 size-full items-center justify-center bg-black/10 open:flex'>
-				<form action={validate} method='dialog' className='flex flex-col items-center gap-2 rounded border border-300 bg-white p-4'>
+				<form action={validate} className='flex flex-col items-center gap-2 rounded border border-300 bg-white p-4'>
 					<input
 						type='text'
 						name='pin'

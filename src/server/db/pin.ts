@@ -12,7 +12,7 @@ import type { User } from '@prisma/client'
 export const logger = databaseLogger.child({ entity: 'pin', label: 'DB:PIN' })
 
 // init the TOTP controller and pin map
-const pins = global.otpPins || new Map<string, { user?: User }>()
+const pins = global.otpPins || new Map<string, User | null>()
 const controller = global.otpController || new TOTPController({ digits: env.NODE_ENV === 'development' ? 2 : 4, period: new TimeSpan(15, 'm') })
 
 // generate a pin for the user
@@ -20,7 +20,7 @@ export const generatePin = async (signature: string) => {
 
 	// generate a new pin
 	const otp = await controller.generate(base64.decode(signature))
-	pins.set(otp, {})
+	pins.set(otp, null)
 	logger.info('Generated pin', { otp })
 
 	// set a timeout to delete the pin after it expires
@@ -33,27 +33,27 @@ export const generatePin = async (signature: string) => {
 export const validatePin = async (otp: string, user: User) => {
 	// get the user and secret
 	const data = pins.get(otp)
-	if (!data) {
+	if (data === undefined) {
 		logger.info('Invalid pin (not found)', { otp, pins: pins.keys() })
 		throw new Error('Invalid pin (not found)')
 	}
 
 	// check if the pin is already claimed
-	if (data.user) {
-		logger.info('Pin already validated', { otp, user: data.user })
+	if (data !== null) {
+		logger.info('Pin already validated', { otp, user: data })
 		throw new Error('Pin already validated')
 	}
 
 	// claim the pin
-	data.user = user
-	pins.set(otp, data)
+	pins.set(otp, user)
+	logger.info('Validated pin', { otp, user })
 }
 
 // verify the pin and return the user
 export const verifyPin = async (otp: string, signature: string) => {
 	// get the user and secret
 	const data = pins.get(otp)
-	if (!data) {
+	if (data === undefined) {
 		logger.info('Verification attempt without valid pin (not found)', { otp, pins: pins.keys() })
 		throw new Error('Invalid pin (not found)')
 	}
@@ -66,7 +66,7 @@ export const verifyPin = async (otp: string, signature: string) => {
 	}
 
 	// return the user and the access token
-	return data.user
+	return data
 }
 
 global.otpPins = pins

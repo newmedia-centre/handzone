@@ -22,19 +22,25 @@ export async function POST(request: Request): Promise<Response> {
 
 // handle the PUT request
 export async function PUT(request: Request): Promise<Response> {
-	// check the user session
-	const { session, user } = await validateRequest()
-	if (!session) {
+	try {
+		// check the user session
+		const { session, user } = await validateRequest()
+		if (!session) {
+			return new Response(null, {
+				status: 403
+			})
+		}
+
+		// claim the pin
+		const { pin } = await request.json()
+		await validatePin(pin, user)
+
 		return new Response(null, {
-			status: 403
+			status: 200
+		})
+	} catch (error) {
+		return new Response((error as Error).message, {
+			status: 400
 		})
 	}
-
-	// claim the pin
-	const { pin } = await request.json()
-	await validatePin(pin, user)
-
-	return new Response(null, {
-		status: 200
-	})
 }
