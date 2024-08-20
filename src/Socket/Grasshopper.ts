@@ -13,3 +13,13 @@ export type GrasshopperProgramOut = {
 	/** The string payload of the IProgram object received from the server. */
 	program: string
 }
+
+/**
+ * Sends an instruction to run the program on the robot.
+ */
+export type GrasshopperSimulateIn = {
+	/** Whether the simulation should play or stop */
+	run: boolean
+	/** The speed at which the simulation should run */
+	speed: number
+}
