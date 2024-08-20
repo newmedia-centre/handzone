@@ -13,6 +13,20 @@
       "environmentVariables": {
         "RHINO_PACKAGE_DIRS": "$(ProjectDir)/bin/Debug/"
       }
+    },
+    "Windows Rhino 8": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\Rhino 8\\System\\Rhino.exe",
+      "commandLineArgs": ""
+    },
+    "Mac Rhino 8": {
+      "commandName": "Executable",
+      "executablePath": "/Applications/Rhino 8.app/Contents/MacOS/Rhinoceros",
+      "commandLineArgs": "-runscript=_Grasshopper",
+      "workingDirectory": "$(ProjectDir)",
+      "environmentVariables": {
+        "RHINO_PACKAGE_DIRS": "$(ProjectDir)/bin/Debug/"
+      }
     }
   }
 }

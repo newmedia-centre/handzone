@@ -1,12 +1,13 @@
 using System;
-using Grasshopper.Kernel;
 using Handzone.Core;
-using Handzone.Params;
-
+using Grasshopper.Kernel;
+using Schema.Socket.Grasshopper;
+using Robots;
+using Robots.Grasshopper;
 
 namespace Handzone.Components
 {
-    public class GetRobotComponent : GH_Component
+    public class ProgramComponent : GH_Component
     {
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
@@ -15,10 +16,10 @@ namespace Handzone.Components
         /// Subcategory the panel. If you use non-existing tab or panel names, 
         /// new tabs/panels will automatically be created.
         /// </summary>
-        public GetRobotComponent()
-            : base("Get Robot", "Get Robot",
-                "Gets the robot that the user is currently connected to in VR",
-                "HANDZONe", "Connection")
+        public ProgramComponent()
+            : base("Send Program", "Program",
+                "Sends a robots program to the robot",
+                "HANDZONe", "Robot")
         {
         }
 
@@ -27,6 +28,7 @@ namespace Handzone.Components
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager input)
         {
+            input.AddParameter(new ProgramParameter(), "Program", "P", "Program to upload", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -34,7 +36,8 @@ namespace Handzone.Components
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager output)
         {
-            output.AddParameter(new SessionParameter(), "Sessions", "S", "The session that the user is connected to in VR", GH_ParamAccess.item);
+            output.AddTextParameter("Status", "S", "The status of the connection", GH_ParamAccess.item);
+            output.AddTextParameter("Robot", "R", "The connected robot", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -44,16 +47,33 @@ namespace Handzone.Components
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess io)
         {
-            if (!State.ServerConnection.IsConnected)
+            if (!State.RobotConnection.IsConnected)
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to server");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to robot");
+                return;
+            }
+
+            // get the program
+            IProgram program = null;
+            io.GetData(0, ref program);
+            if (program == null || program.Code == null)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Program code is null");
                 return;
             }
             
+            // convert the program
+            GrasshopperProgramIn grasshopperProgramIn = new GrasshopperProgramIn()
+            {
+                Program = string.Join("\n", program.Code[0][0])
+            };
+            
+            // send the program
             try
             {
-                var session = State.ServerConnection.GetActiveSession();
-                io.SetData(0, session.Robot.Name);
+                State.RobotConnection.SendProgram(grasshopperProgramIn);
+                io.SetData(0, State.RobotConnection.Status);
+                io.SetData(1, State.RobotConnection.Info.Name);
             }
             catch (Exception e)
             {

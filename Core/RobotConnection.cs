@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using Schema.Socket.Grasshopper;
 using Schema.Socket.Index;
 using SocketIOClient;
 
@@ -55,6 +53,16 @@ namespace Handzone.Core
         {
             // try connect to server
             _client.ConnectAsync();
+        }
+        
+        internal void SendProgram(GrasshopperProgramIn grasshopperProgramIn)
+        {
+            _client.EmitAsync("grasshopper:program", grasshopperProgramIn);
+        }
+        
+        internal void SendSimulate(GrasshopperSimulateIn grasshopperSimulateIn)
+        {
+            _client.EmitAsync("grasshopper:simulate", grasshopperSimulateIn);
         }
     }
 }

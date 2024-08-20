@@ -94,7 +94,8 @@ namespace Handzone.Components
             // connect to the robot
             var session = State.ServerConnection.GetActiveSession();
             State.NewRobotConnection(session);
-            Console.WriteLine("Connected to Robot...");
+            State.RobotConnection.Connect();
+            Console.WriteLine("Connecting to Robot...");
             
             // wait for connection to establish
             while (!State.RobotConnection.IsConnected && !State.RobotConnection.IsErrored)

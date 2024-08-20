@@ -12,7 +12,7 @@
         <PackageReference Include="Grasshopper" Version="7.13.21348.13001" IncludeAssets="compile;build" />
         <PackageReference Include="GrasshopperAsyncComponent" Version="1.2.3" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="Robots" Version="1.8.0" />
+        <PackageReference Include="Robots.Rhino" Version="1.8.0" />
         <PackageReference Include="SocketIOClient" Version="3.1.1" />
         <PackageReference Include="SocketIOClient.Newtonsoft.Json" Version="3.0.7" />
     </ItemGroup>

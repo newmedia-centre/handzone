@@ -1,12 +1,11 @@
 using System;
-using Grasshopper.Kernel;
 using Handzone.Core;
-using Handzone.Params;
-
+using Grasshopper.Kernel;
+using Schema.Socket.Grasshopper;
 
 namespace Handzone.Components
 {
-    public class GetRobotComponent : GH_Component
+    public class SimulateComponent : GH_Component
     {
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
@@ -15,10 +14,10 @@ namespace Handzone.Components
         /// Subcategory the panel. If you use non-existing tab or panel names, 
         /// new tabs/panels will automatically be created.
         /// </summary>
-        public GetRobotComponent()
-            : base("Get Robot", "Get Robot",
-                "Gets the robot that the user is currently connected to in VR",
-                "HANDZONe", "Connection")
+        public SimulateComponent()
+            : base("Simulate on Robot", "Simulate",
+                "Runs a robots program on the robot",
+                "HANDZONe", "Robot")
         {
         }
 
@@ -27,6 +26,8 @@ namespace Handzone.Components
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager input)
         {
+            input.AddBooleanParameter("Run", "R", "Whether the simulation should play or stop", GH_ParamAccess.item);
+            input.AddNumberParameter("Speed", "S", "The speed at which the simulation should run", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -34,7 +35,8 @@ namespace Handzone.Components
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager output)
         {
-            output.AddParameter(new SessionParameter(), "Sessions", "S", "The session that the user is connected to in VR", GH_ParamAccess.item);
+            output.AddTextParameter("Status", "S", "The status of the connection", GH_ParamAccess.item);
+            output.AddTextParameter("Robot", "R", "The connected robot", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -44,16 +46,31 @@ namespace Handzone.Components
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess io)
         {
-            if (!State.ServerConnection.IsConnected)
+            if (!State.RobotConnection.IsConnected)
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to server");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to robot");
                 return;
             }
+
+            // get the program
+            bool run = false;
+            double speed = 0.0;
+            io.GetData(0, ref run);
+            io.GetData(1, ref speed);
             
+            // convert the program
+            GrasshopperSimulateIn grasshopperSimulateIn = new GrasshopperSimulateIn()
+            {
+                Run = run,
+                Speed = speed
+            };
+            
+            // send the program
             try
             {
-                var session = State.ServerConnection.GetActiveSession();
-                io.SetData(0, session.Robot.Name);
+                State.RobotConnection.SendSimulate(grasshopperSimulateIn);
+                io.SetData(0, State.RobotConnection.Status);
+                io.SetData(1, State.RobotConnection.Info.Name);
             }
             catch (Exception e)
             {
@@ -74,6 +91,6 @@ namespace Handzone.Components
         /// It is vital this Guid doesn't change otherwise old ghx files 
         /// that use the old ID will partially fail during loading.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("45b8d103-8a21-47b0-94da-0e4f1b1e1038");
+        public override Guid ComponentGuid => new Guid("c4a1d6d1-a33e-4ee7-a865-3b3b2520a7ad");
     }
 }
