@@ -4,10 +4,10 @@ using Handzone.Core;
 
 namespace Handzone.Components
 {
-    public class ServerConnectComponent : GH_Component
+    public class RobotConnectComponent : GH_Component
     {
-        private string _pin;
         private string _status = "Not Connected";
+        private string _name;
         private ComponentButton _button;
         
         /// <summary>
@@ -17,12 +17,12 @@ namespace Handzone.Components
         /// Subcategory the panel. If you use non-existing tab or panel names, 
         /// new tabs/panels will automatically be created.
         /// </summary>
-        public ServerConnectComponent()
-            : base("Server Connection", "Server",
-                "Manages the connection to the HANDZONe Server",
+        public RobotConnectComponent()
+            : base("Robot Connection", "Robot",
+                "Manages the connection to the robot through the HANDZONe Server",
                 "HANDZONe", "Connection")
         {
-            State.GlobalConnection.OnStatus += message =>
+            State.SessionConnection.OnStatus += message =>
             {
                 _status = message;
                 Console.WriteLine(message);
@@ -31,7 +31,7 @@ namespace Handzone.Components
                 Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
             };
 
-            State.GlobalConnection.OnError += message =>
+            State.SessionConnection.OnError += message =>
             {
                 _status = message;
                 Console.WriteLine(message);
@@ -42,7 +42,7 @@ namespace Handzone.Components
                 Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
             };
 
-            State.GlobalConnection.OnConnectionChange += connected =>
+            State.SessionConnection.OnConnectionChange += connected =>
             {
                 if (_button == null) return;
                 
@@ -68,7 +68,6 @@ namespace Handzone.Components
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager input)
         {
-            input.AddTextParameter("PIN", "P", "The PIN code to entered on the HANDZONe website", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -77,6 +76,7 @@ namespace Handzone.Components
         protected override void RegisterOutputParams(GH_OutputParamManager output)
         {
             output.AddTextParameter("Status", "S", "The status of the connection", GH_ParamAccess.item);
+            output.AddTextParameter("Name", "N", "The name of the connected robot", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -86,7 +86,6 @@ namespace Handzone.Components
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess io)
         {
-            io.GetData(0, ref _pin);
             io.SetData(0, _status);
         }
         
@@ -96,22 +95,41 @@ namespace Handzone.Components
             m_attributes = _button;
         }
 
-        void Connect()
+        async void Connect()
         {
-            if (_pin != null)
+            if (!State.GlobalConnection.Connected)
             {
-                State.GlobalConnection.TryConnectToGlobalServer(_pin);
-            }
-            else
-            {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"PIN input not connected");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to HANDZONe Server");
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+
+                return;
             }
             
+            try {
+                // get the current session
+                var session = await State.GlobalConnection.GetNamespace();
+                
+                // update the outputs
+                _name = session.Robot.Name;
+                ExpireSolution(true);
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+                
+                // connect to the robot session
+                State.SessionConnection.TryConnectToSession(session);
+            }
+            catch (Exception e)
+            {
+                _status = "Failed to connect to robot.";
+                
+                ExpireSolution(true);
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+            }
         }
 
         void Disconnect()
         {
-            State.GlobalConnection.Disconnect();
+            State.SessionConnection.Disconnect();
         }
 
         /// <summary>
@@ -127,6 +145,6 @@ namespace Handzone.Components
         /// It is vital this Guid doesn't change otherwise old ghx files 
         /// that use the old ID will partially fail during loading.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("e4e38df9-4fbf-4f53-82b5-fcfee7cc0852");
+        public override Guid ComponentGuid => new Guid("0aec24b4-0348-466c-8e60-c3738438ed2b");
     }
 }

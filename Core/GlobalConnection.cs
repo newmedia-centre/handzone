@@ -1,9 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -20,8 +15,7 @@ public class GlobalConnection
     /// </summary>
     private SocketIOClient.SocketIO _client;
     
-    public JoinSessionOut Session { get; private set; }
-    public bool Connected = false;
+    public bool Connected;
     
     // Connection lifecycle events
     public event Action<string> OnError;
@@ -56,21 +50,21 @@ public class GlobalConnection
         
         Console.WriteLine("Pass Serializer");
 
-        _client.OnConnected += (sender, args) =>
+        _client.OnConnected += (_, _) =>
         {
             Connected = true;
             OnStatus?.Invoke("Connected to global server");
             OnConnectionChange?.Invoke(true);
         };
 
-        _client.OnDisconnected += (sender, s) =>
+        _client.OnDisconnected += (_, _) =>
         {
             Connected = false;
             OnStatus?.Invoke("Disconnected from global server");
             OnConnectionChange?.Invoke(false);
         };
 
-        _client.OnError += (sender, s) =>
+        _client.OnError += (_, s) =>
         {
             Console.WriteLine(s);
             
@@ -95,6 +89,38 @@ public class GlobalConnection
         Console.WriteLine("Post Connect");
     }
 
+    /// <summary>
+    /// Gets the namespace the user is already using.
+    /// </summary>
+    public async Task<JoinSessionOut> GetNamespace()
+    {
+        var tcs = new TaskCompletionSource<(JoinSessionOut, string)>();
+        
+        await _client.EmitAsync("namespace", response =>
+        {
+            var success = response.GetValue<bool>(0);
+            if (success)
+            {
+                tcs.SetResult((response.GetValue<JoinSessionOut>(1), null));
+            }
+            else
+            {
+                tcs.SetResult((null, response.GetValue<string>(1)));
+            }
+        });
+
+        var result = await tcs.Task;
+        if (result.Item1 == null)
+        {
+            throw new Exception(result.Item2);
+        }
+
+        return result.Item1;
+    }
+
+    /// <summary>
+    /// Disconnects from the web server.
+    /// </summary>
     public async Task Disconnect()
     {
         await _client.DisconnectAsync();
