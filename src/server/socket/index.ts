@@ -167,10 +167,11 @@ export const init = () => {
 
 		// send joined namespace
 		socket.on('namespace', async (callback) => {
-			if (!socket.data.namespace) return callback(false, 'No namespace found for user')
+			const found = Array.from(server.sockets.sockets.values()).find(s => s.data.user.id === socket.data.user.id && !!s.data.namespace)
+			if (!found || !found.data.namespace) return callback(false, 'No namespace found for user')
 
-			const token = await generateAccessToken(socket.data.user, socket.data.namespace)
-			callback(true, { robot: socket.data.namespace, token })
+			const token = await generateAccessToken(socket.data.user, found.data.namespace)
+			callback(true, { robot: found.data.namespace, token })
 		})
 	})
 
