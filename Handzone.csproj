@@ -6,6 +6,7 @@
         <Title>Handzone</Title>
         <Description>Description of Handzone</Description>
         <TargetExt>.gha</TargetExt>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

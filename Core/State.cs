@@ -10,6 +10,9 @@ namespace Handzone.Core
         private static string _signature;
         private static ServerConnection _serverConnection;
         private static RobotConnection _robotConnection;
+        
+        // define constants
+        public const string URL = "http://localhost:3000/";
 
         // Private constructor.
         private State()

@@ -9,6 +9,9 @@ namespace Handzone.Components
 {
     public class GetPinComponent : GH_Component
     {
+        private string _status = "Click the button to request a pin.";
+        private string _pin;
+        
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
         /// constructor without any arguments.
@@ -35,6 +38,7 @@ namespace Handzone.Components
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager output)
         {
+            output.AddTextParameter("Status", "S", "The status of the request", GH_ParamAccess.item);
             output.AddTextParameter("PIN", "P", "The PIN code to enter on the HANDZONe website", GH_ParamAccess.item);
         }
 
@@ -45,6 +49,20 @@ namespace Handzone.Components
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess io)
         {
+            io.SetData(0, _status);
+            io.SetData(1, _pin);
+        }
+        
+        public override void CreateAttributes()
+        {
+            m_attributes = new ComponentButton(this, "Get PIN", GetPin);
+        }
+
+        async void GetPin()
+        {
+            _status = "Getting a PIN from the server...";
+            ExpireSolution(true);
+
             try
             {
                 using (HttpClient client = new HttpClient())
@@ -56,24 +74,29 @@ namespace Handzone.Components
                     });
                     StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                     
-                    // make the POST request and block until the result is returned
-                    HttpResponseMessage response = client.PostAsync("http://localhost:3000/api/auth/pin", content).Result;
+                    // make the POST request
+                    HttpResponseMessage response = await client.PostAsync(State.URL + "api/auth/pin", content);
 
                     // get the pin from the response
                     response.EnsureSuccessStatusCode();
-                    string pin = response.Content.ReadAsStringAsync().Result;
+                    _status = "Successfully got PIN from server.";
+                    _pin = await response.Content.ReadAsStringAsync();
                     
                     // set the output
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Enter the PIN after logging in on https://handzone.tudelft.nl");
-                    io.SetData(0, pin);
+                    ExpireSolution(true);
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, $"Enter the PIN after logging in on {State.URL}");
                 }
             }
             catch (HttpRequestException e)
             {
+                _status = "Failed to get PIN.";
+                ExpireSolution(true);
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Request error: {e.Message}");
             }
             catch (Exception e)
             {
+                _status = "Failed to get PIN.";
+                ExpireSolution(true);
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
             }
         }
