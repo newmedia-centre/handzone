@@ -1,12 +1,18 @@
 using System;
-using Handzone.Core;
+using System.Threading;
+using System.Threading.Tasks;
 using Grasshopper.Kernel;
-using Schema.Socket.Grasshopper;
+using Handzone.Core;
 
 namespace Handzone.Components
 {
-    public class SimulateComponent : GH_Component
+    public class ConnectComponent : GH_Component
     {
+        private string _pin;
+        private string _status = "Not Connected";
+        private ComponentButton _button;
+        private event Action Update;
+        
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
         /// constructor without any arguments.
@@ -14,11 +20,16 @@ namespace Handzone.Components
         /// Subcategory the panel. If you use non-existing tab or panel names, 
         /// new tabs/panels will automatically be created.
         /// </summary>
-        public SimulateComponent()
-            : base("Simulate on Robot", "Simulate",
-                "Runs a robots program on the robot",
-                "HANDZONe", "Robot")
+        public ConnectComponent()
+            : base("Server Connection", "Server",
+                "Manages the connection to the HANDZONe Server",
+                "HANDZONe", "Connection")
         {
+            Update += () =>
+            {
+                ExpireSolution(true);
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+            };
         }
 
         /// <summary>
@@ -26,8 +37,7 @@ namespace Handzone.Components
         /// </summary>
         protected override void RegisterInputParams(GH_InputParamManager input)
         {
-            input.AddBooleanParameter("Run", "R", "Whether the simulation should play or stop", GH_ParamAccess.item);
-            input.AddNumberParameter("Speed", "S", "The speed at which the simulation should run", GH_ParamAccess.item);
+            input.AddTextParameter("PIN", "P", "The PIN code to entered on the HANDZONe website", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -36,7 +46,6 @@ namespace Handzone.Components
         protected override void RegisterOutputParams(GH_OutputParamManager output)
         {
             output.AddTextParameter("Status", "S", "The status of the connection", GH_ParamAccess.item);
-            output.AddTextParameter("Robot", "R", "The connected robot", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -46,34 +55,50 @@ namespace Handzone.Components
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess io)
         {
-            if (false)
-            {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to robot");
-                return;
-            }
+            io.GetData(0, ref _pin);
+            io.SetData(0, _status);
+        }
+        
+        public override void CreateAttributes()
+        {
+            _button = new ComponentButton(this, "Connect", Connect);
+            m_attributes = _button;
+        }
 
-            // get the program
-            bool run = false;
-            double speed = 0.0;
-            io.GetData(0, ref run);
-            io.GetData(1, ref speed);
-            
-            // convert the program
-            GrasshopperSimulateIn grasshopperSimulateIn = new GrasshopperSimulateIn()
+        void Connect()
+        {
+            if (_pin != null)
             {
-                Run = run,
-                Speed = speed
-            };
-            
-            // send the program
-            try
-            {
-                // todo
+                Task.Run(() =>
+                {
+                    for (int i = 0; i < 15; i++)
+                    {
+                        _status = $"Iteration {i}";
+                        Thread.Sleep(1500);
+                        Update?.Invoke();
+                    }
+
+                    _status = "Connected";
+                    _button.Label = "Disconnect";
+                    _button.Action = Disconnect;
+                    
+                    Update?.Invoke();
+                });
             }
-            catch (Exception e)
+            else
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"PIN input not connected");
             }
+            
+        }
+
+        async void Disconnect()
+        {
+            _status = "Not Connected";
+            _button.Label = "Connect";
+            _button.Action = Connect;
+            
+            Update?.Invoke();
         }
 
         /// <summary>
@@ -89,6 +114,6 @@ namespace Handzone.Components
         /// It is vital this Guid doesn't change otherwise old ghx files 
         /// that use the old ID will partially fail during loading.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("c4a1d6d1-a33e-4ee7-a865-3b3b2520a7ad");
+        public override Guid ComponentGuid => new Guid("e4e38df9-4fbf-4f53-82b5-fcfee7cc0852");
     }
 }

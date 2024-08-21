@@ -8,11 +8,10 @@ namespace Handzone.Core
     {
         // define state singletons
         private static string _signature;
-        private static ServerConnection _serverConnection;
-        private static RobotConnection _robotConnection;
+        private static GlobalConnection _globalConnection;
         
         // define constants
-        public const string URL = "http://localhost:3000/";
+        public const string Url = "http://localhost:3000/";
 
         // Private constructor.
         private State()
@@ -20,21 +19,18 @@ namespace Handzone.Core
         
         // Signature accessor that allows only one instance.
         public static string Signature => _signature ?? (_signature = NewSignature());
-
-        // ServerConnection accessor that allows only one instance.
-        public static ServerConnection ServerConnection
+        
+        // GlobalConnection accessor that allows only one instance.
+        public static GlobalConnection GlobalConnection
         {
             get
             {
-                if (_serverConnection == null)
-                    _serverConnection = new ServerConnection();
+                if (_globalConnection == null)
+                    _globalConnection = new GlobalConnection();
 
-                return _serverConnection;
+                return _globalConnection;
             }
         }
-        
-        // RobotConnection accessor that allows only one instance.
-        public static RobotConnection RobotConnection => _robotConnection;
 
         // generate a secure signature to identify the auth flow with
         internal static string NewSignature()
@@ -48,13 +44,6 @@ namespace Handzone.Core
             
             _signature = Convert.ToBase64String(signature);
             return _signature;
-        }
-        
-        // create a new RobotConnection
-        internal static RobotConnection NewRobotConnection(JoinSessionOut session)
-        {
-            _robotConnection = new RobotConnection(session);
-            return _robotConnection;
         }
     }
 }

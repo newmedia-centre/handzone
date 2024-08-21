@@ -12,16 +12,16 @@ class ComponentButton : GH_ComponentAttributes
 {
     const int ButtonSize = 18;
 
-    readonly string _label;
-    readonly Action _action;
+    public string Label;
+    public Action Action;
 
     RectangleF _buttonBounds;
     bool _mouseDown;
 
     public ComponentButton(GH_Component owner, string label, Action action) : base(owner)
     {
-        _label = label;
-        _action = action;
+        Label = label;
+        Action = action;
     }
 
     protected override void Layout()
@@ -55,7 +55,7 @@ class ComponentButton : GH_ComponentAttributes
             var radius = 3;
             var highlight = !_mouseDown ? 8 : 0;
 
-            using var button = GH_Capsule.CreateTextCapsule(_buttonBounds, _buttonBounds, GH_Palette.Black, _label, font, radius, highlight);
+            using var button = GH_Capsule.CreateTextCapsule(_buttonBounds, _buttonBounds, GH_Palette.Black, Label, font, radius, highlight);
             button.Render(graphics, false, Owner.Locked, false);
         }
     }
@@ -72,7 +72,7 @@ class ComponentButton : GH_ComponentAttributes
             return;
 
         if (_mouseDown && !value && action)
-            _action();
+            Action();
 
         _mouseDown = value;
         canvas.Invalidate();

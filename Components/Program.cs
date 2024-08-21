@@ -47,7 +47,7 @@ namespace Handzone.Components
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess io)
         {
-            if (!State.RobotConnection.IsConnected)
+            if (false)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to robot");
                 return;
@@ -71,9 +71,7 @@ namespace Handzone.Components
             // send the program
             try
             {
-                State.RobotConnection.SendProgram(grasshopperProgramIn);
-                io.SetData(0, State.RobotConnection.Status);
-                io.SetData(1, State.RobotConnection.Info.Name);
+                // todo
             }
             catch (Exception e)
             {

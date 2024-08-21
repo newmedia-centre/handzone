@@ -20,7 +20,7 @@ namespace Handzone.Components
         /// new tabs/panels will automatically be created.
         /// </summary>
         public GetPinComponent()
-            : base("Get HANDZONe PIN", "Get PIN",
+            : base("Get PIN", "PIN",
                 "Get a PIN code for the HANDZONe authentication process.",
                 "HANDZONe", "Connection")
         {
@@ -75,7 +75,7 @@ namespace Handzone.Components
                     StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                     
                     // make the POST request
-                    HttpResponseMessage response = await client.PostAsync(State.URL + "api/auth/pin", content);
+                    HttpResponseMessage response = await client.PostAsync(State.Url + "api/auth/pin", content);
 
                     // get the pin from the response
                     response.EnsureSuccessStatusCode();
@@ -84,7 +84,7 @@ namespace Handzone.Components
                     
                     // set the output
                     ExpireSolution(true);
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, $"Enter the PIN after logging in on {State.URL}");
+                    AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, $"Enter the PIN after logging in on {State.Url}");
                 }
             }
             catch (HttpRequestException e)
