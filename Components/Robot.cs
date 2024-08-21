@@ -87,6 +87,7 @@ namespace Handzone.Components
         protected override void SolveInstance(IGH_DataAccess io)
         {
             io.SetData(0, _status);
+            io.SetData(1, _name);
         }
         
         public override void CreateAttributes()
