@@ -2,6 +2,7 @@ using System;
 using PimDeWitte.UnityMainThreadDispatcher;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -9,7 +10,10 @@ using UnityEngine.UI;
 public class GlobalClientLoginButton : MonoBehaviour
 {
     public Button loginButton;
-    public TMP_InputField pinInputField;
+    //public TMP_InputField pinInputField;
+    public TMP_Text pinInputField;
+
+    public UnityEvent OnConnectionSuccess;
     
     private void Start()
     {
@@ -25,7 +29,7 @@ public class GlobalClientLoginButton : MonoBehaviour
                     return;
                 
                 loginButton.interactable = false;
-                pinInputField.interactable = false;
+                //pinInputField.interactable = false;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connecting...";
             });
         };
@@ -39,8 +43,9 @@ public class GlobalClientLoginButton : MonoBehaviour
                 
                 loginButton.interactable = true;
                 pinInputField.text = "";
-                pinInputField.interactable = false;
+                //pinInputField.interactable = false;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connected";
+                OnConnectionSuccess.Invoke();
             });
         };
         
@@ -52,7 +57,7 @@ public class GlobalClientLoginButton : MonoBehaviour
                     return;
                 
                 loginButton.interactable = true;
-                pinInputField.interactable = true;
+                //pinInputField.interactable = true;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
             });
         };
@@ -65,7 +70,7 @@ public class GlobalClientLoginButton : MonoBehaviour
                     return;
                 
                 loginButton.interactable = true;
-                pinInputField.interactable = true;
+                //pinInputField.interactable = true;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
                 Debug.LogError($"An error occurred: {error}");
             });
@@ -74,12 +79,15 @@ public class GlobalClientLoginButton : MonoBehaviour
     
     public async void GlobalClientLogin()
     {
-        string pin = pinInputField.text;
+        string pin = await GlobalClient.Instance.GetPin();
         if (string.IsNullOrEmpty(pin))
         {
             Debug.LogError("PIN is empty.");
             return;
         }
+
+        pinInputField.text = pin;
+        Debug.Log(pin);
         
         try
         {

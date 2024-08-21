@@ -1,6 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
@@ -16,6 +20,12 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GlobalClient : MonoBehaviour
 {
+
+    /// <summary>
+    /// Signature.
+    /// </summary>
+    private static string _signature;
+
     /// <summary>
     /// Singleton instance of GlobalClient.
     /// </summary>
@@ -62,16 +72,67 @@ public class GlobalClient : MonoBehaviour
         }
     }
 
+    // generate a secure signature to identify the auth flow with
+    private static string NewSignature()
+    {
+        byte[] signature = new byte[32];
+            
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(signature);
+        }
+            
+        _signature = Convert.ToBase64String(signature);
+        return _signature;
+    }
+
+    internal async Task <string> GetPin()
+    {
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // encode the data as JSON
+                string jsonData = JsonConvert.SerializeObject(new
+                {
+                    signature = NewSignature()
+                });
+                StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                    
+                // make the POST request and block until the result is returned
+                HttpResponseMessage response = await client.PostAsync(url + "api/auth/pin", content);
+
+                // get the pin from the response
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Debug.LogError($"Request error: {e.Message}");
+            throw;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+            throw;
+        }
+    }
+
     /// <summary>
     /// Attempts to connect to the web server using the provided PIN.
     /// Registers connection, disconnection, and error handling events.
     /// </summary>
-    /// <param name="pin">The PIN used for secure connection.</param>
+    /// <param name="pinInput">The PIN used for secure connection.</param>
     public async Task TryConnectToGlobalServer(String pin)
     {
         _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
         {
-            Auth = new{pin}
+            Auth = new
+            {
+                pin,
+                signature = _signature
+            }
         });
         
         _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
@@ -102,11 +163,21 @@ public class GlobalClient : MonoBehaviour
 
         _client.OnError += (sender, s) =>
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            // check if more time is needed
+            if (s == "Pin not claimed")
             {
-                Debug.Log($@"Received error from global server: {s}");
-                OnError?.Invoke(s);
-            });
+                Console.WriteLine("Pin not claimed, waiting and retrying...");
+                Thread.Sleep(1000);
+                _client.ConnectAsync();
+            }
+            else
+            {
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    Debug.Log($@"Received error from global server: {s}");
+                    OnError?.Invoke(s);
+                });
+            }
         };
 
         _client.On("sessions", response =>
