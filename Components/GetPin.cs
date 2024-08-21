@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
 using Grasshopper.Kernel;
 using Handzone.Core;
 
@@ -50,14 +50,14 @@ namespace Handzone.Components
                 using (HttpClient client = new HttpClient())
                 {
                     // encode the data as JSON
-                    string jsonData = JsonSerializer.Serialize(new
+                    string jsonData = JsonConvert.SerializeObject(new
                     {
                         signature = State.NewSignature()
                     });
                     StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                     
                     // make the POST request and block until the result is returned
-                    HttpResponseMessage response = client.PostAsync("https://handzone.tudelft.nl/api/auth/pin", content).Result;
+                    HttpResponseMessage response = client.PostAsync("http://localhost:3000/api/auth/pin", content).Result;
 
                     // get the pin from the response
                     response.EnsureSuccessStatusCode();

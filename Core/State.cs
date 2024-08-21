@@ -29,6 +29,7 @@ namespace Handzone.Core
                 return _serverConnection;
             }
         }
+        
         // RobotConnection accessor that allows only one instance.
         public static RobotConnection RobotConnection => _robotConnection;
 

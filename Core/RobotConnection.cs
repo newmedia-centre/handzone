@@ -22,7 +22,7 @@ namespace Handzone.Core
         internal RobotConnection(JoinSessionOut session)
         {
             Info = session.Robot;
-            _client = new SocketIOClient.SocketIO("https://handzone.tudelft.nl/" + session.Robot.Name, new SocketIOOptions()
+            _client = new SocketIOClient.SocketIO("http://localhost:3000/" + session.Robot.Name, new SocketIOOptions()
             {
                 Auth = new { token = session.Token }
             });

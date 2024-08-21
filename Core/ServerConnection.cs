@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Schema.Socket.Index;
+using SocketIO.Serializer.NewtonsoftJson;
+using SocketIOClient;
 
 namespace Handzone.Core
 {
@@ -23,8 +26,17 @@ namespace Handzone.Core
 
         internal ServerConnection()
         {
-            _client = new SocketIOClient.SocketIO("https://handzone.tudelft.nl");
+            _client = new SocketIOClient.SocketIO("http://localhost:3000", new SocketIOOptions()
+            {
+                Reconnection = false,
+                ReconnectionAttempts = 0
+            });
             Sessions = new List<RobotSession>();
+
+            _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+            });
 
             _client.OnConnected += (sender, args) =>
             {
@@ -46,7 +58,8 @@ namespace Handzone.Core
                 {
                     Console.WriteLine("Pin not claimed, waiting and retrying...");
                     Thread.Sleep(1000);
-                    _client.ConnectAsync();
+                    Task.Run(() => _client.ConnectAsync());
+                    Console.WriteLine("pass");
                 }
                 else
                 {
@@ -80,7 +93,7 @@ namespace Handzone.Core
             };
             
             // try connect to server
-            _client.ConnectAsync();
+            Task.Run(() => _client.ConnectAsync());
         }
 
         internal JoinSessionOut GetActiveSession()
@@ -90,9 +103,13 @@ namespace Handzone.Core
             _client.EmitAsync("namespace", response =>
             {
                 var success = response.GetValue<bool>();
+                Console.WriteLine($"Get namespace: {success}");
                 if (success)
                 {
-                    tcs.SetResult((response.GetValue<JoinSessionOut>(1), null));
+                    Console.WriteLine(response.ToString());
+                    var session = response.GetValue<JoinSessionOut>(1);
+                    Console.WriteLine(session.Robot.Name);
+                    tcs.SetResult((session, null));
                 }
                 else
                 {

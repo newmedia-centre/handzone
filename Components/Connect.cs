@@ -72,8 +72,8 @@ namespace Handzone.Components
             if (CancellationToken.IsCancellationRequested) { return; }
             
             // connect to server
-            State.ServerConnection.Connect(_pin);
             Console.WriteLine("Connecting to Server...");
+            State.ServerConnection.Connect(_pin);
 
             // wait for connection to establish
             while (!State.ServerConnection.IsConnected && !State.ServerConnection.IsErrored && _seconds < MaxSeconds)
