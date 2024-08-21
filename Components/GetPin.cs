@@ -75,7 +75,7 @@ namespace Handzone.Components
                     StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                     
                     // make the POST request
-                    HttpResponseMessage response = await client.PostAsync(State.Url + "api/auth/pin", content);
+                    HttpResponseMessage response = await client.PostAsync(State.Url + "/api/auth/pin", content);
 
                     // get the pin from the response
                     response.EnsureSuccessStatusCode();

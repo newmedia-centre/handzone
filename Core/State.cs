@@ -1,6 +1,5 @@
 using System;
 using System.Security.Cryptography;
-using Schema.Socket.Index;
 
 namespace Handzone.Core
 {
@@ -9,16 +8,17 @@ namespace Handzone.Core
         // define state singletons
         private static string _signature;
         private static GlobalConnection _globalConnection;
+        private static SessionConnection _sessionConnection;
         
         // define constants
-        public const string Url = "http://localhost:3000/";
+        public const string Url = "http://localhost:3000";
 
         // Private constructor.
         private State()
         {}
         
         // Signature accessor that allows only one instance.
-        public static string Signature => _signature ?? (_signature = NewSignature());
+        public static string Signature => _signature ?? NewSignature();
         
         // GlobalConnection accessor that allows only one instance.
         public static GlobalConnection GlobalConnection
@@ -29,6 +29,18 @@ namespace Handzone.Core
                     _globalConnection = new GlobalConnection();
 
                 return _globalConnection;
+            }
+        }
+        
+        // SessionConnection accessor that allows only one instance.
+        public static SessionConnection SessionConnection
+        {
+            get
+            {
+                if (_sessionConnection == null)
+                    _sessionConnection = new SessionConnection();
+
+                return _sessionConnection;
             }
         }
 

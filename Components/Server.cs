@@ -1,6 +1,4 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Grasshopper.Kernel;
 using Handzone.Core;
 
@@ -11,7 +9,6 @@ namespace Handzone.Components
         private string _pin;
         private string _status = "Not Connected";
         private ComponentButton _button;
-        private event Action Update;
         
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
@@ -25,10 +22,44 @@ namespace Handzone.Components
                 "Manages the connection to the HANDZONe Server",
                 "HANDZONe", "Connection")
         {
-            Update += () =>
+            State.GlobalConnection.OnStatus += message =>
             {
+                _status = message;
+                Console.WriteLine(message);
+                
                 ExpireSolution(true);
                 Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+            };
+
+            State.GlobalConnection.OnError += message =>
+            {
+                _status = message;
+                Console.WriteLine(message);
+                
+                ExpireSolution(true);
+                
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, message);
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+            };
+
+            State.GlobalConnection.OnConnectionChange += connected =>
+            {
+                if (_button == null) return;
+                
+                if (connected)
+                {
+                    _button.Label = "Disconnect";
+                    _button.Action = Disconnect;
+
+                    Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
+                }
+                else
+                {
+                    _button.Label = "Connect";
+                    _button.Action = Connect;
+
+                    Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
+                }
             };
         }
 
@@ -69,21 +100,7 @@ namespace Handzone.Components
         {
             if (_pin != null)
             {
-                Task.Run(() =>
-                {
-                    for (int i = 0; i < 15; i++)
-                    {
-                        _status = $"Iteration {i}";
-                        Thread.Sleep(1500);
-                        Update?.Invoke();
-                    }
-
-                    _status = "Connected";
-                    _button.Label = "Disconnect";
-                    _button.Action = Disconnect;
-                    
-                    Update?.Invoke();
-                });
+                State.GlobalConnection.TryConnectToGlobalServer(_pin);
             }
             else
             {
@@ -92,13 +109,9 @@ namespace Handzone.Components
             
         }
 
-        async void Disconnect()
+        void Disconnect()
         {
-            _status = "Not Connected";
-            _button.Label = "Connect";
-            _button.Action = Connect;
-            
-            Update?.Invoke();
+            State.GlobalConnection.Disconnect();
         }
 
         /// <summary>
