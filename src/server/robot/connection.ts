@@ -109,11 +109,13 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 				server.close()
 				server.on('close', () => { robots._semaphore.release() })
 
-				reject('timeout')
+				reject(new Error('Timeout'))
 			}, 5000)
 
 			// create a tcp server receive values from the robot and listen on port 4000
 			const server = createServer(socket => {
+
+				console.log('Robot Connected')
 
 				socket.once('data', data => {
 					clearTimeout(timeout)

@@ -46,7 +46,6 @@ export const putPin = async (req: Request, res: Response) => {
 
 	// parse the request body
 	const body = req.body
-	console.log(body)
 	const parsed = Data.safeParse(body)
 
 	// validate the request body
