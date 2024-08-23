@@ -212,18 +212,21 @@ public class SessionClient : MonoBehaviour
         _client.EmitAsync("internals:get_inverse_kin", response =>
         {
             var success = response.GetValue<bool>(0);
+            
             if (success)
             {
-                var InverseKin = response.GetValue<InternalsGetInverseKinCallback>(1);
+                Debug.Log($"IK Request Stat: Success");
+                var inverseKin = response.GetValue<InternalsGetInverseKinCallback>(1);
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
-                    OnKinematicCallback?.Invoke(InverseKin);
+                    OnKinematicCallback?.Invoke(inverseKin);
                     function?.Invoke();
                 });           
             }
             else
             {
-                Debug.LogWarning("Get Inverse Kinematic Failed");
+                Debug.LogWarning($"IK Request Stat: Failed");
+                Debug.LogWarning($"Get Inverse Kinematic Failed: {response.GetValue<string>(1)}");
             }
         }, data);
     }
