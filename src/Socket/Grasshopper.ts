@@ -17,9 +17,7 @@ export type GrasshopperProgramOut = {
 /**
  * Sends an instruction to run the program on the robot.
  */
-export type GrasshopperSimulateIn = {
+export type GrasshopperRunIn = {
 	/** Whether the simulation should play or stop */
 	run: boolean
-	/** The speed at which the simulation should run */
-	speed: number
 }
