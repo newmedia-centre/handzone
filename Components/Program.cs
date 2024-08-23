@@ -9,6 +9,9 @@ namespace Handzone.Components
 {
     public class ProgramComponent : GH_Component
     {
+        private IProgram _program;
+        private ComponentButton _button;
+        
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
         /// constructor without any arguments.
@@ -36,8 +39,6 @@ namespace Handzone.Components
         /// </summary>
         protected override void RegisterOutputParams(GH_OutputParamManager output)
         {
-            output.AddTextParameter("Status", "S", "The status of the connection", GH_ParamAccess.item);
-            output.AddTextParameter("Robot", "R", "The connected robot", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -47,16 +48,30 @@ namespace Handzone.Components
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess io)
         {
-            if (false)
+            // get the program
+            io.GetData(0, ref _program);
+            
+            _button.Label = "Upload";
+            _button.Action = Upload;
+                
+            Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+        }
+        
+        public override void CreateAttributes()
+        {
+            _button = new ComponentButton(this, "Upload", Upload);
+            m_attributes = _button;
+        }
+
+        async void Upload()
+        {
+            if (!State.SessionConnection.Connected)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to robot");
                 return;
             }
-
-            // get the program
-            IProgram program = null;
-            io.GetData(0, ref program);
-            if (program == null || program.Code == null)
+            
+            if (_program == null || _program.Code == null)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Program code is null");
                 return;
@@ -65,17 +80,78 @@ namespace Handzone.Components
             // convert the program
             GrasshopperProgramIn grasshopperProgramIn = new GrasshopperProgramIn()
             {
-                Program = string.Join("\n", program.Code[0][0])
+                Program = string.Join("\n", _program.Code[0][0])
             };
             
             // send the program
             try
             {
-                // todo
+                await State.SessionConnection.Program(grasshopperProgramIn);
+                Start();
             }
             catch (Exception e)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+            }
+        }
+        
+
+        async void Start()
+        {
+            if (!State.SessionConnection.Connected)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to robot");
+                return;
+            }
+            
+            try
+            {
+                var grasshopperRunIn = new GrasshopperRunIn()
+                {
+                    Run = true
+                };
+                
+                await State.SessionConnection.Run(grasshopperRunIn);
+
+                _button.Label = "Pause";
+                _button.Action = Pause;
+                
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+            }
+            catch (Exception e)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+            }
+        }
+        
+        async void Pause()
+        {
+            if (!State.SessionConnection.Connected)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to robot");
+                return;
+            }
+            
+            try
+            {
+                var grasshopperRunIn = new GrasshopperRunIn()
+                {
+                    Run = false
+                };
+                
+                await State.SessionConnection.Run(grasshopperRunIn);
+
+                _button.Label = "Start";
+                _button.Action = Start;
+                
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+            }
+            catch (Exception e)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
+                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
             }
         }
 
@@ -85,7 +161,7 @@ namespace Handzone.Components
         /// You can add image files to your project resources and access them like this:
         /// return Resources.IconForThisComponent;
         /// </summary>
-        protected override System.Drawing.Bitmap Icon => null;
+        protected override System.Drawing.Bitmap Icon => Resources.Util.GetIcon("iconSimulation");
 
         /// <summary>
         /// Each component must have a unique Guid to identify it. 

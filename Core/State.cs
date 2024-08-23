@@ -11,7 +11,7 @@ namespace Handzone.Core
         private static SessionConnection _sessionConnection;
         
         // define constants
-        public const string Url = "http://localhost:3000";
+        public const string Url = "https://handzone.tudelft.nl/";
 
         // Private constructor.
         private State()

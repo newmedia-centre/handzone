@@ -75,7 +75,7 @@ namespace Handzone.Components
                     StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                     
                     // make the POST request
-                    HttpResponseMessage response = await client.PostAsync(State.Url + "/api/auth/pin", content);
+                    HttpResponseMessage response = await client.PostAsync(State.Url + "api/auth/pin", content);
 
                     // get the pin from the response
                     response.EnsureSuccessStatusCode();
@@ -107,7 +107,7 @@ namespace Handzone.Components
         /// You can add image files to your project resources and access them like this:
         /// return Resources.IconForThisComponent;
         /// </summary>
-        protected override System.Drawing.Bitmap Icon => null;
+        protected override System.Drawing.Bitmap Icon => Resources.Util.GetIcon("iconPin");
 
         /// <summary>
         /// Each component must have a unique Guid to identify it. 

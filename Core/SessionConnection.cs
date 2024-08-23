@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Schema.Socket.Grasshopper;
 using Schema.Socket.Index;
 using SocketIO.Serializer.NewtonsoftJson;
 using SocketIOClient;
@@ -34,7 +35,9 @@ public class SessionConnection
         Session = session;
         OnStatus?.Invoke($"Connecting to robot session: {Session.Robot.Name}...");
         
-        _client = new SocketIOClient.SocketIO(State.Url, new SocketIOOptions
+        Console.WriteLine($"Connecting with token: {session.Token}");
+        
+        _client = new SocketIOClient.SocketIO(State.Url + session.Robot.Name, new SocketIOOptions
         {
             Auth = new
             {
@@ -78,6 +81,22 @@ public class SessionConnection
         await _client.ConnectAsync();
         
         Console.WriteLine("Post Connect");
+    }
+    
+    /// <summary>
+    /// Sends an instruction to run the program on the robot.
+    /// </summary>
+    public async Task Run(GrasshopperRunIn grasshopperRun)
+    {
+        await _client.EmitAsync("grasshopper:run", grasshopperRun);
+    }
+    
+    /// <summary>
+    /// Sends a json payload of the program to Unity to be deserialized as a program.
+    /// </summary>
+    public async Task Program(GrasshopperProgramIn grasshopperProgramIn)
+    {
+        await _client.EmitAsync("grasshopper:program", grasshopperProgramIn);
     }
 
     /// <summary>

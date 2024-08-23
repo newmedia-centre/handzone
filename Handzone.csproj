@@ -21,4 +21,9 @@
       <Reference Include="System.Net.Http" />
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\Icons\**\*" />
+    </ItemGroup>
+
+
 </Project>
