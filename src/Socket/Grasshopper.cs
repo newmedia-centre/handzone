@@ -34,18 +34,12 @@ namespace Schema.Socket.Grasshopper
     /// <summary>
     /// Sends an instruction to run the program on the robot.
     /// </summary>
-    public partial class GrasshopperSimulateIn
+    public partial class GrasshopperRunIn
     {
         /// <summary>
         /// Whether the simulation should play or stop
         /// </summary>
         [JsonProperty("run")]
         public bool Run { get; set; }
-
-        /// <summary>
-        /// The speed at which the simulation should run
-        /// </summary>
-        [JsonProperty("speed")]
-        public double Speed { get; set; }
     }
 }
