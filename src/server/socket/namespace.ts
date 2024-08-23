@@ -50,7 +50,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 
 		// handle all the incoming events
 		handleMotionEvents(socket)
-		handleGrasshopperEvents(socket)
+		handleGrasshopperEvents(socket, logger)
 		handleRealtimeEvents(socket)
 		handleInterfacesEvents(socket)
 		handleInternalsEvents(socket)

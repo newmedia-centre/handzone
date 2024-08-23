@@ -1,10 +1,12 @@
 // import types
 import type { Socket } from 'socket.io'
+import type { Logger } from 'winston'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
 
-export const handleGrasshopperEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>) => {
+export const handleGrasshopperEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, logger: Logger) => {
 	// handle the grasshopper:program event
 	socket.on('grasshopper:program', (data) => {
+		logger.info('Received program from grasshopper', { data: data.program })
 		socket.data.robot.send(data.program + '\n')
 	})
 
