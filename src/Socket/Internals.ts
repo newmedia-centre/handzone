@@ -7,7 +7,7 @@ export type InternalsGetInverseKinIn = {
 	/** The maximum allowed position error. If not provided, the default value is used. */
 	maxPositionError?: number
 	/** The tool center point (TCP) to use for the inverse kinematics calculation. If not provided, the default TCP is used. */
-	tcp_offset?: string
+	tcp_offset?: number[]
 }
 
 export type InternalsGetInverseKinCallback = {

@@ -30,7 +30,7 @@ namespace Schema.Socket.Internals
         /// provided, the default TCP is used.
         /// </summary>
         [JsonProperty("tcp_offset", NullValueHandling = NullValueHandling.Ignore)]
-        public string TcpOffset { get; set; }
+        public List<double> TcpOffset { get; set; }
 
         /// <summary>
         /// Tool pose.
