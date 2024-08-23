@@ -20,7 +20,7 @@ export const ConnectVR = () => {
 
 	return (
 		<div>
-			<button onClick={() => setOpen(true)} className='w-24 rounded border bg-white p-2 text-center hover:bg-200'>Validate PIN</button>
+			<button onClick={() => setOpen(true)} className='w-24 rounded border bg-white p-2 text-center hover:bg-200'>PIN</button>
 			<dialog open={open} className='fixed inset-0 z-50 size-full items-center justify-center bg-black/10 open:flex'>
 				<form action={validate} className='flex flex-col items-center gap-2 rounded border border-300 bg-white p-4'>
 					<input

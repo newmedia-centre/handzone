@@ -1,5 +1,5 @@
 // import dependencies
-import { validateRequest } from '@/server/db/auth'
+import { validateRequest } from '@/server/db/auth-next'
 import { generatePin, validatePin } from '@/server/db/pin'
 
 // handle the POST request
