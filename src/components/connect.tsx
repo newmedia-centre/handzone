@@ -12,6 +12,9 @@ export const ConnectVR = () => {
 	const validate = async () => {
 		await fetch('/api/auth/pin', {
 			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
 			body: JSON.stringify({ pin }),
 		})
 		setPin('')
