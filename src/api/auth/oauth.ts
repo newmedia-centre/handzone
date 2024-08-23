@@ -1,36 +1,39 @@
 // import dependencies
 import { generateState, generateCodeVerifier } from 'oslo/oauth2'
-import { cookies } from 'next/headers'
-import { oauth } from '@/server/db/auth'
+import { serializeCookie } from 'oslo/cookie'
+import { oauth as luciaOauth } from '@/server/db/auth'
 import { env } from '@/server/environment'
 
-// handle the GET request
-export async function GET(): Promise<Response> {
+// import types
+import type { Request, Response } from 'express'
+
+// create the oauth route
+export const oauth = async (req: Request, res: Response) => {
 	const state = generateState()
 	const codeVerifier = generateCodeVerifier()
-	const url = await oauth.createAuthorizationURL({
+	const url = await luciaOauth.createAuthorizationURL({
 		state,
 		scopes: ['openid'],
 		codeVerifier
 	})
 
 	// set the auth state cookie
-	cookies().set('oauth_state', state, {
+	res.appendHeader('Set-Cookie', serializeCookie('oauth_state', state, {
 		path: '/',
 		secure: env.NODE_ENV === 'production',
 		httpOnly: true,
 		maxAge: 60 * 10,
 		sameSite: 'lax'
-	})
+	}))
 
 	// set the code verifier cookie
-	cookies().set('oauth_code_verifier', codeVerifier, {
+	res.appendHeader('Set-Cookie', serializeCookie('oauth_code_verifier', codeVerifier, {
 		path: '/',
 		secure: env.NODE_ENV === 'production',
 		httpOnly: true,
 		maxAge: 60 * 10,
 		sameSite: 'lax'
-	})
+	}))
 
-	return Response.redirect(url)
+	return res.redirect(url.toString())
 }

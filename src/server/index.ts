@@ -7,19 +7,22 @@ import { docker } from './docker'
 import { robots } from './robot'
 import { env } from './environment'
 import { webLogger as logger } from './logger'
+import { api } from '@/api'
 
 // create the nextjs webserver
 const dev = env.NODE_ENV !== 'production'
 const next = Next({ dev })
 const handle = next.getRequestHandler()
 
+// create an express webserver
+const express = Express()
+express.use('/api', api)
+
 // prepare the nextjs webserver
 next.prepare().then(() => {
 	try {
-		// create an express webserver
-		const express = Express()
 
-		// handle all requests through nextjs
+		// handle all other requests through nextjs
 		express.all('*', (req, res) => {
 			handle(req, res)
 		})

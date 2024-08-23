@@ -57,6 +57,7 @@ export interface NamespaceSocketData {
 	user: User
 	robot: RobotConnection
 	color: string
+	paused: boolean
 	achievements: {
 		id: string
 		data: JSON

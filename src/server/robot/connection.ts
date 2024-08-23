@@ -27,6 +27,8 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 	video?: Set<VideoConnection>
 	info: RobotInfo
 	logger: Logger
+	active: boolean = false
+	paused: boolean = false
 
 	constructor(robot: Socket, info: RobotInfo, virtual: SessionType | null, logger: Logger) {
 		// initialize the EventEmitter

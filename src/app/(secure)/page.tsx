@@ -1,32 +1,30 @@
 // import dependencies
-import { validateRequest } from '@/server/db/auth'
+import { validateRequest } from '@/server/db/auth-next'
 
 // import components
-import { WelcomeUser } from './welcome'
+import { StudentCalendar, StudentRequestDashboard } from './student'
+import { TeacherCalendar, TeacherRequestDashboard, TeacherCalendarBlockTool, TeacherRobotMonitoringDashboard } from './teacher'
 
 export default async function Page() {
 	// get the user
 	const { user } = await validateRequest()
 
-	// check if the user is admin
-	const admin = user?.id === 'dc35f37334f3d9d881f1e3276295d37ca0944d64'
-
 	return (
 		<main className='container mx-auto flex grow flex-col items-center gap-8 overflow-y-auto p-8'>
-			{admin && (
-				<div className='w-full divide-y divide-300 rounded border border-300 bg-white shadow-md'>
+			{user!.admin && (
+				<div className='w-full rounded border border-300 bg-white shadow-md'>
 					<TeacherRobotMonitoringDashboard />
 				</div>
 			)}
 			<div className='flex w-full flex-col gap-8 lg:flex-row'>
 				<div className='aspect-square basis-full divide-y divide-300 rounded border border-300 bg-white shadow-md lg:basis-1/3'>
-					{admin ? (
+					{user!.admin ? (
 						<TeacherCalendar />
 					) : (
 						<StudentCalendar />
 					)}
 				</div>
-				{admin ? (
+				{user!.admin ? (
 					<div className='flex basis-full flex-col gap-8 lg:basis-2/3'>
 						<div className='grow divide-y divide-300 rounded border border-300 bg-white shadow-md'>
 							<TeacherRequestDashboard />
@@ -37,14 +35,9 @@ export default async function Page() {
 					</div>
 				) : (
 					<div className='basis-full divide-y divide-300 rounded border border-300 bg-white shadow-md lg:basis-2/3'>
-						<StudentRequestDashboard />
+						<StudentRequestDashboard user={user!} />
 					</div>
 				)}
-			</div>
-			<div className='z-10 w-full max-w-5xl items-center justify-center font-mono text-sm lg:flex'>
-				<div className='flex flex-col gap-2 p-2'>
-					<WelcomeUser />
-				</div>
 			</div>
 		</main>
 	)

@@ -6,6 +6,7 @@ import { docker } from '@/server/docker'
 import { verifyPin } from '@/server/db/pin'
 import { generateAccessToken } from '@/server/db/jwt'
 import { socketLogger as logger } from '../logger'
+import { prisma } from '@/server/db'
 
 // import types
 import type {
@@ -163,6 +164,61 @@ export const init = () => {
 			})
 
 			callback(true, { robot: info, token })
+		})
+
+		// join real robot
+		socket.on('real', async (callback) => {
+			logger.info('Real robot requested', { user: socket.data.user })
+
+			// check if the user has access to a real robot
+			const request = await prisma.robotSessionRequest.findFirst({
+				where: {
+					userId: socket.data.user.id,
+					session: {
+						start: {
+							lte: new Date().toISOString()
+						},
+						end: {
+							gte: new Date().toISOString()
+						}
+					},
+					status: {
+						in: ['ACCEPTED']
+					}
+				},
+				include: {
+					session: {
+						include: {
+							robot: true
+						}
+					}
+				}
+			})
+
+			// check if the request was found
+			if (!request) {
+				logger.info('Real robot request denied, no approved session', { user: socket.data.user })
+				return callback(false, 'Cound not find an approved scheduled session for the user')
+			}
+
+			// get the real robot
+			const robot = robots.connections.get(request.session.robot.name)
+			if (!robot) {
+				logger.info('Real robot request denied, robot not found', { user: socket.data.user })
+				return callback(false, 'Robot not found')
+			}
+
+			// check if the robot is available
+			if (!robot.active) {
+				logger.info('Real robot request denied, not yet available', { user: socket.data.user })
+				return callback(false, 'Found a scheduled session for the user, but the robot is not yet available')
+			}
+
+			// generate the access token
+			const token = await generateAccessToken(socket.data.user, robot.info)
+			logger.info('Real robot request approved', { user: socket.data.user })
+			socket.data.namespace = robot.info
+			callback(true, { robot: robot.info, token })
 		})
 
 		// send joined namespace

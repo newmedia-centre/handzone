@@ -6,6 +6,7 @@ import { handleMotionEvents } from './motion'
 import { handleGrasshopperEvents } from './grasshopper'
 import { handleUnityEvents } from './unity'
 import { validateAccessToken } from '@/server/db/jwt'
+import { docker } from '@/server/docker'
 
 // import types
 import type { Namespace } from 'socket.io'
@@ -27,7 +28,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 			// attach the user to the socket
 			socket.data.user = user
 			socket.data.robot = robot
-			socket.data.color = Math.floor(Math.random() * 2e24).toString(16)
+			socket.data.color = '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
 
 			return next()
 		}).catch(e => {
@@ -69,12 +70,22 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		socket.on('message', (message) => {
 			socket.broadcast.emit('message', message)
 		})
+
+		// remove player data on disconnect
+		socket.on('disconnect', () => {
+			players.delete(socket.id)
+
+			// close the virtual robot connection if no users are connected
+			if (robot.virtual && namespace.sockets.size <= 0) {
+				docker.closeVirtualRobot(robot.info.name)
+			}
+		})
 	})
 
 	// emit the positions data
 	setInterval(() => {
 		namespace.emit('unity:players', { players: Array.from(players.values()) })
-	}, 200)
+	}, 100)
 
 	logger.info('Namespace initialized')
 	return namespace

@@ -48,43 +48,49 @@ export class VNCClient {
 		// check if the first message is a valid auth token
 		this._client.once('data', async (message) => {
 			const token = message.toString('utf8')
-			const { robot } = await validateAccessToken(token)
+			try {
+				const { robot } = await validateAccessToken(token)
 
-			if (robot && robot.vnc) {
-				// create a logger for the robot vnc proxy
-				this._logger = vncLogger.child({ entity: 'vnc', label: `ROBOT:VNC:${robot.name}`, robot })
+				if (robot.vnc) {
+					// create a logger for the robot vnc proxy
+					this._logger = vncLogger.child({ entity: 'vnc', label: `ROBOT:VNC:${robot.name}`, robot })
 
-				this._logger.info('User Authenticated for robot')
+					this._logger.info('User Authenticated for robot')
 
-				// connect to robot vnc server
-				this._vnc = new Socket()
-				this._vnc.setTimeout(5000)
-				this._logger.info('Connecting to robot...')
-				this._vnc.connect(robot.vnc, robot.address)
+					// connect to robot vnc server
+					this._vnc = new Socket()
+					this._vnc.setTimeout(5000)
+					this._logger.info('Connecting to robot...')
+					this._vnc.connect(robot.vnc, robot.address)
 
-				// retry until a connection is established
-				this._vnc.on('error', (error: NodeJS.ErrnoException) => {
-					// log any errors
-					this._logger?.error(error.message, { error })
-				})
+					// retry until a connection is established
+					this._vnc.on('error', (error: NodeJS.ErrnoException) => {
+						// log any errors
+						this._logger?.error(error.message, { error })
+					})
 
-				this._vnc.on('connect', () => {
-					this._logger?.info('Connected to robot')
+					this._vnc.on('connect', () => {
+						this._logger?.info('Connected to robot')
 
-					// pipe the sockets to each other
-					this._vnc!.pipe(this._client)
-					this._client.pipe(this._vnc!)
-				})
+						// pipe the sockets to each other
+						this._vnc!.pipe(this._client)
+						this._client.pipe(this._vnc!)
+					})
 
-				this._vnc.on('close', () => {
-					this._logger?.info('Robot closed the connection')
+					this._vnc.on('close', () => {
+						this._logger?.info('Robot closed the connection')
+						this._client.destroy()
+						this._vnc?.destroy()
+					})
+
+					this.robot = robot
+				} else {
+					vncLogger.info('VNC requested for robot without VNC support', { token })
 					this._client.destroy()
 					this._vnc?.destroy()
-				})
-
-				this.robot = robot
-			} else {
-				vncLogger.info('Authentication failed', { token })
+				}
+			} catch (error) {
+				vncLogger.info('Authentication failed', { token, error })
 				this._client.destroy()
 				this._vnc?.destroy()
 			}

@@ -111,14 +111,15 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		await container.start()
 
 		// return the container info
-		this.containers.set(container.id, container)
+		const name = await this._getName(container)
+		this.containers.set(name, container)
 		return await container.inspect()
 	}
 
 	// close a virtual polyscope instance
-	closeVirtualRobot = async (id: string) => {
+	closeVirtualRobot = async (name: string) => {
 		// remove the container from the map
-		const container = this.containers.get(id)
+		const container = this.containers.get(name)
 		if (container) {
 			// release the slot from the slot machine
 			const slot = (await container.inspect()).Config.Labels['slot']
@@ -131,7 +132,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 			// stop and remove the container
 			await container.stop()
 			await container.remove()
-			this.containers.delete(id)
+			this.containers.delete(name)
 		}
 
 		// release the semaphore
@@ -145,14 +146,21 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 
 		// remove all found containers
 		await Promise.all(containers.map(async container => {
+			const name = await this._getName(this.docker.getContainer(container.Id))
 			await this.docker.getContainer(container.Id).stop().catch(err => logger.warn('Error closing virtual robot', { error: err }))
 			await this.docker.getContainer(container.Id).remove().catch(err => logger.error('Error closing virtual robot', { error: err }))
+			this.containers.delete(name)
 		}))
 	}
 
 	// get the current capacity of the semaphore
 	getCapacity = () => {
 		return this._semaphore.getPermits()
+	}
+
+	_getName = async (container: Docker.Container) => {
+		const info = await container.inspect()
+		return info.Name.split('/')[1]!
 	}
 }
 
