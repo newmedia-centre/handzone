@@ -28,11 +28,11 @@ export type GrasshopperRunIn = {
  * Sends a json payload of the meshes to Unity.
  */
 export type GrasshopperMeshesIn = {
-	mesh1: MeshData
-	mesh2: MeshData
-	mesh3: MeshData
-	mesh4: MeshData
-	mesh5: MeshData
+	mesh1?: MeshData
+	mesh2?: MeshData
+	mesh3?: MeshData
+	mesh4?: MeshData
+	mesh5?: MeshData
 }
 
 export type MeshData = {

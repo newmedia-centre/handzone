@@ -48,19 +48,19 @@ namespace Schema.Socket.Grasshopper
     /// </summary>
     public partial class GrasshopperMeshesIn
     {
-        [JsonProperty("mesh1")]
+        [JsonProperty("mesh1", NullValueHandling = NullValueHandling.Ignore)]
         public MeshData Mesh1 { get; set; }
 
-        [JsonProperty("mesh2")]
+        [JsonProperty("mesh2", NullValueHandling = NullValueHandling.Ignore)]
         public MeshData Mesh2 { get; set; }
 
-        [JsonProperty("mesh3")]
+        [JsonProperty("mesh3", NullValueHandling = NullValueHandling.Ignore)]
         public MeshData Mesh3 { get; set; }
 
-        [JsonProperty("mesh4")]
+        [JsonProperty("mesh4", NullValueHandling = NullValueHandling.Ignore)]
         public MeshData Mesh4 { get; set; }
 
-        [JsonProperty("mesh5")]
+        [JsonProperty("mesh5", NullValueHandling = NullValueHandling.Ignore)]
         public MeshData Mesh5 { get; set; }
     }
 
