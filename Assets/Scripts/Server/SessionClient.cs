@@ -30,7 +30,7 @@ public class SessionClient : MonoBehaviour
     public bool IsConnected => _client.Connected;
     
     public event Action<RealtimeDataOut> OnRealtimeData;
-    public event Action<Texture2D> OnCameraFeed;
+    public event Action<string, Texture2D> OnCameraFeed;
     public event Action<bool> OnDigitalOutputChanged;
     public event Action<string> OnUnityMessage;
     public event Action<UnityPlayersOut> OnUnityPlayerData;
@@ -45,6 +45,13 @@ public class SessionClient : MonoBehaviour
     
     private void Awake()
     {
+        if (GlobalClient.Instance == null)
+        {
+            Debug.LogWarning("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene. " +
+                             "SessionClient will not be created ");
+            return;
+        }
+
         url = GlobalClient.Instance.url + GlobalClient.Instance.Session?.Robot.Name;
         
         // Create a new Socket.IO client with an authentication token from the global client
@@ -56,7 +63,9 @@ public class SessionClient : MonoBehaviour
         // Setup the JSON serializer to handle object references
         _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
+            PreserveReferencesHandling = PreserveReferencesHandling.None,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore
         });
         
         if (Instance == null)
@@ -77,13 +86,13 @@ public class SessionClient : MonoBehaviour
         
         if (GlobalClient.Instance == null)
         {
-            Debug.LogError("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene.");
+            Debug.LogWarning("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene.");
             return;
         }
 
         if (GlobalClient.Instance.Session == null)
         {
-            Debug.LogError("No session is currently active. Make sure to have an active session.");
+            Debug.LogWarning("No session is currently active. Make sure to have an active session.");
             return;
         }
 
@@ -140,20 +149,18 @@ public class SessionClient : MonoBehaviour
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
                 // Index 0 = Camera name | Index 1 = Base64 encoded image
+                var cameraName = response.GetValue<string>();
                 var base64 = response.GetValue<string>(1);
-                _cameraFeedTexture.LoadImage(Convert.FromBase64String(base64));
-                OnCameraFeed?.Invoke(_cameraFeedTexture);
+                if (_cameraFeedTexture.LoadImage(Convert.FromBase64String(base64)))
+                {
+                    OnCameraFeed?.Invoke(cameraName, _cameraFeedTexture);
+                }
             });
         });
 
         // Register events for the web client that are specific to Grasshopper
 
         # region Grasshopper events
-
-        _client.On("grasshopper:program", response =>
-        {
-            Debug.Log("Received program from server...");
-        });
         
         _client.On("grasshopper:meshes", response =>
         {
@@ -195,7 +202,11 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                OnUnityPlayerData?.Invoke(response.GetValue<UnityPlayersOut>());
+                UnityPlayersOut players = response.GetValue<UnityPlayersOut>();
+                Debug.Log("Received player data from server...");
+                if(players == null) return;
+                
+                OnUnityPlayerData?.Invoke(players);
             });
         });
 
@@ -212,13 +223,18 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log("received pendant data from server...");
-                OnUnityPendant?.Invoke(response.GetValue<UnityPendantOut>());
+                _pendantData = response.GetValue<UnityPendantOut>();
+                OnUnityPendant?.Invoke(_pendantData);
             });
         });
         #endregion
 
         await _client.ConnectAsync();
+    }
+    
+    public void TakeControlPermission()
+    {
+        _client.EmitAsync("unity:pendant");
     }
 
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)
@@ -299,14 +315,19 @@ public class SessionClient : MonoBehaviour
     
     public void SendUnityPlayerIn(UnityPlayerIn unityPlayer)
     {
-        _client.EmitAsync("unity:players", unityPlayer);
+        _client.EmitAsync("unity:player", unityPlayer);
     }
     
     public void SendUnityPendant(Vector6D message)
     {
         _client.EmitAsync("unity:pendant", message);
     }
-    
+
+    public void EmergencyStop()
+    {
+        _client.EmitAsync("motion:emergency_stop");
+    }
+
     private async void OnDestroy()
     {
         await vncStream.DisposeAsync();

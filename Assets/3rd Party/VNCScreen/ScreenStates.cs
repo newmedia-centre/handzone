@@ -43,7 +43,7 @@ namespace VNCScreen
 
             Debug.Assert(screen != null);
 
-            screen.onStateChanged_event += onStateChanged;
+            screen.OnStateChangedEvent += onStateChanged;
             onStateChanged(screen.state);
         }
 

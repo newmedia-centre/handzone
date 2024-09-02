@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 [Serializable]
 public enum MenuName
@@ -10,7 +8,8 @@ public enum MenuName
     Login,
     Main,
     Options,
-    Sessions
+    Sessions,
+    RealRobot
 }
 
 public class MainMenuController : MonoBehaviour
@@ -19,47 +18,37 @@ public class MainMenuController : MonoBehaviour
     public GameObject mainMenu;
     public GameObject optionsMenu;
     public GameObject sessionsMenu;
+    public GameObject realRobotMenu;
     
     // Variable to store the previous menu
     private MenuName _previousMenu;
+    private MenuName _currentMenu;
 
-    private Dictionary<MenuName, GameObject> menuDictionary = new();
+    private Dictionary<MenuName, GameObject> _menuDictionary = new();
 
     private void Start()
     {
-        menuDictionary.Add(MenuName.Login, loginMenu);
-        menuDictionary.Add(MenuName.Main, mainMenu);
-        menuDictionary.Add(MenuName.Options, optionsMenu);
-        menuDictionary.Add(MenuName.Sessions, sessionsMenu);
+        _menuDictionary.Add(MenuName.Login, loginMenu);
+        _menuDictionary.Add(MenuName.Main, mainMenu);
+        _menuDictionary.Add(MenuName.Options, optionsMenu);
+        _menuDictionary.Add(MenuName.Sessions, sessionsMenu);
+        _menuDictionary.Add(MenuName.RealRobot, realRobotMenu);
 
         ChangeMenu(MenuName.Login);
     }
 
-    public void SetScene(string sceneName)
-    {
-        if (SceneManager.GetSceneByName(sceneName) != null)
-        {
-            SceneManager.LoadScene(sceneName);
-        }
-    }
-
     public void ChangeMenu(MenuControllerOption menuName)
     {
-        _previousMenu = menuName.menuName;
-        
-        foreach (var menu in menuDictionary)
-        {
-            menu.Value.SetActive(menu.Key == menuName.menuName);
-        }
+        ChangeMenu(menuName.menuName);
     }
     
     public void ChangeMenu(MenuName menuName)
     {
-        _previousMenu = menuName;
-        
-        foreach (var menu in menuDictionary)
+        _previousMenu = _currentMenu;
+        _currentMenu = menuName;
+        foreach (var menu in _menuDictionary)
         {
-            menu.Value.SetActive(menu.Key == menuName);
+            menu.Value.SetActive(menu.Key == _currentMenu);
         }
     }
     

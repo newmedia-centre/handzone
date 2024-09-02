@@ -11,9 +11,14 @@ public class GripperAnim : MonoBehaviour
     {
         _animController = GetComponent<Animator>();
         
-        // Temporary fix for workshop
         _gripper = GetComponent<Gripper>();
         _gripper.SetAnchorPosition(new Vector3(0, 0, -1.453f));
+        
+        if (SessionClient.Instance == null)
+        {
+            Debug.LogWarning("SessionClient instance is null. Make sure to have a SessionClient instance in the scene.");
+            return;
+        }
         
         SessionClient.Instance.OnDigitalOutputChanged += SetGripperAnim;
     }

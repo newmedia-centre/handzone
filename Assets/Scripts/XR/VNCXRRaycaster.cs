@@ -14,6 +14,7 @@ namespace VNCScreen
         
         private Vector2 _textureCoord;  
         private XRRayInteractor _xrRayInteractor;
+        private bool _isHitting;
         
         public Vector2D TextureCoord
         {
@@ -26,6 +27,11 @@ namespace VNCScreen
                 };
                 return vector2D;
             }
+        }
+        
+        public bool IsHitting
+        {
+            get => _isHitting;
         }
 
         /// <summary>
@@ -45,22 +51,32 @@ namespace VNCScreen
         /// </summary>
         void Update()
         {
-            if (_xrRayInteractor == null || SessionClient.Instance == null)
+            if (_xrRayInteractor is null)
+            {
+                Debug.Log("XRRayInteractor is null. Make sure to have a XRRayInteractor assigned to this component.");
                 return;
-            
-            // Check if user has permission to control the robot
-            if(SessionClient.Instance.PendantOwner != SessionClient.Instance.ClientId)
-                return;
+            }
             
             if (_xrRayInteractor.TryGetCurrentRaycast(out var raycastHit, out _, out _, out _, out _))
             {
-                if (raycastHit != null)
+                if (raycastHit.HasValue)
                 {
                     raycastHit.Value.collider.TryGetComponent<VNCScreen>(out var vnc);
-                    if(vnc != null)
+                    if(vnc)
                     {
+                        // Check if user has permission to control the robot
+                        if (SessionClient.Instance?.PendantOwner != SessionClient.Instance?.ClientId)
+                        {
+                            return;
+                        }
+                        
+                        _isHitting = true;
                         _textureCoord = raycastHit.Value.textureCoord;
                         vnc.UpdateMouse(_textureCoord, _xrRayInteractor.isSelectActive);
+                    }
+                    else // If the raycast hits something that is not a VNCScreen, set the isHitting to false
+                    {
+                        _isHitting = false;
                     }
                 }
             }

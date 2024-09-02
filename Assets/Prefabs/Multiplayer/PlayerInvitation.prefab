@@ -370,6 +370,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2896571265311377992}
+  - component: {fileID: 4044692015010392600}
   m_Layer: 5
   m_Name: PlayerInvitation
   m_TagString: Untagged
@@ -397,6 +398,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &4044692015010392600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3689617901702864020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c692308b27e9f648b300f1f3350306f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceptButton: {fileID: 0}
+  declineButton: {fileID: 0}
+  playerNameText: {fileID: 0}
 --- !u!1 &4834276429057434757
 GameObject:
   m_ObjectHideFlags: 0
@@ -664,7 +680,6 @@ GameObject:
   - component: {fileID: 7305966446270411940}
   - component: {fileID: 8930997252697282493}
   - component: {fileID: 1453983638089837471}
-  - component: {fileID: 2316771286797146035}
   m_Layer: 5
   m_Name: PlayerID
   m_TagString: Untagged
@@ -788,17 +803,3 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &2316771286797146035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8914393889958299450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 307b23f605bca794699f7fff71248e39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerInvitePrefab: {fileID: 0}
-  playerInvitesAnchor: {fileID: 0}

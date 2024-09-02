@@ -7,8 +7,11 @@ public class MultiplayerManager : MonoBehaviour
 {
     public static MultiplayerManager Instance { get; private set; }
     public GameObject networkPlayerPrefab;
-    
+    public GameObject playerCursorPrefab;
+    public Transform cursorAnchor;
+
     private Dictionary<string, NetworkPlayer> _playerDictionary = new();
+    private UnityPlayersOut _previousPlayersData;
 
     private void Awake()
     {
@@ -36,7 +39,7 @@ public class MultiplayerManager : MonoBehaviour
     
     private void ClearPlayers()
     {
-        foreach (var player in _playerDictionary.Values)
+        foreach (var player in _playerDictionary.Values.Where(player => player != null))
         {
             Destroy(player.gameObject);
         }
@@ -45,41 +48,43 @@ public class MultiplayerManager : MonoBehaviour
     
     private void OnDestroy()
     {
-        SessionClient.Instance.OnUnityPlayerData -= UpdateNetworkPlayers;
+        if(SessionClient.Instance)
+            SessionClient.Instance.OnUnityPlayerData -= UpdateNetworkPlayers;
         
         ClearPlayers();
     }
     
     private void UpdateNetworkPlayers(UnityPlayersOut incomingPlayersData)
     {
-        // Remove players that are not in the incoming data
-        HashSet<string> playerIds = new HashSet<string>(incomingPlayersData.Players.Select(x => x.Id));
         
-        // Also filter the local player from the dictionary
-        if(incomingPlayersData.Players.All(x => x.Id != SessionClient.Instance.ClientId))
-        {
-            playerIds.Add(SessionClient.Instance.ClientId);
-        }
+        // Remove the local client from the incoming data
+        incomingPlayersData.Players.RemoveAll(x => x.Id == SessionClient.Instance.ClientId);
         
-        foreach (var player in _playerDictionary.Values)
+        // Find players that are not in the incoming data and remove them
+        if (_previousPlayersData != null)
         {
-            if (!playerIds.Contains(player.Id))
+            var playersToRemove = _previousPlayersData.Players.Where(x => !incomingPlayersData.Players.Select(y => y.Id).Contains(x.Id)).ToList();
+            foreach (var player in playersToRemove)
             {
-                RemovePlayer(player);
-                _playerDictionary.Remove(player.Id);
+                if (_playerDictionary.TryGetValue(player.Id, out var playerToRemove))
+                {
+                    RemovePlayer(playerToRemove);
+                }
             }
         }
-
+        
         // Update existing players and add new players when necessary
         foreach (var incomingPlayerData in incomingPlayersData.Players)
         {
             if (_playerDictionary.TryGetValue(incomingPlayerData.Id, out var player))
             {
-                player.UpdatePositions(incomingPlayerData);
+                player.UpdatePlayerData(incomingPlayerData);
             }
             else
             {
                 AddPlayer(incomingPlayerData);
+                Debug.Log(incomingPlayerData.Id + " is not in the player dictionary.");
+                Debug.Log("Client ID: " + SessionClient.Instance.ClientId);
             }
         }
     }
@@ -88,18 +93,19 @@ public class MultiplayerManager : MonoBehaviour
     {
         if (!_playerDictionary.ContainsKey(playerData.Id))
         {
+            // Create a new player instance
             NetworkPlayer newPlayer = Instantiate(networkPlayerPrefab).GetComponent<NetworkPlayer>();
             newPlayer.Id = playerData.Id;
             newPlayer.SetNameCard(playerData.Name);
             newPlayer.SetColor(playerData.Color);
-            _playerDictionary.Add(newPlayer.Id, newPlayer);
             
             // Create cursor for the player
+            NetworkVNCCursor cursor = Instantiate(playerCursorPrefab, cursorAnchor).GetComponent<NetworkVNCCursor>();
+            cursor.Color = newPlayer.color;
+            cursor.PlayerNameLabel = playerData.Name;
+            newPlayer.cursor = cursor;
             
-        }
-        else
-        {
-            Debug.LogWarning("Player with ID " + playerData.Id + " already exists in the dictionary.");
+            _playerDictionary.Add(newPlayer.Id, newPlayer);
         }
     }
     

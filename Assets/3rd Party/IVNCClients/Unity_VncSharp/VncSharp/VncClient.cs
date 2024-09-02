@@ -23,8 +23,6 @@ using System.Collections.Generic;
 using System.Threading;
 
 using VNCScreen.Drawing;
-
-using System.Diagnostics;
 using System.Security.Cryptography;
 
 using VNCScreen;
@@ -33,28 +31,27 @@ using UnityVncSharp.Internal;
 using UnityVncSharp.Imaging;
 
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace UnityVncSharp
 {
 
     public class VNCSharpClient : IVncClient
     {
-        RfbProtocol rfb;            // The protocol object handling all communication with server.
-        FrameBufferInfos bufferInfos;         // The geometry and properties of the remote framebuffer
-        byte securityType;          // The type of Security agreed upon by client/server
-        EncodedRectangleFactory factory;
+        private RfbProtocol _rfb;            // The protocol object handling all communication with server.
+        private FrameBufferInfos _bufferInfos;         // The geometry and properties of the remote framebuffer
+        private byte _securityType;          // The type of Security agreed upon by client/server
+        private EncodedRectangleFactory _factory;
 
-        Bitmap theBitmap;                          // Internal representation of remote image.
+        private Bitmap _theBitmap;                          // Internal representation of remote image.
 
-        List<IDesktopUpdater> updates = new List<IDesktopUpdater>();
+        private List<IDesktopUpdater> _updates = new();
 
 
-        Thread connectingThread;            // To get the connecting state
-        Thread worker;                      // To request and read in-coming updates from server
+        private Thread _connectingThread;            // To get the connecting state
+        private Thread _worker;                      // To request and read in-coming updates from server
 
-        ManualResetEvent done;      // Used to tell the worker thread to die cleanly
-        IVncInputPolicy inputPolicy;// A mouse/keyboard input strategy
+        private ManualResetEvent _done;      // Used to tell the worker thread to die cleanly
+        private IVncInputPolicy _inputPolicy;// A mouse/keyboard input strategy
 
         /// <summary>
         /// Raised when the connection to the remote host is lost.
@@ -74,29 +71,29 @@ namespace UnityVncSharp
         /// </summary>
         public event EventHandler ServerCutText;
 
-        int received = 0;
+        private int _received = 0;
         private bool ignoreServerCutText = false; 
 
         public bool updateDesktopImage()
         {      
-            for (int i = 0; i < updates.Count; i++)
+            for (int i = 0; i < _updates.Count; i++)
             {
-                received++;
-                IDesktopUpdater u = updates[i];
+                _received++;
+                IDesktopUpdater u = _updates[i];
                 if (u != null)
-                    u.Draw(theBitmap);
+                    u.Draw(_theBitmap);
             }
 
        // UnityEngine.Debug.Log("received " + received);
 
-            updates.Clear();
-            return received >= 1;
+            _updates.Clear();
+            return _received >= 1;
         }
 
         public Texture2D getTexture()
         {
-            if (theBitmap != null)
-                return theBitmap.Texture;
+            if (_theBitmap != null)
+                return _theBitmap.Texture;
 
             return null;
         }
@@ -113,13 +110,13 @@ namespace UnityVncSharp
         {
             get
             {
-                return bufferInfos;
+                return _bufferInfos;
             }
         }
 
         public Size BufferSize
         {
-            get { return new Size(bufferInfos.Width, bufferInfos.Height); }
+            get { return new Size(_bufferInfos.Width, _bufferInfos.Height); }
         }
 
 
@@ -141,7 +138,7 @@ namespace UnityVncSharp
         {
             get
             {
-                return inputPolicy != null && inputPolicy is VncViewInputPolicy;
+                return _inputPolicy != null && _inputPolicy is VncViewInputPolicy;
             }
         }
 
@@ -169,25 +166,25 @@ namespace UnityVncSharp
             if (display < 0) throw new ArgumentOutOfRangeException("display", display, "Display number must be non-negative.");
             port += display;
 
-            rfb = new RfbProtocol();
+            _rfb = new RfbProtocol();
 
             if (viewOnly)
             {
-                inputPolicy = new VncViewInputPolicy(rfb);
+                _inputPolicy = new VncViewInputPolicy(_rfb);
             }
             else
             {
-                inputPolicy = new VncDefaultInputPolicy(rfb);
+                _inputPolicy = new VncDefaultInputPolicy(_rfb);
             }
 
             this.host = host;
             this.port = port;
          
             // Lauch connecting thread
-            connectingThread = new Thread(new ThreadStart(this.Connection));
-            connectingThread.SetApartmentState(ApartmentState.STA);
-            connectingThread.IsBackground = true;
-            connectingThread.Start();
+            _connectingThread = new Thread(new ThreadStart(this.Connection));
+            _connectingThread.SetApartmentState(ApartmentState.STA);
+            _connectingThread.IsBackground = true;
+            _connectingThread.Start();
         }
 
         /// <summary>
@@ -255,7 +252,7 @@ namespace UnityVncSharp
 
             // If new Security Types are supported in future, add the code here.  For now, only 
             // VNC Authentication is supported.
-            if (securityType == 2)
+            if (_securityType == 2)
             {
                 PerformVncAuthentication(password);
             }
@@ -264,7 +261,7 @@ namespace UnityVncSharp
                 throw new NotSupportedException("Unable to Authenticate with Server. The Server uses an Authentication scheme unknown to the client.");
             }
 
-            if (rfb.ReadSecurityResult() == 0)
+            if (_rfb.ReadSecurityResult() == 0)
             {
                 onPassword(true); 
             }
@@ -274,8 +271,8 @@ namespace UnityVncSharp
                 // plain text message follows indicating why the error happend.  I'm not 
                 // currently using this message, but it is read here to clean out the stream.
                 // In earlier versions of the protocol, the server will just drop the connection.
-                if (rfb.ServerVersion == 3.8) rfb.ReadSecurityFailureReason();
-                rfb.Close();    // TODO: Is this the right place for this???
+                if (_rfb.ServerVersion == 3.8) _rfb.ReadSecurityFailureReason();
+                _rfb.Close();    // TODO: Is this the right place for this???
                 onPassword(false);
             }
         }
@@ -286,8 +283,8 @@ namespace UnityVncSharp
         /// <param name="password">A string containing the user's password in clear text format.</param>
         protected void PerformVncAuthentication(string password)
         {
-            byte[] challenge = rfb.ReadSecurityChallenge();
-            rfb.WriteSecurityResponse(EncryptChallenge(password, challenge));
+            byte[] challenge = _rfb.ReadSecurityChallenge();
+            _rfb.WriteSecurityResponse(EncryptChallenge(password, challenge));
         }
 
         /// <summary>
@@ -340,14 +337,14 @@ namespace UnityVncSharp
         public void Initialize()
         {
             // Finish initializing protocol with host
-            rfb.WriteClientInitialisation(false);
-            bufferInfos = rfb.ReadServerInit();
+            _rfb.WriteClientInitialisation(false);
+            _bufferInfos = _rfb.ReadServerInit();
 
-            theBitmap = new Bitmap(bufferInfos.Width, bufferInfos.Height);
+            _theBitmap = new Bitmap(_bufferInfos.Width, _bufferInfos.Height);
 
-            rfb.WriteSetPixelFormat(bufferInfos);    // just use the server's framebuffer format
+            _rfb.WriteSetPixelFormat(_bufferInfos);    // just use the server's framebuffer format
 
-            rfb.WriteSetEncodings(new uint[] {  RfbProtocol.ZRLE_ENCODING,
+            _rfb.WriteSetEncodings(new uint[] {  RfbProtocol.ZRLE_ENCODING,
                                                 RfbProtocol.HEXTILE_ENCODING, 
 											//	RfbProtocol.CORRE_ENCODING, // CoRRE is buggy in some hosts, so don't bother using
 												RfbProtocol.RRE_ENCODING,
@@ -355,7 +352,7 @@ namespace UnityVncSharp
                                                 RfbProtocol.RAW_ENCODING });
 
             // Create an EncodedRectangleFactory so that EncodedRectangles can be built according to set pixel layout
-            factory = new EncodedRectangleFactory(rfb);
+            _factory = new EncodedRectangleFactory(_rfb);
         }
 
         /// <summary>
@@ -364,12 +361,12 @@ namespace UnityVncSharp
         public void StartUpdates()
         {
             // Start getting updates on background thread.
-            worker = new Thread(new ThreadStart(this.GetRfbUpdates));
+            _worker = new Thread(new ThreadStart(this.GetRfbUpdates));
             // Bug Fix (Grégoire Pailler) for clipboard and threading
-            worker.SetApartmentState(ApartmentState.STA);
-            worker.IsBackground = true;
-            done = new ManualResetEvent(false);
-            worker.Start();
+            _worker.SetApartmentState(ApartmentState.STA);
+            _worker.IsBackground = true;
+            _done = new ManualResetEvent(false);
+            _worker.Start();
         }
 
         /// <summary>
@@ -380,13 +377,13 @@ namespace UnityVncSharp
             
 
             // Stop the worker thread.
-            done.Set();
+            _done.Set();
 
             // BUG FIX: Simon.Phillips@warwick.ac.uk for UltraVNC disconnect issue
             // Request a tiny screen update to flush the blocking read
             try
             {
-                rfb.WriteFramebufferUpdateRequest(0, 0, 1, 1, false);
+                _rfb.WriteFramebufferUpdateRequest(0, 0, 1, 1, false);
             }
             catch
             {
@@ -394,17 +391,17 @@ namespace UnityVncSharp
                 // VncClient raising a ConnectionLost event (e.g., the remote host died).
             }
 
-            worker.Join(3000);  // this number is arbitrary, just so that it doesn't block forever....
+            _worker.Join(3000);  // this number is arbitrary, just so that it doesn't block forever....
 
-            rfb.Close();
-            rfb = null;
-            updates.Clear();
+            _rfb.Close();
+            _rfb = null;
+            _updates.Clear();
 
         }
 
         private bool CheckIfThreadDone()
         {
-            return done.WaitOne(0, false);
+            return _done.WaitOne(0, false);
         }
 
         private void Connection()
@@ -412,12 +409,12 @@ namespace UnityVncSharp
             // Connect and determine version of server, and set client protocol version to match			
             try
             {
-                rfb.Connect(host, port);
-                rfb.ReadProtocolVersion();
-                rfb.WriteProtocolVersion();
+                _rfb.Connect(host, port);
+                _rfb.ReadProtocolVersion();
+                _rfb.WriteProtocolVersion();
 
                 // Figure out which type of authentication the server uses
-                byte[] types = rfb.ReadSecurityTypes();
+                byte[] types = _rfb.ReadSecurityTypes();
 
                 // Based on what the server sends back in the way of supported Security Types, one of
                 // two things will need to be done: either the server will reject the connection (i.e., type = 0),
@@ -428,27 +425,27 @@ namespace UnityVncSharp
                     {
                         // The server is not able (or willing) to accept the connection.
                         // A message follows indicating why the connection was dropped.
-                        throw new VncProtocolException("Connection Failed. The server rejected the connection for the following reason: " + rfb.ReadSecurityFailureReason());
+                        throw new VncProtocolException("Connection Failed. The server rejected the connection for the following reason: " + _rfb.ReadSecurityFailureReason());
                     }
                     else
                     {
-                        securityType = GetSupportedSecurityType(types);
-                        System.Diagnostics.Debug.Assert(securityType > 0, "Unknown Security Type(s)", "The server sent one or more unknown Security Types.");
+                        _securityType = GetSupportedSecurityType(types);
+                        System.Diagnostics.Debug.Assert(_securityType > 0, "Unknown Security Type(s)", "The server sent one or more unknown Security Types.");
 
-                        rfb.WriteSecurityType(securityType);
+                        _rfb.WriteSecurityType(_securityType);
 
                         // Protocol 3.8 states that a SecurityResult is still sent when using NONE (see 6.2.1)
-                        if (rfb.ServerVersion == 3.8f && securityType == 1)
+                        if (_rfb.ServerVersion == 3.8f && _securityType == 1)
                         {
-                            if (rfb.ReadSecurityResult() > 0)
+                            if (_rfb.ReadSecurityResult() > 0)
                             {
                                 // For some reason, the server is not accepting the connection.  Get the
                                 // reason and throw an exception
-                                throw new VncProtocolException("Unable to Connecto to the Server. The Server rejected the connection for the following reason: " + rfb.ReadSecurityFailureReason());
+                                throw new VncProtocolException("Unable to Connecto to the Server. The Server rejected the connection for the following reason: " + _rfb.ReadSecurityFailureReason());
                             }
                         }
 
-                        onConnection(null, (securityType > 1) ? true : false);
+                        onConnection(null, (_securityType > 1) ? true : false);
                     }
                 }
                 else
@@ -483,10 +480,10 @@ namespace UnityVncSharp
 
                 try
                 {
-                    switch (rfb.ReadServerMessageType())
+                    switch (_rfb.ReadServerMessageType())
                     {
                         case RfbProtocol.FRAMEBUFFER_UPDATE:
-                            rectangles = rfb.ReadFramebufferUpdate();
+                            rectangles = _rfb.ReadFramebufferUpdate();
 
                             if (CheckIfThreadDone())
                                 break;
@@ -496,17 +493,17 @@ namespace UnityVncSharp
                             {
                                 // Get the update rectangle's info
                                 Rectangle rectangle;
-                                rfb.ReadFramebufferUpdateRectHeader(out rectangle, out enc);
+                                _rfb.ReadFramebufferUpdateRectHeader(out rectangle, out enc);
 
                                 // Build a derived EncodedRectangle type and pull-down all the pixel info
-                                EncodedRectangle er = factory.Build(rectangle, BufferInfos.BitsPerPixel, enc);
+                                EncodedRectangle er = _factory.Build(rectangle, BufferInfos.BitsPerPixel, enc);
                                 er.Decode();
 
                                 // Let the UI know that an updated rectangle is available, but check
                                 // to see if the user closed things down first.
                                 if (!CheckIfThreadDone())
                                 {
-                                    updates.Add(er);
+                                    _updates.Add(er);
                                    
                                 }
                             }
@@ -524,7 +521,7 @@ namespace UnityVncSharp
                             }
                             break;
                         case RfbProtocol.SET_COLOUR_MAP_ENTRIES:
-                            rfb.ReadColourMapEntry();
+                            _rfb.ReadColourMapEntry();
                             break;
                     }
                 }
@@ -570,16 +567,16 @@ namespace UnityVncSharp
         public void SetInputMode(bool viewOnly)
         {
             if (viewOnly)
-                inputPolicy = new VncViewInputPolicy(rfb);
+                _inputPolicy = new VncViewInputPolicy(_rfb);
             else
-                inputPolicy = new VncDefaultInputPolicy(rfb);
+                _inputPolicy = new VncDefaultInputPolicy(_rfb);
         }
 
         public virtual void WriteClientCutText(string text)
         {
             try
             {
-                rfb.WriteClientCutText(text);
+                _rfb.WriteClientCutText(text);
             }
             catch (Exception e)
             {
@@ -592,7 +589,7 @@ namespace UnityVncSharp
         {
             try
             {
-                inputPolicy.WriteKeyboardEvent(keysym, pressed);
+                _inputPolicy.WriteKeyboardEvent(keysym, pressed);
             }
             catch (Exception e)
             {
@@ -616,7 +613,7 @@ namespace UnityVncSharp
         {
             try
             {
-                inputPolicy.WritePointerEvent(buttonMask, point);
+                _inputPolicy.WritePointerEvent(buttonMask, point);
             }
             catch (Exception e)
             {
@@ -638,7 +635,7 @@ namespace UnityVncSharp
         {
             try
             {
-                rfb.WriteFramebufferUpdateRequest(0, 0, (ushort)BufferInfos.Width, (ushort)BufferInfos.Height, !refreshFullScreen);
+                _rfb.WriteFramebufferUpdateRequest(0, 0, (ushort)BufferInfos.Width, (ushort)BufferInfos.Height, !refreshFullScreen);
             }
             catch (Exception e)
             {

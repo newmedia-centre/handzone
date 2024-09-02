@@ -67,6 +67,7 @@ namespace UnityVncSharp.Encodings
 		protected BinaryWriter writer;	// sent and received, so these handle this.
 		protected ZRLECompressedReader zrleReader;
 
+		// TODO: Secure should be set to true if the server is using SSL
 		private bool secure = false;
 
 		public RfbProtocol()
@@ -76,13 +77,9 @@ namespace UnityVncSharp.Encodings
 		/// <summary>
 		/// Gets the Protocol Version of the remote VNC Host--probably 3.3, 3.7, or 3.8.
 		/// </summary>
-		public float ServerVersion {
-			get {
-				return (float) verMajor + (verMinor * 0.1f);
-			}
-		}
+		public float ServerVersion => verMajor + (verMinor * 0.1f);
 
-        public BinaryReader Reader
+		public BinaryReader Reader
         {
             get
             {
@@ -90,14 +87,8 @@ namespace UnityVncSharp.Encodings
             }
         }
 
-        public ZRLECompressedReader ZrleReader
-        {
-            get
-            {
-                return zrleReader;
-            }
-        }
-        
+        public ZRLECompressedReader ZrleReader => zrleReader;
+
         // The following method is invoked by the RemoteCertificateValidationDelegate.
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate,
 	        X509Chain chain, SslPolicyErrors sslPolicyErrors) {
@@ -254,7 +245,7 @@ namespace UnityVncSharp.Encodings
 		{
 			// We will use which ever version the server understands, be it 3.3, 3.7, or 3.8.
 			Debug.AssertFormat(verMinor == 3 || verMinor == 7 || verMinor == 8, "Wrong Protocol Version!",
-						 string.Format("Protocol Version should be 3.3, 3.7, or 3.8 but is {0}.{1}", verMajor.ToString(), verMinor.ToString()));
+				$"Protocol Version should be 3.3, 3.7, or 3.8 but is {verMajor.ToString()}.{verMinor.ToString()}");
 
 			writer.Write(GetBytes(string.Format("RFB 003.00{0}\n", verMinor.ToString())));
 			writer.Flush();
@@ -460,7 +451,7 @@ namespace UnityVncSharp.Encodings
 		/// <returns>Returns the message type as an integer.</returns>
 		public int ReadServerMessageType()
 		{
-			return (int) reader.ReadByte();
+			return reader.ReadByte();
 		}
 
 		/// <summary>
@@ -470,7 +461,7 @@ namespace UnityVncSharp.Encodings
 		public int ReadFramebufferUpdate()
 		{
 			ReadPadding(1);
-			return (int) reader.ReadUInt16();
+			return reader.ReadUInt16();
 		}
 
 		/// <summary>
