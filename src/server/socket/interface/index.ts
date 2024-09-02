@@ -58,6 +58,7 @@ export interface NamespaceSocketData {
 	robot: RobotConnection
 	color: string
 	paused: boolean
+	type: 'vr' | 'gh'
 	achievements: {
 		id: string
 		data: JSON

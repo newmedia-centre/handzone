@@ -117,7 +117,7 @@ export const init = () => {
 			name: n.robot.info.name,
 			address: n.robot.info.address,
 			type: n.robot.virtual ?? 'sandbox',
-			users: Array.from(n.nsp.sockets.values()).map(s => s.data.user.name ?? '')
+			users: Array.from(n.nsp.sockets.values()).map(s => `${s.data.user.name} (${s.data.type})` ?? '')
 		}))
 
 		// send the capacity and sessions

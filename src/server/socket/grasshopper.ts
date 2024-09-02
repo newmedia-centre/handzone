@@ -14,4 +14,9 @@ export const handleGrasshopperEvents = (socket: Socket<NamespaceClientToServerEv
 	socket.on('grasshopper:run', (data) => {
 		data.run ? socket.data.robot.send('resume program\n') : socket.data.robot.send('pause program\n')
 	})
+
+	// handle the grasshopper:simulate event
+	socket.on('grasshopper:meshes', (data) => {
+		socket.broadcast.emit('grasshopper:meshes', data)
+	})
 }
