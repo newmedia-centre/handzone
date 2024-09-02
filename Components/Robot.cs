@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 NewMedia Centre - Delft University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 using System;
 using Grasshopper.Kernel;
 using Handzone.Core;
@@ -9,7 +25,7 @@ namespace Handzone.Components
         private string _status = "Not Connected";
         private string _name;
         private ComponentButton _button;
-        
+
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
         /// constructor without any arguments.
@@ -26,26 +42,26 @@ namespace Handzone.Components
             {
                 _status = message;
                 Console.WriteLine(message);
-                
+
                 ExpireSolution(true);
-                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+                Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
             };
 
             State.SessionConnection.OnError += message =>
             {
                 _status = message;
                 Console.WriteLine(message);
-                
+
                 ExpireSolution(true);
-                
+
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, message);
-                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+                Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
             };
 
             State.SessionConnection.OnConnectionChange += connected =>
             {
                 if (_button == null) return;
-                
+
                 if (connected)
                 {
                     _button.Label = "Disconnect";
@@ -89,7 +105,7 @@ namespace Handzone.Components
             io.SetData(0, _status);
             io.SetData(1, _name);
         }
-        
+
         public override void CreateAttributes()
         {
             _button = new ComponentButton(this, "Connect", Connect);
@@ -101,30 +117,31 @@ namespace Handzone.Components
             if (!State.GlobalConnection.Connected)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to HANDZONe Server");
-                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+                Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
 
                 return;
             }
-            
-            try {
+
+            try
+            {
                 // get the current session
                 var session = await State.GlobalConnection.GetNamespace();
-                
+
                 // update the outputs
                 _name = session.Robot.Name;
                 ExpireSolution(true);
-                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
-                
+                Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
+
                 // connect to the robot session
                 State.SessionConnection.TryConnectToSession(session);
             }
             catch (Exception e)
             {
                 _status = "Failed to connect to robot.";
-                
+
                 ExpireSolution(true);
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
-                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+                Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
             }
         }
 

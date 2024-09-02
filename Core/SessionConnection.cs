@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 NewMedia Centre - Delft University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,15 +31,15 @@ public class SessionConnection
     /// Socket.io client
     /// </summary>
     private SocketIOClient.SocketIO _client;
-    
+
     public bool Connected;
     public JoinSessionOut Session { get; private set; }
-    
+
     // Connection lifecycle events
     public event Action<string> OnError;
     public event Action<string> OnStatus;
     public event Action<bool> OnConnectionChange;
-    
+
     /// <summary>
     /// Attempts to connect to the robot using the provided session info.
     /// Registers connection, disconnection, and error handling events.
@@ -34,9 +50,9 @@ public class SessionConnection
         Connected = false;
         Session = session;
         OnStatus?.Invoke($"Connecting to robot session: {Session.Robot.Name}...");
-        
+
         Console.WriteLine($"Connecting with token: {session.Token}");
-        
+
         _client = new SocketIOClient.SocketIO(State.Url + session.Robot.Name, new SocketIOOptions
         {
             Auth = new
@@ -44,14 +60,14 @@ public class SessionConnection
                 token = session.Token
             }
         });
-        
+
         Console.WriteLine("Pass Init");
-        
+
         _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
         });
-        
+
         Console.WriteLine("Pass Serializer");
 
         _client.OnConnected += (_, _) =>
@@ -71,18 +87,18 @@ public class SessionConnection
         _client.OnError += (_, s) =>
         {
             Console.WriteLine(s);
-            
+
             OnError?.Invoke(s);
             OnConnectionChange?.Invoke(false);
         };
-        
+
         Console.WriteLine("Pre Connect");
 
         await _client.ConnectAsync();
-        
+
         Console.WriteLine("Post Connect");
     }
-    
+
     /// <summary>
     /// Sends an instruction to run the program on the robot.
     /// </summary>
@@ -90,7 +106,7 @@ public class SessionConnection
     {
         await _client.EmitAsync("grasshopper:run", grasshopperRun);
     }
-    
+
     /// <summary>
     /// Sends a json payload of the program to Unity to be deserialized as a program.
     /// </summary>
@@ -98,7 +114,7 @@ public class SessionConnection
     {
         await _client.EmitAsync("grasshopper:program", grasshopperProgramIn);
     }
-    
+
     /// <summary>
     /// Sends meshes to the robot session.
     /// </summary>

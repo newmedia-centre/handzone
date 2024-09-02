@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 NewMedia Centre - Delft University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 using System;
 using Grasshopper.Kernel;
 using Handzone.Core;
@@ -9,7 +25,7 @@ namespace Handzone.Components
         private string _pin;
         private string _status = "Not Connected";
         private ComponentButton _button;
-        
+
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
         /// constructor without any arguments.
@@ -26,26 +42,26 @@ namespace Handzone.Components
             {
                 _status = message;
                 Console.WriteLine(message);
-                
+
                 ExpireSolution(true);
-                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+                Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
             };
 
             State.GlobalConnection.OnError += message =>
             {
                 _status = message;
                 Console.WriteLine(message);
-                
+
                 ExpireSolution(true);
-                
+
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, message);
-                Rhino.RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+                Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
             };
 
             State.GlobalConnection.OnConnectionChange += connected =>
             {
                 if (_button == null) return;
-                
+
                 if (connected)
                 {
                     _button.Label = "Disconnect";
@@ -89,7 +105,7 @@ namespace Handzone.Components
             io.GetData(0, ref _pin);
             io.SetData(0, _status);
         }
-        
+
         public override void CreateAttributes()
         {
             _button = new ComponentButton(this, "Connect", Connect);
@@ -106,7 +122,7 @@ namespace Handzone.Components
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"PIN input not connected");
             }
-            
+
         }
 
         void Disconnect()

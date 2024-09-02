@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 NewMedia Centre - Delft University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 using System;
 using System.Net.Http;
 using System.Text;
@@ -11,7 +27,7 @@ namespace Handzone.Components
     {
         private string _status = "Click the button to request a pin.";
         private string _pin;
-        
+
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
         /// constructor without any arguments.
@@ -52,7 +68,7 @@ namespace Handzone.Components
             io.SetData(0, _status);
             io.SetData(1, _pin);
         }
-        
+
         public override void CreateAttributes()
         {
             m_attributes = new ComponentButton(this, "Get PIN", GetPin);
@@ -73,7 +89,7 @@ namespace Handzone.Components
                         signature = State.NewSignature()
                     });
                     StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                    
+
                     // make the POST request
                     HttpResponseMessage response = await client.PostAsync(State.Url + "api/auth/pin", content);
 
@@ -81,7 +97,7 @@ namespace Handzone.Components
                     response.EnsureSuccessStatusCode();
                     _status = "Successfully got PIN from server.";
                     _pin = await response.Content.ReadAsStringAsync();
-                    
+
                     // set the output
                     ExpireSolution(true);
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, $"Enter the PIN after logging in on {State.Url}");

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 NewMedia Centre - Delft University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +33,7 @@ namespace Handzone.Components
         private Mesh _mesh4;
         private Mesh _mesh5;
         private ComponentButton _button;
-        
+
         /// <summary>
         /// Each implementation of GH_Component must provide a public 
         /// constructor without any arguments.
@@ -69,32 +85,36 @@ namespace Handzone.Components
             {
                 CheckMesh(_mesh1, "Mesh 1");
             }
-            
+
             // prepare mesh 2
             io.GetData(1, ref _mesh2);
-            if (_mesh2 != null) {
+            if (_mesh2 != null)
+            {
                 CheckMesh(_mesh2, "Mesh 2");
             }
-            
+
             // prepare mesh 3
             io.GetData(2, ref _mesh3);
-            if (_mesh3 != null) {
+            if (_mesh3 != null)
+            {
                 CheckMesh(_mesh3, "Mesh 3");
             }
-            
+
             // prepare mesh 4
             io.GetData(3, ref _mesh4);
-            if (_mesh4 != null) {
+            if (_mesh4 != null)
+            {
                 CheckMesh(_mesh4, "Mesh 4");
             }
-            
+
             // prepare mesh 5
             io.GetData(4, ref _mesh5);
-            if (_mesh5 != null) {
+            if (_mesh5 != null)
+            {
                 CheckMesh(_mesh5, "Mesh 5");
             }
         }
-        
+
         public override void CreateAttributes()
         {
             _button = new ComponentButton(this, "Upload", Upload);
@@ -108,7 +128,7 @@ namespace Handzone.Components
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Not connected to robot");
                 return;
             }
-            
+
             // prepare the command
             GrasshopperMeshesIn grasshopperMeshesIn = new GrasshopperMeshesIn()
             {
@@ -118,7 +138,7 @@ namespace Handzone.Components
                 Mesh4 = _mesh4 == null ? null : ConvertMesh(_mesh4, "Mesh 4"),
                 Mesh5 = _mesh5 == null ? null : ConvertMesh(_mesh5, "Mesh 5")
             };
-            
+
             // send the program
             try
             {
@@ -127,7 +147,7 @@ namespace Handzone.Components
             catch (Exception e)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, e.Message);
-                RhinoApp.InvokeOnUiThread((Action) delegate { OnDisplayExpired(true); });
+                RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
             }
         }
 
@@ -149,7 +169,7 @@ namespace Handzone.Components
 
             return true;
         }
-        
+
         MeshData ConvertMesh(Mesh reference, string name)
         {
             Mesh mesh = reference.DuplicateMesh();

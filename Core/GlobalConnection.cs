@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 NewMedia Centre - Delft University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,14 +30,14 @@ public class GlobalConnection
     /// Socket.io client
     /// </summary>
     private SocketIOClient.SocketIO _client;
-    
+
     public bool Connected;
-    
+
     // Connection lifecycle events
     public event Action<string> OnError;
     public event Action<string> OnStatus;
     public event Action<bool> OnConnectionChange;
-    
+
     /// <summary>
     /// Attempts to connect to the web server using the provided PIN.
     /// Registers connection, disconnection, and error handling events.
@@ -31,7 +47,7 @@ public class GlobalConnection
     {
         Connected = false;
         OnStatus?.Invoke("Connecting to global server...");
-        
+
         _client = new SocketIOClient.SocketIO(State.Url, new SocketIOOptions
         {
             Auth = new
@@ -40,14 +56,14 @@ public class GlobalConnection
                 signature = State.Signature
             }
         });
-        
+
         Console.WriteLine("Pass Init");
-        
+
         _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
         });
-        
+
         Console.WriteLine("Pass Serializer");
 
         _client.OnConnected += (_, _) =>
@@ -67,7 +83,7 @@ public class GlobalConnection
         _client.OnError += (_, s) =>
         {
             Console.WriteLine(s);
-            
+
             // check if more time is needed
             if (s == "Pin not claimed")
             {
@@ -81,11 +97,11 @@ public class GlobalConnection
                 OnConnectionChange?.Invoke(false);
             }
         };
-        
+
         Console.WriteLine("Pre Connect");
 
         await _client.ConnectAsync();
-        
+
         Console.WriteLine("Post Connect");
     }
 
@@ -95,7 +111,7 @@ public class GlobalConnection
     public async Task<JoinSessionOut> GetNamespace()
     {
         var tcs = new TaskCompletionSource<(JoinSessionOut, string)>();
-        
+
         await _client.EmitAsync("namespace", response =>
         {
             var success = response.GetValue<bool>(0);
