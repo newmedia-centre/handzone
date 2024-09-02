@@ -3,7 +3,6 @@ using PimDeWitte.UnityMainThreadDispatcher;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
@@ -11,8 +10,7 @@ public class GlobalClientLoginButton : MonoBehaviour
 {
     public MainMenuController mainMenuController;
     public Button loginButton;
-    //public TMP_InputField pinInputField;
-    public TMP_Text pinInputField;
+    public TMP_Text pinText;
     public GameObject logPanel;
     
     private MenuControllerOption _menuControllerOption;
@@ -41,11 +39,10 @@ public class GlobalClientLoginButton : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                if(loginButton == null || pinInputField == null)
+                if(loginButton == null || pinText == null)
                     return;
                 
                 loginButton.interactable = false;
-                //pinInputField.interactable = false;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connecting...";
             });
         };
@@ -54,12 +51,11 @@ public class GlobalClientLoginButton : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                if(loginButton == null || pinInputField == null)
+                if(loginButton == null || pinText == null)
                     return;
                 
                 loginButton.interactable = true;
-                pinInputField.text = "";
-                //pinInputField.interactable = false;
+                pinText.text = "";
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connected";
                 OnConnectionSuccess.Invoke();
             });
@@ -69,11 +65,10 @@ public class GlobalClientLoginButton : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                if(loginButton == null || pinInputField == null)
+                if(loginButton == null || pinText == null)
                     return;
                 
                 loginButton.interactable = true;
-                //pinInputField.interactable = true;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
             });
         };
@@ -82,11 +77,10 @@ public class GlobalClientLoginButton : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                if(loginButton == null || pinInputField == null)
+                if(loginButton == null || pinText == null)
                     return;
                 
                 loginButton.interactable = true;
-                //pinInputField.interactable = true;
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Login";
                 Debug.LogError($"An error occurred: {error}");
                 _logText.text = $"An error occurred: {error}";
@@ -109,7 +103,7 @@ public class GlobalClientLoginButton : MonoBehaviour
             return;
         }
 
-        pinInputField.text = pin;
+        pinText.text = pin;
         Debug.Log(pin);
 
         if (logPanel.activeSelf)
