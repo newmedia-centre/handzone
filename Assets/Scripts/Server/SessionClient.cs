@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
+using Schema.Socket.Grasshopper;
 using Schema.Socket.Index;
 using UnityEngine;
 using Schema.Socket.Realtime;
@@ -36,6 +37,7 @@ public class SessionClient : MonoBehaviour
     public event Action<UnityPendantOut> OnUnityPendant;
     public event Action<InternalsGetInverseKinCallback> OnKinematicCallback;
     public event Action<string> OnPlayerInvitation;
+    public event Action<GrasshopperMeshesIn> OnGHMeshes;
     public event Action OnConnected;
     public event Action OnDisconnected;
 
@@ -151,6 +153,18 @@ public class SessionClient : MonoBehaviour
         _client.On("grasshopper:program", response =>
         {
             Debug.Log("Received program from server...");
+        });
+        
+        _client.On("grasshopper:meshes", response =>
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log("Received meshes from server");
+                GrasshopperMeshesIn data = response.GetValue<GrasshopperMeshesIn>();
+                if (data == null) return;
+
+                OnGHMeshes?.Invoke(data);
+            });
         });
 
         _client.On("realtime:data", response =>
@@ -292,7 +306,7 @@ public class SessionClient : MonoBehaviour
     {
         _client.EmitAsync("unity:pendant", message);
     }
-
+    
     private async void OnDestroy()
     {
         await vncStream.DisposeAsync();
