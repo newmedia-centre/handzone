@@ -98,6 +98,14 @@ public class SessionConnection
     {
         await _client.EmitAsync("grasshopper:program", grasshopperProgramIn);
     }
+    
+    /// <summary>
+    /// Sends meshes to the robot session.
+    /// </summary>
+    public async Task Meshes(GrasshopperMeshesIn grasshopperMeshesIn)
+    {
+        await _client.EmitAsync("grasshopper:meshes", grasshopperMeshesIn);
+    }
 
     /// <summary>
     /// Disconnects from the web server.
