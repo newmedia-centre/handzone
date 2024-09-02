@@ -10,13 +10,13 @@ public class SessionMenu : MonoBehaviour
 {
     public GameObject sessionButtonPrefab;
     public GameObject sessionPlayerNamePrefab;
+    public Button joinSessionButton;
+    public Button createSessionButton;
 
     public static Action<string> OnSessionSelected; 
     
     private List<SessionButton> _sessionButtons = new();
     private string _selectedSessionAddress;
-    private Button _joinSessionButton;
-    private Button _createSessionButton;
     private TextMeshProUGUI _sessionAvailabilityLabel;
     private GameObject sessionsGroup;
     
@@ -38,20 +38,26 @@ public class SessionMenu : MonoBehaviour
         OnSessionSelected += SetSelectedSession;
 
         // Init the join session button
-        transform.Find("SessionPanel/Buttons/JoinButton").TryGetComponent(out _joinSessionButton);
-        _joinSessionButton.interactable = false;
-        _joinSessionButton.onClick.AddListener(() =>
+        transform.Find("SessionPanel/Buttons/JoinButton").TryGetComponent(out joinSessionButton);
+        joinSessionButton.interactable = false;
+        joinSessionButton.onClick.AddListener(() =>
         {
             GlobalClient.Instance.JoinSession(_selectedSessionAddress);
         });
         
         // Init the create session button
-        transform.Find("SessionPanel/Buttons/CreateButton").TryGetComponent(out _createSessionButton);
-        _createSessionButton.interactable = false;
-        _createSessionButton.onClick.AddListener(() =>
+        transform.Find("SessionPanel/Buttons/CreateButton").TryGetComponent(out createSessionButton);
+        createSessionButton.interactable = false;
+        createSessionButton.onClick.AddListener(() =>
         {
             GlobalClient.Instance.RequestVirtual();
         });
+        
+        if (GlobalClient.Instance?.Sessions != null)
+        {
+            Debug.Log("Updating available sessions in menu...");
+            UpdateMenu(GlobalClient.Instance.Sessions);
+        }
     }
 
     private void OnEnable()
@@ -59,12 +65,7 @@ public class SessionMenu : MonoBehaviour
         // Init the session availability group
         if(_sessionAvailabilityLabel == null)                
             _sessionAvailabilityLabel = transform.Find("SessionPanel/AvailabilityGroup/AvailabilityCapacityLabel").GetComponent<TextMeshProUGUI>();
-
-        if (GlobalClient.Instance?.Sessions != null)
-        {
-            Debug.Log("Updating available sessions in menu...");
-            UpdateMenu(GlobalClient.Instance.Sessions);
-        }
+        
     }
 
     void OnDestroy()
@@ -90,14 +91,14 @@ public class SessionMenu : MonoBehaviour
         _sessionAvailabilityLabel.text = receivedSessions.Capacity.ToString(CultureInfo.CurrentCulture);
         
         // Make create session button interactable if capacity is not full
-        if (receivedSessions.Capacity > 0 && _createSessionButton)
+        if (receivedSessions.Capacity > 0 && createSessionButton)
         {
-            if(_createSessionButton.interactable == false)
-                _createSessionButton.interactable = true;
+            if(createSessionButton.interactable == false)
+                createSessionButton.interactable = true;
         }
         else
         {
-            _createSessionButton.interactable = false;
+            createSessionButton.interactable = false;
         }
         
         // Create new session buttons
@@ -136,8 +137,8 @@ public class SessionMenu : MonoBehaviour
     private void SetSelectedSession(string selectedSessionAddress)
     {
         // Make the join session button interactable
-        if(_joinSessionButton.interactable == false)
-            _joinSessionButton.interactable = true;
+        if(joinSessionButton.interactable == false)
+            joinSessionButton.interactable = true;
         
         // Deselect every other session button
         foreach (var sessionButton in _sessionButtons)

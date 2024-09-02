@@ -1,10 +1,10 @@
 using Schema.Socket.Grasshopper;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SessionMeshes : MonoBehaviour
 {
     public MeshFilter[] meshReferences;
-    // TODO: Fix arrays that not working when setting mesh references.
     public MeshFilter meshRef1;
     public MeshFilter meshRef2;
     public MeshFilter meshRef3;
@@ -20,6 +20,7 @@ public class SessionMeshes : MonoBehaviour
 
     private void LoadGHMeshes(GrasshopperMeshesIn meshData)
     {
+        // TODO: Fix arrays that not working when setting mesh references. So now we are setting them one by one.
         SetMesh(meshRef1.mesh, meshData.Mesh1);
         SetMesh(meshRef2.mesh, meshData.Mesh2);
         SetMesh(meshRef3.mesh, meshData.Mesh3);
@@ -27,6 +28,11 @@ public class SessionMeshes : MonoBehaviour
         SetMesh(meshRef5.mesh, meshData.Mesh5);
     }
 
+    /// <summary>
+    /// Sets the mesh of the mesh filter to the incoming mesh data.
+    /// </summary>
+    /// <param name="mesh"></param>
+    /// <param name="meshData"></param>
     private void SetMesh(Mesh mesh, MeshData meshData)
     {
         var newMesh = Utility.CreateMeshFromGrasshopperMesh(meshData);
@@ -34,5 +40,11 @@ public class SessionMeshes : MonoBehaviour
         mesh.triangles = newMesh.triangles;
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
+        
+        // Set the mesh collider to the new mesh bounds
+        mesh.GetComponent<BoxCollider>().size = mesh.bounds.size;
+        mesh.GetComponent<BoxCollider>().center = mesh.bounds.center;
+        
+        // TODO: Set the box collider size of the Grasshopper Object
     }
 }

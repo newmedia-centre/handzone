@@ -58,6 +58,8 @@ public class GlobalClientLoginButton : MonoBehaviour
                 pinText.text = "";
                 loginButton.GetComponentInChildren<TextMeshProUGUI>().text = "Connected";
                 OnConnectionSuccess.Invoke();
+                
+                mainMenuController.ChangeMenu(_menuControllerOption);
             });
         };
         
@@ -112,7 +114,7 @@ public class GlobalClientLoginButton : MonoBehaviour
         try
         {
             await GlobalClient.Instance.TryConnectToGlobalServer(pin);
-            mainMenuController.ChangeMenu(_menuControllerOption);
+            // mainMenuController.ChangeMenu(_menuControllerOption);
         }
         catch (Exception ex)
         {

@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a18e7e5f71c6b4d81b5b39b8a4775d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  url: http://172.19.14.141:3000/
+  url: http://172.19.14.253:3000/
 --- !u!4 &19092647
 Transform:
   m_ObjectHideFlags: 0
@@ -9679,6 +9679,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5.1499996
       objectReference: {fileID: 0}
+    - target: {fileID: 7150841633939207950, guid: 5bed59ca46319734ea4fc99f99690212,
+        type: 3}
+      propertyPath: joinSessionButton
+      value: 
+      objectReference: {fileID: 1206602696}
+    - target: {fileID: 7150841633939207950, guid: 5bed59ca46319734ea4fc99f99690212,
+        type: 3}
+      propertyPath: createSessionButton
+      value: 
+      objectReference: {fileID: 1511067652}
     - target: {fileID: 7656325899398102753, guid: 5bed59ca46319734ea4fc99f99690212,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -9748,6 +9758,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 682.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8503990186219899247, guid: 5bed59ca46319734ea4fc99f99690212,
+        type: 3}
+      propertyPath: m_Name
+      value: CreateButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10943,6 +10958,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1202104900}
   m_CullTransparentMesh: 1
+--- !u!114 &1206602696 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2690446363886868344, guid: 5bed59ca46319734ea4fc99f99690212,
+    type: 3}
+  m_PrefabInstance: {fileID: 1100819991}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1207967409
 GameObject:
   m_ObjectHideFlags: 0
@@ -14272,6 +14299,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuName: 2
+--- !u!114 &1511067652 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 783325539058520038, guid: 5bed59ca46319734ea4fc99f99690212,
+    type: 3}
+  m_PrefabInstance: {fileID: 1100819991}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1513782031
 GameObject:
   m_ObjectHideFlags: 0
@@ -14814,7 +14853,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96862dd7c5ac6874ca9ad07666951c32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainMenuController: {fileID: 0}
+  mainMenuController: {fileID: 1808008083}
   loginButton: {fileID: 1571945238}
   pinText: {fileID: 1464808993}
   logPanel: {fileID: 731386061}
@@ -17276,7 +17315,7 @@ MonoBehaviour:
   mainMenu: {fileID: 1736951268}
   optionsMenu: {fileID: 1171556212}
   sessionsMenu: {fileID: 501749370}
-  realRobotMenu: {fileID: 0}
+  realRobotMenu: {fileID: 6628198442278205950}
 --- !u!1 &1809190290
 GameObject:
   m_ObjectHideFlags: 0
@@ -20474,6 +20513,12 @@ RectTransform:
 --- !u!224 &6531054856638374660 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6033560807742751256, guid: eec93179ddb834241bf77c46bc3b38e3,
+    type: 3}
+  m_PrefabInstance: {fileID: 8022881089813333511}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6628198442278205950 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1100097781488092424, guid: eec93179ddb834241bf77c46bc3b38e3,
     type: 3}
   m_PrefabInstance: {fileID: 8022881089813333511}
   m_PrefabAsset: {fileID: 0}
