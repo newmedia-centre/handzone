@@ -16,6 +16,12 @@ public class SessionMeshes : MonoBehaviour
     {
         if (SessionClient.Instance)
           SessionClient.Instance.OnGHMeshes += LoadGHMeshes;
+        
+        meshRef1.mesh.Clear();
+        meshRef2.mesh.Clear();
+        meshRef3.mesh.Clear();
+        meshRef4.mesh.Clear();
+        meshRef5.mesh.Clear();
     }
 
     private void LoadGHMeshes(GrasshopperMeshesIn meshData)
@@ -35,6 +41,12 @@ public class SessionMeshes : MonoBehaviour
     /// <param name="meshData"></param>
     private void SetMesh(Mesh mesh, MeshData meshData)
     {
+        if (meshData == null)
+        {
+            mesh.Clear();
+            return;
+        }
+        
         var newMesh = Utility.CreateMeshFromGrasshopperMesh(meshData);
         mesh.vertices = newMesh.vertices;
         mesh.triangles = newMesh.triangles;
@@ -42,8 +54,8 @@ public class SessionMeshes : MonoBehaviour
         mesh.RecalculateBounds();
         
         // Set the mesh collider to the new mesh bounds
-        mesh.GetComponent<BoxCollider>().size = mesh.bounds.size;
-        mesh.GetComponent<BoxCollider>().center = mesh.bounds.center;
+        // mesh.GetComponent<BoxCollider>().size = mesh.bounds.size;
+        // mesh.GetComponent<BoxCollider>().center = mesh.bounds.center;
         
         // TODO: Set the box collider size of the Grasshopper Object
     }
