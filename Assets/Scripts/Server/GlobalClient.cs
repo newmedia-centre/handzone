@@ -110,7 +110,7 @@ public class GlobalClient : MonoBehaviour
                     
                 // make the POST request and block until the result is returned
                 HttpResponseMessage response = await client.PostAsync(url + "api/auth/pin", content);
-
+                
                 // get the pin from the response
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
