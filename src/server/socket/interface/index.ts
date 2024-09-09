@@ -51,6 +51,7 @@ export interface NamespaceServerToClientEvents extends GrasshopperServerToClient
 
 export interface NamespaceClientToServerEvents extends MotionClientToServer, GrasshopperClientToServer, UnityClientToServer, InterfacesClientToServer, InternalsClientToServer {
 	message: (message: string) => void
+	token: (callback: CallbackFn<string>) => void
 }
 
 export interface NamespaceSocketData {

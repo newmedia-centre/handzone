@@ -5,7 +5,7 @@ import { handleRealtimeEvents } from './realtime'
 import { handleMotionEvents } from './motion'
 import { handleGrasshopperEvents } from './grasshopper'
 import { handleUnityEvents } from './unity'
-import { validateAccessToken } from '@/server/db/jwt'
+import { validateAccessToken, generateAccessToken } from '@/server/db/jwt'
 import { docker } from '@/server/docker'
 
 // import types
@@ -70,6 +70,13 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 		// handle the message event
 		socket.on('message', (message) => {
 			socket.broadcast.emit('message', message)
+		})
+
+		// send a new token
+		socket.on('token', async (callback) => {
+			generateAccessToken(socket.data.user, socket.data.robot.info)
+				.then(token => callback(true, token))
+				.catch(e => callback(false, e.message))
 		})
 
 		// remove player data on disconnect
