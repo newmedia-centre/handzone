@@ -33,6 +33,7 @@ export const handleUnityEvents = (socket: Socket<NamespaceClientToServerEvents, 
 
 	// handle the unity:run event
 	socket.on('unity:run', ({ run }) => {
-		socket.data.robot.send(run ? 'play\n' : 'stop\n')
+		console.log('run', run)
+		socket.data.robot.send(run ? 'resume program\n' : 'pause program\n')
 	})
 }
