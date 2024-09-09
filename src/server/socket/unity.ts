@@ -30,4 +30,9 @@ export const handleUnityEvents = (socket: Socket<NamespaceClientToServerEvents, 
 		if (socket.data.robot.paused) return
 		socket.nsp.emit('unity:pendant', { owner: socket.id })
 	})
+
+	// handle the unity:run event
+	socket.on('unity:run', ({ run }) => {
+		socket.data.robot.send(run ? 'play\n' : 'stop\n')
+	})
 }
