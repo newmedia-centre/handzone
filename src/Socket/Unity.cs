@@ -246,4 +246,16 @@ namespace Schema.Socket.Unity
         [JsonProperty("owner")]
         public string Owner { get; set; }
     }
+
+    /// <summary>
+    /// Sends an instruction to run the program on the robot.
+    /// </summary>
+    public partial class UnityRunIn
+    {
+        /// <summary>
+        /// Whether the simulation should play or stop
+        /// </summary>
+        [JsonProperty("run")]
+        public bool Run { get; set; }
+    }
 }

@@ -108,3 +108,11 @@ export type UnityPendantOut = {
 	/** The player's ID of the owner of the pendant. */
 	owner: string
 }
+
+/**
+ * Sends an instruction to run the program on the robot.
+ */
+export type UnityRunIn = {
+	/** Whether the simulation should play or stop */
+	run: boolean
+}
