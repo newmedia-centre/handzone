@@ -28,7 +28,7 @@ export const initNamespace = (namespace: Namespace<NamespaceClientToServerEvents
 			// attach the user to the socket
 			socket.data.user = user
 			socket.data.robot = robot
-			socket.data.type = socket.handshake.query.type as typeof socket.data.type
+			socket.data.type = socket.handshake.auth.type as typeof socket.data.type
 			socket.data.color = '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
 
 			return next()
