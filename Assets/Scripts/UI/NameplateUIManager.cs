@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Canvas))]
 public class NameplateUIManager : MonoBehaviour
 {
     [Serializable]
@@ -12,7 +11,7 @@ public class NameplateUIManager : MonoBehaviour
         public string label;
         public Vector3 offset;
 
-        public NameplateStruct( GameObject target, string label, Vector3 offset)
+        public NameplateStruct(GameObject target, string label, Vector3 offset)
         {
             this.target = target;
             this.label = label;
@@ -25,37 +24,49 @@ public class NameplateUIManager : MonoBehaviour
     public List<NameplateStruct> nameplates;
 
     private List<NameplateUI> _nameplateUIs;
-    private Canvas _canvas;
 
-
-    private void Awake()
+    private void Start()
     {
-        _canvas = GetComponent<Canvas>();
         _nameplateUIs = new List<NameplateUI>();
         
         // Build nameplates on awake
         foreach (var nameplate in nameplates)
         {
-            var nameplateUI = nameplate.target.AddComponent<NameplateUI>();
-            nameplateUI.nameplateCanvas = _canvas;
-            nameplateUI.nameplatePrefab = nameplatePrefab;
-            nameplateUI.displayLabel = nameplate.label;
-            nameplateUI.offset = nameplate.offset;
+            var nameplateUI = Instantiate(nameplatePrefab, nameplate.target.transform).GetComponent<NameplateUI>();
+            nameplateUI.DisplayLabel = nameplate.label;
+            nameplateUI.Offset = nameplate.offset;
+            nameplateUI.Target = nameplate.target;
             
             _nameplateUIs.Add(nameplateUI);
         }
     }
 
-    // Adds new nameplate to the scene and adds it to the nameplates list
-    public void AddNameplateToObject(GameObject gameObject, string displayLabel, Vector3 offset)
+    private void Update()
     {
-        var nameplateUI = gameObject.AddComponent<NameplateUI>();
-        nameplateUI.nameplateCanvas = _canvas;
-        nameplateUI.nameplatePrefab = nameplatePrefab;
-        nameplateUI.displayLabel = displayLabel;
-        nameplateUI.offset = offset;
+        if(_nameplateUIs.Count == 0)
+            return;
+
+        foreach (var nameplate in nameplates)
+        {
+            var correspondingUI = _nameplateUIs.Find(ui => ui.Target == nameplate.target);
         
-        nameplates.Add(new NameplateStruct(gameObject, displayLabel, offset));
+            if (correspondingUI != null)
+            {
+                correspondingUI.DisplayLabel = nameplate.label;
+                correspondingUI.Offset = nameplate.offset;
+            }
+        }
+    }
+
+    // Adds new nameplate to the scene and adds it to the nameplates list
+    public void AddNameplateToObject(GameObject target, string displayLabel, Vector3 offset)
+    {
+        var nameplateUI = Instantiate(nameplatePrefab, target.transform).GetComponent<NameplateUI>();
+        nameplateUI.DisplayLabel = displayLabel;
+        nameplateUI.Offset = offset;
+        nameplateUI.Target = target;
+        
+        nameplates.Add(new NameplateStruct(target, displayLabel, offset));
         _nameplateUIs.Add(nameplateUI);
     }
 

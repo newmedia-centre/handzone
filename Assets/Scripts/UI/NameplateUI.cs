@@ -1,30 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Transactions;
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
 
 public class NameplateUI : MonoBehaviour
 {
-    public string displayLabel = "Joint";
-    public Canvas nameplateCanvas;
-    public GameObject nameplatePrefab;
-    public Vector3 offset = new(0.08f, 0.0f, 0.0f);
-    
-    private GameObject _uiNameplate;
-    private TextMeshProUGUI _textLabel;
-    private Vector3 _centerPosition;
-    private Renderer _renderer;
-    private bool _isShowing = true;
-    
-    
-    void Start()
+    public Vector3 Offset = new(0.08f, 0.0f, 0.0f);
+    public GameObject Target;
+    public string DisplayLabel
     {
-        _uiNameplate = Instantiate(nameplatePrefab, nameplateCanvas.transform);
-        _uiNameplate.GetComponentInChildren<TextMeshProUGUI>().text = displayLabel;
-        _renderer = transform.GetComponent<Renderer>();
+        set => tmp.text = value;
     }
+    
+    [SerializeField] private string displayLabel = "Joint";
+    [SerializeField] private TextMeshPro tmp;
+    
+    private bool _isShowing = true;
 
     // Update is called once per frame
     void Update()
@@ -32,23 +21,24 @@ public class NameplateUI : MonoBehaviour
         if (_isShowing == false)
             return;
         
-        if (_renderer != null)
-            _centerPosition = _renderer.bounds.center;
-        else
-            _centerPosition = transform.position;
-        _uiNameplate.transform.position = _centerPosition + offset;
-        _uiNameplate.transform.rotation = Quaternion.LookRotation(_uiNameplate.transform.position - Camera.main.transform.position);
+        // Calculate the local position with offset
+        Vector3 localPosition = Target.transform.TransformPoint(Offset);
+    
+        // Set the world position of the nameplate
+        transform.position = localPosition;
+        
+        transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
 
     public void Show()
     {
-        _uiNameplate.SetActive(true);
+        gameObject.SetActive(true);
         _isShowing = true;
     }
 
     public void Hide()
     {
-        _uiNameplate.SetActive(false);
+        gameObject.SetActive(false);
         _isShowing = false;
     }
 }
