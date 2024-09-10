@@ -154,7 +154,6 @@ namespace UnityVncSharp
         /// <param name="display">The Display number (used on Unix hosts).</param>
         /// <param name="port">The Port number used by the Host, usually 5900.</param>
         /// <param name="viewOnly">True if mouse/keyboard events are to be ignored.</param>
-        /// <param name="token1"></param>
         /// <returns>Returns True if the VNC Host requires a Password to be sent after Connect() is called, otherwise False.</returns>
         public void Connect(string host, int display, int port, bool viewOnly)
         {
@@ -179,6 +178,7 @@ namespace UnityVncSharp
 
             this.host = host;
             this.port = port;
+            
          
             // Lauch connecting thread
             _connectingThread = new Thread(new ThreadStart(this.Connection));

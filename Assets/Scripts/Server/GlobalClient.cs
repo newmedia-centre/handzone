@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using UnityEngine;
 using SocketIO.Serializer.NewtonsoftJson;
 using SocketIOClient;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// Manages the global client connections and interactions with a web server using Socket.IO.
@@ -34,8 +36,14 @@ public class GlobalClient : MonoBehaviour
     /// <summary>
     /// URL of the web server to connect to.
     /// </summary>
-    public string url;
+    public string host;
+
     
+    public int port = 3000;
+    public string scheme = "http";
+
+    public string url => new UriBuilder(scheme, host, port).Uri.ToString();
+
     /// <summary>
     /// Current selected session type by user. Used to determine the type of session to join.
     /// </summary>
@@ -141,7 +149,7 @@ public class GlobalClient : MonoBehaviour
             {
                 pin,
                 signature = _signature
-            }
+            },
         });
         
         _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
@@ -232,18 +240,6 @@ public class GlobalClient : MonoBehaviour
                 Debug.LogWarning("Could not join virtual session.");
             }
         }, SessionType);
-    }
-    
-    /// <summary>
-    /// Requests a token from the server to authenticate the client.
-    /// </summary>
-    public async Task RequestToken()
-    {
-        await _client.EmitAsync("unity:token", response =>
-        {
-            Debug.Log("Received token from server...");
-            Instance.Session.Token = response.GetValue<string>();
-        });
     }
 
     /// <summary>

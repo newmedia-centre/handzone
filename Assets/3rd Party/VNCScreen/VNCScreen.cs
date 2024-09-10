@@ -55,7 +55,6 @@ namespace VNCScreen
     /// </summary>
     public class VNCScreen : MonoBehaviour
     {
-        public string host;
         public int port = 5900;
         public int display;
         public string password;
@@ -147,7 +146,6 @@ namespace VNCScreen
             // Ignore attempts to use invalid port numbers
             if (port < 1 | port > 65535) port = 5900;
             if (display < 0) display = 0;
-            if (host == null) throw new ArgumentNullException("host");
 
             StartCoroutine(Connection());
         }
@@ -171,9 +169,9 @@ namespace VNCScreen
             _connectionReceived = false;
             SetState(RuntimeState.Connecting);
 
-            _vnc.Connect(host, display, port, false);
+            _vnc.Connect(GlobalClient.Instance.host, display, port, false);
 
-            Debug.Log("[VNCScreen] Connection In progress " + host + ":" + port);
+            Debug.Log("[VNCScreen] Connection In progress " + GlobalClient.Instance.host + ":" + port);
 
             while (!_connectionReceived)
                 yield return new WaitForFixedUpdate();
@@ -273,7 +271,7 @@ namespace VNCScreen
                 if (error.Exception != null)
                 {
                     SetState(RuntimeState.Error);
-                    Debug.LogException(error.Exception);
+                    Debug.Log(error.Exception);
                 }
                 else if (!string.IsNullOrEmpty(error.Reason))
                 {
@@ -285,12 +283,11 @@ namespace VNCScreen
                 Debug.Log("VncDesktop_ConnectionLost");
             }
 
-            // If the remote host dies, try to request a new token and reconnect 
+            // If the remote host dies, try to reconnect 
             if (GlobalClient.Instance)
             {
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
-                    Task.Run(async () => await GlobalClient.Instance.RequestToken());
                     Connect();
                 });
             }
@@ -326,6 +323,7 @@ namespace VNCScreen
                     break;
                 case RuntimeState.Error:
                     SetDisconnectedMaterial();
+                    Connect();
                     break;
             }
             state = newState;

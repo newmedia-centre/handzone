@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using PimDeWitte.UnityMainThreadDispatcher;
 using Schema.Socket.Grasshopper;
 using Schema.Socket.Index;
+using Schema.Socket.Interfaces;
 using UnityEngine;
 using Schema.Socket.Realtime;
 using Schema.Socket.Unity;
@@ -57,7 +58,11 @@ public class SessionClient : MonoBehaviour
         // Create a new Socket.IO client with an authentication token from the global client
         _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
         {
-            Auth = new { token = GlobalClient.Instance.Session?.Token }
+            Auth = new
+            {
+                token = GlobalClient.Instance.Session?.Token,
+                type = "vr"
+            }
         });
         
         // Setup the JSON serializer to handle object references
@@ -236,7 +241,7 @@ public class SessionClient : MonoBehaviour
     {
         _client.EmitAsync("unity:pendant");
     }
-
+    
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)
     {
         _client.EmitAsync("internals:get_inverse_kin", response =>
@@ -259,6 +264,28 @@ public class SessionClient : MonoBehaviour
                 Debug.LogWarning($"Get Inverse Kinematic Failed: {response.GetValue<string>(1)}");
             }
         }, data);
+    }
+
+    public Task<string> RequestSessionToken()
+    {
+        TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+        _client.EmitAsync("token", response =>
+        {
+            var success = response.GetValue<bool>(0);
+            
+            if (success)
+            {
+                var token = response.GetValue<string>(1);
+                tcs.SetResult(token);
+                Debug.Log($"Token: {token}");
+            }
+            else
+            {
+                tcs.SetException(new Exception(response.GetValue<string>(1)));
+                Debug.Log("Failed to get token");
+            }
+        });
+        return tcs.Task;
     }
     
     public void Speedl(Vector3 translateDirection, Vector3 rotateAxis, float a, float t)
@@ -297,20 +324,40 @@ public class SessionClient : MonoBehaviour
 
     public void SetToolDigitalOut(int n, bool b)
     {
-        _client.EmitAsync("interfaces:set_tool_digital_out", n, b);
+        _client.EmitAsync("interfaces:set_tool_digital_out", new InterfacesSetToolDigitalOutIn
+        {
+            B = b,
+            N = n
+        });
+        _digitalOutput = b;
     }
     
-    public bool ToggleToolDigitalOut(bool value)
+    public void ToggleToolDigitalOut()
     {
-        SetToolDigitalOut(0, !value);
-        OnDigitalOutputChanged?.Invoke(!value);
-        return !value;
+        SetToolDigitalOut(0, !_digitalOutput);
+        OnDigitalOutputChanged?.Invoke(!_digitalOutput);
     }
     
     public void SendUnityMessage(string message)
     {
         var data = new { message = message };
         _client.EmitAsync("unity:message", data);
+    }
+
+    public void PlayProgram()
+    {
+        _client.EmitAsync("unity:run",  new UnityRunIn
+        {
+            Run = true
+        });
+    }
+
+    public void PauseProgram()
+    {
+        _client.EmitAsync("unity:run", new UnityRunIn
+        {
+            Run = false
+        });
     }
     
     public void SendUnityPlayerIn(UnityPlayerIn unityPlayer)
