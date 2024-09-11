@@ -62,7 +62,7 @@ public class ReadVideoFeed : MonoBehaviour
         }
     }
 
-    private void NextCameraIndex()
+    public void NextCameraIndex()
     {
         _currentCameraFeedIndex++;
         if (_currentCameraFeedIndex >= _cameraFeeds.Count)
@@ -73,7 +73,7 @@ public class ReadVideoFeed : MonoBehaviour
         _meshRenderer.material.mainTexture = _cameraFeeds[_currentCameraFeedIndex].Texture2D;
     }
     
-    private void PreviousCameraIndex()
+    public void PreviousCameraIndex()
     {
         _currentCameraFeedIndex--;
         if (_currentCameraFeedIndex < 0)
