@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ReadVideoFeed : MonoBehaviour
@@ -8,20 +6,14 @@ public class ReadVideoFeed : MonoBehaviour
     private MeshRenderer _meshRenderer;
     private List<CameraFeed> _cameraFeeds = new();
     private int _currentCameraFeedIndex;
-    
-    /// <summary>
-    /// This struct is used to store the camera name and the texture of the camera feed.
-    /// </summary>
+    private bool _isFeedAvailable = false;
+
     private class CameraFeed
     {
         public string CameraName;
         public Texture2D Texture2D;
     }
-    
-    /// <summary>
-    /// This method is called on the frame when a script is enabled just before any of the Update methods are called the first time.
-    /// It initializes the MeshRenderer component and subscribes to the OnCameraFeed event from the WebClient.
-    /// </summary>
+
     private void OnEnable()
     {
         if (SessionClient.Instance)
@@ -29,7 +21,8 @@ public class ReadVideoFeed : MonoBehaviour
             SessionClient.Instance.OnCameraFeed += UpdateVideoFeed;
         }
 
-        if (TryGetComponent(out _meshRenderer) == false)
+        _meshRenderer = GetComponent<MeshRenderer>();
+        if (_meshRenderer == null)
         {
             Debug.LogError("MeshRenderer component is missing!");
         }
@@ -37,7 +30,7 @@ public class ReadVideoFeed : MonoBehaviour
 
     private void OnDisable()
     {
-        if(SessionClient.Instance)
+        if (SessionClient.Instance)
         {
             SessionClient.Instance.OnCameraFeed -= UpdateVideoFeed;
         }
@@ -45,18 +38,18 @@ public class ReadVideoFeed : MonoBehaviour
 
     private void UpdateVideoFeed(string cameraName, Texture2D texture2D)
     {
-        // Check if the camera feed already exists in the list
-        foreach (var cameraFeed in _cameraFeeds.Where(cameraFeed => cameraFeed.CameraName == cameraName))
+        CameraFeed existingCameraFeed = _cameraFeeds.Find(cf => cf.CameraName == cameraName);
+        if (existingCameraFeed != null)
         {
-            cameraFeed.Texture2D = texture2D;
-            return;
+            existingCameraFeed.Texture2D = texture2D;
+        }
+        else
+        {
+            _cameraFeeds.Add(new CameraFeed { CameraName = cameraName, Texture2D = texture2D });
+            _isFeedAvailable = true;
         }
 
-        // Add the camera feed to the list
-        _cameraFeeds.Add(new CameraFeed {CameraName = cameraName, Texture2D = texture2D});
-        
-        // Set the texture of the MeshRenderer component if there is only one camera feed
-        if(_cameraFeeds.Count == 1)
+        if (_cameraFeeds.Count == 1)
         {
             _meshRenderer.material.mainTexture = texture2D;
         }
@@ -64,23 +57,23 @@ public class ReadVideoFeed : MonoBehaviour
 
     public void NextCameraIndex()
     {
-        _currentCameraFeedIndex++;
-        if (_currentCameraFeedIndex >= _cameraFeeds.Count)
+        if (!_isFeedAvailable)
         {
-            _currentCameraFeedIndex = 0;
+            return;
         }
-        
+
+        _currentCameraFeedIndex = (_currentCameraFeedIndex + 1) % _cameraFeeds.Count;
         _meshRenderer.material.mainTexture = _cameraFeeds[_currentCameraFeedIndex].Texture2D;
     }
-    
+
     public void PreviousCameraIndex()
     {
-        _currentCameraFeedIndex--;
-        if (_currentCameraFeedIndex < 0)
+        if (!_isFeedAvailable)
         {
-            _currentCameraFeedIndex = _cameraFeeds.Count - 1;
+            return;
         }
-        
+
+        _currentCameraFeedIndex = (_currentCameraFeedIndex - 1 + _cameraFeeds.Count) % _cameraFeeds.Count;
         _meshRenderer.material.mainTexture = _cameraFeeds[_currentCameraFeedIndex].Texture2D;
     }
 }

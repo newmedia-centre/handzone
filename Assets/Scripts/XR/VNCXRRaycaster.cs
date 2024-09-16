@@ -59,25 +59,24 @@ namespace VNCScreen
             
             if (_xrRayInteractor.TryGetCurrentRaycast(out var raycastHit, out _, out _, out _, out _))
             {
-                if (raycastHit.HasValue)
+                if (!raycastHit.HasValue || !raycastHit.Value.collider) return;
+                
+                raycastHit.Value.collider.TryGetComponent<VNCScreen>(out var vnc);
+                if(vnc)
                 {
-                    raycastHit.Value.collider.TryGetComponent<VNCScreen>(out var vnc);
-                    if(vnc)
+                    // Check if user has permission to control the robot
+                    if (SessionClient.Instance?.PendantOwner != SessionClient.Instance?.ClientId)
                     {
-                        // Check if user has permission to control the robot
-                        if (SessionClient.Instance?.PendantOwner != SessionClient.Instance?.ClientId)
-                        {
-                            return;
-                        }
+                        return;
+                    }
                         
-                        _isHitting = true;
-                        _textureCoord = raycastHit.Value.textureCoord;
-                        vnc.UpdateMouse(_textureCoord, _xrRayInteractor.isSelectActive);
-                    }
-                    else // If the raycast hits something that is not a VNCScreen, set the isHitting to false
-                    {
-                        _isHitting = false;
-                    }
+                    _isHitting = true;
+                    _textureCoord = raycastHit.Value.textureCoord;
+                    vnc.UpdateMouse(_textureCoord, _xrRayInteractor.isSelectActive);
+                }
+                else // If the raycast hits something that is not a VNCScreen, set the isHitting to false
+                {
+                    _isHitting = false;
                 }
             }
         }

@@ -20,6 +20,12 @@ public class GrasshopperProgramPlayback : MonoBehaviour
 
     private void PlayProgram()
     {
+        if(SessionClient.Instance == null)
+        {
+            Debug.LogError("Session is not created");
+            return;
+        }
+        
         SessionClient.Instance.PlayProgram();
         _pauseButton.gameObject.SetActive(true);
         _playButton.gameObject.SetActive(false);
@@ -27,6 +33,12 @@ public class GrasshopperProgramPlayback : MonoBehaviour
 
     private void PauseProgram()
     {
+        if(SessionClient.Instance == null)
+        {
+            Debug.LogError("Session is not created");
+            return;
+        }
+        
         SessionClient.Instance.PauseProgram();
         _pauseButton.gameObject.SetActive(false);
         _playButton.gameObject.SetActive(true);

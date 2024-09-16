@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SessionMeshes : MonoBehaviour
 {
-    public MeshFilter[] meshReferences;
     public MeshFilter meshRef1;
     public MeshFilter meshRef2;
     public MeshFilter meshRef3;
