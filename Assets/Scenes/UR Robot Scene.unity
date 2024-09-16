@@ -3937,11 +3937,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fdeac2f9dd8055419cac08ba8447e2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshRef1: {fileID: 1392377506}
-  meshRef2: {fileID: 1645561427}
-  meshRef3: {fileID: 1988587356}
-  meshRef4: {fileID: 1645830773}
-  meshRef5: {fileID: 1649911996}
+  meshFilters:
+  - {fileID: 1392377506}
+  - {fileID: 1645561427}
+  - {fileID: 1988587356}
+  - {fileID: 1645830773}
+  - {fileID: 1649911996}
 --- !u!1001 &2077479523
 PrefabInstance:
   m_ObjectHideFlags: 0
