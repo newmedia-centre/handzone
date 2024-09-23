@@ -554,7 +554,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2867c250506c25c4cada3b457265e05c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  host: 172.19.14.141
   port: 5900
   display: 0
   password: 
@@ -1352,7 +1351,7 @@ PrefabInstance:
     - target: {fileID: 377291013443947822, guid: 76f3439a0ae796e4b81bee3f91f888ee,
         type: 3}
       propertyPath: m_SmoothingSpeed
-      value: 19.9
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 751884823176695365, guid: 76f3439a0ae796e4b81bee3f91f888ee,
         type: 3}
@@ -1469,6 +1468,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5419331889293473514, guid: 76f3439a0ae796e4b81bee3f91f888ee,
+        type: 3}
+      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5419331889293473514, guid: 76f3439a0ae796e4b81bee3f91f888ee,
+        type: 3}
+      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5419331889293473514, guid: 76f3439a0ae796e4b81bee3f91f888ee,
+        type: 3}
+      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5419331889293473514, guid: 76f3439a0ae796e4b81bee3f91f888ee,
+        type: 3}
+      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EmergencyStop
+      objectReference: {fileID: 0}
+    - target: {fileID: 5419331889293473514, guid: 76f3439a0ae796e4b81bee3f91f888ee,
+        type: 3}
+      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SessionClient, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5419331889293473514, guid: 76f3439a0ae796e4b81bee3f91f888ee,
+        type: 3}
+      propertyPath: m_SelectEntered.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5739442573886587065, guid: 76f3439a0ae796e4b81bee3f91f888ee,
         type: 3}
@@ -1594,5 +1623,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.3791432, y: 0.378322, z: 0.109695144}
-  m_Center: {x: 0.0015961372, y: -0.0012861869, z: 0.15211658}
+  m_Size: {x: 0.3791432, y: 0.378322, z: 0.2399537}
+  m_Center: {x: 0.0015961297, y: -0.0012862085, z: 0.08698702}

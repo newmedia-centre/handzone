@@ -34,7 +34,7 @@ public class RealRobotMenu : MonoBehaviour
             }
             
             _statusText.text = "Joining...";
-            StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
+            StartCoroutine(LoadSceneCoroutine("Scenes/Session"));
         });
 
         GlobalClient.Instance.OnSessionJoin += DisplayAvailability;

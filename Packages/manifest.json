@@ -20,7 +20,7 @@
     "com.unity.visualscripting": "1.9.1",
     "com.unity.xr.hands": "1.3.0",
     "com.unity.xr.interaction.toolkit": "2.5.4",
-    "com.unity.xr.management": "4.4.1",
+    "com.unity.xr.management": "4.5.0",
     "com.unity.xr.oculus": "4.1.2",
     "com.unity.xr.openxr": "1.10.0",
     "com.veriorpies.parrelsync": "https://github.com/VeriorPies/ParrelSync.git?path=/ParrelSync",
@@ -70,6 +70,13 @@
       "url": "https://unitynuget-registry.azurewebsites.net",
       "scopes": [
         "org.nuget"
+      ]
+    },
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.fonts"
       ]
     }
   ]

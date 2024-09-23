@@ -296,7 +296,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 0.92941177}
+  m_Color: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -372,7 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 0.92941177}
+  m_Color: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -533,6 +533,7 @@ GameObject:
   - component: {fileID: 1659179900679930807}
   - component: {fileID: -6053706159064960747}
   - component: {fileID: 6674255935778705250}
+  - component: {fileID: 7525965437302606434}
   m_Layer: 0
   m_Name: MainTablet
   m_TagString: Untagged
@@ -597,8 +598,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 4480825790342174240}
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -737,6 +737,19 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
+--- !u!114 &7525965437302606434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3145846305771578950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2620b2043e951334fb832be870547b45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resetPosition: {fileID: 0}
 --- !u!1 &3830719476856166440
 GameObject:
   m_ObjectHideFlags: 0

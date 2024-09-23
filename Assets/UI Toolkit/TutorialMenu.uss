@@ -1,0 +1,30 @@
+.header {
+    font-size: 40px;
+    -unity-font: url("project://database/Assets/Fonts/Roboto/Roboto-Bold.ttf?fileID=12800000&guid=70321009e7426fc43ab9c561ebdc6165&type=3#Roboto-Bold");
+    -unity-font-definition: initial;
+    color: rgb(32, 33, 36);
+}
+
+.container {
+}
+
+.text {
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/Roboto/Roboto-Regular.ttf?fileID=12800000&guid=ce84a613b7a8c0d49b1cc626e02d8505&type=3#Roboto-Regular");
+}
+
+.chapter-progress {
+}
+
+.chapter-progress .unity-progress-bar__progress {
+    background-color: #009e5d;
+    border-radius: 12px;
+    margin: 0px;
+}
+
+.unity-progress-bar__background {
+    background-color: #e4e4e4;
+    border-color: transparent;
+    border-radius: 12px;
+}
+

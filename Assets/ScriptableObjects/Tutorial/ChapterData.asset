@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ChapterData
   m_EditorClassIdentifier: Assembly-CSharp::ChapterMenuData
   data:
-  - name: Basics
-    description: Chapter basic description
+  - name: Joints
+    description: Learn the basic anatomy of the robot
     tutorialData: {fileID: 11400000, guid: e86a8306db38bf44080c9c726a1366a3, type: 2}
     tasks: {fileID: 11400000, guid: f5f64ab1e59bfc947bc4b36da4ea9f5f, type: 2}
     prerequisites: []
@@ -23,13 +23,13 @@ MonoBehaviour:
     tutorialData: {fileID: 11400000, guid: e86a8306db38bf44080c9c726a1366a3, type: 2}
     tasks: {fileID: 11400000, guid: f5f64ab1e59bfc947bc4b36da4ea9f5f, type: 2}
     prerequisites:
-    - Basics
+    - Robot Anatomy
   - name: Intermediate2
     description: The second description of an intermediate chapter
     tutorialData: {fileID: 11400000, guid: e86a8306db38bf44080c9c726a1366a3, type: 2}
     tasks: {fileID: 11400000, guid: f5f64ab1e59bfc947bc4b36da4ea9f5f, type: 2}
     prerequisites:
-    - Basics
+    - Robot Anatomy
   - name: Advanced
     description: The last chapter, that should be really hard
     tutorialData: {fileID: 11400000, guid: e86a8306db38bf44080c9c726a1366a3, type: 2}

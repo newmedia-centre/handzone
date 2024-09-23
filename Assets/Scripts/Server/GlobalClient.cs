@@ -230,7 +230,7 @@ public class GlobalClient : MonoBehaviour
                 Session = response.GetValue<JoinSessionOut>(1);
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
-                    StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
+                    StartCoroutine(LoadSceneCoroutine("Scenes/Session"));
                     OnSessionJoined?.Invoke(Session);
                     Debug.Log("Virtual session created and joined." + Session.Robot.Name);
                 });           
@@ -291,7 +291,7 @@ public class GlobalClient : MonoBehaviour
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
                     Session = response.GetValue<JoinSessionOut>(1);
-                    StartCoroutine(LoadSceneCoroutine("Scenes/UR Robot Scene"));
+                    StartCoroutine(LoadSceneCoroutine("Scenes/Session"));
                     OnSessionJoined?.Invoke(Session);
                 });
             }
