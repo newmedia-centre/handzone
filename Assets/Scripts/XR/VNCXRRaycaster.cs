@@ -1,6 +1,6 @@
 using Schema.Socket.Unity;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+
 
 namespace VNCScreen
 {
@@ -13,7 +13,7 @@ namespace VNCScreen
     {
         
         private Vector2 _textureCoord;  
-        private XRRayInteractor _xrRayInteractor;
+        private UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor _xrRayInteractor;
         private bool _isHitting;
         
         public Vector2D TextureCoord
@@ -40,7 +40,7 @@ namespace VNCScreen
         /// </summary>
         void Awake()
         {
-            _xrRayInteractor = GetComponent<XRRayInteractor>();
+            _xrRayInteractor = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor>();
             _textureCoord = new Vector2();
         }
 

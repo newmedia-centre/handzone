@@ -2,7 +2,7 @@ using UnityEngine;
 
 
 [RequireComponent(typeof(Timer))]
-[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.XRGrabInteractable))]
+[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 [RequireComponent(typeof(Outline))]
 public class GrassHopperObject : MonoBehaviour
 {
@@ -16,7 +16,7 @@ public class GrassHopperObject : MonoBehaviour
     private const int SCALE = 1000;
     private Timer _timer;
     private bool _shouldUpdate = false;
-    private UnityEngine.XR.Interaction.Toolkit.XRGrabInteractable _xrInteractable;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _xrInteractable;
     private Outline _selectableOutline;
     private Outline _meshOutline;
     private Transform _meshTransform;
@@ -27,7 +27,7 @@ public class GrassHopperObject : MonoBehaviour
     {
         _timer = GetComponent<Timer>();
         _timer.SetTimerDuration(updateDuration);
-        _xrInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.XRGrabInteractable>();
+        _xrInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         _selectableOutline = GetComponent<Outline>();
         _selectableOutline.OutlineColor = selectableColor;
         

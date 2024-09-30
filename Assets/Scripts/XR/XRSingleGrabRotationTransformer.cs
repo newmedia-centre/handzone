@@ -11,7 +11,7 @@ public class XRSingleGrabRotationTransformer : XRBaseGrabTransformer
 {
     private Vector3 _InitialGrabLocation;
     
-    public override void Process(XRGrabInteractable grabInteractable, XRInteractionUpdateOrder.UpdatePhase updatePhase, ref Pose targetPose, ref Vector3 localScale)
+    public override void Process(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable, XRInteractionUpdateOrder.UpdatePhase updatePhase, ref Pose targetPose, ref Vector3 localScale)
     {
         Debug.Log("Hi");
         switch (updatePhase)
@@ -27,7 +27,7 @@ public class XRSingleGrabRotationTransformer : XRBaseGrabTransformer
         
     }
 
-    internal static void UpdateTarget(XRGrabInteractable grabInteractable, ref Pose targetPose)
+    internal static void UpdateTarget(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable, ref Pose targetPose)
     {
         var interactor = grabInteractable.interactorsSelecting[0];
         var interactorAttachPose = interactor.GetAttachTransform(grabInteractable).GetWorldPose();

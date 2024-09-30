@@ -11,20 +11,60 @@
 .text {
     -unity-font-definition: initial;
     -unity-font: url("project://database/Assets/Fonts/Roboto/Roboto-Regular.ttf?fileID=12800000&guid=ce84a613b7a8c0d49b1cc626e02d8505&type=3#Roboto-Regular");
+    align-self: stretch;
 }
 
 .chapter-progress {
 }
 
 .chapter-progress .unity-progress-bar__progress {
-    background-color: #009e5d;
+    background-color: rgb(0, 158, 93);
     border-radius: 12px;
-    margin: 0px;
+    margin: 0;
 }
 
 .unity-progress-bar__background {
-    background-color: #e4e4e4;
+    background-color: rgb(228, 228, 228);
     border-color: transparent;
     border-radius: 12px;
 }
 
+.checkmark .unity-toggle__checkmark {
+    background-color: transparent;
+    border-color: transparent;
+    -unity-background-image-tint-color: rgb(0, 158, 93);
+    width: 20px;
+    height: 20px;
+}
+
+.section-button {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-color: transparent;
+    margin-left: 0px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding: 0px;
+}
+
+.unity-foldout__content {
+    margin: 0;
+    padding: 0;
+}
+
+.unity-foldout__input {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin: 0 8px 0 8px;
+}
+
+.unity-foldout__checkmark{
+    background-image: resource("chevron-up.png");
+    height: 18px;
+    width: 18px;
+    -unity-background-image-tint-color: #909090;
+}
+
+Foldout > Toggle:checked .unity-foldout__checkmark{
+    background-image: resource("chevron-down.png");
+}

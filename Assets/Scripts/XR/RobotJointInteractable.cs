@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-public class RobotJointInteractable : XRBaseInteractable
+public class RobotJointInteractable : UnityEngine.XR.Interaction.Toolkit.Interactables.XRBaseInteractable
 {
     /// <summary>
     /// Configure the joint rotation axis on which axis the joint rotates with.

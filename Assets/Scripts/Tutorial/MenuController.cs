@@ -21,7 +21,7 @@ public class MenuController : MonoBehaviour
     
     public void GoToTutorials()
     {
-        tutorialController.Enter(chapterController.currentChapterData.tutorialData.data);
+        // tutorialController.Enter(chapterController.currentChapterData.tutorialData.data);
         chapterMenuObject.SetActive(false);
         tutorialMenuObject.SetActive(true);
     }
@@ -35,7 +35,7 @@ public class MenuController : MonoBehaviour
     
     public void GoToTasks()
     {
-        taskController.Enter(chapterController.currentChapterData.tasks.data);
+        // taskController.Enter(chapterController.currentChapterData.tasks.data);
         chapterMenuObject.SetActive(false);
         taskMenuObject.SetActive(true);
     }

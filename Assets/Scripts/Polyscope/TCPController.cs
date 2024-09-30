@@ -8,7 +8,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// </summary>
 public class TCPController : MonoBehaviour
 {
-    private UnityEngine.XR.Interaction.Toolkit.XRGrabInteractable _interactable;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _interactable;
     public bool _isGrabbed;
     
     /// <summary>
@@ -18,7 +18,7 @@ public class TCPController : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        _interactable = GetComponent<UnityEngine.XR.Interaction.Toolkit.XRGrabInteractable>();
+        _interactable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         if (_interactable)
         {
             _interactable.selectEntered.AddListener(OnSelectEnter);

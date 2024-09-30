@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionButton" class="section-button">
+        <ui:Toggle binding-path="sectionCompleted" picking-mode="Ignore" focusable="false" name="SectionToggle" class="text checkmark" style="align-self: flex-end; justify-content: flex-end; width: 20px; height: 20px;" />
+    </ui:Button>
+</ui:UXML>

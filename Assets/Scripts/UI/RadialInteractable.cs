@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class RadialInteractable : MonoBehaviour
 {
@@ -51,7 +52,7 @@ public class RadialInteractable : MonoBehaviour
         // Change the target angle to the offset position of the controller from the starting interactable position
         if (interactableSource.isSelected && interactableSource.isControllerBeyondThreshold)
         {
-            if (interactableSource.GetOldestInteractorSelecting() is UnityEngine.XR.Interaction.Toolkit.XRBaseInteractor controllerInteractor)
+            if (interactableSource.GetOldestInteractorSelecting() is UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor controllerInteractor)
             {
                 // Get the angle from the origin position to the controller position on the XZ plane
                 Vector3 originPosition = new Vector3(_originPosition.x, 0, _originPosition.z);
@@ -120,7 +121,7 @@ public class RadialInteractable : MonoBehaviour
     
     private void ShowCanvas(BaseInteractionEventArgs args)
     {
-        if (args.interactorObject is UnityEngine.XR.Interaction.Toolkit.XRBaseInteractor controllerInteractor)
+        if (args.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor controllerInteractor)
         {
             _canvas.enabled = true;
         }
@@ -128,7 +129,7 @@ public class RadialInteractable : MonoBehaviour
     
     private void HideCanvas(BaseInteractionEventArgs args)
     {
-        if (args.interactorObject is UnityEngine.XR.Interaction.Toolkit.XRBaseInteractor controllerInteractor)
+        if (args.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor controllerInteractor)
         {
             // It should hide if the controller is not hovering anymore and not selected
             if (!interactableSource.isSelected && !interactableSource.isHovered)
@@ -139,7 +140,7 @@ public class RadialInteractable : MonoBehaviour
     private void SetOriginPosition(BaseInteractionEventArgs args)
     {
         // Set the origin position to the controller position on select
-        if (args.interactorObject is UnityEngine.XR.Interaction.Toolkit.XRBaseInteractor controllerInteractor)
+        if (args.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor controllerInteractor)
         {
             arrowOrigin = 0;
             arrowTarget = 0;

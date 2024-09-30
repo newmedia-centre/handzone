@@ -9,7 +9,7 @@ public class ChapterMenuController : MonoBehaviour
 {
     [Header("Assets")]
     public GameObject nodePrefab;
-    public ChapterMenuData data;
+    // public ChapterMenuData data;
     public Sprite boxSprite;
     
     [Header("GraphReference")]
@@ -34,99 +34,99 @@ public class ChapterMenuController : MonoBehaviour
     {
         _graphContainerHeight = graphContainer.GetComponent<RectTransform>().rect.height;
         _graphContainerWidth = graphContainer.GetComponent<RectTransform>().rect.width;
-        GenerateGraph();
+        // GenerateGraph();
     }
 
-    public void GenerateGraph()
-    {
-        ChapterData _initialNodeData;
-
-        foreach(ChapterData _chapterData in data.data)
-        {
-            if(_chapterData.prerequisites.Length == 0)
-            {
-                _initialNodeData = _chapterData;
-                goto Found;
-            }
-        }
-
-        Debug.LogError("Cannot make graph, no initial node given.");
-        return;
-
-        Found:
-        List<ChapterData> _dataList = data.data.ToList();
-        Dictionary<string, GameObject> _placedNodes = new Dictionary<string, GameObject>();
-        List<ChapterData> _currentLevelData = new List<ChapterData>();
-        int _maxNodeCount = _dataList.Count;
-
-        _dataList.Remove(_initialNodeData);
-
-        GameObject _initialNode = AddNode(_initialNodeData, 0, 1, 1);
-
-        _placedNodes.Add(_initialNodeData.name, _initialNode);
-
-        foreach (ChapterData _chapterData in _dataList)
-        {
-            if (PreviousChaptersDone(_chapterData, _placedNodes))
-            {
-                _currentLevelData.Add(_chapterData);
-            }
-        }
-
-        int _levelIndex = 0;
-
-        while (_placedNodes.Count < _maxNodeCount && _currentLevelData.Count > 0)
-        {
-            _levelIndex++;
-
-            int _widthIndex = 0;
-            
-            foreach(ChapterData _chapterData in _currentLevelData)
-            {
-                _widthIndex++;
-                GameObject _node = AddNode(_chapterData, _levelIndex, _widthIndex, _currentLevelData.Count);
-
-                foreach(string _prerequisite in _chapterData.prerequisites)
-                {
-                    AddConnection(_node, _placedNodes[_prerequisite]);
-                }
-
-                _placedNodes.Add(_chapterData.name, _node);
-                _dataList.Remove(_chapterData);
-            }
-
-            _currentLevelData.Clear();
-
-            foreach (ChapterData _chapterData in _dataList)
-            {
-                if (PreviousChaptersDone(_chapterData, _placedNodes))
-                {
-                    _currentLevelData.Add(_chapterData);
-                }
-            }
-        }
-
-        if (_dataList.Count > 0)
-        {
-            Debug.LogError("Could not get show all chapters since a part of the tree is disconnected. Please check the prerequisites for each of the chapters, since you either are missing, have too many prerequisites, or misspelled a prerequisite.");
-            Debug.LogError("The following nodes could not be placed:");
-            
-            foreach (ChapterData _chapterData in _dataList)
-            {
-                Debug.LogError(_chapterData.name);
-            }
-        }
-    }
+    // public void GenerateGraph()
+    // {
+    //     ChapterData _initialNodeData;
+    //
+    //     foreach(ChapterData _chapterData in data.data)
+    //     {
+    //         if(_chapterData.prerequisites.Length == 0)
+    //         {
+    //             _initialNodeData = _chapterData;
+    //             goto Found;
+    //         }
+    //     }
+    //
+    //     Debug.LogError("Cannot make graph, no initial node given.");
+    //     return;
+    //
+    //     Found:
+    //     List<ChapterData> _dataList = data.data.ToList();
+    //     Dictionary<string, GameObject> _placedNodes = new Dictionary<string, GameObject>();
+    //     List<ChapterData> _currentLevelData = new List<ChapterData>();
+    //     int _maxNodeCount = _dataList.Count;
+    //
+    //     _dataList.Remove(_initialNodeData);
+    //
+    //     GameObject _initialNode = AddNode(_initialNodeData, 0, 1, 1);
+    //
+    //     _placedNodes.Add(_initialNodeData.name, _initialNode);
+    //
+    //     foreach (ChapterData _chapterData in _dataList)
+    //     {
+    //         if (PreviousChaptersDone(_chapterData, _placedNodes))
+    //         {
+    //             _currentLevelData.Add(_chapterData);
+    //         }
+    //     }
+    //
+    //     int _levelIndex = 0;
+    //
+    //     while (_placedNodes.Count < _maxNodeCount && _currentLevelData.Count > 0)
+    //     {
+    //         _levelIndex++;
+    //
+    //         int _widthIndex = 0;
+    //         
+    //         foreach(ChapterData _chapterData in _currentLevelData)
+    //         {
+    //             _widthIndex++;
+    //             GameObject _node = AddNode(_chapterData, _levelIndex, _widthIndex, _currentLevelData.Count);
+    //
+    //             foreach(string _prerequisite in _chapterData.prerequisites)
+    //             {
+    //                 AddConnection(_node, _placedNodes[_prerequisite]);
+    //             }
+    //
+    //             _placedNodes.Add(_chapterData.name, _node);
+    //             _dataList.Remove(_chapterData);
+    //         }
+    //
+    //         _currentLevelData.Clear();
+    //
+    //         foreach (ChapterData _chapterData in _dataList)
+    //         {
+    //             if (PreviousChaptersDone(_chapterData, _placedNodes))
+    //             {
+    //                 _currentLevelData.Add(_chapterData);
+    //             }
+    //         }
+    //     }
+    //
+    //     if (_dataList.Count > 0)
+    //     {
+    //         Debug.LogError("Could not get show all chapters since a part of the tree is disconnected. Please check the prerequisites for each of the chapters, since you either are missing, have too many prerequisites, or misspelled a prerequisite.");
+    //         Debug.LogError("The following nodes could not be placed:");
+    //         
+    //         foreach (ChapterData _chapterData in _dataList)
+    //         {
+    //             Debug.LogError(_chapterData.name);
+    //         }
+    //     }
+    // }
 
     private bool PreviousChaptersDone(ChapterData chapterData, Dictionary<string, GameObject> placedNodes)
     {
-        foreach (String _prerequisite in chapterData.prerequisites)
-        {
-            if (!placedNodes.ContainsKey(_prerequisite))
-            {
-                return false;
-            }
-        }
+        // foreach (String _prerequisite in chapterData.prerequisites)
+        // {
+        //     if (!placedNodes.ContainsKey(_prerequisite))
+        //     {
+        //         return false;
+        //     }
+        // }
 
         return true;
     }
@@ -169,7 +169,7 @@ public class ChapterMenuController : MonoBehaviour
     public void GoToChapter(ChapterData chapterData)
     {
         chapterTitle.text = chapterData.name;
-        chapterDescriptions.text = chapterData.description;
+        // chapterDescriptions.text = chapterData.description;
         currentChapterData = chapterData;
     }
 
@@ -179,18 +179,18 @@ public class ChapterMenuController : MonoBehaviour
     }
 }
 
-[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ChapterMenuData", order = 1)]
-public class ChapterMenuData : ScriptableObject
-{
-    public ChapterData[] data;
-}
-
-[System.Serializable]
-public struct ChapterData
-{
-    public string name;
-    public string description;
-    public TutorialMenuData tutorialData;
-    public TaskMenuData tasks;
-    public string[] prerequisites; 
-}
+// [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ChapterMenuData", order = 1)]
+// public class ChapterMenuData : ScriptableObject
+// {
+//     public ChapterData[] data;
+// }
+//
+// [System.Serializable]
+// public struct ChapterData
+// {
+//     public string name;
+//     public string description;
+//     public TutorialMenuData tutorialData;
+//     public TaskMenuData tasks;
+//     public string[] prerequisites; 
+// }

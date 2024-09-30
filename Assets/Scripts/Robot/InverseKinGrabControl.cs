@@ -12,7 +12,7 @@ public class InverseKinGrabControl : MonoBehaviour
     [FormerlySerializedAs("RobotTranslator")] public RobotTranslator robotTranslator;
     public SessionClient sessionClient;
     private List<double> _newPose = new (6) {0f,0f,0f,0f,0f,0f};
-    [SerializeField] private XRGrabInteractable _grabInteractable;
+    [SerializeField] private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grabInteractable;
 
     private void OnEnable()
     {
