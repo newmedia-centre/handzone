@@ -46,6 +46,11 @@ public class TutorialMenuDocument : MonoBehaviour
                     UpdateProgressBar();
                 });
                 
+                sectionButtonElement.clicked += () =>
+                {
+                    // TODO: Set current section and load the data
+                };
+                
                 contentGroup.Add(sectionButton);
             }
         }

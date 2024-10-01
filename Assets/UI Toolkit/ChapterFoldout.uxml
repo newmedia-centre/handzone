@@ -1,6 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:Template name="SectionButton" src="project://database/Assets/UI%20Toolkit/SectionButton.uxml?fileID=9197481963319205126&amp;guid=071c8b20c55a2464498e09da70177f3c&amp;type=3#SectionButton" />
-    <ui:Foldout text="Chapter Name" name="ChapterFoldout" class="text">
-        <!-- <ui:Instance template="SectionButton" name="SectionButton" /> -->
-    </ui:Foldout>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
+    <ui:Foldout text="Chapter Name" name="ChapterFoldout" class="text" />
 </ui:UXML>
