@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -9,30 +10,42 @@ public class TutorialMenuDocument : MonoBehaviour
 {
     public UIDocument tutorialMenuDocument;
     public List<ChapterData> chapterData;
+    VisualElement _chapterGroup;
+    Label _sectionTitle;
+    Label _sectionDescription;
+    Button _startLessonButton;
     
-    public void Start()
+    public void OnEnable()
     {
-        var chapterGroup = tutorialMenuDocument.rootVisualElement.Q<VisualElement>("ChapterGroup");
+        _chapterGroup = tutorialMenuDocument.rootVisualElement.Q<VisualElement>("ChapterGroup");
+        _sectionTitle = tutorialMenuDocument.rootVisualElement.Q<Label>("SectionTitle");
+        _sectionDescription = tutorialMenuDocument.rootVisualElement.Q<Label>("SectionDescription");
+        _startLessonButton = tutorialMenuDocument.rootVisualElement.Q<Button>("StartLessonButton");
 
+        _startLessonButton.clicked += OnStartLessonButtonClicked;
+        
+        _chapterGroup.Clear(); // Clear previous elements to avoid duplication
+            
         foreach (var chapterData in chapterData)
         {
-            var chapterFoldout = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI Toolkit/ChapterFoldout.uxml").CloneTree();
             var serializedObject = new SerializedObject(chapterData);
             var chapterNameProperty = serializedObject.FindProperty("chapterName");
 
+            var chapterFoldout = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI Toolkit/TutorialMenu/ChapterFoldout.uxml").CloneTree();
             var foldout = chapterFoldout.Q<Foldout>("ChapterFoldout");
+            var foldoutContent = chapterFoldout.Q<VisualElement>("unity-content");
+            
             foldout.text = chapterNameProperty.stringValue;
             
-            chapterGroup.Add(chapterFoldout);
-            
-            var contentGroup = chapterFoldout.Q<VisualElement>("unity-content");
+            _chapterGroup.Add(chapterFoldout);
 
             foreach (var sectionData in chapterData.sections)
             {
-                var sectionButton = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI Toolkit/SectionButton.uxml").CloneTree();
+                var sectionButton = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI Toolkit/TutorialMenu/SectionButton.uxml").CloneTree();
                 var sectionSerializedObject = new SerializedObject(sectionData);
-                var sectionNameProperty = sectionSerializedObject.FindProperty("sectionName");
-                var sectionCompletedProperty = sectionSerializedObject.FindProperty("sectionCompleted");
+                var sectionNameProperty = sectionSerializedObject.FindProperty("title");
+                var sectionDescriptionProperty = sectionSerializedObject.FindProperty("description");
+                var sectionCompletedProperty = sectionSerializedObject.FindProperty("completed");
 
                 var sectionButtonElement = sectionButton.Q<Button>("SectionButton");
                 var sectionToggleElement = sectionButtonElement.Q<Toggle>("SectionToggle");
@@ -42,26 +55,42 @@ public class TutorialMenuDocument : MonoBehaviour
                 
                 sectionToggleElement.RegisterValueChangedCallback(evt =>
                 {
-                    sectionData.sectionCompleted = evt.newValue;
+                    sectionData.completed = evt.newValue;
                     UpdateProgressBar();
                 });
                 
                 sectionButtonElement.clicked += () =>
                 {
-                    // TODO: Set current section and load the data
+                    MenuController.Instance.OnChapterSelected?.Invoke(chapterData);
+                    MenuController.Instance.OnSectionSelected?.Invoke(sectionData);
+                    _sectionTitle.text = sectionNameProperty.stringValue;
+                    _sectionDescription.text = sectionDescriptionProperty.stringValue;
                 };
                 
-                contentGroup.Add(sectionButton);
+                foldoutContent.Add(sectionButton);
             }
         }
-        
+    }
+
+    private void OnDisable()
+    {
+        _startLessonButton.clicked -= OnStartLessonButtonClicked;
+    }
+    
+    private void OnStartLessonButtonClicked()
+    {
+        if (MenuController.Instance.currentSelectedSection != null)
+        {
+            Debug.Log($"Starting lesson for {MenuController.Instance.currentSelectedSection.title}");
+            MenuController.Instance.OnLessonStarted?.Invoke();
+        }
     }
 
     private void UpdateProgressBar()
     {
         // Find the total number of sections and the number of completed sections
         float totalSections = chapterData.Sum(chapter => chapter.sections.Count);
-        float completedSections = chapterData.Sum(chapter => chapter.sections.Count(section => section.sectionCompleted));
+        float completedSections = chapterData.Sum(chapter => chapter.sections.Count(section => section.completed));
         
         var progressBar = tutorialMenuDocument.rootVisualElement.Q<ProgressBar>("ChapterProgress");
         var progressValue = completedSections / totalSections * 100;

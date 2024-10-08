@@ -1,42 +1,82 @@
+using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MenuController : MonoBehaviour
 {
-    [Header("Object references")]
-    public GameObject chapterMenuObject;
-    public GameObject tutorialMenuObject;
-    public GameObject taskMenuObject;
+    private static MenuController _instance;
 
-    [Header("Menu Controller references")]
-    public ChapterMenuController chapterController;
-    public TutorialMenuController tutorialController;
-    public TaskMenuController taskController;
-    
-    public void BackToChaptersFromTutorials()
+    public static MenuController Instance
     {
-        tutorialMenuObject.SetActive(false);
-        chapterMenuObject.SetActive(true);
-        tutorialController.Exit();
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<MenuController>();
+                if (_instance == null)
+                {
+                    GameObject singletonObject = new GameObject();
+                    _instance = singletonObject.AddComponent<MenuController>();
+                    singletonObject.name = typeof(MenuController).ToString() + " (Singleton)";
+                }
+            }
+
+            return _instance;
+        }
     }
     
-    public void GoToTutorials()
+    public Action<SectionData> OnSectionSelected;
+    public Action<ChapterData> OnChapterSelected;
+    public Action OnLessonStarted;
+    
+    public SectionData currentSelectedSection;
+    public ChapterData currentSelectedChapter;
+    
+    public void Awake()
     {
-        // tutorialController.Enter(chapterController.currentChapterData.tutorialData.data);
-        chapterMenuObject.SetActive(false);
-        tutorialMenuObject.SetActive(true);
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (_instance != this)
+        {
+            Destroy(gameObject);
+        }
+        
+        OnSectionSelected += OnSectionSelectedHandler;
+        OnChapterSelected += OnChapterSelectedHandler;
+        OnLessonStarted += OnLessonStartedHandler;
+    }
+
+    private void OnLessonStartedHandler()
+    {
+        ShowPlaybackMenu();
+    }
+
+    private void OnSectionSelectedHandler(SectionData obj)
+    {
+        currentSelectedSection = obj;
     }
     
-    public void BackToChaptersFromTask()
+    private void OnChapterSelectedHandler(ChapterData obj)
     {
-        taskMenuObject.SetActive(false);
-        chapterMenuObject.SetActive(true);
-        taskController.Exit();
+        currentSelectedChapter = obj;
+    }
+
+    [Header("Object references")]
+    public TutorialMenuDocument tutorialMenu;
+    public PlaybackMenuDocument playBackMenu;
+    
+    public void ShowTutorialMenu()
+    {
+        playBackMenu.gameObject.SetActive(false);
+        tutorialMenu.gameObject.SetActive(true);
     }
     
-    public void GoToTasks()
+    public void ShowPlaybackMenu()
     {
-        // taskController.Enter(chapterController.currentChapterData.tasks.data);
-        chapterMenuObject.SetActive(false);
-        taskMenuObject.SetActive(true);
+        tutorialMenu.gameObject.SetActive(false);
+        playBackMenu.gameObject.SetActive(true);
     }
 }

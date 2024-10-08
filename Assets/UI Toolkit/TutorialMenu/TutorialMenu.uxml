@@ -1,6 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:Template name="ChapterFoldout" src="project://database/Assets/UI%20Toolkit/ChapterFoldout.uxml?fileID=9197481963319205126&amp;guid=1eae277476926eb43a4a60834ad8c7e9&amp;type=3#ChapterFoldout" />
-    <ui:Template name="SectionButton" src="project://database/Assets/UI%20Toolkit/SectionButton.uxml?fileID=9197481963319205126&amp;guid=071c8b20c55a2464498e09da70177f3c&amp;type=3#SectionButton" />
     <Style src="project://database/Assets/UI%20Toolkit/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
     <ui:VisualElement name="Background" class="background" style="flex-grow: 1; flex-direction: row;">
         <ui:VisualElement name="Navigation" class="navigation">
@@ -8,12 +6,18 @@
                 <ui:Label tabindex="-1" text="Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tutorial" />
                 <ui:ProgressBar value="0" name="ChapterProgress" class="chapter-progress text" />
             </ui:VisualElement>
-            <ui:VisualElement name="ChapterGroup" style="flex-grow: 1; flex-shrink: 0; justify-content: flex-start;">
-                <ui:Instance template="ChapterFoldout" name="ChapterFoldout">
-                    <ui:Instance template="SectionButton" name="SectionButton" />
-                </ui:Instance>
+            <ui:ScrollView style="flex-grow: 1;">
+                <ui:VisualElement name="ChapterGroup" style="flex-grow: 1; flex-shrink: 0; justify-content: flex-start;" />
+            </ui:ScrollView>
+        </ui:VisualElement>
+        <ui:VisualElement name="Content" class="content text" style="flex-grow: 1;">
+            <ui:Label tabindex="-1" text="Section Title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionTitle" class="text-header" />
+            <ui:Label tabindex="-1" text="Description" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionDescription" style="font-size: 28px; white-space: normal;" />
+            <ui:VisualElement style="flex-grow: 1; flex-direction: column-reverse;">
+                <ui:VisualElement name="ButtonGroup" style="flex-grow: 1; align-items: center; justify-content: space-between; max-height: 70px; flex-direction: row-reverse;">
+                    <ui:Button text="Start Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartLessonButton" class="button" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="Content" class="content text" style="flex-grow: 1;" />
     </ui:VisualElement>
 </ui:UXML>

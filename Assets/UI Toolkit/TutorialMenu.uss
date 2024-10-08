@@ -30,7 +30,7 @@
 }
 
 .chapter-progress .unity-progress-bar__progress {
-    background-color: rgb(0, 158, 93);
+    background-color: rgb(85, 166, 48);
     border-radius: 24px;
     margin: 0;
 }
@@ -44,7 +44,7 @@
 .checkmark .unity-toggle__checkmark {
     background-color: transparent;
     border-color: transparent;
-    -unity-background-image-tint-color: rgb(0, 158, 93);
+    -unity-background-image-tint-color: rgb(85, 166, 48);
     min-width: 52px;
     min-height: 52px;
 }
@@ -110,4 +110,76 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     background-color: rgb(228, 228, 228);
     border-top-right-radius: 24px;
     border-bottom-right-radius: 24px;
+    padding: 42px;
+}
+
+.text-header {
+    -unity-font: url("project://database/Assets/3rd%20Party/TextMesh%20Pro/Examples%20&%20Extras/Fonts/Roboto-Bold.ttf?fileID=12800000&guid=4beb055f07aaff244873dec698d0363e&type=3#Roboto-Bold");
+    font-size: 60px;
+    padding-bottom: 10px;
+}
+
+.button {
+    background-color: rgb(85, 166, 48);
+    border-radius: 24px;
+    color: white;
+    border-color: transparent;
+    font-size: 30px;
+    padding: 16px;
+    min-width: 420px;
+}
+
+.button:hover {
+    background-color: rgb(56, 176, 0);
+}
+
+.button:active {
+    background-color: rgb(0, 128, 0);
+}
+
+.playback-slider .unity-base-slider__tracker {
+    background-color: rgb(228, 228, 228);
+    border-color: transparent;
+    height: 18px;
+    border-radius: 9px;
+}
+
+.playback-slider .unity-base-slider__dragger {
+    background-color: gray;
+    border-color: transparent;
+    height: 24px;
+    width: 24px;
+    border-radius: 12px;
+    margin-top: -6px;
+}
+
+
+.playback-slider .unity-base-slider__dragger:active {
+    -unity-background-image-tint-color: rgb(153, 33, 33);
+    background-color: rgba(255, 0, 0, 0);
+}
+
+
+.return-button {
+    background-color: rgb(228, 228, 228);
+    border-color: transparent;
+    border-radius: 32px;
+    margin: 8px;
+    background-size: 55%;
+    background-image: resource('return.png');
+    -unity-background-image-tint-color: gray;
+    width: 44px;
+    height: 44px;
+}
+
+.play-button:checked .unity-toggle__checkmark {
+    background-image: resource('Pause');
+}
+
+.play-button .unity-toggle__checkmark {
+    background-color: transparent;
+    border-color: transparent;
+    width: 34px;
+    height: 34px;
+    background-image: resource('Play');
 }

@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
+    <ui:VisualElement name="VisualElement" class="background" style="flex-grow: 1; background-color: rgb(255, 255, 255); flex-direction: row-reverse;">
+        <ui:VisualElement name="Content" style="flex-grow: 1; margin-top: 35px; margin-right: 35px; margin-bottom: 35px; margin-left: 35px; flex-direction: column;">
+            <ui:Label tabindex="-1" text="Chapter Title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ChapterTitle" enable-rich-text="true" class="text-header" style="font-size: 20%; -unity-text-align: upper-center; padding-bottom: 0; padding-top: 0; padding-right: 0; padding-left: 0; width: 100%; white-space: normal;" />
+            <ui:Label tabindex="-1" text="Section Title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionTitle" class="text" style="-unity-text-align: upper-center; padding-top: 0; flex-grow: 1;" />
+            <ui:Slider high-value="1" name="Slider" show-input-field="false" class="playback-slider" style="margin-bottom: 14px;" />
+            <ui:VisualElement name="PlaybackButtonGroup" style="flex-grow: 1; align-items: center; justify-content: space-around; min-height: 40px;">
+                <ui:Toggle name="PlayButton" class="play-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="ReturnButton" class="return-button" style="position: absolute; align-self: auto; justify-content: space-between; align-items: flex-start; flex-direction: row-reverse;" />
+    </ui:VisualElement>
+</ui:UXML>

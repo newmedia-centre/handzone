@@ -9,11 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08d7b4224e9e1e542a0e88c5573bc3fa, type: 3}
-  m_Name: JointsChapterData
+  m_Script: {fileID: 11500000, guid: 8376f6ab0afbf1447887df94f275964f, type: 3}
+  m_Name: End effector
   m_EditorClassIdentifier: 
-  chapterName: Joints
+  title: End effector
   description: 
-  sections:
-  - {fileID: 11400000, guid: e4a781240aa3ddf4484d5e87000e3e46, type: 2}
-  - {fileID: 11400000, guid: c9bfe3493756830409d88ffb7b91ead7, type: 2}
+  completed: 0
+  timelineAsset: {fileID: 11400000, guid: 96d3255e4202d1a4d83cf9ca60a917fe, type: 2}
