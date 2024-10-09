@@ -39,6 +39,8 @@ public class NameplateUIManager : MonoBehaviour
             
             _nameplateUIs.Add(nameplateUI);
         }
+
+        HideNameplates();
     }
 
     private void Update()
@@ -87,5 +89,29 @@ public class NameplateUIManager : MonoBehaviour
             nameplateUI.Hide();
         }
     }
-}
 
+    // Access a specific nameplate by target
+    public NameplateUI GetNameplateByTarget(GameObject target)
+    {
+        return _nameplateUIs.Find(ui => ui.Target == target);
+    }
+
+    // Example method to control a specific nameplate
+    public void ShowNameplate(GameObject target)
+    {
+        var nameplateUI = GetNameplateByTarget(target);
+        if (nameplateUI != null)
+        {
+            nameplateUI.Show();
+        }
+    }
+
+    public void HideNameplate(GameObject target)
+    {
+        var nameplateUI = GetNameplateByTarget(target);
+        if (nameplateUI != null)
+        {
+            nameplateUI.Hide();
+        }
+    }
+}
