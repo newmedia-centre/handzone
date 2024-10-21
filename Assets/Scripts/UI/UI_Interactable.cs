@@ -19,16 +19,33 @@ public class UI_Interactable : XRBaseInteractable
         
         if (uiDocument == null)
         {
-            Debug.LogError("UIDocument or XRRayInteractors are missing.");
+            Debug.LogError("UIDocument is missing.");
             return;
         }
         
         hoverEntered.AddListener(HandleHover);
+        selectEntered.AddListener(HandleSelect);
+    }
+    
+    private void OnDisable()
+    {
+        base.OnDisable();
+        
+        hoverEntered.RemoveListener(HandleHover);
+        selectEntered.RemoveListener(HandleSelect);
     }
 
-    private void HandleHover(HoverEnterEventArgs hoverEnterEventArgs)
+    private void HandleSelect(SelectEnterEventArgs arg0)
     {
-        if (hoverEnterEventArgs.interactorObject is XRRayInteractor rayInteractor)
+        if (arg0.interactorObject is XRRayInteractor rayInteractor)
+        {
+            currentRayInteractor = rayInteractor;
+        }
+    }
+
+    private void HandleHover(HoverEnterEventArgs arg0)
+    {
+        if (arg0.interactorObject is XRRayInteractor rayInteractor)
         {
             currentRayInteractor = rayInteractor;
         }

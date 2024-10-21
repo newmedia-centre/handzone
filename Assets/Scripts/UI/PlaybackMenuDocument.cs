@@ -34,8 +34,14 @@ public class PlaybackMenuDocument : MonoBehaviour
         _slider.RegisterValueChangedCallback(OnSliderValueChanged);
         _slider.RegisterCallback<PointerDownEvent>(OnSliderPointerDown);
         _playButton.RegisterValueChangedCallback(OnPlayButtonValueChanged);
+        playableDirector.stopped += HandleStop;
         
         PrepareTutorial(MenuController.Instance.currentSelectedSection);
+    }
+
+    private void Update()
+    {
+        _slider.value = (float) (playableDirector.time / playableDirector.duration);
     }
 
     private void OnDisable()
@@ -44,17 +50,18 @@ public class PlaybackMenuDocument : MonoBehaviour
         _slider.UnregisterValueChangedCallback(OnSliderValueChanged);
         _slider.UnregisterCallback<PointerDownEvent>(OnSliderPointerDown);
         _playButton.UnregisterValueChangedCallback(OnPlayButtonValueChanged);
+        playableDirector.stopped -= HandleStop;
         
         if(playableDirector)
             playableDirector.Stop();
     }
 
-    public void Update()
+    public void HandleStop(PlayableDirector director)
     {
-        if (playableDirector.state == PlayState.Playing)
-        {
-            _slider.value = (float) (playableDirector.time / playableDirector.duration);
-        }
+        _playButton.value = false;
+        // Reset the timeline to the beginning
+        playableDirector.time = 0;
+        playableDirector.Evaluate();
     }
     
     private void OnSliderValueChanged(ChangeEvent<float> evt)
