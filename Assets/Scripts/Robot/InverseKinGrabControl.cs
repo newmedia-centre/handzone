@@ -9,7 +9,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class InverseKinGrabControl : MonoBehaviour
 {
-    [FormerlySerializedAs("RobotTranslator")] public RobotTranslator robotTranslator;
+    public RobotManager robotManager;
     public SessionClient sessionClient;
     private List<double> _newPose = new (6) {0f,0f,0f,0f,0f,0f};
     [SerializeField] private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grabInteractable;
@@ -42,7 +42,7 @@ public class InverseKinGrabControl : MonoBehaviour
             MaxPositionError = null,
             Qnear = null,
             TcpOffset = null,
-            X = robotTranslator.qActualJoints
+            X = robotManager.qActualJoints
         };
         sessionClient.SendInverseKinematicsRequest(ikDataRequest, OnIKSuccessAction);
     }

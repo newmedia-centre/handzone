@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4020928599293841789
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017628017658505225, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6146946163571681050, guid: 58d448b067a248e4a83fdbd3d7b2cdaf,
+        type: 3}
+      propertyPath: m_Name
+      value: RobotArmClean
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1122286953867380694, guid: 58d448b067a248e4a83fdbd3d7b2cdaf, type: 3}
+    - {fileID: 8461545358382837632, guid: 58d448b067a248e4a83fdbd3d7b2cdaf, type: 3}
+    - {fileID: 6085158427988393923, guid: 58d448b067a248e4a83fdbd3d7b2cdaf, type: 3}
+    - {fileID: 1033594977684886208, guid: 58d448b067a248e4a83fdbd3d7b2cdaf, type: 3}
+    - {fileID: 8554064753610728546, guid: 58d448b067a248e4a83fdbd3d7b2cdaf, type: 3}
+    - {fileID: 2644285863089629887, guid: 58d448b067a248e4a83fdbd3d7b2cdaf, type: 3}
+    - {fileID: 5095347971808921248, guid: 58d448b067a248e4a83fdbd3d7b2cdaf, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 58d448b067a248e4a83fdbd3d7b2cdaf, type: 3}

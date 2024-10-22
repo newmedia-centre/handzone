@@ -47,6 +47,8 @@ public class MenuController : MonoBehaviour
         OnSectionSelected += OnSectionSelectedHandler;
         OnChapterSelected += OnChapterSelectedHandler;
         OnLessonStarted += OnLessonStartedHandler;
+        
+        ShowTutorialMenu();
     }
 
     private void OnLessonStartedHandler()

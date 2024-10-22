@@ -127,6 +127,10 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     font-size: 30px;
     padding: 16px;
     min-width: 420px;
+    margin-top: 12px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    margin-left: 12px;
 }
 
 .button:hover {
@@ -153,12 +157,10 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     margin-top: -6px;
 }
 
-
 .playback-slider .unity-base-slider__dragger:active {
     -unity-background-image-tint-color: rgb(153, 33, 33);
     background-color: rgba(255, 0, 0, 0);
 }
-
 
 .return-button {
     background-color: rgb(228, 228, 228);

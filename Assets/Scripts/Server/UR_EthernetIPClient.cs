@@ -36,7 +36,7 @@ public class UR_EthernetIPClient : MonoBehaviour
     public string urIPAddress = "89.200.111.120";
     public int urReadPort = 30013;
     public int urWritePort = 30003;
-    public RobotTranslator robotTranslator;
+    public RobotManager robotManager;
     public float[] readJointValues = new float[JOINT_SIZE];
     public bool digitalOutput = false;
     public float speedScaling;

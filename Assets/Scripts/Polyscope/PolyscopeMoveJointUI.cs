@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class PolyscopeMoveJointUI : MonoBehaviour
 {
-    public RobotTranslator robotTranslator;
+    public RobotManager robotManager;
 
     private void Start()
     {
-        if (robotTranslator == null)
+        if (robotManager == null)
         {
             Debug.LogWarning("Cannot render Move Joint UI, RobotTranslator is not assigned");
             return;
