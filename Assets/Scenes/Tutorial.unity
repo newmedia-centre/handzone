@@ -780,7 +780,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437374214}
   m_Enabled: 1
-  m_VideoClip: {fileID: 0}
+  m_VideoClip: {fileID: 32900000, guid: dcbdcbd4741ae5a4d8c052f6d1599267, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -2323,18 +2323,14 @@ PlayableDirector:
   m_GameObject: {fileID: 1284715680}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 01b42ebf0f86e9c47ad25651208dcca1, type: 2}
+  m_PlayableAsset: {fileID: 11400000, guid: c22765d9bbe9bd944aee90b3285bb619, type: 2}
   m_InitialState: 1
   m_WrapMode: 2
   m_DirectorUpdateMode: 2
   m_InitialTime: 0
   m_SceneBindings:
-  - key: {fileID: 1259578093874275621, guid: 554c4c126f637ff4b9a90f1cbbbe35ff, type: 2}
-    value: {fileID: 688628045}
   - key: {fileID: 7287773065056044037, guid: 554c4c126f637ff4b9a90f1cbbbe35ff, type: 2}
     value: {fileID: 437374219}
-  - key: {fileID: 7175898245697044907, guid: 554c4c126f637ff4b9a90f1cbbbe35ff, type: 2}
-    value: {fileID: 0}
   - key: {fileID: -3685019610529463822, guid: 96d3255e4202d1a4d83cf9ca60a917fe, type: 2}
     value: {fileID: 1597386716}
   - key: {fileID: 7203957747799013557, guid: 96d3255e4202d1a4d83cf9ca60a917fe, type: 2}
@@ -2352,6 +2348,14 @@ PlayableDirector:
   - key: {fileID: 2194225432227783216, guid: 01b42ebf0f86e9c47ad25651208dcca1, type: 2}
     value: {fileID: 0}
   - key: {fileID: -3843821229408326859, guid: 01b42ebf0f86e9c47ad25651208dcca1, type: 2}
+    value: {fileID: 437374219}
+  - key: {fileID: -3685019610529463822, guid: c22765d9bbe9bd944aee90b3285bb619, type: 2}
+    value: {fileID: 1597386716}
+  - key: {fileID: 7203957747799013557, guid: c22765d9bbe9bd944aee90b3285bb619, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 2194225432227783216, guid: c22765d9bbe9bd944aee90b3285bb619, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -3843821229408326859, guid: c22765d9bbe9bd944aee90b3285bb619, type: 2}
     value: {fileID: 437374219}
   m_ExposedReferences:
     m_References:
