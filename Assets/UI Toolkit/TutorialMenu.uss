@@ -7,7 +7,7 @@
 
 .background {
     border-radius: 24px;
-    background-color: rgb(228, 228, 228);
+    background-color: rgb(225, 225, 225);
     flex-direction: row;
     flex-grow: 1;
 }
@@ -102,7 +102,7 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
 .navigation {
     border-radius: 24px;
     border-color: white;
-    background-color: white;
+    background-color: rgb(247, 247, 247);
     flex-basis: 40%;
 }
 
@@ -117,10 +117,11 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     -unity-font: url("project://database/Assets/3rd%20Party/TextMesh%20Pro/Examples%20&%20Extras/Fonts/Roboto-Bold.ttf?fileID=12800000&guid=4beb055f07aaff244873dec698d0363e&type=3#Roboto-Bold");
     font-size: 60px;
     padding-bottom: 10px;
+    color: rgb(34, 34, 34);
 }
 
 .button {
-    background-color: rgb(85, 166, 48);
+    background-color: rgb(63, 145, 66);
     border-radius: 24px;
     color: white;
     border-color: transparent;
@@ -184,4 +185,13 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     width: 34px;
     height: 34px;
     background-image: resource('Play');
+}
+
+.button-secondary {
+    background-color: rgb(193, 234, 197);
+    color: rgb(63, 145, 66);
+}
+
+.text-color {
+    color: rgb(34, 34, 34);
 }

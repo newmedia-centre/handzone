@@ -3,20 +3,18 @@
     <ui:VisualElement name="Background" class="background" style="flex-grow: 1; flex-direction: row;">
         <ui:VisualElement name="Navigation" class="navigation">
             <ui:VisualElement name="Header" class="container text header" style="flex-grow: 0; flex-shrink: 0; flex-direction: column; flex-basis: auto;">
-                <ui:Label tabindex="-1" text="Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tutorial" />
+                <ui:Label tabindex="-1" text="Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tutorial" class="text-color" />
                 <ui:ProgressBar value="0" name="ChapterProgress" class="chapter-progress text" />
             </ui:VisualElement>
-            <ui:ScrollView style="flex-grow: 1;">
+            <ui:ScrollView name="ScrollView" style="flex-grow: 1;">
                 <ui:VisualElement name="ChapterGroup" style="flex-grow: 1; flex-shrink: 0; justify-content: flex-start;" />
             </ui:ScrollView>
         </ui:VisualElement>
         <ui:VisualElement name="Content" class="content text" style="flex-grow: 1;">
-            <ui:Label tabindex="-1" text="Section Title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionTitle" class="text-header" />
-            <ui:Label tabindex="-1" text="Description" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionDescription" style="font-size: 28px; white-space: normal;" />
+            <ui:Label tabindex="-1" text="Section Title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionTitle" class="text-header text-color" />
+            <ui:Label tabindex="-1" text="Description" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionDescription" class="text-color" style="font-size: 28px; white-space: normal;" />
             <ui:VisualElement style="flex-grow: 1; flex-direction: column-reverse;">
-                <ui:VisualElement name="ButtonGroup" style="flex-grow: 1; align-items: center; justify-content: space-between; max-height: 70px; flex-direction: row-reverse;">
-                    <ui:Button text="Start Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartLessonButton" class="button" />
-                </ui:VisualElement>
+                <ui:Button text="Start Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartLessonButton" class="button" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

@@ -11,7 +11,7 @@ public class UI_Interactable : XRBaseInteractable
     UIDocument uiDocument;
     private XRRayInteractor currentRayInteractor;
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
         base.OnEnable();
         
@@ -26,8 +26,8 @@ public class UI_Interactable : XRBaseInteractable
         hoverEntered.AddListener(HandleHover);
         selectEntered.AddListener(HandleSelect);
     }
-    
-    private void OnDisable()
+
+    protected override void OnDisable()
     {
         base.OnDisable();
         

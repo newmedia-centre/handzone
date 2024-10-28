@@ -5,6 +5,7 @@ using System.Linq;
 using Schema.Socket.Grasshopper;
 using Schema.Socket.Unity;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Vector3D = Schema.Socket.Unity.Vector3D;
 
 public class Utility : MonoBehaviour
@@ -61,5 +62,22 @@ public class Utility : MonoBehaviour
         };
 
         return mesh;
+    }
+    
+    /// <summary>
+    /// Loads a scene asynchronously.
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <returns></returns>
+    public static IEnumerator LoadSceneCoroutine(string sceneName)
+    {
+        // Start loading the scene
+        var asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+        
+        // Wait until the scene is fully loaded
+        while (asyncLoad is { isDone: false })
+        {
+            yield return null;
+        }
     }
 }

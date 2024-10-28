@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
+    <ui:VisualElement name="Background" class="background" style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement name="Navigation" class="navigation" style="flex-basis: 100%;">
+            <ui:VisualElement name="NavContent" class="container text header" style="flex-grow: 1; flex-shrink: 0; flex-direction: column; flex-basis: auto;">
+                <ui:Label tabindex="-1" text="Main Menu" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title" class="text-header text-color" />
+                <ui:VisualElement name="Divider" style="flex-grow: 0; background-color: rgb(225, 225, 225); height: 2px; margin-top: 0; margin-bottom: 38px; margin-left: 8px; margin-right: 14px;" />
+                <ui:Label tabindex="-1" text="Education" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Education" class="text-color text" style="font-size: 34px; white-space: normal; -unity-font: url(&quot;project://database/Assets/Fonts/Roboto/Roboto-Light.ttf?fileID=12800000&amp;guid=9c80a8fcde152064584fb7bc6ba9a8b0&amp;type=3#Roboto-Light&quot;); margin-left: 8px; margin-bottom: 8px;" />
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; align-self: stretch; justify-content: flex-start; flex-direction: column; align-items: stretch; flex-wrap: nowrap;">
+                    <ui:Button text="Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TutorialButton" class="button button-secondary" />
+                    <ui:Button text="Exercises" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ExercisesButton" class="button button-secondary" />
+                </ui:VisualElement>
+                <ui:Label tabindex="-1" text="Sandbox Session" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SandboxSession" class="text-color text" style="font-size: 34px; white-space: normal; -unity-font: url(&quot;project://database/Assets/Fonts/Roboto/Roboto-Light.ttf?fileID=12800000&amp;guid=9c80a8fcde152064584fb7bc6ba9a8b0&amp;type=3#Roboto-Light&quot;); margin-left: 8px; margin-bottom: 8px;" />
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; align-self: stretch; justify-content: flex-start; flex-direction: column; align-items: stretch; flex-wrap: nowrap;">
+                    <ui:Button text="Virtual Robot" parse-escape-sequences="true" display-tooltip-when-elided="true" name="VirtualRobotButton" class="button button-secondary" />
+                    <ui:Button text="Real Robot" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RealRobotButton" class="button button-secondary" />
+                </ui:VisualElement>
+                <ui:Label tabindex="-1" text="Sandbox Session" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Application" class="text-color text" style="font-size: 34px; white-space: normal; -unity-font: url(&quot;project://database/Assets/Fonts/Roboto/Roboto-Light.ttf?fileID=12800000&amp;guid=9c80a8fcde152064584fb7bc6ba9a8b0&amp;type=3#Roboto-Light&quot;); margin-left: 8px; margin-bottom: 8px;" />
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; align-self: stretch; justify-content: flex-start; flex-direction: column; align-items: stretch; flex-wrap: nowrap;">
+                    <ui:Button text="Options" parse-escape-sequences="true" display-tooltip-when-elided="true" name="OptionsButton" class="button button-secondary" />
+                    <ui:Button text="Quit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="QuitButton" class="button button-secondary" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

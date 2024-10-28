@@ -1,9 +1,43 @@
 using System;
+using System.Collections.Generic;
+using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+[Serializable]
+public enum MenuName
+{
+    Login,
+    Options,
+    Main,
+    VirtualRobot,
+    RealRobot,
+    Tutorial,
+    Exercises,
+    Playback
+}
+
 public class MenuController : MonoBehaviour
 {
+    
+    [Header("Object references")]
+    public GameObject loginMenu;
+    public GameObject mainMenu;
+    public GameObject virtualRobotMenu;
+    public GameObject realRobotMenu;
+    public GameObject tutorialMenu;
+    public GameObject exercisesMenu;
+    public GameObject playbackMenu;
+    public SectionData currentSelectedSection;
+    public ChapterData currentSelectedChapter;
+    
+    private MenuName _previousMenu;
+    private MenuName _currentMenu;
+    private Dictionary<MenuName, GameObject> _menuDictionary = new();
+    
+    public Action<SectionData> OnSectionSelected;
+    public Action<ChapterData> OnChapterSelected;
+    
     private static MenuController _instance;
 
     public static MenuController Instance
@@ -25,13 +59,6 @@ public class MenuController : MonoBehaviour
         }
     }
     
-    public Action<SectionData> OnSectionSelected;
-    public Action<ChapterData> OnChapterSelected;
-    public Action OnLessonStarted;
-    
-    public SectionData currentSelectedSection;
-    public ChapterData currentSelectedChapter;
-    
     public void Awake()
     {
         if (_instance == null)
@@ -43,18 +70,62 @@ public class MenuController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Start()
+    {
+        if(loginMenu) _menuDictionary.Add(MenuName.Login, loginMenu);
+        if(mainMenu) _menuDictionary.Add(MenuName.Main, mainMenu);
+        if(virtualRobotMenu) _menuDictionary.Add(MenuName.VirtualRobot, virtualRobotMenu);
+        if(realRobotMenu) _menuDictionary.Add(MenuName.RealRobot, realRobotMenu);
+        if(tutorialMenu) _menuDictionary.Add(MenuName.Tutorial, tutorialMenu);
+        if(exercisesMenu) _menuDictionary.Add(MenuName.Exercises, exercisesMenu);
+        if(playbackMenu) _menuDictionary.Add(MenuName.Playback, playbackMenu);
         
         OnSectionSelected += OnSectionSelectedHandler;
         OnChapterSelected += OnChapterSelectedHandler;
-        OnLessonStarted += OnLessonStartedHandler;
-        
-        ShowTutorialMenu();
+
+        if (GlobalClient.Instance)
+        {
+            GlobalClient.Instance.OnConnected += () =>
+            {
+                UnityMainThreadDispatcher.Instance().Enqueue(() => ChangeMenu(MenuName.Main));
+            };
+            
+            GlobalClient.Instance.OnDisconnected += () =>
+            {
+                UnityMainThreadDispatcher.Instance().Enqueue(() => ChangeMenu(MenuName.Login));
+            };
+        }
+
+        ChangeMenu(MenuName.Login);
     }
 
-    private void OnLessonStartedHandler()
+    public void ChangeMenu(MenuControllerOption menuName)
     {
-        ShowPlaybackMenu();
+        ChangeMenu(menuName.menuName);
     }
+    
+    public void ChangeMenu(MenuName menuName)
+    {
+        _previousMenu = _currentMenu;
+        _currentMenu = menuName;
+        foreach (var menu in _menuDictionary)
+        {
+            menu.Value.SetActive(menu.Key == _currentMenu);
+        }
+    }
+    
+    public void GoBack()
+    {
+        ChangeMenu(_previousMenu);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+    
 
     private void OnSectionSelectedHandler(SectionData obj)
     {
@@ -64,21 +135,5 @@ public class MenuController : MonoBehaviour
     private void OnChapterSelectedHandler(ChapterData obj)
     {
         currentSelectedChapter = obj;
-    }
-
-    [Header("Object references")]
-    public TutorialMenuDocument tutorialMenu;
-    public PlaybackMenuDocument playBackMenu;
-    
-    public void ShowTutorialMenu()
-    {
-        playBackMenu.gameObject.SetActive(false);
-        tutorialMenu.gameObject.SetActive(true);
-    }
-    
-    public void ShowPlaybackMenu()
-    {
-        tutorialMenu.gameObject.SetActive(false);
-        playBackMenu.gameObject.SetActive(true);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -14,7 +15,7 @@ public class TutorialMenuDocument : MonoBehaviour
     Label _sectionTitle;
     Label _sectionDescription;
     Button _startLessonButton;
-    
+
     public void OnEnable()
     {
         _chapterGroup = tutorialMenuDocument.rootVisualElement.Q<VisualElement>("ChapterGroup");
@@ -22,6 +23,11 @@ public class TutorialMenuDocument : MonoBehaviour
         _sectionDescription = tutorialMenuDocument.rootVisualElement.Q<Label>("SectionDescription");
         _startLessonButton = tutorialMenuDocument.rootVisualElement.Q<Button>("StartLessonButton");
 
+        if (_chapterGroup == null || _sectionTitle == null || _sectionDescription == null || _startLessonButton == null)
+        {
+            Debug.LogError("TutorialMenuDocument: One or more UI elements are not found.");
+        }
+        
         _startLessonButton.clicked += OnStartLessonButtonClicked;
         
         _chapterGroup.Clear(); // Clear previous elements to avoid duplication
@@ -82,10 +88,18 @@ public class TutorialMenuDocument : MonoBehaviour
         if (MenuController.Instance.currentSelectedSection != null)
         {
             Debug.Log($"Starting lesson for {MenuController.Instance.currentSelectedSection.title}");
-            MenuController.Instance.OnLessonStarted?.Invoke();
+            StartCoroutine(LoadTutorialSceneAndChangeMenu());
         }
     }
+    
+    private IEnumerator LoadTutorialSceneAndChangeMenu()
+    {
+        yield return StartCoroutine(Utility.LoadSceneCoroutine("Tutorial"));
 
+        // Change the menu to Playback after the scene has loaded
+        MenuController.Instance.ChangeMenu(MenuName.Playback);
+    }
+    
     private void UpdateProgressBar()
     {
         // Find the total number of sections and the number of completed sections

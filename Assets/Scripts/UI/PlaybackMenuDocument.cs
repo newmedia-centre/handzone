@@ -27,16 +27,34 @@ public class PlaybackMenuDocument : MonoBehaviour
         _sectionTitle = playbackMenuDocument.rootVisualElement.Q<Label>("SectionTitle");
         _returnButton = playbackMenuDocument.rootVisualElement.Q<Button>("ReturnButton");
         
-        _chapterTitle.text = MenuController.Instance.currentSelectedChapter.chapterName;
-        _sectionTitle.text = MenuController.Instance.currentSelectedSection.title;
+        if (_playButton == null || _slider == null || _chapterTitle == null || _sectionTitle == null || _returnButton == null)
+        {
+            Debug.LogError("PlaybackMenuDocument: One or more UI elements are not found.");
+            return;
+        }
+        
+        // Find and assign the PlayableDirector component
+        playableDirector = FindObjectOfType<PlayableDirector>();
+        if (playableDirector == null)
+        {
+            Debug.LogError("PlaybackMenuDocument: PlayableDirector not found in the scene.");
+            return;
+        }
+        
+        _chapterTitle.text = MenuController.Instance.currentSelectedChapter?.chapterName ?? "Chapter";
+        _sectionTitle.text = MenuController.Instance.currentSelectedSection?.title ?? "Section";
 
         _returnButton.clicked += OnReturnButtonClicked;
         _slider.RegisterValueChangedCallback(OnSliderValueChanged);
         _slider.RegisterCallback<PointerDownEvent>(OnSliderPointerDown);
         _playButton.RegisterValueChangedCallback(OnPlayButtonValueChanged);
         playableDirector.stopped += HandleStop;
-        
-        PrepareTutorial(MenuController.Instance.currentSelectedSection);
+
+        if (MenuController.Instance.currentSelectedSection)
+        {
+            PrepareTutorial(MenuController.Instance.currentSelectedSection);
+            playableDirector.Play();
+        }
     }
 
     private void Update()
@@ -92,7 +110,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     
     void OnReturnButtonClicked()
     {
-        MenuController.Instance.ShowTutorialMenu();
+        MenuController.Instance.ChangeMenu(MenuName.Tutorial);
         playableDirector.Stop();
     }
 

@@ -2,16 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public enum MenuName
-{
-    Login,
-    Main,
-    Options,
-    Sessions,
-    RealRobot
-}
-
 public class MainMenuController : MonoBehaviour
 {
     public GameObject loginMenu;
@@ -31,7 +21,7 @@ public class MainMenuController : MonoBehaviour
         _menuDictionary.Add(MenuName.Login, loginMenu);
         _menuDictionary.Add(MenuName.Main, mainMenu);
         _menuDictionary.Add(MenuName.Options, optionsMenu);
-        _menuDictionary.Add(MenuName.Sessions, sessionsMenu);
+        _menuDictionary.Add(MenuName.VirtualRobot, sessionsMenu);
         _menuDictionary.Add(MenuName.RealRobot, realRobotMenu);
 
         ChangeMenu(MenuName.Login);
