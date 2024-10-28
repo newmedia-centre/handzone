@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8376f6ab0afbf1447887df94f275964f, type: 3}
-  m_Name: Safety
+  m_Name: C1S2 - Safety
   m_EditorClassIdentifier: 
   title: Safety
   description: 

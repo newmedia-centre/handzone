@@ -780,7 +780,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437374214}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: dcbdcbd4741ae5a4d8c052f6d1599267, type: 3}
+  m_VideoClip: {fileID: 0}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -2349,8 +2349,6 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: -3685019610529463822, guid: 01b42ebf0f86e9c47ad25651208dcca1, type: 2}
     value: {fileID: 1597386716}
-  - key: {fileID: 7203957747799013557, guid: 01b42ebf0f86e9c47ad25651208dcca1, type: 2}
-    value: {fileID: 0}
   - key: {fileID: 2194225432227783216, guid: 01b42ebf0f86e9c47ad25651208dcca1, type: 2}
     value: {fileID: 0}
   - key: {fileID: -3843821229408326859, guid: 01b42ebf0f86e9c47ad25651208dcca1, type: 2}
@@ -2360,31 +2358,50 @@ PlayableDirector:
     - 25f2cc353d3b42e4099ad0d1c1c45f7a: {fileID: 0}
     - 357e7bd5dd9becc41830ce518d0f9192: {fileID: 1912227560}
     - aa6a25c8e53d0b045a3d9553ac6fef76: {fileID: 888031883}
+    - bf44bc240ad945b4b9ebe22dd5a30c1e: {fileID: 520357427}
+    - 7590377eea5de8c45b92c36fb77f89d4: {fileID: 662401526}
     - 31868853bb6c71d49b29673b4cfb5091: {fileID: 363848194}
+    - 3c6ca635354a5744685dccbac87d5cd8: {fileID: 662401526}
     - 61ba2f99d22ec394ab712e64f940b23f: {fileID: 38335269}
     - 6b5eb4f35e656214fba096d03691e973: {fileID: 363848194}
+    - 964cdc666603bf1458a5274cd9f279ef: {fileID: 1528377835}
+    - cfa014b1108717c4db1faa9cd25e6e7b: {fileID: 1528377835}
+    - 1e62598a644069c4cb48b770cd74040a: {fileID: 520357427}
+    - 5349b712c09a5ed4490f31c51e043472: {fileID: 662401526}
     - 1d34969f4eadf3c47a87349ace7ef7c7: {fileID: 1824933634}
     - 1f0b8a7f0ff38bc4e9fd74c7a9999c5f: {fileID: 520357427}
     - c86148eb0ef652949ba24f29f23fa332: {fileID: 8625429093856384752}
     - 23e8232b043a4534bacf53f1906178e2: {fileID: 0}
     - 4b79f85ebb5a3fe49a9101e63de8440c: {fileID: 38335269}
+    - 8b601f933a33b394cab0352c6828e699: {fileID: 1528377835}
     - c999a462dffd5d24ea1e6817d6ac5bd0: {fileID: 650219694}
     - 15a72b35992da5d44a65251dcefa24f2: {fileID: 563006557}
     - 8285477141b38ed45885e4bd79455061: {fileID: 0}
+    - 70d31b8adef986f4fbcc2349d99fe8e5: {fileID: 520357427}
     - 7c90bc5467b075343898e15c9e0913e4: {fileID: 563006557}
     - 54e018c9873a07849b83c962f4038d4b: {fileID: 0}
     - 216cabbe9dbea144aaaefe021aa05c88: {fileID: 1528377835}
     - 770a392b3e869fd46b1b910a7193d25b: {fileID: 0}
+    - b54d664be654a904e82150893d1d8e5f: {fileID: 662401526}
     - f7e46d973ef0f5147a99533bccc67f16: {fileID: 0}
+    - 97de387c8ddab884899641c0c75063a2: {fileID: 520357427}
     - 424ca2a92d3acef4ba88dea7f88db010: {fileID: 8625429093856384752}
     - 22bd774e8d934c6488fc0aaa351abd53: {fileID: 1912227560}
     - 6a24cf6db058ad2488c47cb0defaf85d: {fileID: 0}
+    - ba9050f697bb3c947a7e3a27946f1d91: {fileID: 1528377835}
     - 86fa03271e213064080375b9f94b5c9a: {fileID: 0}
+    - 4701ede5742919742b8c60f7d22bb200: {fileID: 662401526}
+    - 370c867f2d8b3c74580af3bbae996d54: {fileID: 1528377835}
+    - d6f61a6645009954f9973f1045750cbb: {fileID: 1528377835}
     - 989ff842252a6e040a920f256e9321cc: {fileID: 650219694}
     - 73ffbe2d7902a23449b09033c66b4f9d: {fileID: 1824933634}
+    - d76ac0bc5d83d994e8484e338b2dc9a3: {fileID: 520357427}
+    - a6ac8b66e80390749b669b1396bbb76a: {fileID: 520357427}
     - 9d266e53dfc294440b2afb8e31f20376: {fileID: 930265280}
     - 186715b2140d14840a6f7141cedf18c5: {fileID: 662401526}
+    - b094c54f1565df74a90d4d55d2c93aa3: {fileID: 662401526}
     - eb47429e7a67f1a4eb820bdb917c65a9: {fileID: 650219694}
+    - 11c07cea9b9f3e947a21f96112e3f87a: {fileID: 662401526}
     - c2403c5b2a89ac44db736b1d45ba886c: {fileID: 888031883}
 --- !u!4 &1284715682
 Transform:

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8376f6ab0afbf1447887df94f275964f, type: 3}
-  m_Name: Activating the gripper
+  m_Name: C1S4 - End effector
   m_EditorClassIdentifier: 
-  title: Activating the gripper
+  title: End effector
   description: 
   completed: 0
-  timelineAsset: {fileID: 11400000, guid: 96d3255e4202d1a4d83cf9ca60a917fe, type: 2}
+  timelineAsset: {fileID: 11400000, guid: 01b42ebf0f86e9c47ad25651208dcca1, type: 2}

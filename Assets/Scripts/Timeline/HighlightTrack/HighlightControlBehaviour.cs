@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -27,7 +26,7 @@ public class HighlightControlBehaviour : PlayableBehaviour
             outline = targetObject.GetComponent<Outline>();
             if (outline == null)
             {
-                if(targetObject.GetComponent<Renderer>() == null)
+                if (targetObject.GetComponent<Renderer>() == null)
                 {
                     Debug.LogWarning("HighlightControlBehaviour: targetObject does not have a Renderer component.");
                     return;
@@ -45,15 +44,33 @@ public class HighlightControlBehaviour : PlayableBehaviour
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
-        if (outline != null)
+        if (targetObject == null)
         {
-            outline.enabled = true;
+            return;
         }
+
+        outline = targetObject.GetComponent<Outline>();
+        if (outline == null)
+        {
+            if (targetObject.GetComponent<Renderer>() == null)
+            {
+                Debug.LogWarning("HighlightControlBehaviour: targetObject does not have a Renderer component.");
+                return;
+            }
+            outline = targetObject.AddComponent<Outline>();
+        }
+
+        outline.OutlineMode = mode;
+        outline.OutlineColor = color;
+        outline.OutlineWidth = width;
+        outline.enabled = true;
+
+        firstFrameHappened = true;
     }
 
     public override void OnBehaviourPause(Playable playable, FrameData info)
     {
-        if (outline != null && (info.effectivePlayState == PlayState.Paused || playable.GetDuration() <= playable.GetTime()))
+        if (outline != null)
         {
             outline.enabled = false;
             firstFrameHappened = false;
