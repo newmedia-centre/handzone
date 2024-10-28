@@ -1,88 +1,77 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
 [Serializable]
 public class HighlightControlBehaviour : PlayableBehaviour
 {
-    [SerializeField]
-    private Outline.Mode mode;
-
-    [SerializeField]
-    private Color color;
-
-    [SerializeField]
+    public Outline.Mode mode;
+    public Color color;
     [Range(0f, 10f)]
-    private float width;
-    
-    private GameObject obj;
+    public float width;
 
-    private bool firstFrameHappaned;
-    
+    public GameObject targetObject;
+    private Outline outline;
+    private bool firstFrameHappened;
+
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)
     {
-        obj = playerData as GameObject;
-
-        if (obj == null)
+        if (targetObject == null)
         {
             return;
         }
 
-        if (!firstFrameHappaned)
+        if (!firstFrameHappened)
         {
-            Outline _outline = obj.AddComponent<Outline>();
-            
-            _outline.OutlineMode = mode;
-            _outline.OutlineColor = color;
-            _outline.OutlineWidth = width;
-            
-            firstFrameHappaned = true;
+            outline = targetObject.GetComponent<Outline>();
+            if (outline == null)
+            {
+                if(targetObject.GetComponent<Renderer>() == null)
+                {
+                    Debug.LogWarning("HighlightControlBehaviour: targetObject does not have a Renderer component.");
+                    return;
+                }
+                outline = targetObject.AddComponent<Outline>();
+            }
+
+            outline.OutlineMode = mode;
+            outline.OutlineColor = color;
+            outline.OutlineWidth = width;
+
+            firstFrameHappened = true;
+        }
+    }
+
+    public override void OnBehaviourPlay(Playable playable, FrameData info)
+    {
+        if (outline != null)
+        {
+            outline.enabled = true;
         }
     }
 
     public override void OnBehaviourPause(Playable playable, FrameData info)
     {
-        if (obj == null)
+        if (outline != null && (info.effectivePlayState == PlayState.Paused || playable.GetDuration() <= playable.GetTime()))
         {
-            return;
-        }
-
-        if (info.effectivePlayState == PlayState.Paused || playable.GetDuration() <= playable.GetTime())
-        {
-            // Debug.Log("Pause");
-            // Debug.Log("State: " + info.effectivePlayState);
-            // Debug.Log("Playable State: " + playable.IsDone());
-            // Debug.Log("Evaluation Type: " + info.evaluationType);
-
-            firstFrameHappaned = false;
-
-            if (Application.isEditor)
-            {
-                UnityEngine.Object.DestroyImmediate(obj.GetComponent<Outline>());
-            }
-            else
-            {
-                UnityEngine.Object.Destroy(obj.GetComponent<Outline>());
-            }
+            outline.enabled = false;
+            firstFrameHappened = false;
         }
     }
 
     public override void OnPlayableDestroy(Playable playable)
     {
-        if (obj == null)
+        if (outline != null)
         {
-            return;
-        }
-    
-        firstFrameHappaned = false;
-        
-        if (Application.isEditor)
-        {
-            UnityEngine.Object.DestroyImmediate(obj.GetComponent<Outline>());
-        }
-        else
-        {
-            UnityEngine.Object.Destroy(obj.GetComponent<Outline>());
+            if (Application.isEditor)
+            {
+                UnityEngine.Object.DestroyImmediate(outline);
+            }
+            else
+            {
+                UnityEngine.Object.Destroy(outline);
+            }
         }
     }
 }

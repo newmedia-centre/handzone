@@ -1,3 +1,5 @@
+using System;
+using Schema.Socket.Realtime;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -21,6 +23,12 @@ public class GripperAnim : MonoBehaviour
         }
         
         SessionClient.Instance.OnDigitalOutputChanged += SetGripperAnim;
+        SessionClient.Instance.OnRealtimeData += SetGripperAnim;
+    }
+
+    private void SetGripperAnim(RealtimeDataOut obj)
+    {
+        SetGripperAnim(Convert.ToBoolean(obj.DigitalOutputs));
     }
 
     private void SetGripperAnim(bool state)

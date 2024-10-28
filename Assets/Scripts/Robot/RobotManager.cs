@@ -16,19 +16,10 @@ public class RobotManager : MonoBehaviour
     [Header("Prefab")]
     public GameObject transformGizmoPrefab;
 
-    [Header("Outlines")]
-    public bool enableOutlines = true;
-    public Color outlineColor = Color.yellow;
-    public float outlineWidth = 3f;
-    
     private List<Outline> _outlines = new();
     private List<BoxCollider> _colliders = new();
     private List<GameObject> _transformGizmos = new();
-
-    private void Awake()
-    {
-
-    }
+    
 
     private void Start()
     {
@@ -38,12 +29,6 @@ public class RobotManager : MonoBehaviour
             
             _colliders.Add(robotJoint.AddComponent<BoxCollider>());
             _transformGizmos.Add(Instantiate(transformGizmoPrefab, robotJoint));
-            var outline = robotJoint.AddComponent<Outline>();
-            outline.OutlineMode = Outline.Mode.OutlineAll;
-            outline.OutlineColor = outlineColor;
-            outline.OutlineWidth = outlineWidth;
-            outline.enabled = enableOutlines;
-            _outlines.Add(outline);
         }
         
         if(SessionClient.Instance == null)
