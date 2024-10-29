@@ -379,8 +379,8 @@ MonoBehaviour:
     m_ParentTrack: {fileID: -3843821229408326859}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
-    m_BlendInDuration: 0
-    m_BlendOutDuration: 0
+    m_BlendInDuration: -1
+    m_BlendOutDuration: -1
     m_MixInCurve:
       serializedVersion: 2
       m_Curve:
@@ -436,8 +436,8 @@ MonoBehaviour:
     m_Recordable: 0
     m_PostExtrapolationMode: 0
     m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
+    m_PostExtrapolationTime: Infinity
+    m_PreExtrapolationTime: 2.8333333333333335
     m_DisplayName: S1C4_Polyscope
   m_Markers:
     m_Objects: []
@@ -1344,16 +1344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26f453f91d4f7644a9bc25e47e120809, type: 3}
   m_Name: VideoControlClip
   m_EditorClassIdentifier: 
-  template:
-    clip: {fileID: 32900000, guid: dcbdcbd4741ae5a4d8c052f6d1599267, type: 3}
-    startTime: 0
-    type: 0
-    ClipStart: 0
-    ClipEnd: 0
-    durationUsed: 0
-  ClipStart: 2.8333333333333335
-  ClipEnd: 66.23333333333333
-  durationUsed: 0
+  clip: {fileID: 32900000, guid: dcbdcbd4741ae5a4d8c052f6d1599267, type: 3}
 --- !u!114 &8100722315644639600
 MonoBehaviour:
   m_ObjectHideFlags: 1
