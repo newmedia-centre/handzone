@@ -780,7 +780,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437374214}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: dcbdcbd4741ae5a4d8c052f6d1599267, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 6049e526488170d468bb082ff4577922, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -2323,7 +2323,7 @@ PlayableDirector:
   m_GameObject: {fileID: 1284715680}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: c22765d9bbe9bd944aee90b3285bb619, type: 2}
+  m_PlayableAsset: {fileID: 11400000, guid: ff210d793abfc00478a81af1747644a1, type: 2}
   m_InitialState: 1
   m_WrapMode: 2
   m_DirectorUpdateMode: 2
@@ -2356,6 +2356,14 @@ PlayableDirector:
   - key: {fileID: 2194225432227783216, guid: c22765d9bbe9bd944aee90b3285bb619, type: 2}
     value: {fileID: 0}
   - key: {fileID: -3843821229408326859, guid: c22765d9bbe9bd944aee90b3285bb619, type: 2}
+    value: {fileID: 437374219}
+  - key: {fileID: -3685019610529463822, guid: ff210d793abfc00478a81af1747644a1, type: 2}
+    value: {fileID: 1597386716}
+  - key: {fileID: 7203957747799013557, guid: ff210d793abfc00478a81af1747644a1, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 2194225432227783216, guid: ff210d793abfc00478a81af1747644a1, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -3843821229408326859, guid: ff210d793abfc00478a81af1747644a1, type: 2}
     value: {fileID: 437374219}
   m_ExposedReferences:
     m_References:
