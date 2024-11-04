@@ -46,24 +46,6 @@ MonoBehaviour:
   m_Name: VideoControlClip
   m_EditorClassIdentifier: 
   clip: {fileID: 32900000, guid: 6049e526488170d468bb082ff4577922, type: 3}
---- !u!114 &-5964291598878034028
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 932cda19f2f248f79fb609a580dcdd81, type: 3}
-  m_Name: TranslatableHighlightControlClip
-  m_EditorClassIdentifier: 
-  targetObjects:
-    exposedName: fbe615911a2d4bf4aade00cc01043fd7
-    defaultValue: {fileID: 0}
-  sourceTransform:
-    exposedName: a2a4f79051c5ae442a48dea47b2522fa
-    defaultValue: {fileID: 0}
 --- !u!114 &-5470613729454115446
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -304,6 +286,24 @@ MonoBehaviour:
   m_Loop: 0
   m_Version: 1
   m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+--- !u!114 &-3154865201679908168
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932cda19f2f248f79fb609a580dcdd81, type: 3}
+  m_Name: TranslatableHighlightControlClip(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  targetSpriteRenderer:
+    exposedName: b6e8b74ba485f92498e932b6a805b388
+    defaultValue: {fileID: 0}
+  sourceTransform:
+    exposedName: b22ad056af5721149acbe3ecd364386e
+    defaultValue: {fileID: 0}
 --- !u!114 &-1906503716674863246
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -335,7 +335,6 @@ MonoBehaviour:
   m_Version: 0
   m_Tracks:
   - {fileID: -3685019610529463822}
-  - {fileID: 7203957747799013557}
   - {fileID: 2194225432227783216}
   - {fileID: -3843821229408326859}
   - {fileID: 6267855171219231310}
@@ -345,6 +344,24 @@ MonoBehaviour:
     m_ScenePreview: 1
   m_DurationMode: 0
   m_MarkerTrack: {fileID: 0}
+--- !u!114 &1079359824431178966
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932cda19f2f248f79fb609a580dcdd81, type: 3}
+  m_Name: TranslatableHighlightControlClip(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  targetSpriteRenderer:
+    exposedName: d91917cfc07f56341a2ae87fdbef0f41
+    defaultValue: {fileID: 0}
+  sourceTransform:
+    exposedName: 64f8540390238ea4896cd1fd1fc7fa4e
+    defaultValue: {fileID: 0}
 --- !u!114 &2194225432227783216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -773,10 +790,79 @@ MonoBehaviour:
   m_Children: []
   m_Clips:
   - m_Version: 1
-    m_Start: 23.916666666666668
+    m_Start: 6.066666666666666
     m_ClipIn: 0
-    m_Asset: {fileID: -5964291598878034028}
-    m_Duration: 11.26110829971731
+    m_Asset: {fileID: 1079359824431178966}
+    m_Duration: 3.916666666666666
+    m_TimeScale: 1
+    m_ParentTrack: {fileID: 6267855171219231310}
+    m_EaseInDuration: 0
+    m_EaseOutDuration: 0
+    m_BlendInDuration: 0
+    m_BlendOutDuration: 0
+    m_MixInCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_MixOutCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_BlendInCurveMode: 0
+    m_BlendOutCurveMode: 0
+    m_ExposedParameterNames: []
+    m_AnimationCurves: {fileID: 0}
+    m_Recordable: 0
+    m_PostExtrapolationMode: 0
+    m_PreExtrapolationMode: 0
+    m_PostExtrapolationTime: 0
+    m_PreExtrapolationTime: 0
+    m_DisplayName: TranslatableHighlightControlClip
+  - m_Version: 1
+    m_Start: 11.700000000000006
+    m_ClipIn: 0
+    m_Asset: {fileID: -3154865201679908168}
+    m_Duration: 17.11666666666666
     m_TimeScale: 1
     m_ParentTrack: {fileID: 6267855171219231310}
     m_EaseInDuration: 0
@@ -860,29 +946,6 @@ MonoBehaviour:
   m_bufferingTime: 0.1
   m_ClipProperties:
     volume: 1
---- !u!114 &7203957747799013557
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d696b3a0caaebb549a04765a9d96193a, type: 3}
-  m_Name: Nameplate Visibility Track
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_AnimClip: {fileID: 0}
-  m_Locked: 0
-  m_Muted: 0
-  m_CustomPlayableFullTypename: 
-  m_Curves: {fileID: 0}
-  m_Parent: {fileID: 11400000}
-  m_Children: []
-  m_Clips: []
-  m_Markers:
-    m_Objects: []
 --- !u!114 &7706433977773445345
 MonoBehaviour:
   m_ObjectHideFlags: 1

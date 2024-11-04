@@ -52,29 +52,6 @@ MonoBehaviour:
   mode: 0
   color: {r: 1, g: 0.19276577, b: 0, a: 1}
   width: 5
---- !u!114 &-6444295099654172752
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 477c1ed47b43c6144993f55ab31794aa, type: 3}
-  m_Name: Visibility Track
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_AnimClip: {fileID: 0}
-  m_Locked: 0
-  m_Muted: 0
-  m_CustomPlayableFullTypename: 
-  m_Curves: {fileID: 0}
-  m_Parent: {fileID: 11400000}
-  m_Children: []
-  m_Clips: []
-  m_Markers:
-    m_Objects: []
 --- !u!114 &-6293116169723632612
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -415,8 +392,6 @@ MonoBehaviour:
   m_Version: 0
   m_Tracks:
   - {fileID: -3685019610529463822}
-  - {fileID: 7203957747799013557}
-  - {fileID: -6444295099654172752}
   - {fileID: 2194225432227783216}
   - {fileID: 317303963585030192}
   - {fileID: -6293116169723632612}
@@ -765,29 +740,6 @@ MonoBehaviour:
   m_bufferingTime: 0.1
   m_ClipProperties:
     volume: 1
---- !u!114 &7203957747799013557
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d696b3a0caaebb549a04765a9d96193a, type: 3}
-  m_Name: Nameplate Visibility Track
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_AnimClip: {fileID: 0}
-  m_Locked: 0
-  m_Muted: 0
-  m_CustomPlayableFullTypename: 
-  m_Curves: {fileID: 0}
-  m_Parent: {fileID: 11400000}
-  m_Children: []
-  m_Clips: []
-  m_Markers:
-    m_Objects: []
 --- !u!114 &7479983351014413490
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -7,14 +7,14 @@ using UnityEngine.Timeline;
 [Serializable]
 public class TranslatableHighlightControlClip : PlayableAsset, ITimelineClipAsset
 {
-    public ExposedReference<GameObject> targetObjects;
+    public ExposedReference<SpriteRenderer> targetSpriteRenderer;
     public ExposedReference<Transform> sourceTransform;
 
     public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
     {
         var playable = ScriptPlayable<TranslatableHighlightControlBehaviour>.Create(graph);
         var behaviour = playable.GetBehaviour();
-        behaviour.targetObject = targetObjects.Resolve(graph.GetResolver());
+        behaviour.targetSpriteRenderer = targetSpriteRenderer.Resolve(graph.GetResolver());
         behaviour.sourceTransform = sourceTransform.Resolve(graph.GetResolver());
         return playable;
     }

@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 public class TranslatableHighlightControlBehaviour : PlayableBehaviour
 {
     public Transform sourceTransform;
-    public GameObject targetObject;
+    public SpriteRenderer targetSpriteRenderer;
 
     private bool firstFrameHappened;
     private Vector3 originalPosition;
@@ -15,18 +15,18 @@ public class TranslatableHighlightControlBehaviour : PlayableBehaviour
 
     public override void OnGraphStart(Playable playable)
     {
-        if (targetObject != null)
+        if (targetSpriteRenderer != null)
         {
-            originalPosition = targetObject.transform.position;
-            originalRotation = targetObject.transform.rotation;
-            originalScale = targetObject.transform.localScale;
-            targetObject.SetActive(false); // Hide the object initially
+            originalPosition = targetSpriteRenderer.transform.position;
+            originalRotation = targetSpriteRenderer.transform.rotation;
+            originalScale = targetSpriteRenderer.transform.localScale;
+            targetSpriteRenderer.enabled = false; // Hide the object initially
         }
     }
 
     public override void ProcessFrame(Playable playable, FrameData info, object playerData)
     {
-        if (targetObject == null)
+        if (targetSpriteRenderer == null)
         {
             return;
         }
@@ -39,30 +39,30 @@ public class TranslatableHighlightControlBehaviour : PlayableBehaviour
         // Immediately set the object's transform to the sourceTransform's values
         if (sourceTransform != null)
         {
-            targetObject.transform.position = sourceTransform.position;
-            targetObject.transform.rotation = sourceTransform.rotation;
-            targetObject.transform.localScale = sourceTransform.localScale;
+            targetSpriteRenderer.transform.position = sourceTransform.position;
+            targetSpriteRenderer.transform.rotation = sourceTransform.rotation;
+            targetSpriteRenderer.size = sourceTransform.localScale;
         }
     }
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
-        if (targetObject == null)
+        if (targetSpriteRenderer == null)
         {
             return;
         }
 
-        targetObject.SetActive(true); // Make the object visible
+        targetSpriteRenderer.enabled = true;
         firstFrameHappened = true;
     }
 
     public override void OnBehaviourPause(Playable playable, FrameData info)
     {
-        if (targetObject != null)
+        if (targetSpriteRenderer != null)
         {
-            targetObject.transform.SetPositionAndRotation(originalPosition, originalRotation);
-            targetObject.transform.localScale = originalScale;
-            targetObject.SetActive(false); // Hide the object
+            targetSpriteRenderer.transform.SetPositionAndRotation(originalPosition, originalRotation);
+            targetSpriteRenderer.size = originalScale;
+            targetSpriteRenderer.enabled = false;
         }
         firstFrameHappened = false;
     }

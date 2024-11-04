@@ -371,7 +371,7 @@ MonoBehaviour:
   m_Children: []
   m_Clips:
   - m_Version: 1
-    m_Start: 2.8333333333333335
+    m_Start: 0.9
     m_ClipIn: 0
     m_Asset: {fileID: 8057029628941105387}
     m_Duration: 63.4
@@ -437,7 +437,7 @@ MonoBehaviour:
     m_PostExtrapolationMode: 0
     m_PreExtrapolationMode: 0
     m_PostExtrapolationTime: Infinity
-    m_PreExtrapolationTime: 2.8333333333333335
+    m_PreExtrapolationTime: 0.9
     m_DisplayName: S1C4_Polyscope
   m_Markers:
     m_Objects: []
@@ -1344,7 +1344,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26f453f91d4f7644a9bc25e47e120809, type: 3}
   m_Name: VideoControlClip
   m_EditorClassIdentifier: 
-  clip: {fileID: 32900000, guid: dcbdcbd4741ae5a4d8c052f6d1599267, type: 3}
+  clip: {fileID: 32900000, guid: edd839295cd69f44d8372dd306a60c4e, type: 3}
+  type: 4
 --- !u!114 &8100722315644639600
 MonoBehaviour:
   m_ObjectHideFlags: 1
