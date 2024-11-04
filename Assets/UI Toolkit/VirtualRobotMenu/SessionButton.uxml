@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="SessionButton" class="text-color session-button">
+        <ui:Label tabindex="-1" text="unicorn-container" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SessionName" style="align-items: flex-start; align-self: flex-start; -unity-font: url(&quot;project://database/Assets/Fonts/Roboto/Roboto-Light.ttf?fileID=12800000&amp;guid=9c80a8fcde152064584fb7bc6ba9a8b0&amp;type=3#Roboto-Light&quot;); font-size: 32px;" />
+        <ui:VisualElement name="JoinedPlayersGroup" />
+    </ui:Button>
+</ui:UXML>

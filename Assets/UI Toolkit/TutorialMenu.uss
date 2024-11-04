@@ -135,11 +135,11 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
 }
 
 .button:hover {
-    background-color: rgb(56, 176, 0);
+    background-color: rgb(47, 129, 50);
 }
 
 .button:active {
-    background-color: rgb(0, 128, 0);
+    background-color: rgb(14, 88, 20);
 }
 
 .playback-slider .unity-base-slider__tracker {
@@ -192,6 +192,45 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     color: rgb(63, 145, 66);
 }
 
+.button-secondary:hover {
+    background-color: rgb(87, 174, 91);
+    color: white;
+}
+
+.button-secondary:active {
+    background-color: rgb(63, 145, 66);
+    color: white;
+}
+
 .text-color {
     color: rgb(34, 34, 34);
+}
+
+.session-button {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-left-color: rgb(207, 207, 207);
+    border-right-color: rgb(207, 207, 207);
+    border-top-color: rgb(207, 207, 207);
+    border-bottom-color: rgb(207, 207, 207);
+    background-color: rgb(225, 225, 225);
+    margin-top: 7px;
+    margin-right: 7px;
+    margin-bottom: 7px;
+    margin-left: 7px;
+}
+
+.session-button:hover {
+    border-color: rgb(47, 129, 50);
+}
+
+.selected-button {
+    border-color: rgb(47, 129, 50);
+    background-color: rgb(200, 255, 200);
+}
+
+.session-button:active {
+    border-color: rgb(14, 88, 20);
 }

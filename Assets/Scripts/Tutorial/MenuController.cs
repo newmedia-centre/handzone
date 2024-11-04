@@ -136,4 +136,12 @@ public class MenuController : MonoBehaviour
     {
         currentSelectedChapter = obj;
     }
+
+    public void HideMenu()
+    {
+        foreach (var menu in _menuDictionary)
+        {
+            menu.Value.SetActive(false);
+        }
+    }
 }
