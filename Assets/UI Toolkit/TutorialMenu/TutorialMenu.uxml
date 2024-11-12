@@ -1,4 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="ReturnButton" src="project://database/Assets/UI%20Toolkit/ReturnButton.uxml?fileID=9197481963319205126&amp;guid=7b9d1539de9cc414fa160ac05aef8eb9&amp;type=3#ReturnButton" />
     <Style src="project://database/Assets/UI%20Toolkit/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
     <ui:VisualElement name="Background" class="background" style="flex-grow: 1; flex-direction: row;">
         <ui:VisualElement name="Navigation" class="navigation">
@@ -10,12 +11,15 @@
                 <ui:VisualElement name="ChapterGroup" style="flex-grow: 1; flex-shrink: 0; justify-content: flex-start;" />
             </ui:ScrollView>
         </ui:VisualElement>
-        <ui:VisualElement name="Content" class="content text" style="flex-grow: 1;">
-            <ui:Label tabindex="-1" text="Section Title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionTitle" class="text-header text-color" />
+        <ui:VisualElement name="Content" class="content text" style="flex-grow: 1; justify-content: space-around; align-self: flex-end;">
+            <ui:Label tabindex="-1" text="Section Title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionTitle" class="text-header text-color" style="align-items: stretch;" />
             <ui:Label tabindex="-1" text="Description" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionDescription" class="text-color" style="font-size: 28px; white-space: normal;" />
             <ui:VisualElement style="flex-grow: 1; flex-direction: column-reverse;">
                 <ui:Button text="Start Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartLessonButton" class="button" />
             </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: center; align-items: flex-start; position: absolute; align-self: flex-start; flex-shrink: 0; height: 50px; width: 50px; scale: 2.5 2.5; top: 40px; left: auto; right: 40px;">
+            <ui:Instance template="ReturnButton" name="ReturnButton" style="align-self: stretch; justify-content: center; align-items: center;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

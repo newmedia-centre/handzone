@@ -4,7 +4,8 @@ using TMPro;
 
 public class NameplateUI : MonoBehaviour
 {
-    public Vector3 Offset = new(0.08f, 0.0f, 0.0f);
+    public Vector3 OffsetEnd = new(0.08f, 0.0f, 0.0f);
+    public Vector3 OffsetStart = new(0.0f, 0.0f, 0.0f);
     public GameObject Target;
     public float DisplayLerpSpeed = 3.0f;
     public string DisplayLabel
@@ -35,12 +36,12 @@ public class NameplateUI : MonoBehaviour
         if (_isShowing == false)
             return;
 
-        Vector3 localPosition = Target.transform.TransformPoint(Offset);
+        Vector3 localPosition = Target.transform.TransformPoint(OffsetEnd);
         transform.position = localPosition;
         transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
 
         Vector3 targetCenter = Target.GetComponent<Collider>().bounds.center;
-        lineRenderer.SetPosition(0, targetCenter);
+        lineRenderer.SetPosition(0, targetCenter + OffsetStart);
         lineRenderer.SetPosition(1, transform.position);
     }
 

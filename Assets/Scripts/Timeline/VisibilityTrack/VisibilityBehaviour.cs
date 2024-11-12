@@ -7,7 +7,7 @@ public class VisibilityBehaviour : PlayableBehaviour
 
     private bool previousVisibilityState = false;
     private GameObject transformGizmo;
-    
+
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
         SetVisibility(true);
@@ -46,6 +46,10 @@ public class VisibilityBehaviour : PlayableBehaviour
                     previousVisibilityState = shouldBeVisible;
                 }
             }
+        }
+        else
+        {
+            SetVisibility(false);
         }
     }
 

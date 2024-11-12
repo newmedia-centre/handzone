@@ -54,6 +54,7 @@ public class PlaybackMenuDocument : MonoBehaviour
         {
             PrepareTutorial(MenuController.Instance.currentSelectedSection);
             playableDirector.Play();
+            _playButton.value = true;
         }
     }
 

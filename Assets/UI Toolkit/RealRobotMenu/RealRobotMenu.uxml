@@ -1,7 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
-    <ui:VisualElement name="Background" class="background" style="flex-grow: 1; flex-direction: row;">
-        <ui:VisualElement name="Navigation" class="navigation" style="flex-basis: 100%;">
+    <ui:VisualElement name="Background" class="background" style="align-items: stretch; justify-content: flex-end; align-self: flex-end;">
+        <ui:VisualElement name="Navigation" class="navigation" style="flex-basis: 100%; align-self: stretch; flex-direction: row-reverse;">
+            <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="ReturnButton" class="return-button" style="position: absolute; width: 80px; height: 80px; overflow: visible; padding-top: 11px; padding-right: 11px; padding-bottom: 11px; padding-left: 11px; top: auto; left: auto; border-top-left-radius: 50px; border-top-right-radius: 50px; border-bottom-right-radius: 50px; border-bottom-left-radius: 50px; flex-direction: row-reverse; justify-content: flex-start; margin-top: 14px; margin-right: 14px; margin-bottom: 14px; margin-left: 14px;" />
             <ui:VisualElement name="NavContent" class="container text header" style="flex-grow: 1; flex-shrink: 0; flex-direction: column; flex-basis: auto;">
                 <ui:Label tabindex="-1" text="Real Robot Session" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title" class="text-header text-color" />
                 <ui:VisualElement name="Divider" style="flex-grow: 0; background-color: rgb(225, 225, 225); height: 2px; margin-top: 0; margin-bottom: 38px; margin-left: 8px; margin-right: 14px;" />

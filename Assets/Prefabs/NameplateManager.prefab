@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4301564285811319305
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7497930203231041401}
+  - component: {fileID: 6923460400318934700}
+  m_Layer: 0
+  m_Name: NameplateManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7497930203231041401
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4301564285811319305}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.7143135}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -2.2238355, y: 1.0701337}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6923460400318934700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4301564285811319305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c59a8de5ef575a041b3d1f8a4423efab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameplatePrefab: {fileID: 2123592742931208821, guid: 185d2d4a1ab6f9342be2907debded6b8,
+    type: 3}
+  nameplates:
+  - target: {fileID: 0}
+    label: Base
+    offsetStart: {x: 0, y: 0.05, z: 0}
+    offsetEnd: {x: 0, y: 0, z: 0.3}
+  - target: {fileID: 0}
+    label: Shoulder
+    offsetStart: {x: 0.11, y: -0.2, z: -0.05}
+    offsetEnd: {x: 0, y: 0, z: 0.3}
+  - target: {fileID: 0}
+    label: Elbow
+    offsetStart: {x: 0.22, y: 0.12, z: -0.055}
+    offsetEnd: {x: 0, y: 0, z: -0.26}
+  - target: {fileID: 0}
+    label: Wrist 1
+    offsetStart: {x: -0.13, y: 0, z: -0.06}
+    offsetEnd: {x: 0, y: 0, z: -0.19}
+  - target: {fileID: 0}
+    label: Wrist 2
+    offsetStart: {x: 0, y: -0.14, z: -0.02}
+    offsetEnd: {x: 0, y: 0, z: -0.17}
+  - target: {fileID: 0}
+    label: Wrist 3
+    offsetStart: {x: 0.07, y: 0.01, z: -0.06}
+    offsetEnd: {x: 0, y: 0, z: 0.22}

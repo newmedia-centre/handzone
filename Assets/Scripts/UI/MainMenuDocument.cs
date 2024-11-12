@@ -36,6 +36,12 @@ public class MainMenuDocument : MonoBehaviour
             return;
         }
         
+        // Disable buttons, until they are implemented
+        _exercisesButton.SetEnabled(false);
+        _exercisesButton.focusable = false;
+        _optionsButton.SetEnabled(false);
+        _optionsButton.focusable = false;
+        
         _tutorialButton.clicked += OnTutorialButtonClicked;
         _exercisesButton.clicked += OnExercisesButtonClicked;
         _virtualRobotButton.clicked += OnVirtualRobotButtonClicked;

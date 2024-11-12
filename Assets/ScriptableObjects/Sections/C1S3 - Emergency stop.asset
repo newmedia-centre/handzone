@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: Emergency stop
   description: 
-  completed: 1
+  completed: 0
   timelineAsset: {fileID: 11400000, guid: b14708f5b8aba224996a45700a2a83c0, type: 2}

@@ -9,13 +9,15 @@ public class NameplateUIManager : MonoBehaviour
     {
         public GameObject target;
         public string label;
-        public Vector3 offset;
+        public Vector3 offsetStart;
+        public Vector3 offsetEnd;
 
-        public NameplateStruct(GameObject target, string label, Vector3 offset)
+        public NameplateStruct(GameObject target, string label, Vector3 offsetStart, Vector3 offsetEnd)
         {
             this.target = target;
             this.label = label;
-            this.offset = offset;
+            this.offsetStart = offsetStart;
+            this.offsetEnd = offsetEnd;
         }
     }
 
@@ -34,7 +36,8 @@ public class NameplateUIManager : MonoBehaviour
         {
             var nameplateUI = Instantiate(nameplatePrefab, nameplate.target.transform).GetComponent<NameplateUI>();
             nameplateUI.DisplayLabel = nameplate.label;
-            nameplateUI.Offset = nameplate.offset;
+            nameplateUI.OffsetStart = nameplate.offsetStart;
+            nameplateUI.OffsetEnd = nameplate.offsetEnd;
             nameplateUI.Target = nameplate.target;
             
             _nameplateUIs.Add(nameplateUI);
@@ -55,20 +58,22 @@ public class NameplateUIManager : MonoBehaviour
             if (correspondingUI != null)
             {
                 correspondingUI.DisplayLabel = nameplate.label;
-                correspondingUI.Offset = nameplate.offset;
+                correspondingUI.OffsetStart = nameplate.offsetStart;
+                correspondingUI.OffsetEnd = nameplate.offsetEnd;
             }
         }
     }
 
     // Adds new nameplate to the scene and adds it to the nameplates list
-    public void AddNameplateToObject(GameObject target, string displayLabel, Vector3 offset)
+    public void AddNameplateToObject(GameObject target, string displayLabel, Vector3 offsetStart, Vector3 offsetEnd)
     {
         var nameplateUI = Instantiate(nameplatePrefab, target.transform).GetComponent<NameplateUI>();
         nameplateUI.DisplayLabel = displayLabel;
-        nameplateUI.Offset = offset;
+        nameplateUI.OffsetStart = offsetStart;
+        nameplateUI.OffsetEnd = offsetEnd;
         nameplateUI.Target = target;
         
-        nameplates.Add(new NameplateStruct(target, displayLabel, offset));
+        nameplates.Add(new NameplateStruct(target, displayLabel, offsetStart, offsetEnd));
         _nameplateUIs.Add(nameplateUI);
     }
 

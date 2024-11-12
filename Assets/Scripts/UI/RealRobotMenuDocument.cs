@@ -9,6 +9,7 @@ public class RealRobotMenuDocument : MonoBehaviour
     private Label _statusLabel;
     private Button _joinButton;
     private Button _backButton;
+    private Button _returnButton;
     
     private void Awake()
     {
@@ -20,9 +21,23 @@ public class RealRobotMenuDocument : MonoBehaviour
         _statusLabel = realRobotDocument.rootVisualElement.Q<Label>("StatusLabel");
         _joinButton = realRobotDocument.rootVisualElement.Q<Button>("JoinButton");
         _backButton = realRobotDocument.rootVisualElement.Q<Button>("BackButton");
+        _returnButton = realRobotDocument.rootVisualElement.Q<Button>("ReturnButton");
         
         _joinButton.clicked += OnJoinClicked;
         _backButton.clicked += OnBackClicked;
+        _returnButton.clicked += OnReturnButtonClicked;
+    }
+
+    private void OnDisable()
+    {
+        _joinButton.clicked -= OnJoinClicked;
+        _backButton.clicked -= OnBackClicked;
+        _returnButton.clicked -= OnReturnButtonClicked;
+    }
+
+    private void OnReturnButtonClicked()
+    {
+        MenuController.Instance.ChangeMenu(MenuName.Main);
     }
 
     private void Start()

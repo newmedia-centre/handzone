@@ -142,6 +142,12 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     background-color: rgb(14, 88, 20);
 }
 
+.button:disabled:hover {
+    background-color: rgb(228, 228, 228); /* Same as the disabled background color */
+    color: rgb(144, 144, 144); /* Same as the disabled text color */
+    cursor: default; /* Change the cursor to default */
+}
+
 .playback-slider .unity-base-slider__tracker {
     background-color: rgb(228, 228, 228);
     border-color: transparent;
@@ -173,6 +179,14 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     -unity-background-image-tint-color: gray;
     width: 44px;
     height: 44px;
+}
+
+.return-button:hover {
+    background-color: #CFCFCF;
+}
+
+.return-button:active {
+    background-color: #B1B1B1;
 }
 
 .play-button:checked .unity-toggle__checkmark {

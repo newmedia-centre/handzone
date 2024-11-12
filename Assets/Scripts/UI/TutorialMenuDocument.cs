@@ -15,6 +15,7 @@ public class TutorialMenuDocument : MonoBehaviour
     Label _sectionTitle;
     Label _sectionDescription;
     Button _startLessonButton;
+    Button _returnButton;
 
     public void OnEnable()
     {
@@ -22,13 +23,15 @@ public class TutorialMenuDocument : MonoBehaviour
         _sectionTitle = tutorialMenuDocument.rootVisualElement.Q<Label>("SectionTitle");
         _sectionDescription = tutorialMenuDocument.rootVisualElement.Q<Label>("SectionDescription");
         _startLessonButton = tutorialMenuDocument.rootVisualElement.Q<Button>("StartLessonButton");
+        _returnButton = tutorialMenuDocument.rootVisualElement.Q<Button>("ReturnButton");
 
-        if (_chapterGroup == null || _sectionTitle == null || _sectionDescription == null || _startLessonButton == null)
+        if (_chapterGroup == null || _sectionTitle == null || _sectionDescription == null || _startLessonButton == null || _returnButton == null)
         {
             Debug.LogError("TutorialMenuDocument: One or more UI elements are not found.");
         }
         
         _startLessonButton.clicked += OnStartLessonButtonClicked;
+        _returnButton.clicked += () => OnReturnButtonClicked();
         
         _chapterGroup.Clear(); // Clear previous elements to avoid duplication
             
@@ -78,9 +81,15 @@ public class TutorialMenuDocument : MonoBehaviour
         }
     }
 
+    private void OnReturnButtonClicked()
+    {
+        MenuController.Instance.ChangeMenu(MenuName.Main);
+    }
+
     private void OnDisable()
     {
         _startLessonButton.clicked -= OnStartLessonButtonClicked;
+        _returnButton.clicked -= OnReturnButtonClicked;
     }
     
     private void OnStartLessonButtonClicked()
