@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a18e7e5f71c6b4d81b5b39b8a4775d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  host: 172.19.14.251
+  host: 172.19.14.129
   port: 3000
   scheme: http
 --- !u!4 &19092647
@@ -2836,7 +2836,12 @@ PrefabInstance:
     - target: {fileID: 6676696556529616263, guid: 7474d4560289953428d15488ca227e80,
         type: 3}
       propertyPath: m_InteractionLayers.m_Bits
-      value: 33
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8862361131812308440, guid: 7474d4560289953428d15488ca227e80,
+        type: 3}
+      propertyPath: m_InteractionLayers.m_Bits
+      value: 128
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
