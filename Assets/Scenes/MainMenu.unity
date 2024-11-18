@@ -2763,16 +2763,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 567075756}
     m_Modifications:
-    - target: {fileID: 950472669897737514, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      propertyPath: m_RaycastMask.m_Bits
-      value: 33
-      objectReference: {fileID: 0}
-    - target: {fileID: 2718339787331116690, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      propertyPath: m_UseGravity
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3480456648821273981, guid: 7474d4560289953428d15488ca227e80,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2828,24 +2818,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (XR Rig) XRZone Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 4447557096394103576, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      propertyPath: m_InteractionLayers.m_Bits
-      value: 33
-      objectReference: {fileID: 0}
-    - target: {fileID: 6676696556529616263, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      propertyPath: m_InteractionLayers.m_Bits
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8862361131812308440, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      propertyPath: m_InteractionLayers.m_Bits
-      value: 128
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 283278504718163773, guid: 7474d4560289953428d15488ca227e80, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7474d4560289953428d15488ca227e80, type: 3}

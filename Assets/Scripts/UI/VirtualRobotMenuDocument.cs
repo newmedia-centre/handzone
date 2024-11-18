@@ -28,6 +28,9 @@ public class VirtualRobotMenuDocument : MonoBehaviour
         _joinButton = virtualRobotDocument.rootVisualElement.Q<Button>("JoinButton");
         _createButton = virtualRobotDocument.rootVisualElement.Q<Button>("CreateButton");
         _backButton = virtualRobotDocument.rootVisualElement.Q<Button>("BackButton");
+        
+        _joinButton.SetEnabled(false);
+        _joinButton.focusable = false;
 
         _joinButton.clicked += OnJoinClicked;
         _createButton.clicked += OnCreateClicked;
@@ -53,6 +56,11 @@ public class VirtualRobotMenuDocument : MonoBehaviour
     private void OnCreateClicked()
     {
         GlobalClient.Instance.RequestVirtual();
+        
+        if (GlobalClient.Instance?.Sessions != null)
+        {
+            UpdateMenu(GlobalClient.Instance.Sessions);
+        }
     }
 
     private void UpdateMenu(SessionsOut receivedSessions)
@@ -92,7 +100,7 @@ public class VirtualRobotMenuDocument : MonoBehaviour
     {
         if (GlobalClient.Instance.Session == null)
         {
-            GlobalClient.Instance.RequestRealSession();
+            GlobalClient.Instance.JoinSession(_selectionSessionAddress);
             return;
         }
 

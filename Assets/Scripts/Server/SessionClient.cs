@@ -198,7 +198,6 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log("Hello from Web server! " +  response.GetValue<string>());
                 OnUnityMessage?.Invoke(response.GetValue<string>());
             });
         });
@@ -208,7 +207,6 @@ public class SessionClient : MonoBehaviour
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
                 UnityPlayersOut players = response.GetValue<UnityPlayersOut>();
-                Debug.Log("Received player data from server...");
                 if(players == null) return;
                 
                 OnUnityPlayerData?.Invoke(players);
@@ -219,7 +217,6 @@ public class SessionClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log("Received invitation from server...");
                 OnPlayerInvitation?.Invoke(response.GetValue<string>());
             });
         });
@@ -250,7 +247,6 @@ public class SessionClient : MonoBehaviour
             
             if (success)
             {
-                Debug.Log($"IK Request Stat: Success");
                 var inverseKin = response.GetValue<InternalsGetInverseKinCallback>(1);
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
@@ -260,7 +256,6 @@ public class SessionClient : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"IK Request Stat: Failed");
                 Debug.LogWarning($"Get Inverse Kinematic Failed: {response.GetValue<string>(1)}");
             }
         }, data);

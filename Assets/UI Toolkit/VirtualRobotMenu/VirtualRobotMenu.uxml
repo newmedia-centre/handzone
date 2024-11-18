@@ -11,8 +11,8 @@
                     <ui:ScrollView name="SessionsGroupScrollView" />
                 </ui:VisualElement>
                 <ui:VisualElement style="flex-grow: 0; flex-direction: row; align-items: auto; justify-content: space-between; align-self: auto;">
-                    <ui:Button text="Join" parse-escape-sequences="true" display-tooltip-when-elided="true" name="JoinButton" focusable="false" enable-rich-text="false" picking-mode="Ignore" class="button" style="min-width: auto; flex-grow: 1;" />
-                    <ui:Button text="Create" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateButton" focusable="false" enable-rich-text="false" picking-mode="Ignore" class="button" style="min-width: auto; flex-grow: 1;" />
+                    <ui:Button text="Join" parse-escape-sequences="true" display-tooltip-when-elided="true" name="JoinButton" focusable="false" enable-rich-text="false" class="button" style="min-width: auto; flex-grow: 1;" />
+                    <ui:Button text="Create" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateButton" focusable="false" enable-rich-text="false" class="button" style="min-width: auto; flex-grow: 1;" />
                 </ui:VisualElement>
                 <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackButton" class="button button-secondary" />
             </ui:VisualElement>
