@@ -865,6 +865,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: -8256134651489076907, guid: 892e7e40d05c3544590a5d4bc99fe71e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: -6155220900742550660, guid: 892e7e40d05c3544590a5d4bc99fe71e,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -899,6 +904,46 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609493762104327279, guid: 892e7e40d05c3544590a5d4bc99fe71e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.7116983e-10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609493762104327279, guid: 892e7e40d05c3544590a5d4bc99fe71e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00018300132
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609493762104327279, guid: 892e7e40d05c3544590a5d4bc99fe71e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.0025789428
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609493762104327279, guid: 892e7e40d05c3544590a5d4bc99fe71e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.00000013411044
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609493762104327279, guid: 892e7e40d05c3544590a5d4bc99fe71e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609493762104327279, guid: 892e7e40d05c3544590a5d4bc99fe71e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.00000008940696
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609493762104327279, guid: 892e7e40d05c3544590a5d4bc99fe71e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609493762104327279, guid: 892e7e40d05c3544590a5d4bc99fe71e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 180
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2818,6 +2863,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (XR Rig) XRZone Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 6142127997629792030, guid: 7474d4560289953428d15488ca227e80,
+        type: 3}
+      propertyPath: m_SelectInput.m_InputActionReferencePerformed
+      value: 
+      objectReference: {fileID: 3279264004350380116, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
+    - target: {fileID: 8862361131812308440, guid: 7474d4560289953428d15488ca227e80,
+        type: 3}
+      propertyPath: m_SelectInput.m_InputActionReferencePerformed
+      value: 
+      objectReference: {fileID: -6395602842196007441, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7301,15 +7358,55 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 634649192400198147, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1548291802688150497, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1613938009117333605, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 2607337207764032560, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2715267619782839167, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Name
       value: MenuController
+      objectReference: {fileID: 0}
+    - target: {fileID: 2715267619782839167, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5665675203555376961, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7241996401525888102, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8931473592956288410, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9016415338607906496, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
