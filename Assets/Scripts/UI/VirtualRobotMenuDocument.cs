@@ -56,11 +56,7 @@ public class VirtualRobotMenuDocument : MonoBehaviour
     private void OnCreateClicked()
     {
         GlobalClient.Instance.RequestVirtual();
-        
-        if (GlobalClient.Instance?.Sessions != null)
-        {
-            UpdateMenu(GlobalClient.Instance.Sessions);
-        }
+        MenuController.Instance.HideMenu();
     }
 
     private void UpdateMenu(SessionsOut receivedSessions)
@@ -98,13 +94,9 @@ public class VirtualRobotMenuDocument : MonoBehaviour
 
     private void OnJoinClicked()
     {
-        if (GlobalClient.Instance.Session == null)
-        {
-            GlobalClient.Instance.JoinSession(_selectionSessionAddress);
-            return;
-        }
-
-        StartCoroutine(Utility.LoadSceneCoroutine("Scenes/Session"));
+        if (GlobalClient.Instance.Session != null) return;
+        
+        GlobalClient.Instance.JoinSession(_selectionSessionAddress);
         MenuController.Instance.HideMenu();
     }
 

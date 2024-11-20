@@ -7356,55 +7356,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 634649192400198147, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1548291802688150497, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 1613938009117333605, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
-    - target: {fileID: 2607337207764032560, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 2715267619782839167, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Name
       value: MenuController
-      objectReference: {fileID: 0}
-    - target: {fileID: 2715267619782839167, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5665675203555376961, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7241996401525888102, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8931473592956288410, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Layer
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 9016415338607906496, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Layer
-      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

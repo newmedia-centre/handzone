@@ -245,11 +245,12 @@ public class GlobalClient : MonoBehaviour
     /// <summary>
     /// Requests a physical robot session from the server and join it.
     /// </summary>
-    public void RequestRealSession()
+    public bool RequestRealSession()
     {
+        var success = false;
         _client.EmitAsync("real", response =>
         {
-            var success = response.GetValue<bool>();
+            success = response.GetValue<bool>();
             if (success)
             {
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -257,7 +258,7 @@ public class GlobalClient : MonoBehaviour
                     Session = response.GetValue<JoinSessionOut>(1);
                     OnSessionJoin?.Invoke(Session.Robot.Name);
                     Debug.Log("Real session available: " + Session.Robot.Name);
-                });           
+                });
             }
             else
             {
@@ -269,6 +270,8 @@ public class GlobalClient : MonoBehaviour
                 });
             }
         });
+
+        return success;
     }
     
     public void SetSessionType(SessionTypeOption sessionType)
