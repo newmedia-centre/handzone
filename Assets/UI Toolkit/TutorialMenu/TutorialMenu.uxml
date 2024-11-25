@@ -4,7 +4,7 @@
     <ui:VisualElement name="Background" class="background" style="flex-grow: 1; flex-direction: row;">
         <ui:VisualElement name="Navigation" class="navigation">
             <ui:VisualElement name="Header" class="container text header" style="flex-grow: 0; flex-shrink: 0; flex-direction: column; flex-basis: auto;">
-                <ui:Label tabindex="-1" text="Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tutorial" class="text-color" />
+                <ui:Label tabindex="-1" text="Content" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tutorial" class="text-color" />
                 <ui:ProgressBar value="0" name="ChapterProgress" class="chapter-progress text" />
             </ui:VisualElement>
             <ui:ScrollView name="ScrollView" style="flex-grow: 1;">
