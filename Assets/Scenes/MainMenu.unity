@@ -1517,36 +1517,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 361889124}
   m_Mesh: {fileID: -5969325811282167558, guid: 5f1110bc5b9a13145beb90a1636a6b53, type: 3}
---- !u!1 &376397590 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3053914625394521664, guid: 7474d4560289953428d15488ca227e80,
-    type: 3}
-  m_PrefabInstance: {fileID: 836359351}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &376397598
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 376397590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6df71824f341bc4897680bb8beb4090, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MaxRaycastDistance: 10
-  m_ReticlePrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
-    type: 3}
-  m_PrefabScalingFactor: 1
-  m_UndoDistanceScaling: 1
-  m_AlignPrefabWithSurfaceNormal: 1
-  m_EndpointSmoothingTime: 0.02
-  m_DrawWhileSelecting: 0
-  m_DrawOnNoHit: 0
-  m_RaycastMask:
-    serializedVersion: 2
-    m_Bits: 1056
 --- !u!1 &424042520
 GameObject:
   m_ObjectHideFlags: 0
@@ -2838,11 +2808,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 567075756}
     m_Modifications:
-    - target: {fileID: 3066950417372815342, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3480456648821273981, guid: 7474d4560289953428d15488ca227e80,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2898,25 +2863,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (XR Rig) XRZone Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 8877899777551186668, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 3066950417372815342, guid: 7474d4560289953428d15488ca227e80, type: 3}
-    - {fileID: 8877899777551186668, guid: 7474d4560289953428d15488ca227e80, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 405879814391598214, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 991691586}
-    - targetCorrespondingSourceObject: {fileID: 3053914625394521664, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 376397598}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7474d4560289953428d15488ca227e80, type: 3}
 --- !u!4 &836359352 stripped
 Transform:
@@ -3281,36 +3231,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 961753039}
   m_Mesh: {fileID: 7846413997284221994, guid: 5f1110bc5b9a13145beb90a1636a6b53, type: 3}
---- !u!1 &991691578 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 405879814391598214, guid: 7474d4560289953428d15488ca227e80,
-    type: 3}
-  m_PrefabInstance: {fileID: 836359351}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &991691586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 991691578}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6df71824f341bc4897680bb8beb4090, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MaxRaycastDistance: 10
-  m_ReticlePrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
-    type: 3}
-  m_PrefabScalingFactor: 1
-  m_UndoDistanceScaling: 1
-  m_AlignPrefabWithSurfaceNormal: 1
-  m_EndpointSmoothingTime: 0.02
-  m_DrawWhileSelecting: 0
-  m_DrawOnNoHit: 0
-  m_RaycastMask:
-    serializedVersion: 2
-    m_Bits: 1056
 --- !u!1 &1027891966
 GameObject:
   m_ObjectHideFlags: 0
