@@ -68,6 +68,7 @@ namespace VNCScreen
         private Material _m;
         private Thread _mainThread;
         private bool _secure = false;
+        private Shader rotateAndFlipShader;
         
         public bool Secure => _secure;
         public Size ScreenSize => _screenSize;
@@ -87,6 +88,9 @@ namespace VNCScreen
             
             SessionClient.Instance.OnConnected += Connect;
             Connect();
+            
+            // Initialize the rotate and flip material
+            rotateAndFlipShader = Shader.Find("Custom/RotateAndFlipShader");
         }
 
         void SetDisconnectedMaterial()
@@ -363,7 +367,7 @@ namespace VNCScreen
             // Tell the user of this control the necessary info about the desktop in order to setup the display
             // Create a texture
             Texture2D tex = _vnc.getTexture();
-
+            
             if (connectedMaterial == null)
                 connectedMaterial = GetComponent<Renderer>().sharedMaterial;
 
@@ -372,6 +376,13 @@ namespace VNCScreen
             _m.mainTexture = tex;
             GetComponent<Renderer>().sharedMaterial = _m;
 
+            // Apply the shader to the material
+            if (rotateAndFlipShader!= null)
+            {
+                _m.shader = rotateAndFlipShader;
+            }
+            
+            
             // Refresh scroll properties
             //AutoScrollMinSize = desktopPolicy.AutoScrollMinSize;
 
@@ -396,7 +407,8 @@ namespace VNCScreen
         {
             if (IsConnected)
             {
-                GetComponent<Renderer>().sharedMaterial.mainTexture = _vnc.getTexture();
+                Texture2D tex = _vnc.getTexture();
+                GetComponent<Renderer>().sharedMaterial.mainTexture = tex;
 
                 if (_vnc.updateDesktopImage())
                 {

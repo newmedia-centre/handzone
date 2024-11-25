@@ -1540,8 +1540,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_StartingHoverFilters: []
-  m_StartingSelectFilters:
-  - {fileID: 0}
+  m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
 --- !u!64 &8196152971481191788
 MeshCollider:
