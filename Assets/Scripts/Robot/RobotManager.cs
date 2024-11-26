@@ -29,6 +29,7 @@ public class RobotManager : MonoBehaviour
             
             _colliders.Add(robotJoint.AddComponent<BoxCollider>());
             _transformGizmos.Add(Instantiate(transformGizmoPrefab, robotJoint));
+            _transformGizmos[^1].SetActive(false);
         }
         
         if(SessionClient.Instance == null)
