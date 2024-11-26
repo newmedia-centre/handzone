@@ -1,12 +1,15 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
 public class VisibilityBehaviour : PlayableBehaviour
 {
     public GameObject targetObject;
+    public GameObject transformGizmoPrefab;
 
-    private bool previousVisibilityState = false;
     private GameObject transformGizmo;
+    private bool isVisible = false;
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
@@ -22,17 +25,10 @@ public class VisibilityBehaviour : PlayableBehaviour
     {
         if (targetObject != null)
         {
-            if (transformGizmo == null)
+            if (transformGizmo == null && transformGizmoPrefab != null)
             {
-                // Find the direct child named "TransformGizmo" and store it
-                foreach (Transform child in targetObject.transform)
-                {
-                    if (child.name == "TransformGizmo(Clone)")
-                    {
-                        transformGizmo = child.gameObject;
-                        break;
-                    }
-                }
+                // Instantiate the transform gizmo prefab and parent it to the target object
+                transformGizmo = Object.Instantiate(transformGizmoPrefab, targetObject.transform);
             }
 
             if (transformGizmo)
@@ -40,11 +36,7 @@ public class VisibilityBehaviour : PlayableBehaviour
                 double currentTime = playable.GetTime();
                 double duration = playable.GetDuration();
                 bool shouldBeVisible = currentTime >= 0 && currentTime <= duration;
-                if (shouldBeVisible != previousVisibilityState)
-                {
-                    SetVisibility(shouldBeVisible);
-                    previousVisibilityState = shouldBeVisible;
-                }
+                SetVisibility(shouldBeVisible);
             }
         }
         else
@@ -53,26 +45,41 @@ public class VisibilityBehaviour : PlayableBehaviour
         }
     }
 
-    private void SetVisibility(bool visible)
+    private void SetVisibility(bool value)
     {
         if (transformGizmo != null)
         {
             var fader = transformGizmo.GetComponent<VisibilityMaterialFader>();
             if (fader != null)
             {
-                if (visible)
+                if (value && !isVisible)
                 {
                     CoroutineHelper.Instance?.StartCoroutine(fader.FadeIn());
+                    isVisible = true;
                 }
-                else
+                else if (!value && isVisible)
                 {
                     CoroutineHelper.Instance?.StartCoroutine(fader.FadeOut());
+                    CoroutineHelper.Instance?.StartCoroutine(DestroyAfterFadeOut(fader));
+                    isVisible = false;
                 }
             }
             else
             {
-                transformGizmo.SetActive(visible);
+                transformGizmo.SetActive(value);
+                if (!value)
+                {
+                    Object.Destroy(transformGizmo);
+                    transformGizmo = null;
+                }
             }
         }
+    }
+
+    private IEnumerator DestroyAfterFadeOut(VisibilityMaterialFader fader)
+    {
+        yield return new WaitForSeconds(fader.fadeDuration);
+        Object.Destroy(transformGizmo);
+        transformGizmo = null;
     }
 }
