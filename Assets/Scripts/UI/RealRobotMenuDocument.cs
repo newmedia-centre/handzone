@@ -77,6 +77,7 @@ public class RealRobotMenuDocument : MonoBehaviour
         {
             _statusLabel.text = "Joining...";
             StartCoroutine(Utility.LoadSceneCoroutine("Scenes/Session"));
+            MenuController.Instance.HideMenu();
         }
     }
 }
