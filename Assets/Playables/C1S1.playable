@@ -80,6 +80,8 @@ MonoBehaviour:
   targetObject:
     exposedName: 989ff842252a6e040a920f256e9321cc
     defaultValue: {fileID: 0}
+  transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
+    type: 3}
 --- !u!114 &-6778492971758930911
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -654,6 +656,8 @@ MonoBehaviour:
   targetObject:
     exposedName: c2403c5b2a89ac44db736b1d45ba886c
     defaultValue: {fileID: 0}
+  transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
+    type: 3}
 --- !u!114 &-1906503716674863246
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -742,6 +746,8 @@ MonoBehaviour:
   targetObject:
     exposedName: 61ba2f99d22ec394ab712e64f940b23f
     defaultValue: {fileID: 0}
+  transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
+    type: 3}
 --- !u!114 &2194225432227783216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1613,6 +1619,8 @@ MonoBehaviour:
   targetObject:
     exposedName: 73ffbe2d7902a23449b09033c66b4f9d
     defaultValue: {fileID: 0}
+  transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
+    type: 3}
 --- !u!114 &7966315726085331591
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1628,6 +1636,8 @@ MonoBehaviour:
   targetObject:
     exposedName: 15a72b35992da5d44a65251dcefa24f2
     defaultValue: {fileID: 0}
+  transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
+    type: 3}
 --- !u!114 &8136137746048190372
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1643,6 +1653,8 @@ MonoBehaviour:
   targetObject:
     exposedName: 357e7bd5dd9becc41830ce518d0f9192
     defaultValue: {fileID: 0}
+  transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
+    type: 3}
 --- !u!114 &8749073452576088588
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -13,7 +13,11 @@ public class NameplateVisibilityBehaviour : PlayableBehaviour
             var nameplateUIManager = GameObject.FindObjectOfType<NameplateUIManager>();
             if (nameplateUIManager != null)
             {
-                if (isVisible)
+                double currentTime = playable.GetTime();
+                double duration = playable.GetDuration();
+                bool shouldBeVisible = currentTime >= 0 && currentTime <= duration;
+
+                if (shouldBeVisible && isVisible)
                 {
                     nameplateUIManager.ShowNameplate(nameplateObject);
                 }
@@ -25,15 +29,15 @@ public class NameplateVisibilityBehaviour : PlayableBehaviour
         }
     }
 
-    // public override void OnBehaviourPause(Playable playable, FrameData info)
-    // {
-    //     if (nameplateObject != null)
-    //     {
-    //         var nameplateUIManager = GameObject.FindObjectOfType<NameplateUIManager>();
-    //         if (nameplateUIManager != null)
-    //         {
-    //             nameplateUIManager.HideNameplate(nameplateObject);
-    //         }
-    //     }
-    // }
+    public override void OnBehaviourPause(Playable playable, FrameData info)
+    {
+        if (nameplateObject != null)
+        {
+            var nameplateUIManager = GameObject.FindObjectOfType<NameplateUIManager>();
+            if (nameplateUIManager != null)
+            {
+                nameplateUIManager.HideNameplate(nameplateObject);
+            }
+        }
+    }
 }
