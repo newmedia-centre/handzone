@@ -8,8 +8,8 @@ public class VisibilityBehaviour : PlayableBehaviour
     public GameObject targetObject;
     public GameObject transformGizmoPrefab;
 
-    private GameObject transformGizmo;
-    private bool isVisible = false;
+    private GameObject _transformGizmo;
+    private bool _isVisible = false;
 
     public override void OnBehaviourPlay(Playable playable, FrameData info)
     {
@@ -25,13 +25,13 @@ public class VisibilityBehaviour : PlayableBehaviour
     {
         if (targetObject != null)
         {
-            if (transformGizmo == null && transformGizmoPrefab != null)
+            if (_transformGizmo == null && transformGizmoPrefab != null)
             {
                 // Instantiate the transform gizmo prefab and parent it to the target object
-                transformGizmo = Object.Instantiate(transformGizmoPrefab, targetObject.transform);
+                _transformGizmo = Object.Instantiate(transformGizmoPrefab, targetObject.transform);
             }
 
-            if (transformGizmo)
+            if (_transformGizmo)
             {
                 double currentTime = playable.GetTime();
                 double duration = playable.GetDuration();
@@ -47,39 +47,27 @@ public class VisibilityBehaviour : PlayableBehaviour
 
     private void SetVisibility(bool value)
     {
-        if (transformGizmo != null)
+        if (_transformGizmo != null)
         {
-            var fader = transformGizmo.GetComponent<VisibilityMaterialFader>();
+            var fader = _transformGizmo.GetComponent<VisibilityMaterialFader>();
             if (fader != null)
             {
-                if (value && !isVisible)
+                if (value && !_isVisible)
                 {
                     CoroutineHelper.Instance?.StartCoroutine(fader.FadeIn());
-                    isVisible = true;
+                    _isVisible = true;
                 }
-                else if (!value && isVisible)
+                else if (!value && _isVisible)
                 {
                     CoroutineHelper.Instance?.StartCoroutine(fader.FadeOut());
-                    CoroutineHelper.Instance?.StartCoroutine(DestroyAfterFadeOut(fader));
-                    isVisible = false;
+                    _isVisible = false;
                 }
             }
             else
             {
-                transformGizmo.SetActive(value);
-                if (!value)
-                {
-                    Object.Destroy(transformGizmo);
-                    transformGizmo = null;
-                }
+                _transformGizmo.SetActive(value);
+                _isVisible = value;
             }
         }
-    }
-
-    private IEnumerator DestroyAfterFadeOut(VisibilityMaterialFader fader)
-    {
-        yield return new WaitForSeconds(fader.fadeDuration);
-        Object.Destroy(transformGizmo);
-        transformGizmo = null;
     }
 }
