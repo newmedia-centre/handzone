@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3133947393730383421}
   - component: {fileID: 1726496931791895912}
   - component: {fileID: 4521859391424479403}
+  - component: {fileID: 284960240034507796}
   m_Layer: 5
   m_Name: RealRobotMenu
   m_TagString: Untagged
@@ -122,8 +123,8 @@ MonoBehaviour:
   m_InteractionLayers:
     m_Bits: 32
   m_DistanceCalculationMode: 1
-  m_SelectMode: 1
-  m_FocusMode: 2
+  m_SelectMode: 0
+  m_FocusMode: 1
   m_CustomReticle: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
     type: 3}
   m_AllowGazeInteraction: 0
@@ -226,6 +227,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   realRobotDocument: {fileID: 6733000266176049623}
+--- !u!114 &284960240034507796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634649192400198147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2d7d89889b4d94fa1f8d6fe49788e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 0}
+  m_TargetOffset: {x: 0, y: 0, z: 0.5}
+  m_FollowInLocalSpace: 0
+  m_ApplyTargetInLocalSpace: 0
+  m_MovementSpeed: 6
+  m_MovementSpeedVariancePercentage: 0.25
+  m_SnapOnEnable: 1
+  m_PositionFollowMode: 0
+  m_MinDistanceAllowed: 0.01
+  m_MaxDistanceAllowed: 0.3
+  m_TimeUntilThresholdReachesMaxDistance: 3
+  m_RotationFollowMode: 1
+  m_MinAngleAllowed: 1
+  m_MaxAngleAllowed: 20
+  m_TimeUntilThresholdReachesMaxAngle: 1
 --- !u!1 &1548291802688150497
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,6 +270,7 @@ GameObject:
   - component: {fileID: 76813048418579634}
   - component: {fileID: 6694582701989180820}
   - component: {fileID: 8769810258364140375}
+  - component: {fileID: 5684084317520233494}
   m_Layer: 5
   m_Name: TutorialMenu
   m_TagString: Untagged
@@ -348,8 +377,8 @@ MonoBehaviour:
   m_InteractionLayers:
     m_Bits: 32
   m_DistanceCalculationMode: 1
-  m_SelectMode: 1
-  m_FocusMode: 2
+  m_SelectMode: 0
+  m_FocusMode: 1
   m_CustomReticle: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
     type: 3}
   m_AllowGazeInteraction: 0
@@ -454,6 +483,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuName: 5
+--- !u!114 &5684084317520233494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548291802688150497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2d7d89889b4d94fa1f8d6fe49788e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 0}
+  m_TargetOffset: {x: 0, y: 0, z: 0.5}
+  m_FollowInLocalSpace: 0
+  m_ApplyTargetInLocalSpace: 0
+  m_MovementSpeed: 6
+  m_MovementSpeedVariancePercentage: 0.25
+  m_SnapOnEnable: 1
+  m_PositionFollowMode: 0
+  m_MinDistanceAllowed: 0.01
+  m_MaxDistanceAllowed: 0.3
+  m_TimeUntilThresholdReachesMaxDistance: 3
+  m_RotationFollowMode: 1
+  m_MinAngleAllowed: 1
+  m_MaxAngleAllowed: 20
+  m_TimeUntilThresholdReachesMaxAngle: 1
 --- !u!1 &2607337207764032560
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,6 +526,7 @@ GameObject:
   - component: {fileID: 8930701317044954746}
   - component: {fileID: 9069116125222366070}
   - component: {fileID: 3810976729048141812}
+  - component: {fileID: 1475980274930801232}
   m_Layer: 5
   m_Name: VirtualRobotMenu
   m_TagString: Untagged
@@ -576,8 +633,8 @@ MonoBehaviour:
   m_InteractionLayers:
     m_Bits: 32
   m_DistanceCalculationMode: 1
-  m_SelectMode: 1
-  m_FocusMode: 2
+  m_SelectMode: 0
+  m_FocusMode: 1
   m_CustomReticle: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
     type: 3}
   m_AllowGazeInteraction: 0
@@ -680,6 +737,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   virtualRobotDocument: {fileID: 7894122599664059702}
+--- !u!114 &1475980274930801232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2607337207764032560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2d7d89889b4d94fa1f8d6fe49788e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 0}
+  m_TargetOffset: {x: 0, y: 0, z: 0.5}
+  m_FollowInLocalSpace: 0
+  m_ApplyTargetInLocalSpace: 0
+  m_MovementSpeed: 6
+  m_MovementSpeedVariancePercentage: 0.25
+  m_SnapOnEnable: 1
+  m_PositionFollowMode: 0
+  m_MinDistanceAllowed: 0.01
+  m_MaxDistanceAllowed: 0.3
+  m_TimeUntilThresholdReachesMaxDistance: 3
+  m_RotationFollowMode: 1
+  m_MinAngleAllowed: 1
+  m_MaxAngleAllowed: 20
+  m_TimeUntilThresholdReachesMaxAngle: 1
 --- !u!1 &2715267619782839167
 GameObject:
   m_ObjectHideFlags: 0
@@ -867,7 +951,8 @@ MonoBehaviour:
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
-  m_CustomReticle: {fileID: 0}
+  m_CustomReticle: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
   m_AllowGazeInteraction: 0
   m_AllowGazeSelect: 0
   m_OverrideGazeTimeToSelect: 0
@@ -1012,6 +1097,7 @@ GameObject:
   - component: {fileID: 8623816617735509457}
   - component: {fileID: 5669609530504264247}
   - component: {fileID: 6361853949534112880}
+  - component: {fileID: 8285019241823039567}
   m_Layer: 5
   m_Name: ExercisesMenu
   m_TagString: Untagged
@@ -1118,8 +1204,8 @@ MonoBehaviour:
   m_InteractionLayers:
     m_Bits: 32
   m_DistanceCalculationMode: 1
-  m_SelectMode: 1
-  m_FocusMode: 2
+  m_SelectMode: 0
+  m_FocusMode: 1
   m_CustomReticle: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
     type: 3}
   m_AllowGazeInteraction: 0
@@ -1224,6 +1310,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuName: 6
+--- !u!114 &8285019241823039567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7241996401525888102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2d7d89889b4d94fa1f8d6fe49788e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 0}
+  m_TargetOffset: {x: 0, y: 0, z: 0.5}
+  m_FollowInLocalSpace: 0
+  m_ApplyTargetInLocalSpace: 0
+  m_MovementSpeed: 6
+  m_MovementSpeedVariancePercentage: 0.25
+  m_SnapOnEnable: 1
+  m_PositionFollowMode: 0
+  m_MinDistanceAllowed: 0.01
+  m_MaxDistanceAllowed: 0.3
+  m_TimeUntilThresholdReachesMaxDistance: 3
+  m_RotationFollowMode: 1
+  m_MinAngleAllowed: 1
+  m_MaxAngleAllowed: 20
+  m_TimeUntilThresholdReachesMaxAngle: 1
 --- !u!1 &8931473592956288410
 GameObject:
   m_ObjectHideFlags: 0
@@ -1240,6 +1353,7 @@ GameObject:
   - component: {fileID: 5455606201207425383}
   - component: {fileID: 2151147443489825758}
   - component: {fileID: 7194456942108839029}
+  - component: {fileID: 3401400352997584556}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -1346,8 +1460,8 @@ MonoBehaviour:
   m_InteractionLayers:
     m_Bits: 32
   m_DistanceCalculationMode: 1
-  m_SelectMode: 1
-  m_FocusMode: 2
+  m_SelectMode: 0
+  m_FocusMode: 1
   m_CustomReticle: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
     type: 3}
   m_AllowGazeInteraction: 0
@@ -1450,6 +1564,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainmenuDocument: {fileID: 0}
+--- !u!114 &3401400352997584556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8931473592956288410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2d7d89889b4d94fa1f8d6fe49788e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 0}
+  m_TargetOffset: {x: 0, y: 0, z: 0.5}
+  m_FollowInLocalSpace: 0
+  m_ApplyTargetInLocalSpace: 0
+  m_MovementSpeed: 6
+  m_MovementSpeedVariancePercentage: 0.25
+  m_SnapOnEnable: 1
+  m_PositionFollowMode: 0
+  m_MinDistanceAllowed: 0.01
+  m_MaxDistanceAllowed: 0.3
+  m_TimeUntilThresholdReachesMaxDistance: 3
+  m_RotationFollowMode: 1
+  m_MinAngleAllowed: 1
+  m_MaxAngleAllowed: 20
+  m_TimeUntilThresholdReachesMaxAngle: 1
 --- !u!1 &9016415338607906496
 GameObject:
   m_ObjectHideFlags: 0
@@ -1466,6 +1607,7 @@ GameObject:
   - component: {fileID: 5509215214924448621}
   - component: {fileID: 5843422445687931940}
   - component: {fileID: 4017561746978524080}
+  - component: {fileID: 5069026187659715971}
   m_Layer: 5
   m_Name: LoginMenu
   m_TagString: Untagged
@@ -1572,8 +1714,8 @@ MonoBehaviour:
   m_InteractionLayers:
     m_Bits: 32
   m_DistanceCalculationMode: 1
-  m_SelectMode: 1
-  m_FocusMode: 2
+  m_SelectMode: 0
+  m_FocusMode: 1
   m_CustomReticle: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
     type: 3}
   m_AllowGazeInteraction: 0
@@ -1676,3 +1818,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loginMenuDocument: {fileID: 128156606534714252}
+--- !u!114 &5069026187659715971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9016415338607906496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2d7d89889b4d94fa1f8d6fe49788e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 0}
+  m_TargetOffset: {x: 0, y: 0, z: 0.5}
+  m_FollowInLocalSpace: 0
+  m_ApplyTargetInLocalSpace: 0
+  m_MovementSpeed: 6
+  m_MovementSpeedVariancePercentage: 0.25
+  m_SnapOnEnable: 1
+  m_PositionFollowMode: 0
+  m_MinDistanceAllowed: 0.01
+  m_MaxDistanceAllowed: 0.3
+  m_TimeUntilThresholdReachesMaxDistance: 3
+  m_RotationFollowMode: 1
+  m_MinAngleAllowed: 1
+  m_MaxAngleAllowed: 20
+  m_TimeUntilThresholdReachesMaxAngle: 1

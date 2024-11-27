@@ -20,6 +20,12 @@ public class SessionMeshes : MonoBehaviour
         foreach (var meshFilter in meshFilters)
         {
             meshFilter.mesh.Clear();
+            
+            var _collider = meshFilter.GetComponent<Collider>();
+            if (_collider)
+            {
+                Destroy(_collider);
+            }
         }
     }
 

@@ -7296,6 +7296,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 284960240034507796, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Target
+      value: 
+      objectReference: {fileID: 836359353}
     - target: {fileID: 389992736171822937, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7346,12 +7351,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1227764877927085341, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+    - target: {fileID: 1475980274930801232, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
-      propertyPath: m_CustomReticle
+      propertyPath: m_Target
       value: 
-      objectReference: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
-        type: 3}
+      objectReference: {fileID: 836359353}
     - target: {fileID: 1613938009117333605, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
@@ -7362,66 +7366,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuController
       objectReference: {fileID: 0}
-    - target: {fileID: 4426717277352685263, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+    - target: {fileID: 3401400352997584556, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
-      propertyPath: m_FocusMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4426717277352685263, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+      propertyPath: m_Target
+      value: 
+      objectReference: {fileID: 836359353}
+    - target: {fileID: 5069026187659715971, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
-      propertyPath: m_SelectMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4556591164415926248, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+      propertyPath: m_Target
+      value: 
+      objectReference: {fileID: 836359353}
+    - target: {fileID: 5684084317520233494, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
-      propertyPath: m_FocusMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4556591164415926248, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+      propertyPath: m_Target
+      value: 
+      objectReference: {fileID: 836359353}
+    - target: {fileID: 8285019241823039567, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
-      propertyPath: m_SelectMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6235455798228105357, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_FocusMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6235455798228105357, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_SelectMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6784286079115304982, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_FocusMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6784286079115304982, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_SelectMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_FocusMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_SelectMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9173174602298416186, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_FocusMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9173174602298416186, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_SelectMode
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: m_Target
+      value: 
+      objectReference: {fileID: 836359353}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
