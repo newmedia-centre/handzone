@@ -463,6 +463,8 @@ namespace VNCScreen
             if (!IsConnected) return;
 
             Size s = _vnc.BufferSize;
+            // Flip the Y axis
+            pos.y = 1 - pos.y;
             Point point = new Point((int)(pos.x * s.Width), (int)(pos.y * s.Height));
 
             UpdateMouse(point, button0, false, false);

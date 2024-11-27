@@ -1533,7 +1533,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4641137980574825526}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2867c250506c25c4cada3b457265e05c, type: 3}
   m_Name: 
@@ -1675,7 +1675,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4641137980574825526}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 6049e526488170d468bb082ff4577922, type: 3}
+  m_VideoClip: {fileID: 0}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -1783,12 +1783,12 @@ PrefabInstance:
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00000047683716
+      value: -0.00000011920929
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.06000001
+      value: 0.06000004
       objectReference: {fileID: 0}
     - target: {fileID: 2043066480405472099, guid: 76f3439a0ae796e4b81bee3f91f888ee,
         type: 3}

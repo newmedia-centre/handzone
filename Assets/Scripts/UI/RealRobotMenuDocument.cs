@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -62,10 +63,10 @@ public class RealRobotMenuDocument : MonoBehaviour
         MenuController.Instance.GoBack();
     }
 
-    private void OnJoinClicked()
+    private async void OnJoinClicked()
     {
         _statusLabel.text = "No real robot available. Requesting permission...";
-        var success = GlobalClient.Instance.RequestRealSession();
+        var success = await GlobalClient.Instance.RequestRealSession();
         
         if (!success) 
         {

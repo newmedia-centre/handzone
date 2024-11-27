@@ -250,7 +250,7 @@ MonoBehaviour:
   m_MinDistanceAllowed: 0.01
   m_MaxDistanceAllowed: 0.3
   m_TimeUntilThresholdReachesMaxDistance: 3
-  m_RotationFollowMode: 1
+  m_RotationFollowMode: 2
   m_MinAngleAllowed: 1
   m_MaxAngleAllowed: 20
   m_TimeUntilThresholdReachesMaxAngle: 1
@@ -506,7 +506,7 @@ MonoBehaviour:
   m_MinDistanceAllowed: 0.01
   m_MaxDistanceAllowed: 0.3
   m_TimeUntilThresholdReachesMaxDistance: 3
-  m_RotationFollowMode: 1
+  m_RotationFollowMode: 2
   m_MinAngleAllowed: 1
   m_MaxAngleAllowed: 20
   m_TimeUntilThresholdReachesMaxAngle: 1
@@ -760,7 +760,7 @@ MonoBehaviour:
   m_MinDistanceAllowed: 0.01
   m_MaxDistanceAllowed: 0.3
   m_TimeUntilThresholdReachesMaxDistance: 3
-  m_RotationFollowMode: 1
+  m_RotationFollowMode: 2
   m_MinAngleAllowed: 1
   m_MaxAngleAllowed: 20
   m_TimeUntilThresholdReachesMaxAngle: 1
@@ -1055,7 +1055,7 @@ MonoBehaviour:
   m_MinDistanceAllowed: 0.01
   m_MaxDistanceAllowed: 0.3
   m_TimeUntilThresholdReachesMaxDistance: 3
-  m_RotationFollowMode: 1
+  m_RotationFollowMode: 2
   m_MinAngleAllowed: 0.1
   m_MaxAngleAllowed: 5
   m_TimeUntilThresholdReachesMaxAngle: 3
@@ -1333,7 +1333,7 @@ MonoBehaviour:
   m_MinDistanceAllowed: 0.01
   m_MaxDistanceAllowed: 0.3
   m_TimeUntilThresholdReachesMaxDistance: 3
-  m_RotationFollowMode: 1
+  m_RotationFollowMode: 2
   m_MinAngleAllowed: 1
   m_MaxAngleAllowed: 20
   m_TimeUntilThresholdReachesMaxAngle: 1
@@ -1587,7 +1587,7 @@ MonoBehaviour:
   m_MinDistanceAllowed: 0.01
   m_MaxDistanceAllowed: 0.3
   m_TimeUntilThresholdReachesMaxDistance: 3
-  m_RotationFollowMode: 1
+  m_RotationFollowMode: 2
   m_MinAngleAllowed: 1
   m_MaxAngleAllowed: 20
   m_TimeUntilThresholdReachesMaxAngle: 1
@@ -1841,7 +1841,7 @@ MonoBehaviour:
   m_MinDistanceAllowed: 0.01
   m_MaxDistanceAllowed: 0.3
   m_TimeUntilThresholdReachesMaxDistance: 3
-  m_RotationFollowMode: 1
+  m_RotationFollowMode: 2
   m_MinAngleAllowed: 1
   m_MaxAngleAllowed: 20
   m_TimeUntilThresholdReachesMaxAngle: 1

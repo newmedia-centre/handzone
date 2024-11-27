@@ -43,7 +43,7 @@ Shader "Custom/RotateAndFlipShader"
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 uv = i.uv;
-                uv.x = 1.0 - uv.x; // Flip horizontally
+                // uv.x = 1.0 - uv.x; // Flip horizontally
                 uv.y = 1.0 - uv.y; // Flip vertically (rotate 180 degrees)
                 return tex2D(_MainTex, uv);
             }
