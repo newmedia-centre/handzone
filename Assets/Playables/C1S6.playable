@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: VideoControlClip
   m_EditorClassIdentifier: 
   clip: {fileID: 32900000, guid: 6049e526488170d468bb082ff4577922, type: 3}
-  type: 0
+  type: 4
 --- !u!114 &-5470613729454115446
 MonoBehaviour:
   m_ObjectHideFlags: 1

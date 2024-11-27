@@ -37,7 +37,6 @@ public class VisibilityBehaviour : PlayableBehaviour
                 double duration = playable.GetDuration();
                 bool shouldBeVisible = currentTime >= 0 && currentTime <= duration;
                 SetVisibility(shouldBeVisible);
-                Debug.Log(shouldBeVisible);
             }
         }
         else
