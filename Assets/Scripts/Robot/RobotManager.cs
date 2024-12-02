@@ -90,25 +90,6 @@ public class RobotManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Updates the robot's joints based on the provided inverse kinematics data.
-    /// </summary>
-    /// <param name="data">A list of joint angles to update, represented as doubles.</param>
-    public void UpdateJoints(List<double> data)
-    {
-        if (data == null) return;
-
-        for (var i = 0; i < data.Count; i++)
-        {
-            qActualJoints[i] = data[i];
-            var angle = (float)(qActualJoints[i] * Mathf.Rad2Deg);
-            // if (i == 0 || i == 4) angle = -angle;
-            if (i == 1 || i == 3) angle += 90;
-
-            robotJoints[i].localRotation = Quaternion.Euler(_initialRotations[i] + rotationDirection[i] * angle);
-        }
-    }
-
     public void UpdateFromInverseKinematics(List<double> target, Action function)
     {
         var data = new InternalsGetInverseKinIn();
