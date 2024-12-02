@@ -38,7 +38,6 @@ public class NameplateUI : MonoBehaviour
         set => tmp.text = value;
     }
 
-    [SerializeField] private string displayLabel = "Joint";
     [SerializeField] private TextMeshPro tmp;
     [SerializeField] private LineRenderer lineRenderer;
 

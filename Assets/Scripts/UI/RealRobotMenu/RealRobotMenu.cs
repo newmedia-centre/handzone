@@ -47,7 +47,6 @@ public class RealRobotMenu : MonoBehaviour
     private void OnEnable()
     {
         _statusText.text = "";
-        GlobalClient.Instance.RequestRealSession();
     }
 
     /// <summary>
@@ -56,12 +55,12 @@ public class RealRobotMenu : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        _joinButton.onClick.AddListener(() =>
+        _joinButton.onClick.AddListener(async () =>
         {
             if (GlobalClient.Instance.Session == null)
             {
                 _statusText.text = "No real robot available. Requesting permission...";
-                GlobalClient.Instance.RequestRealSession();
+                await GlobalClient.Instance.RequestRealSession();
                 return;
             }
 
