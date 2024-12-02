@@ -1,35 +1,56 @@
-using System;
+// Copyright 2024 NewMedia Centre - Delft University of Technology
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region
+
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+#endregion
+
+/// <summary>
+/// Manages the chapter menu, including displaying chapter titles and descriptions,
+/// and generating the chapter graph.
+/// </summary>
 public class ChapterMenuController : MonoBehaviour
 {
-    [Header("Assets")]
-    public GameObject nodePrefab;
+    [Header("Assets")] public GameObject nodePrefab;
+
     // public ChapterMenuData data;
     public Sprite boxSprite;
-    
-    [Header("GraphReference")]
-    public GameObject graphContainer;
+
+    [Header("GraphReference")] public GameObject graphContainer;
     private float _graphContainerWidth;
     private float _graphContainerHeight;
 
-    [Header("OtherScreenControllers")]
-    public TutorialMenuController tutorialController;
+    [Header("OtherScreenControllers")] public TutorialMenuController tutorialController;
     public TaskMenuController taskController;
-    
-    [Header("ChapterDisplayReferences")]
-    public TMP_Text chapterTitle;
+
+    [Header("ChapterDisplayReferences")] public TMP_Text chapterTitle;
     public TMP_Text chapterDescriptions;
 
-    [HideInInspector]
-    public ChapterData currentChapterData;
+    [HideInInspector] public ChapterData currentChapterData;
 
     private const float PADDING = 12.5f;
     private const float SIZE_BETWEEN_NODES = 75;
+
+    /// <summary>
+    /// Called when the script instance is being loaded.
+    /// Initializes the graph container dimensions.
+    /// </summary>
     public void Awake()
     {
         _graphContainerHeight = graphContainer.GetComponent<RectTransform>().rect.height;
@@ -133,39 +154,46 @@ public class ChapterMenuController : MonoBehaviour
 
     private GameObject AddNode(ChapterData chapterData, int level, int index, int totalLevelSize)
     {
-        GameObject _node = Instantiate(nodePrefab, graphContainer.transform);
+        var _node = Instantiate(nodePrefab, graphContainer.transform);
 
-        Button _button = _node.GetComponent<Button>();
+        var _button = _node.GetComponent<Button>();
         _button.onClick.AddListener(() => GoToChapter(chapterData));
-        
-        TMP_Text _text = _node.GetComponentInChildren<TMP_Text>();
+
+        var _text = _node.GetComponentInChildren<TMP_Text>();
         _text.text = chapterData.name;
 
-        float _height = _graphContainerHeight - PADDING - (level * SIZE_BETWEEN_NODES);
-        float _width = (_graphContainerWidth / (totalLevelSize + 1)) * index;
+        var _height = _graphContainerHeight - PADDING - level * SIZE_BETWEEN_NODES;
+        var _width = _graphContainerWidth / (totalLevelSize + 1) * index;
         _node.GetComponent<RectTransform>().anchoredPosition = new Vector3(_width, _height);
-        
+
         return _node;
     }
 
     private void AddConnection(GameObject to, GameObject from)
     {
-        GameObject _connection = new GameObject("connection");
-        
-        Image _newImage = _connection.AddComponent<Image>();
+        var _connection = new GameObject("connection");
+
+        var _newImage = _connection.AddComponent<Image>();
         _newImage.sprite = boxSprite;
-        
-        RectTransform _rec = _connection.GetComponent<RectTransform>();
+
+        var _rec = _connection.GetComponent<RectTransform>();
         _rec.SetParent(graphContainer.transform, false);
         _rec.anchoredPosition = (from.transform.localPosition + to.transform.localPosition) / 2;
-        _rec.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (from.transform.localPosition - to.transform.localPosition).magnitude);
+        _rec.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+            (from.transform.localPosition - to.transform.localPosition).magnitude);
         _rec.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 5);
 
-        _connection.transform.localRotation = Quaternion.Euler(0, 0, Vector3.SignedAngle(Vector3.up, (to.transform.localPosition - from.transform.localPosition), Vector3.forward));
+        _connection.transform.localRotation = Quaternion.Euler(0, 0,
+            Vector3.SignedAngle(Vector3.up, to.transform.localPosition - from.transform.localPosition,
+                Vector3.forward));
         _connection.transform.SetSiblingIndex(0);
         _connection.SetActive(true);
     }
 
+    /// <summary>
+    /// Navigates to the specified chapter and updates the display.
+    /// </summary>
+    /// <param name="chapterData">The chapter data to navigate to.</param>
     public void GoToChapter(ChapterData chapterData)
     {
         chapterTitle.text = chapterData.name;
@@ -173,9 +201,11 @@ public class ChapterMenuController : MonoBehaviour
         currentChapterData = chapterData;
     }
 
+    /// <summary>
+    /// Navigates to the task menu.
+    /// </summary>
     public void GoToTasks()
     {
-        
     }
 }
 

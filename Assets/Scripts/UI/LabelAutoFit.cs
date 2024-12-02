@@ -1,62 +1,104 @@
-// src* = https://gist.github.com/andrew-raphael-lukasik/8f65a4d7055e29f80376bcb4f9b500af
+// Copyright 2024 NewMedia Centre - Delft University of Technology
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region
+
 using UnityEngine;
+using UnityEngine.Scripting;
 using UnityEngine.UIElements;
 
+#endregion
+
 // IMPORTANT NOTE:
-// This elemeent doesn't work with flexGrow as it leads to undefined behaviour (recursion).
-// Use Size/Width[%] and Size/Height attributes</b> instead
+// This element doesn't work with flexGrow as it leads to undefined behaviour (recursion).
+// Use Size/Width[%] and Size/Height attributes instead
 
-[UnityEngine.Scripting.Preserve]
-
-public class LabelAutoFit : UnityEngine.UIElements.Label
+/// <summary>
+/// Automatically adjusts the font size of a label based on its dimensions.
+/// </summary>
+[Preserve]
+public class LabelAutoFit : Label
 {
+    public Axis axis { get; set; }
+    public float ratio { get; set; }
 
-	public Axis axis { get; set; }
-	public float ratio { get; set; }
+    [Preserve]
+    public new class UxmlFactory : UxmlFactory<LabelAutoFit, UxmlTraits>
+    {
+    }
 
-	[UnityEngine.Scripting.Preserve]
-	public new class UxmlFactory : UxmlFactory<LabelAutoFit,UxmlTraits> {}
-	
-	[UnityEngine.Scripting.Preserve]
-	public new class UxmlTraits : Label.UxmlTraits// VisualElement.UxmlTraits
-	{
-		UxmlFloatAttributeDescription _ratio = new UxmlFloatAttributeDescription{
-			name = "ratio" ,
-			defaultValue = 0.1f ,
-			restriction = new UxmlValueBounds{ min="0.0" , max="0.9" , excludeMin=false , excludeMax=true }
-		};
-		UxmlEnumAttributeDescription<Axis> _axis = new UxmlEnumAttributeDescription<Axis>{
-			name = "ratio-axis" ,
-			defaultValue = Axis.Horizontal
-		};
-		public override void Init ( VisualElement ve , IUxmlAttributes bag , CreationContext cc )
-		{
-			base.Init( ve , bag , cc );
+    [Preserve]
+    public new class UxmlTraits : Label.UxmlTraits // VisualElement.UxmlTraits
+    {
+        private UxmlFloatAttributeDescription _ratio = new()
+        {
+            name = "ratio",
+            defaultValue = 0.1f,
+            restriction = new UxmlValueBounds { min = "0.0", max = "0.9", excludeMin = false, excludeMax = true }
+        };
 
-			LabelAutoFit instance = ve as LabelAutoFit;
-			instance.RegisterCallback<GeometryChangedEvent>( instance.OnGeometryChanged );
+        private UxmlEnumAttributeDescription<Axis> _axis = new()
+        {
+            name = "ratio-axis",
+            defaultValue = Axis.Horizontal
+        };
 
-			instance.ratio = _ratio.GetValueFromBag( bag , cc );
-			instance.axis = _axis.GetValueFromBag( bag , cc );
-			instance.style.fontSize = 1;// triggers GeometryChangedEvent
-		}
-	}
+        /// <summary>
+        /// Initializes the visual element with attributes from the UXML.
+        /// </summary>
+        /// <param name="ve">The visual element being initialized.</param>
+        /// <param name="bag">The attribute bag containing UXML attributes.</param>
+        /// <param name="cc">The creation context.</param>
+        public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
+        {
+            base.Init(ve, bag, cc);
 
-	void OnGeometryChanged ( GeometryChangedEvent evt )
-	{
-		float oldRectSize = this.axis==Axis.Vertical ? evt.oldRect.height : evt.oldRect.width;
-		float newRectLenght = this.axis==Axis.Vertical ? evt.newRect.height : evt.newRect.width;
-		
-		float oldFontSize = this.style.fontSize.value.value;
-		float newFontSize = newRectLenght * this.ratio;
-		
-		float fontSizeDelta = Mathf.Abs( oldFontSize - newFontSize );
-		float fontSizeDeltaNormalized = fontSizeDelta / Mathf.Max(oldFontSize,1);
+            var instance = ve as LabelAutoFit;
+            instance.RegisterCallback<GeometryChangedEvent>(instance.OnGeometryChanged);
 
-		if( fontSizeDeltaNormalized>0.01f )
-			this.style.fontSize = newFontSize;
-	}
+            instance.ratio = _ratio.GetValueFromBag(bag, cc);
+            instance.axis = _axis.GetValueFromBag(bag, cc);
+            instance.style.fontSize = 1; // triggers GeometryChangedEvent
+        }
+    }
 
-	public enum Axis { Horizontal , Vertical }
+    /// <summary>
+    /// Called when the geometry of the label changes.
+    /// Adjusts the font size based on the new dimensions.
+    /// </summary>
+    /// <param name="evt">The geometry changed event.</param>
+    private void OnGeometryChanged(GeometryChangedEvent evt)
+    {
+        var oldRectSize = axis == Axis.Vertical ? evt.oldRect.height : evt.oldRect.width;
+        var newRectLenght = axis == Axis.Vertical ? evt.newRect.height : evt.newRect.width;
 
+        var oldFontSize = style.fontSize.value.value;
+        var newFontSize = newRectLenght * ratio;
+
+        var fontSizeDelta = Mathf.Abs(oldFontSize - newFontSize);
+        var fontSizeDeltaNormalized = fontSizeDelta / Mathf.Max(oldFontSize, 1);
+
+        if (fontSizeDeltaNormalized > 0.01f)
+            style.fontSize = newFontSize;
+    }
+
+    /// <summary>
+    /// Enum representing the axis for font size adjustment.
+    /// </summary>
+    public enum Axis
+    {
+        Horizontal,
+        Vertical
+    }
 }

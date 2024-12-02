@@ -1,46 +1,39 @@
-# Running HandZone Guide
+# HANDZONe Project
 
-All software required is already installed and placed on the desktop. Instructions to run the experience is explained below.
+## Overview
 
-## 1. Run URSim Docker Container
-1. Launch `Docker Desktop` from desktop.
-2. In the `Containers` tab press the `Start` button on ursim under the Actions.
-3. When the container turns green. Click the following link and open it in your browser.
-> http://127.0.0.1:6080/vnc.html?host=127.0.0.1&port=6080
-4. Within this URL you can view the Polyscope interface.
+The HANDZONe project aims to develop a VR-Supported Hybrid Learning Environment for Architectural Robotics. This innovative application will feature a digital twin of a robotic arm, providing users with interactive tutorials and exercises to enhance their learning experience in the field of architectural robotics.
 
-## 2. Run HandZONE server Docker Container
+## Features
 
-1. Launch `Docker Desktop` from desktop.
-2. In the `Containers` tab press the `Start` button on handzone-server under the Actions.
-3. When the container turns green, click on it. Open the `Exec` tab.
-4. Type the following commands in the Exec terminal:
-```sh
-cd app
-npm run dev
-```
+- **Digital Twin of Robotic Arm**: A virtual representation of a robotic arm that allows users to interact and learn about its functionalities.
+- **Grasshopper integration**: Allows users to create a Grasshopper session to import meshes directly to the 3D environment. 
+- **Interactive Tutorials**: Step-by-step guides that help users understand the operation and programming of the robotic arm.
+- **Exercises**: Practical tasks designed to reinforce learning and provide hands-on experience with the robotic arm.
+- **VR Support**: An immersive experience that allows users to engage with the content in a virtual reality environment.
 
-This will start the web server on the docker container.
+## Getting Started
 
-> Note: after entering `npm run dev` and pressing enter. The server should start and must mention something similar to `[ROBOT:172.17.0.2] Connected` this means the server is up and running.
+To get started with the HANDZONe project, follow the instructions below to set up the development environment and run the application.
 
-> Note: If the connection is not found. You need to make sure to that the URSim Docker Container is running and has an IP address assigned to it. And make sure that the IP address is also inside the server configuration file. 
+### Prerequisites
 
-## 3. Establish Oculus Link
+- Unity Editor
+- [HANDZONe Server](https://github.com/newmedia-centre/handzone-server) when connecting to digital twin.
+- [HANDZONe Grasshopper plugin](https://github.com/newmedia-centre/handzone-grasshopper) when connecting Grasshopper to Unity.
+- Meta Oculus headset 2 or 3. 
 
-1. Launch `Oculus` from desktop.
-2. Turn on Oculus headset and connect the Link Cable to the PC & headset.
-3. When asked to `Allow access to data` in the headset, select `Allow`.
-4. It will prompt to `Enable Oculus Link`, select `Enable`.
+## Contributing
 
-> Note: When `Enable Oculus Link` prompt is not shown. You can enable link through the Quick settings menu, which is found in the task bar below when wearing the headset.
+We welcome contributions to the HANDZONe project! If you would like to contribute, please follow these steps:
 
-5. After Oculus Link is enabled it will load a new gray environment. 
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your changes to your forked repository.
+5. Submit a pull request.
 
-## 4. Launch HandZone Unity project
 
-1. Launch `Unity Hub` from desktop.
-2. Open `handzone-unity` to load the Unity project.
-3. After the project is loaded press the Play button on top.
+## Contact
 
-**Free Software, Hell Yeah!**
+For any inquiries or feedback, please reach out to the project maintainers.

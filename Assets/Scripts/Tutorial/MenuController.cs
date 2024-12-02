@@ -1,8 +1,25 @@
+// Copyright 2024 NewMedia Centre - Delft University of Technology
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region
+
 using System;
 using System.Collections.Generic;
 using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
-using UnityEngine.Serialization;
+
+#endregion
 
 [Serializable]
 public enum MenuName
@@ -17,11 +34,12 @@ public enum MenuName
     Playback
 }
 
+/// <summary>
+/// Manages the different menus in the application, handling menu transitions and selections.
+/// </summary>
 public class MenuController : MonoBehaviour
 {
-    
-    [Header("Object references")]
-    public GameObject loginMenu;
+    [Header("Object references")] public GameObject loginMenu;
     public GameObject mainMenu;
     public GameObject virtualRobotMenu;
     public GameObject realRobotMenu;
@@ -30,14 +48,14 @@ public class MenuController : MonoBehaviour
     public GameObject playbackMenu;
     public SectionData currentSelectedSection;
     public ChapterData currentSelectedChapter;
-    
+
     private MenuName _previousMenu;
     private MenuName _currentMenu;
     private Dictionary<MenuName, GameObject> _menuDictionary = new();
-    
+
     public Action<SectionData> OnSectionSelected;
     public Action<ChapterData> OnChapterSelected;
-    
+
     private static MenuController _instance;
 
     public static MenuController Instance
@@ -49,7 +67,7 @@ public class MenuController : MonoBehaviour
                 _instance = FindObjectOfType<MenuController>();
                 if (_instance == null)
                 {
-                    GameObject singletonObject = new GameObject();
+                    var singletonObject = new GameObject();
                     _instance = singletonObject.AddComponent<MenuController>();
                     singletonObject.name = typeof(MenuController).ToString() + " (Singleton)";
                 }
@@ -58,7 +76,11 @@ public class MenuController : MonoBehaviour
             return _instance;
         }
     }
-    
+
+    /// <summary>
+    /// Called when the script instance is being loaded.
+    /// Initializes the singleton instance and ensures it persists across scenes.
+    /// </summary>
     public void Awake()
     {
         if (_instance == null)
@@ -74,14 +96,14 @@ public class MenuController : MonoBehaviour
 
     private void Start()
     {
-        if(loginMenu) _menuDictionary.Add(MenuName.Login, loginMenu);
-        if(mainMenu) _menuDictionary.Add(MenuName.Main, mainMenu);
-        if(virtualRobotMenu) _menuDictionary.Add(MenuName.VirtualRobot, virtualRobotMenu);
-        if(realRobotMenu) _menuDictionary.Add(MenuName.RealRobot, realRobotMenu);
-        if(tutorialMenu) _menuDictionary.Add(MenuName.Tutorial, tutorialMenu);
-        if(exercisesMenu) _menuDictionary.Add(MenuName.Exercises, exercisesMenu);
-        if(playbackMenu) _menuDictionary.Add(MenuName.Playback, playbackMenu);
-        
+        if (loginMenu) _menuDictionary.Add(MenuName.Login, loginMenu);
+        if (mainMenu) _menuDictionary.Add(MenuName.Main, mainMenu);
+        if (virtualRobotMenu) _menuDictionary.Add(MenuName.VirtualRobot, virtualRobotMenu);
+        if (realRobotMenu) _menuDictionary.Add(MenuName.RealRobot, realRobotMenu);
+        if (tutorialMenu) _menuDictionary.Add(MenuName.Tutorial, tutorialMenu);
+        if (exercisesMenu) _menuDictionary.Add(MenuName.Exercises, exercisesMenu);
+        if (playbackMenu) _menuDictionary.Add(MenuName.Playback, playbackMenu);
+
         OnSectionSelected += OnSectionSelectedHandler;
         OnChapterSelected += OnChapterSelectedHandler;
 
@@ -91,7 +113,7 @@ public class MenuController : MonoBehaviour
             {
                 UnityMainThreadDispatcher.Instance().Enqueue(() => ChangeMenu(MenuName.Main));
             };
-            
+
             GlobalClient.Instance.OnDisconnected += () =>
             {
                 UnityMainThreadDispatcher.Instance().Enqueue(() => ChangeMenu(MenuName.Login));
@@ -101,47 +123,65 @@ public class MenuController : MonoBehaviour
         ChangeMenu(MenuName.Login);
     }
 
+    /// <summary>
+    /// Changes the current menu to the specified menu name.
+    /// </summary>
+    /// <param name="menuName">The name of the menu to switch to.</param>
     public void ChangeMenu(MenuControllerOption menuName)
     {
         ChangeMenu(menuName.menuName);
     }
-    
+
+    /// <summary>
+    /// Changes the current menu to the specified menu name.
+    /// </summary>
+    /// <param name="menuName">The name of the menu to switch to.</param>
     public void ChangeMenu(MenuName menuName)
     {
         _previousMenu = _currentMenu;
         _currentMenu = menuName;
-        foreach (var menu in _menuDictionary)
-        {
-            menu.Value.SetActive(menu.Key == _currentMenu);
-        }
+        foreach (var menu in _menuDictionary) menu.Value.SetActive(menu.Key == _currentMenu);
     }
-    
+
+    /// <summary>
+    /// Navigates back to the previous menu.
+    /// </summary>
     public void GoBack()
     {
         ChangeMenu(_previousMenu);
     }
 
+    /// <summary>
+    /// Quits the application.
+    /// </summary>
     public void QuitGame()
     {
         Application.Quit();
     }
-    
 
+    /// <summary>
+    /// Handles the selection of a section.
+    /// </summary>
+    /// <param name="obj">The selected section data.</param>
     private void OnSectionSelectedHandler(SectionData obj)
     {
         currentSelectedSection = obj;
     }
-    
+
+    /// <summary>
+    /// Handles the selection of a chapter.
+    /// </summary>
+    /// <param name="obj">The selected chapter data.</param>
     private void OnChapterSelectedHandler(ChapterData obj)
     {
         currentSelectedChapter = obj;
     }
 
+    /// <summary>
+    /// Hides all menus.
+    /// </summary>
     public void HideMenu()
     {
-        foreach (var menu in _menuDictionary)
-        {
-            menu.Value.SetActive(false);
-        }
+        foreach (var menu in _menuDictionary) menu.Value.SetActive(false);
     }
 }

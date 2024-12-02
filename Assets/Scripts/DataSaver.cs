@@ -1,20 +1,38 @@
-using System;
+// Copyright 2024 NewMedia Centre - Delft University of Technology
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region
+
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Assertions;
+
+#endregion
 
 public class DataSaver : MonoBehaviour
 {
     /**
      * Call this function with a / in front, otherwise you put data in the a directory above the actual one.
      */
-    public static void TrySaveData<T>(String filePath, T data)
+    public static void TrySaveData<T>(string filePath, T data)
     {
-        Debug.Assert(filePath.ToCharArray()[0] == '/', "The filePath: " + filePath + " did not contain a / at the beginning. You should have a / at the beginning of your filepath.");
-        
-        String _path = Application.persistentDataPath + filePath;
-        String _dir = Path.GetDirectoryName(_path);
+        Debug.Assert(filePath.ToCharArray()[0] == '/',
+            "The filePath: " + filePath +
+            " did not contain a / at the beginning. You should have a / at the beginning of your filepath.");
+
+        var _path = Application.persistentDataPath + filePath;
+        var _dir = Path.GetDirectoryName(_path);
 
         Debug.Log("Saving at: " + _path);
 
@@ -24,33 +42,29 @@ public class DataSaver : MonoBehaviour
             return;
         }
 
-        if (!Directory.Exists(_dir))
-        {
-            Directory.CreateDirectory(_dir);
-        }
+        if (!Directory.Exists(_dir)) Directory.CreateDirectory(_dir);
 
         if (!File.Exists(_path))
         {
-            FileStream _stream = File.Create(_path);
+            var _stream = File.Create(_path);
             _stream.Close();
         }
 
         File.WriteAllText(_path, JsonConvert.SerializeObject(data));
     }
 
-    public static T? TryLoadData<T>(String filePath) where T : struct
+    public static T? TryLoadData<T>(string filePath) where T : struct
     {
-        Debug.Assert(filePath.ToCharArray()[0] == '/', "The filePath: " + filePath + " did not contain a / at the beginning. You should have a / at the beginning of your filepath.");
-        
-        String _path = Application.persistentDataPath + filePath;
+        Debug.Assert(filePath.ToCharArray()[0] == '/',
+            "The filePath: " + filePath +
+            " did not contain a / at the beginning. You should have a / at the beginning of your filepath.");
+
+        var _path = Application.persistentDataPath + filePath;
 
         Debug.Log("Loading from: " + _path);
 
-        if (File.Exists(_path))
-        {
-            return JsonConvert.DeserializeObject<T>(File.ReadAllText(_path));
-        }
-        
+        if (File.Exists(_path)) return JsonConvert.DeserializeObject<T>(File.ReadAllText(_path));
+
         return null;
     }
 
@@ -58,7 +72,7 @@ public class DataSaver : MonoBehaviour
      * Test code for this class can be found here
      * This has been disable for now, since it does not have any use for now
      */
-    
+
     // public static void TestCode()
     // {
     //     //Good Case

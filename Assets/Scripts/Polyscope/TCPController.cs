@@ -1,6 +1,25 @@
+// Copyright 2024 NewMedia Centre - Delft University of Technology
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region
+
 using Schema.Socket.Realtime;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+
+#endregion
 
 /// <summary>
 /// TCPController is a MonoBehaviour that controls the translation and rotation of an XRGrabInteractable object.
@@ -8,9 +27,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// </summary>
 public class TCPController : MonoBehaviour
 {
-    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _interactable;
+    private XRGrabInteractable _interactable;
     public bool _isGrabbed;
-    
+
     /// <summary>
     /// Called when the script instance is being loaded.
     /// It initializes the XRGrabInteractable component and adds listeners to its selectEntered and selectExited events.
@@ -18,7 +37,7 @@ public class TCPController : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        _interactable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        _interactable = GetComponent<XRGrabInteractable>();
         if (_interactable)
         {
             _interactable.selectEntered.AddListener(OnSelectEnter);
@@ -28,7 +47,7 @@ public class TCPController : MonoBehaviour
         {
             Debug.Log("No XRGrabInteractable found, TCP interactable events will not work");
         }
-        
+
         // WebClient.OnRealtimeData += UpdateRobotPose;
     }
 
@@ -41,7 +60,7 @@ public class TCPController : MonoBehaviour
     {
         _isGrabbed = selectEnterEventArgs.interactableObject.isSelected;
     }
-    
+
     /// <summary>
     /// Called when the XRGrabInteractable object is deselected.
     /// It updates the _isGrabbed flag based on the isSelected property of the interactableObject.
@@ -61,7 +80,7 @@ public class TCPController : MonoBehaviour
     {
         if (!_isGrabbed) return;
 
-        double[] pose = new double[6];
+        var pose = new double[6];
         data.ToolVectorActual.CopyTo(pose, 0);
 
         // pose = AddCurrentTransformToPose(pose);
@@ -76,8 +95,8 @@ public class TCPController : MonoBehaviour
     /// <param name="pose">The pose array to be updated.</param>
     private double[] AddCurrentTransformToPose(double[] pose)
     {
-        Vector3 position = transform.localPosition;
-        Vector3 rotation = transform.localRotation.eulerAngles * Mathf.Deg2Rad;
+        var position = transform.localPosition;
+        var rotation = transform.localRotation.eulerAngles * Mathf.Deg2Rad;
         Debug.Log(position);
         Debug.Log(rotation);
 

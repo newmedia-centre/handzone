@@ -1,10 +1,29 @@
-﻿using System;
+﻿// Copyright 2024 NewMedia Centre - Delft University of Technology
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region
+
+using System;
 using System.Collections.Generic;
+using System.Text;
+using M2MqttUnity;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
 using uPLibrary.Networking.M2Mqtt.Messages;
-using M2MqttUnity;
-using Newtonsoft.Json;
+
+#endregion
 
 /// <summary>
 /// This code is a Unity script that establishes an MQTT (Message Queue Telemetry Transport) communication with a
@@ -15,10 +34,8 @@ public class M2MqttUnityUR : M2MqttUnityClient
 {
     // Public fields
     public PolyscopeRobot polyscopeRobot;
-    [Header("MQTT")]
-    public string topic = "test/json";
-    [Header("User Interface")]
-    public Toggle encryptedToggle;
+    [Header("MQTT")] public string topic = "test/json";
+    [Header("User Interface")] public Toggle encryptedToggle;
     public InputField addressInputField;
     public InputField portInputField;
     public Button connectButton;
@@ -30,7 +47,7 @@ public class M2MqttUnityUR : M2MqttUnityClient
     private bool _updateUI = false;
     private List<PolyscopeRobot.JointTransformAndAxis> _jointTransformAndAxisList;
     private bool _firstMessage = true;
-    
+
     // Nested class for JSON payload
     [Serializable]
     public class JsonPayload
@@ -42,17 +59,14 @@ public class M2MqttUnityUR : M2MqttUnityClient
         public int counterData;
         public bool processBusy;
     }
-    
+
     /// <summary>
     /// Set the MQTT broker address.
     /// </summary>
     /// <param name="brokerAddress">The address of the MQTT broker.</param>
     public void SetBrokerAddress(string brokerAddress)
     {
-        if (addressInputField && !_updateUI)
-        {
-            this.brokerAddress = brokerAddress;
-        }
+        if (addressInputField && !_updateUI) this.brokerAddress = brokerAddress;
     }
 
     /// <summary>
@@ -61,10 +75,7 @@ public class M2MqttUnityUR : M2MqttUnityClient
     /// <param name="brokerPort">The port of the MQTT broker.</param>
     public void SetBrokerPort(string brokerPort)
     {
-        if (portInputField && !_updateUI)
-        {
-            int.TryParse(brokerPort, out this.brokerPort);
-        }
+        if (portInputField && !_updateUI) int.TryParse(brokerPort, out this.brokerPort);
     }
 
     /// <summary>
@@ -75,7 +86,7 @@ public class M2MqttUnityUR : M2MqttUnityClient
     {
         this.isEncrypted = isEncrypted;
     }
-    
+
     /// <summary>
     /// Called when the MQTT client is connecting.
     /// </summary>
@@ -147,14 +158,8 @@ public class M2MqttUnityUR : M2MqttUnityClient
         }
         else
         {
-            if (disconnectButton != null)
-            {
-                disconnectButton.interactable = client.IsConnected;
-            }
-            if (connectButton != null)
-            {
-                connectButton.interactable = !client.IsConnected;
-            }
+            if (disconnectButton != null) disconnectButton.interactable = client.IsConnected;
+            if (connectButton != null) connectButton.interactable = !client.IsConnected;
         }
 
         if (addressInputField != null)
@@ -176,9 +181,7 @@ public class M2MqttUnityUR : M2MqttUnityClient
         }
 
         if (publishButton != null)
-        {
             publishButton.interactable = disconnectButton != null && disconnectButton.interactable;
-        }
 
         _updateUI = false;
     }
@@ -191,7 +194,7 @@ public class M2MqttUnityUR : M2MqttUnityClient
         Debug.Log("Ready.");
         _updateUI = true;
         base.Start();
-        
+
         _jointTransformAndAxisList = polyscopeRobot.GetJointTransformsAndEnabledRotationAxis();
     }
 
@@ -202,7 +205,7 @@ public class M2MqttUnityUR : M2MqttUnityClient
     /// <param name="message">The message payload in bytes.</param>
     protected override void DecodeMessage(string topic, byte[] message)
     {
-        string msg = System.Text.Encoding.UTF8.GetString(message);
+        var msg = Encoding.UTF8.GetString(message);
         // Debug.Log("Received: " + msg);
         StoreMessage(msg);
     }
@@ -223,7 +226,7 @@ public class M2MqttUnityUR : M2MqttUnityClient
     private void ProcessMessage(string msg)
     {
         var jsonPayload = JsonConvert.DeserializeObject<JsonPayload>(msg);
-        
+
         ReceiveTransformJoints(jsonPayload.jointPositions);
     }
 
@@ -238,14 +241,11 @@ public class M2MqttUnityUR : M2MqttUnityClient
             Debug.LogError("Joint positions array and joint transform array have different lengths!");
             return;
         }
-        
-        for (int i = 0; i < jointPositions.Length; i++)
+
+        for (var i = 0; i < jointPositions.Length; i++)
         {
-            float angle = jointPositions[i];
-            if (angle >= -Mathf.PI && angle <= Mathf.PI)
-            {
-                angle *= Mathf.Rad2Deg;
-            }
+            var angle = jointPositions[i];
+            if (angle >= -Mathf.PI && angle <= Mathf.PI) angle *= Mathf.Rad2Deg;
 
             switch (i)
             {
@@ -259,20 +259,21 @@ public class M2MqttUnityUR : M2MqttUnityClient
                     break;
             }
 
-            _jointTransformAndAxisList[i].JointTransform.localRotation = Quaternion.AngleAxis(angle, _jointTransformAndAxisList[i].EnabledRotationAxis);
+            _jointTransformAndAxisList[i].JointTransform.localRotation =
+                Quaternion.AngleAxis(angle, _jointTransformAndAxisList[i].EnabledRotationAxis);
         }
     }
 
     public void PublishTransformJoints()
     {
         var jointTransformAndAxisList = polyscopeRobot.GetJointTransformsAndEnabledRotationAxis();
-        List<float>jointAngles = new List<float>(jointTransformAndAxisList.Count);
+        var jointAngles = new List<float>(jointTransformAndAxisList.Count);
 
-        for (int i = 0; i < jointTransformAndAxisList.Count; i++)
+        for (var i = 0; i < jointTransformAndAxisList.Count; i++)
         {
             var angle = polyscopeRobot.GetJointRotationAngle(jointTransformAndAxisList[i]);
             angle = RobotsHelper.WrapAngle(angle);
-            
+
             switch (i)
             {
                 case 1:
@@ -284,7 +285,7 @@ public class M2MqttUnityUR : M2MqttUnityClient
                     angle += 180;
                     break;
             }
-            
+
             angle *= Mathf.Deg2Rad;
             jointAngles.Add(angle);
         }
@@ -296,10 +297,10 @@ public class M2MqttUnityUR : M2MqttUnityClient
         var data = JsonUtility.ToJson(jsonPayload, false);
 
         // Use Encoding.UTF8.GetBytes overload to avoid creating separate byte array
-        client.Publish("test/json", System.Text.Encoding.UTF8.GetBytes(data), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+        client.Publish("test/json", Encoding.UTF8.GetBytes(data), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
         Debug.Log("Joint message published:" + data);
     }
-    
+
 
     /// <summary>
     /// Called once per frame.
@@ -310,18 +311,12 @@ public class M2MqttUnityUR : M2MqttUnityClient
 
         if (_eventMessages.Count > 0 && _firstMessage)
         {
-            foreach (string msg in _eventMessages)
-            {
-                ProcessMessage(msg);
-            }
+            foreach (var msg in _eventMessages) ProcessMessage(msg);
             _eventMessages.Clear();
             _firstMessage = false;
         }
-        if (_updateUI)
-        {
-            UpdateUI();
-        }
-        
+
+        if (_updateUI) UpdateUI();
     }
 
     /// <summary>

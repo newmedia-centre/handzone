@@ -1,3 +1,19 @@
+// Copyright 2024 NewMedia Centre - Delft University of Technology
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,13 +23,21 @@ using PimDeWitte.UnityMainThreadDispatcher;
 using Schema.Socket.Grasshopper;
 using Schema.Socket.Index;
 using Schema.Socket.Interfaces;
-using UnityEngine;
+using Schema.Socket.Internals;
 using Schema.Socket.Realtime;
 using Schema.Socket.Unity;
 using SocketIO.Serializer.NewtonsoftJson;
-using Schema.Socket.Internals;
 using SocketIOClient;
+using UnityEngine;
 
+#endregion
+
+/// <summary>
+/// The SessionClient class manages the connection and communication with a
+/// server for real-time data exchange related to robotic sessions. It handles
+/// the initialization of the Socket.IO client, manages the state of the
+/// connection, and processes incoming data from the server.
+/// </summary>
 public class SessionClient : MonoBehaviour
 {
     [HideInInspector] public string url;
@@ -29,7 +53,7 @@ public class SessionClient : MonoBehaviour
     public string ClientId => _client?.Id;
     public string PendantOwner => _pendantData?.Owner;
     public bool IsConnected => _client.Connected;
-    
+
     public event Action<RealtimeDataOut> OnRealtimeData;
     public event Action<string, Texture2D> OnCameraFeed;
     public event Action<bool> OnDigitalOutputChanged;
@@ -43,7 +67,13 @@ public class SessionClient : MonoBehaviour
     public event Action OnDisconnected;
 
     public static SessionClient Instance { get; private set; }
-    
+
+    /// <summary>
+    /// Initializes the SessionClient and sets up the connection to the server.
+    /// This method is called when the script instance is being loaded.
+    /// It ensures that only one instance of the SessionClient exists and
+    /// initializes necessary components for communication.
+    /// </summary>
     private void Awake()
     {
         if (GlobalClient.Instance == null)
@@ -54,7 +84,7 @@ public class SessionClient : MonoBehaviour
         }
 
         url = GlobalClient.Instance.url + GlobalClient.Instance.Session?.Robot.Name;
-        
+
         // Create a new Socket.IO client with an authentication token from the global client
         _client = new SocketIOClient.SocketIO(url, new SocketIOOptions
         {
@@ -64,7 +94,7 @@ public class SessionClient : MonoBehaviour
                 type = "vr"
             }
         });
-        
+
         // Setup the JSON serializer to handle object references
         _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
@@ -72,15 +102,11 @@ public class SessionClient : MonoBehaviour
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore
         });
-        
+
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
-        {
             Destroy(gameObject);
-        }
     }
 
     private async void Start()
@@ -88,7 +114,7 @@ public class SessionClient : MonoBehaviour
         _cameraFeedTexture = new Texture2D(2, 2);
         vncStream = new MemoryStream();
         _dataQueue = new Queue<RealtimeDataOut>();
-        
+
         if (GlobalClient.Instance == null)
         {
             Debug.LogWarning("GlobalClient instance is null. Make sure to have a GlobalClient instance in the scene.");
@@ -116,16 +142,22 @@ public class SessionClient : MonoBehaviour
     {
         if (_dataQueue.Count > 0)
         {
-            RealtimeDataOut data = _dataQueue.Dequeue();
+            var data = _dataQueue.Dequeue();
             if (data == null) return;
 
             OnRealtimeData?.Invoke(data);
         }
     }
 
+    /// <summary>
+    /// Attempts to establish a connection to the server session.
+    /// This method registers various event handlers for connection, disconnection,
+    /// and error events, as well as specific events for video feeds, Grasshopper meshes,
+    /// and Unity-related messages. It also initiates the connection process asynchronously.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation of connecting to the session.</returns>
     public async Task TryConnectToSession()
     {
-
         // Register general events for the web client, such as connection, disconnection, and errors
 
         #region General connection events
@@ -157,22 +189,20 @@ public class SessionClient : MonoBehaviour
                 var cameraName = response.GetValue<string>();
                 var base64 = response.GetValue<string>(1);
                 if (_cameraFeedTexture.LoadImage(Convert.FromBase64String(base64)))
-                {
                     OnCameraFeed?.Invoke(cameraName, _cameraFeedTexture);
-                }
             });
         });
 
         // Register events for the web client that are specific to Grasshopper
 
         # region Grasshopper events
-        
+
         _client.On("grasshopper:meshes", response =>
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
                 Debug.Log("Received meshes from server");
-                GrasshopperMeshesIn data = response.GetValue<GrasshopperMeshesIn>();
+                var data = response.GetValue<GrasshopperMeshesIn>();
                 if (data == null) return;
 
                 OnGHMeshes?.Invoke(data);
@@ -181,7 +211,7 @@ public class SessionClient : MonoBehaviour
 
         _client.On("realtime:data", response =>
         {
-            RealtimeDataOut data = response.GetValue<RealtimeDataOut>();
+            var data = response.GetValue<RealtimeDataOut>();
             if (data == null) return;
 
             _dataQueue.Enqueue(data);
@@ -194,33 +224,35 @@ public class SessionClient : MonoBehaviour
         #region Unity events
 
         // Events whenever a session is joined, client receives player data and pendant data
-        _client.On("unity:message", response =>
-        {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        _client.On("unity:message",
+            response =>
             {
-                OnUnityMessage?.Invoke(response.GetValue<string>());
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    OnUnityMessage?.Invoke(response.GetValue<string>());
+                });
             });
-        });
-        
+
         _client.On("unity:players", response =>
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                UnityPlayersOut players = response.GetValue<UnityPlayersOut>();
-                if(players == null) return;
-                
+                var players = response.GetValue<UnityPlayersOut>();
+                if (players == null) return;
+
                 OnUnityPlayerData?.Invoke(players);
             });
         });
 
-        _client.On("unity:invite", response =>
-        {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        _client.On("unity:invite",
+            response =>
             {
-                OnPlayerInvitation?.Invoke(response.GetValue<string>());
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    OnPlayerInvitation?.Invoke(response.GetValue<string>());
+                });
             });
-        });
-        
+
         _client.On("unity:pendant", response =>
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -229,22 +261,35 @@ public class SessionClient : MonoBehaviour
                 OnUnityPendant?.Invoke(_pendantData);
             });
         });
+
         #endregion
 
         await _client.ConnectAsync();
     }
-    
+
+    /// <summary>
+    /// Sends a command to the robot to take control permission.
+    /// This method emits a message to the server to request control
+    /// over the robot's operations.
+    /// </summary>
     public void TakeControlPermission()
     {
         _client.EmitAsync("unity:pendant");
     }
-    
+
+    /// <summary>
+    /// Sends an inverse kinematics request to the server.
+    /// This method emits a request with the provided data and
+    /// executes the specified callback function upon receiving a response.
+    /// </summary>
+    /// <param name="data">The data for the inverse kinematics request.</param>
+    /// <param name="function">The callback function to execute upon receiving a response.</param>
     public void SendInverseKinematicsRequest(InternalsGetInverseKinIn data, Action function)
     {
         _client.EmitAsync("internals:get_inverse_kin", response =>
         {
             var success = response.GetValue<bool>(0);
-            
+
             if (success)
             {
                 var inverseKin = response.GetValue<InternalsGetInverseKinCallback>(1);
@@ -252,7 +297,7 @@ public class SessionClient : MonoBehaviour
                 {
                     OnKinematicCallback?.Invoke(inverseKin);
                     function?.Invoke();
-                });           
+                });
             }
             else
             {
@@ -261,13 +306,18 @@ public class SessionClient : MonoBehaviour
         }, data);
     }
 
+    /// <summary>
+    /// Requests a session token from the server.
+    /// This method emits a request for a token and returns a task that represents the asynchronous operation.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation, containing the session token.</returns>
     public Task<string> RequestSessionToken()
     {
-        TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+        var tcs = new TaskCompletionSource<string>();
         _client.EmitAsync("token", response =>
         {
             var success = response.GetValue<bool>(0);
-            
+
             if (success)
             {
                 var token = response.GetValue<string>(1);
@@ -282,7 +332,15 @@ public class SessionClient : MonoBehaviour
         });
         return tcs.Task;
     }
-    
+
+    /// <summary>
+    /// Sends a linear speed command to the robot.
+    /// This method converts the provided translation and rotation data into a format suitable for the robot's motion.
+    /// </summary>
+    /// <param name="translateDirection">The direction of translation as a Vector3.</param>
+    /// <param name="rotateAxis">The axis of rotation as a Vector3.</param>
+    /// <param name="a">The acceleration for the motion.</param>
+    /// <param name="t">The time duration for the motion.</param>
     public void Speedl(Vector3 translateDirection, Vector3 rotateAxis, float a, float t)
     {
         double[] xd =
@@ -302,16 +360,41 @@ public class SessionClient : MonoBehaviour
         _client.EmitAsync("motion:set_tcp", pose);
     }
 
+    /// <summary>
+    /// Sends a linear speed command to the robot.
+    /// This method emits a command with the specified speed vector, acceleration, and time.
+    /// </summary>
+    /// <param name="xd">The speed vector as an array of doubles.</param>
+    /// <param name="a">The acceleration for the motion.</param>
+    /// <param name="t">The time duration for the motion.</param>
     public void Speedl(double[] xd, double a, double t)
     {
         _client.EmitAsync("motion:speedl", xd, a, t);
     }
 
+    /// <summary>
+    /// Sends a linear movement command to the robot.
+    /// This method emits a command to move the robot to the specified pose with given parameters.
+    /// </summary>
+    /// <param name="pose">The target pose as an array of doubles.</param>
+    /// <param name="a">The acceleration for the motion.</param>
+    /// <param name="v">The velocity for the motion.</param>
+    /// <param name="t">The time duration for the motion.</param>
+    /// <param name="r">The radius for the circular motion.</param>
     public void MoveL(double[] pose, double a, double v, double t, double r)
     {
         _client.EmitAsync("motion:movel", pose, a, v, t, r);
     }
 
+    /// <summary>
+    /// Sends a joint movement command to the robot.
+    /// This method emits a command to move the robot's joints to the specified positions with given parameters.
+    /// </summary>
+    /// <param name="q">The joint positions as an array of doubles.</param>
+    /// <param name="a">The acceleration for the motion.</param>
+    /// <param name="v">The velocity for the motion.</param>
+    /// <param name="t">The time duration for the motion.</param>
+    /// <param name="r">The radius for the circular motion.</param>
     public void MoveJ(double[] q, double a, double v, double t, double r)
     {
         _client.EmitAsync("motion:movej", q, a, v, t, r);
@@ -326,13 +409,13 @@ public class SessionClient : MonoBehaviour
         });
         _digitalOutput = b;
     }
-    
+
     public void ToggleToolDigitalOut()
     {
         SetToolDigitalOut(0, !_digitalOutput);
         OnDigitalOutputChanged?.Invoke(!_digitalOutput);
     }
-    
+
     public void SendUnityMessage(string message)
     {
         var data = new { message = message };
@@ -341,7 +424,7 @@ public class SessionClient : MonoBehaviour
 
     public void PlayProgram()
     {
-        _client.EmitAsync("unity:run",  new UnityRunIn
+        _client.EmitAsync("unity:run", new UnityRunIn
         {
             Run = true
         });
@@ -354,12 +437,12 @@ public class SessionClient : MonoBehaviour
             Run = false
         });
     }
-    
+
     public void SendUnityPlayerIn(UnityPlayerIn unityPlayer)
     {
         _client.EmitAsync("unity:player", unityPlayer);
     }
-    
+
     public void SendUnityPendant(Vector6D message)
     {
         _client.EmitAsync("unity:pendant", message);
@@ -373,7 +456,7 @@ public class SessionClient : MonoBehaviour
     private async void OnDestroy()
     {
         await vncStream.DisposeAsync();
-        
+
         if (_client != null)
         {
             await _client.DisconnectAsync();
@@ -381,4 +464,3 @@ public class SessionClient : MonoBehaviour
         }
     }
 }
-

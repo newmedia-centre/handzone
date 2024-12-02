@@ -1,16 +1,31 @@
-using UnityEngine;
+// Copyright 2024 NewMedia Centre - Delft University of Technology
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#region
+
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
+
+#endregion
 
 [Serializable]
 public class JointValues
@@ -30,6 +45,13 @@ public class GripperStatus
     public int status;
 }
 
+/// <summary>
+/// The UR_EthernetIPClient class manages the communication with a UR robot
+/// over Ethernet/IP. It handles the connection, data transmission, and
+/// reception of joint values, digital outputs, and other robot-related data.
+/// This class also provides methods to control the robot's movements and
+/// manage its state.
+/// </summary>
 public class UR_EthernetIPClient : MonoBehaviour
 {
     public AssetReference settings;
@@ -40,7 +62,7 @@ public class UR_EthernetIPClient : MonoBehaviour
     public float[] readJointValues = new float[JOINT_SIZE];
     public bool digitalOutput = false;
     public float speedScaling;
-    
+
     private TcpClient _readTcpClient;
     private TcpClient _writeTcpClient;
     private NetworkStream _readStream;
@@ -55,19 +77,19 @@ public class UR_EthernetIPClient : MonoBehaviour
     private Stopwatch writeStopwatch = new();
     private float[] _oldReadValues = new float[JOINT_SIZE];
     private bool _oldDigitalOutput = false;
-    
+
     private const int BUFFER_SIZE = 11160;
     private const int FIRST_PACKET_SIZE = 4;
     private const byte OFFSET = 8;
     private const uint TOTAL_MSG_LENGTH = 3288596480;
     private const int TIME_STEP = 8;
     private const int JOINT_SIZE = 6;
-    
+
     public event Action OnConnecting;
     public event Action OnConnected;
     public event Action OnDisconnecting;
     public event Action OnDisconnected;
-    
+
     public static Action<int, float> JointChanged;
     public static Action<Vector3, Vector3, float, float> UpdateSpeedl;
     public static Action<int, float, float, float> UpdateSpeedj;
@@ -76,7 +98,12 @@ public class UR_EthernetIPClient : MonoBehaviour
     public static Action ClearSendBuffer;
     public static Action StopMoving;
 
-    void Awake()
+    /// <summary>
+    /// Initializes the UR_EthernetIPClient instance by starting the connection threads
+    /// for reading and writing data. It also subscribes to various events for handling
+    /// robot commands and logging connection events.
+    /// </summary>
+    private void Awake()
     {
         _readConnectionThread = new Thread(ConnectToReadAddress);
         _readConnectionThread.IsBackground = true;
@@ -94,13 +121,22 @@ public class UR_EthernetIPClient : MonoBehaviour
         LogEvents();
     }
 
+    /// <summary>
+    /// Handles the completion of an asynchronous operation to load the UR IP address
+    /// from a settings file. It updates the urIPAddress variable and logs the new address.
+    /// </summary>
+    /// <param name="obj">The asynchronous operation handle containing the loaded text asset.</param>
     private void Handle_Completed(AsyncOperationHandle<TextAsset> obj)
     {
         urIPAddress = obj.Result.text;
         Debug.Log(urIPAddress);
     }
 
-    void LogEvents()
+    /// <summary>
+    /// Logs connection events for the UR_EthernetIPClient, including successful
+    /// connections and disconnections.
+    /// </summary>
+    private void LogEvents()
     {
         // OnConnecting += () => Debug.Log("Connecting to Ethernet/IP server...");
         OnConnected += () => Debug.Log("Successfully connected to Ethernet/IP server");
@@ -108,28 +144,37 @@ public class UR_EthernetIPClient : MonoBehaviour
         OnDisconnected += () => Debug.Log("Successfully disconnected from Ethernet/IP server");
     }
 
+    /// <summary>
+    /// Updates the state of the robot by checking for changes in joint values and
+    /// digital outputs. It invokes the corresponding events when changes are detected.
+    /// </summary>
     private void Update()
     {
-        for (int i = 0; i < readJointValues.Length; i++)
+        for (var i = 0; i < readJointValues.Length; i++)
         {
-            if(readJointValues[i] != _oldReadValues[i])
+            if (readJointValues[i] != _oldReadValues[i])
             {
                 _oldReadValues[i] = readJointValues[i];
                 JointChanged?.Invoke(i, readJointValues[i]);
             }
-            
-            if(digitalOutput != _oldDigitalOutput)
+
+            if (digitalOutput != _oldDigitalOutput)
             {
                 _oldDigitalOutput = digitalOutput;
                 DigitalOutputChanged?.Invoke(digitalOutput);
                 ClearSendBuffer?.Invoke();
             }
         }
-        
+
         // robotTranslator.UpdateJointsFromPolyscope(readJointValues);
     }
 
-    void ConnectToReadAddress()
+    /// <summary>
+    /// Establishes a connection to the robot's read address. It creates a TCP client,
+    /// connects to the specified IP address and port, and starts receiving messages
+    /// from the robot.
+    /// </summary>
+    private void ConnectToReadAddress()
     {
         try
         {
@@ -137,7 +182,7 @@ public class UR_EthernetIPClient : MonoBehaviour
             _readTcpClient = new TcpClient();
             _readTcpClient.Connect(IPAddress.Parse(urIPAddress), urReadPort);
             _readStream = _readTcpClient.GetStream();
-            
+
             _isConnected = true;
             OnConnected?.Invoke();
             ReceiveMessages();
@@ -148,7 +193,12 @@ public class UR_EthernetIPClient : MonoBehaviour
         }
     }
 
-    void ConnectToWriteAddress()
+    /// <summary>
+    /// Establishes a connection to the robot's write address. It creates a TCP client,
+    /// connects to the specified IP address and port, and starts sending messages
+    /// to the robot.
+    /// </summary>
+    private void ConnectToWriteAddress()
     {
         try
         {
@@ -156,7 +206,7 @@ public class UR_EthernetIPClient : MonoBehaviour
             _writeTcpClient = new TcpClient();
             _writeTcpClient.Connect(IPAddress.Parse(urIPAddress), urWritePort);
             _writeStream = _writeTcpClient.GetStream();
-            
+
             _isConnected = true;
             OnConnected?.Invoke();
             SendMessages();
@@ -167,40 +217,44 @@ public class UR_EthernetIPClient : MonoBehaviour
         }
     }
 
-    void ReceiveMessages()
+    /// <summary>
+    /// Continuously receives messages from the robot while connected. It reads data
+    /// from the network stream and processes the received messages.
+    /// </summary>
+    private void ReceiveMessages()
     {
         while (_isConnected)
-        {
-            if(_readStream.Read(_readBuffer, 0, _readBuffer.Length) != 0)
-            {
+            if (_readStream.Read(_readBuffer, 0, _readBuffer.Length) != 0)
                 HandleReadMessage();
-            }
-        }
         _isConnected = false;
         OnDisconnected?.Invoke();
     }
-    
-    // Sends byte message to Ethernet/IP server
-    void SendMessages()
+
+    /// <summary>
+    /// Sends byte messages to the robot over the Ethernet/IP connection. It continuously
+    /// writes data to the network stream while connected.
+    /// </summary>
+    private void SendMessages()
     {
-        while (_isConnected)
-        {
-            HandleWriteMessage();
-        }
+        while (_isConnected) HandleWriteMessage();
 
         _isConnected = false;
         OnDisconnected?.Invoke();
     }
 
-    void HandleReadMessage()
+    /// <summary>
+    /// Processes the received messages from the robot. It extracts joint values,
+    /// digital outputs, and other relevant data from the received byte array.
+    /// </summary>
+    private void HandleReadMessage()
     {
-        uint msgLength = BitConverter.ToUInt32(_readBuffer, FIRST_PACKET_SIZE - 4);
+        var msgLength = BitConverter.ToUInt32(_readBuffer, FIRST_PACKET_SIZE - 4);
         if (msgLength == TOTAL_MSG_LENGTH)
         {
             readStopwatch.Start();
-            
+
             Array.Reverse(_readBuffer);
-            
+
             // Note: Bits values that are referred to can be found in UR Realtime Client Interface.
             var cartesianPosition = new double[3];
             var cartesianOrientation = new double[3];
@@ -209,71 +263,95 @@ public class UR_EthernetIPClient : MonoBehaviour
             var offsetMultiplier = OFFSET;
 
             // Read actual q values
-            for (int i = 0; i < 6; i++)
-            {
-                readJointValues[i] = (float)BitConverter.ToDouble(_readBuffer, startIndex - ((32 + i) * offsetMultiplier));
-            }
-            
+            for (var i = 0; i < 6; i++)
+                readJointValues[i] =
+                    (float)BitConverter.ToDouble(_readBuffer, startIndex - (32 + i) * offsetMultiplier);
+
             // Read actual Tool vector
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
-                cartesianPosition[i] = BitConverter.ToDouble(_readBuffer, startIndex - ((56 + i) * offsetMultiplier));
+                cartesianPosition[i] = BitConverter.ToDouble(_readBuffer, startIndex - (56 + i) * offsetMultiplier);
                 cartesianOrientation[i] = BitConverter.ToDouble(_readBuffer, startIndex - (59 + i * offsetMultiplier));
             }
-            
+
             // Read digital outputs
-            double digitalOutputValue = BitConverter.ToDouble(_readBuffer, startIndex - (131 * offsetMultiplier));
+            var digitalOutputValue = BitConverter.ToDouble(_readBuffer, startIndex - 131 * offsetMultiplier);
             digitalOutput = Convert.ToBoolean(digitalOutputValue);
-            
+
             // Read speed scaling
-            speedScaling = (float)BitConverter.ToDouble(_readBuffer, startIndex - (118 * offsetMultiplier));
-            
+            speedScaling = (float)BitConverter.ToDouble(_readBuffer, startIndex - 118 * offsetMultiplier);
+
             readStopwatch.Stop();
-            
-            if(readStopwatch.ElapsedMilliseconds < TIME_STEP)
-            {
+
+            if (readStopwatch.ElapsedMilliseconds < TIME_STEP)
                 Thread.Sleep(TIME_STEP - (int)readStopwatch.ElapsedMilliseconds);
-            }
             readStopwatch.Restart();
         }
     }
 
-    void HandleWriteMessage()
+    /// <summary>
+    /// Handles the writing of messages to the robot. It sends the current write buffer
+    /// to the robot and manages the timing of the write operations.
+    /// </summary>
+    private void HandleWriteMessage()
     {
         writeStopwatch.Start();
 
         _writeStream.Write(_writeBuffer, 0, _writeBuffer.Length);
-        
+
         writeStopwatch.Stop();
-        
-        if(writeStopwatch.ElapsedMilliseconds < TIME_STEP)
+
+        if (writeStopwatch.ElapsedMilliseconds < TIME_STEP)
         {
             if (_writeBuffer.Length > 0)
             {
                 // ClearBuffer();
             }
+
             Thread.Sleep(TIME_STEP - (int)writeStopwatch.ElapsedMilliseconds);
         }
+
         writeStopwatch.Restart();
     }
 
-    void SetWriteBuffer(byte[] buffer)
+    /// <summary>
+    /// Sets the write buffer with the provided byte array. This method is used to
+    /// prepare data for sending to the robot.
+    /// </summary>
+    /// <param name="buffer">The byte array to set as the write buffer.</param>
+    private void SetWriteBuffer(byte[] buffer)
     {
         _writeBuffer = buffer;
     }
 
-    void StopMoveJ()
+    /// <summary>
+    /// Stops the robot's movement by clearing the write buffer and updating the
+    /// isMoving state.
+    /// </summary>
+    private void StopMoveJ()
     {
         ClearBuffer();
         isMoving = false;
     }
-    
+
+    /// <summary>
+    /// Clears the write buffer by resetting it to an empty byte array.
+    /// </summary>
     private void ClearBuffer()
     {
         _writeBuffer = new byte[0];
     }
 
-    void Speedl(Vector3 translateDirection, Vector3 rotateAxis, float a, float t)
+    /// <summary>
+    /// Sends a linear speed command to the robot based on the provided translation
+    /// direction and rotation axis. This method converts the input vectors into
+    /// a format suitable for the robot's motion.
+    /// </summary>
+    /// <param name="translateDirection">The direction of translation as a Vector3.</param>
+    /// <param name="rotateAxis">The axis of rotation as a Vector3.</param>
+    /// <param name="a">The acceleration for the motion.</param>
+    /// <param name="t">The time duration for the motion.</param>
+    private void Speedl(Vector3 translateDirection, Vector3 rotateAxis, float a, float t)
     {
         float[] xd =
         {
@@ -293,78 +371,95 @@ public class UR_EthernetIPClient : MonoBehaviour
     /// <param name="xd">Tool speed in m/s (spatial vector)</param>
     /// <param name="a">Tool position acceleration</param>
     /// <param name="t">Time (s) before function returns (optional)</param>
-    void Speedl(float[] xd, float a, float t)
+    private void Speedl(float[] xd, float a, float t)
     {
-        string commandStr = $"speedl([{xd[0]},{xd[1]},{xd[2]},{xd[3]},{xd[4]},{xd[5]}],a={a},t={t})" + "\n";
+        var commandStr = $"speedl([{xd[0]},{xd[1]},{xd[2]},{xd[3]},{xd[4]},{xd[5]}],a={a},t={t})" + "\n";
         SetWriteBuffer(Encoding.UTF8.GetBytes(commandStr));
     }
 
+    /// <summary>
+    /// Sends a joint speed command to the robot for a specific joint.
+    /// </summary>
+    /// <param name="joint">The index of the joint to control.</param>
+    /// <param name="speed">The speed for the joint.</param>
+    /// <param name="a">The acceleration for the motion.</param>
+    /// <param name="t">The time duration for the motion.</param>
     private void Speedj(int joint, float speed, float a, float t)
     {
-        float[] qd = new float[6];
-        for (int i = 0; i < qd.Length; i++)
+        var qd = new float[6];
+        for (var i = 0; i < qd.Length; i++)
         {
             qd[i] = 0;
-            if (i == joint)
-            {
-                qd[i] = speed;
-            }
+            if (i == joint) qd[i] = speed;
         }
-        
+
         Speedj(qd, a, t);
     }
-    
+
     /// <summary>
     /// Sets the buffer to send a speedj command to the robot.
     /// </summary>
     /// <param name="qd">Joint speeds (rad/s)</param>
     /// <param name="a">Joint acceleration (rad/s^2) of leading axis</param>
     /// <param name="t">time in s</param>
-    void Speedj(float[] qd, float a, float t)
+    private void Speedj(float[] qd, float a, float t)
     {
-        string commandStr = $"speedj([{qd[0]},{qd[1]},{qd[2]},{qd[3]},{qd[4]},{qd[5]}],a={a},t={t})" + "\n";
+        var commandStr = $"speedj([{qd[0]},{qd[1]},{qd[2]},{qd[3]},{qd[4]},{qd[5]}],a={a},t={t})" + "\n";
         SetWriteBuffer(Encoding.UTF8.GetBytes(commandStr));
     }
-    
+
     /// <summary>
     /// Sets the buffer to send a movej command to the robot.
     /// </summary>
-    /// <param name="qd">Joint positions or pose in rads</param>
-    /// <param name="a">Joint acceleration</param>
-    /// <param name="v">Joint speed of leading axis</param>
-    /// <param name="t">Time in seconds</param>
-    /// <param name="r">Blend radius in meters</param>
-    void Movej(float[] qd, float a = 1.4f, float v = 1.05f, float t = 0f, float r = 0f)
+    /// <param name="qd">Joint positions or pose in radians.</param>
+    /// <param name="a">Joint acceleration.</param>
+    /// <param name="v">Joint speed of leading axis.</param>
+    /// <param name="t">Time in seconds.</param>
+    /// <param name="r">Blend radius in meters.</param>
+    private void Movej(float[] qd, float a = 1.4f, float v = 1.05f, float t = 0f, float r = 0f)
     {
         isMoving = true;
-        
-        string commandStr = $"movej([{qd[0]},{qd[1]},{qd[2]},{qd[3]},{qd[4]},{qd[5]}],a={a},v={v},t={t},r={r})" + "\n";
+
+        var commandStr = $"movej([{qd[0]},{qd[1]},{qd[2]},{qd[3]},{qd[4]},{qd[5]}],a={a},v={v},t={t},r={r})" + "\n";
         SetWriteBuffer(Encoding.UTF8.GetBytes(commandStr));
-        
-        for (int i = 0; i < qd.Length; i++)
-        {
-            qd[i] *= Mathf.Rad2Deg;
-        }
+
+        for (var i = 0; i < qd.Length; i++) qd[i] *= Mathf.Rad2Deg;
     }
 
-    void Movej(float[] qd)
+    /// <summary>
+    /// Sends a movej command to the robot with default parameters.
+    /// </summary>
+    /// <param name="qd">Joint positions or pose in radians.</param>
+    private void Movej(float[] qd)
     {
         Movej(qd, 0.15f, 0.15f, 0f, 0f);
     }
 
-    void SetDigitalOut(int n, bool b)
+    /// <summary>
+    /// Sets a digital output on the robot.
+    /// </summary>
+    /// <param name="n">The index of the digital output.</param>
+    /// <param name="b">The state of the digital output (true or false).</param>
+    private void SetDigitalOut(int n, bool b)
     {
-        string commandStr = $"set_tool_digital_out({n},{b})" + "\n";
+        var commandStr = $"set_tool_digital_out({n},{b})" + "\n";
         SetWriteBuffer(Encoding.UTF8.GetBytes(commandStr));
         DigitalOutputChanged?.Invoke(b);
     }
-    
+
+    /// <summary>
+    /// Toggles the state of the first digital output on the robot.
+    /// </summary>
     public void ToggleDigitalOut()
     {
         SetDigitalOut(0, !digitalOutput);
     }
-    
-    void OnDestroy()
+
+    /// <summary>
+    /// Cleans up the TCP connections and threads when the object is destroyed.
+    /// This method ensures that all resources are properly released.
+    /// </summary>
+    private void OnDestroy()
     {
         try
         {
@@ -373,7 +468,7 @@ public class UR_EthernetIPClient : MonoBehaviour
 
             if (_readConnectionThread != null && _readConnectionThread.IsAlive)
                 _readConnectionThread.Join();
-            
+
             if (_writeConnectionThread != null && _writeConnectionThread.IsAlive)
                 _writeConnectionThread.Join();
 
@@ -382,23 +477,17 @@ public class UR_EthernetIPClient : MonoBehaviour
                 _readStream.Close();
                 _readStream.Dispose();
             }
-            
-            if(_writeStream != null)
+
+            if (_writeStream != null)
             {
                 _writeStream.Close();
                 _writeStream.Dispose();
             }
 
-            if (_readTcpClient != null)
-            {
-                _readTcpClient.Close();
-            }
-            
-            if(_writeTcpClient != null)
-            {
-                _writeTcpClient.Close();
-            }
-            
+            if (_readTcpClient != null) _readTcpClient.Close();
+
+            if (_writeTcpClient != null) _writeTcpClient.Close();
+
             OnDisconnected?.Invoke();
         }
         catch (Exception e)

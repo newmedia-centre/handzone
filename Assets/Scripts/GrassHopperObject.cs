@@ -1,8 +1,26 @@
-using UnityEngine;
+// Copyright 2024 NewMedia Centre - Delft University of Technology
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
+#region
+
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+
+#endregion
 
 [RequireComponent(typeof(Timer))]
-[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
+[RequireComponent(typeof(XRGrabInteractable))]
 [RequireComponent(typeof(Outline))]
 public class GrassHopperObject : MonoBehaviour
 {
@@ -16,7 +34,7 @@ public class GrassHopperObject : MonoBehaviour
     private const int SCALE = 1000;
     private Timer _timer;
     private bool _shouldUpdate = false;
-    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _xrInteractable;
+    private XRGrabInteractable _xrInteractable;
     private Outline _selectableOutline;
     private Outline _meshOutline;
     private Transform _meshTransform;
@@ -27,10 +45,10 @@ public class GrassHopperObject : MonoBehaviour
     {
         _timer = GetComponent<Timer>();
         _timer.SetTimerDuration(updateDuration);
-        _xrInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        _xrInteractable = GetComponent<XRGrabInteractable>();
         _selectableOutline = GetComponent<Outline>();
         _selectableOutline.OutlineColor = selectableColor;
-        
+
         _meshTransform = transform.GetChild(0);
         _meshOutline = _meshTransform.GetComponent<Outline>();
         _meshRigidbody = _meshTransform.GetComponent<Rigidbody>();
@@ -44,7 +62,7 @@ public class GrassHopperObject : MonoBehaviour
         _xrInteractable.selectEntered.AddListener(delegate
         {
             DisablePhysics();
-            ResetMesh(); 
+            ResetMesh();
             ShouldUpdate(true);
         });
         _xrInteractable.selectExited.AddListener(delegate
@@ -75,11 +93,12 @@ public class GrassHopperObject : MonoBehaviour
         {
             if (!sendPosition && !sendRotation)
                 return;
-                
+
             if (sendPosition)
             {
                 // UnityInGrasshopper.Instance?.SendPosition(transform.position * SCALE, name);
             }
+
             if (sendRotation)
             {
                 // UnityInGrasshopper.Instance?.SendRotationQuaternion(transform.rotation, name);
@@ -98,7 +117,7 @@ public class GrassHopperObject : MonoBehaviour
     public void MeshUnselectable(GameObject go)
     {
         DisablePhysics();
-        
+
         if (go == _meshTransform.gameObject)
         {
             _meshOutline.OutlineColor = unselectableColor;
@@ -110,7 +129,7 @@ public class GrassHopperObject : MonoBehaviour
     public void MeshSelectable(GameObject go)
     {
         EnablePhysics();
-        
+
         if (go == _meshTransform.gameObject)
         {
             _meshOutline.OutlineColor = selectableColor;
@@ -127,8 +146,8 @@ public class GrassHopperObject : MonoBehaviour
             // }
         }
     }
-    
-    void ResetMesh()
+
+    private void ResetMesh()
     {
         _meshTransform.SetPositionAndRotation(transform.position, transform.rotation);
     }
