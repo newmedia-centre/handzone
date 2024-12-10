@@ -29,7 +29,7 @@ export const handleInternalsEvents = (socket: Socket<NamespaceClientToServerEven
 			const ik = JSON.parse(res.toString('utf8'))
 			callback(true, { ik })
 		} catch (e) {
-			callback(false, 'Error getting inverse kinematics')
+			callback(false, 'Error getting inverse kinematics: ' + (e as Error).message)
 		}
 	})
 }

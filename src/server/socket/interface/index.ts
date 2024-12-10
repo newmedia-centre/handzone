@@ -67,6 +67,7 @@ export interface NamespaceServerToClientEvents extends GrasshopperServerToClient
 
 export interface NamespaceClientToServerEvents extends MotionClientToServer, GrasshopperClientToServer, UnityClientToServer, InterfacesClientToServer, InternalsClientToServer {
 	message: (message: string) => void
+	token: (callback: CallbackFn<string>) => void
 }
 
 export interface NamespaceSocketData {
@@ -74,6 +75,7 @@ export interface NamespaceSocketData {
 	robot: RobotConnection
 	color: string
 	paused: boolean
+	type: 'vr' | 'gh'
 	achievements: {
 		id: string
 		data: JSON

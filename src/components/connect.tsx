@@ -21,37 +21,41 @@ import { useState } from "react"
 
 // connect to vr button
 export const ConnectVR = () => {
-    const [pin, setPin] = useState<string>()
+	const [open, setOpen] = useState(false)
+	const [pin, setPin] = useState('')
 
-    // get a pin from the server
-    const generatePin = async () => {
-        const response = await fetch("/api/auth/pin")
-        const data = await response.text()
-        setPin(data)
-    }
+	// validate a pin as the logged in user
+	const validate = async () => {
+		await fetch('/api/auth/pin', {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ pin }),
+		})
+		setPin('')
+		setOpen(false)
+	}
 
-    return (
-        <div>
-            <button onClick={generatePin} className="w-24 rounded border bg-white p-2 text-center hover:bg-200">
-                Get PIN
-            </button>
-            <dialog
-                open={!!pin}
-                className="fixed inset-0 z-50 size-full items-center justify-center bg-black/10 open:flex"
-            >
-                <div className="flex flex-col items-center gap-2 rounded border border-gray-300 bg-white p-4">
-                    <p>{pin}</p>
-                    <form method="dialog">
-                        <button
-                            autoFocus
-                            onClick={() => setPin(undefined)}
-                            className="rounded border bg-stone-50 p-2 hover:bg-stone-100"
-                        >
-                            OK
-                        </button>
-                    </form>
-                </div>
-            </dialog>
-        </div>
-    )
+	return (
+		<div>
+			<button onClick={() => setOpen(true)} className='w-24 rounded border bg-white p-2 text-center hover:bg-200'>PIN</button>
+			<dialog open={open} className='fixed inset-0 z-50 size-full items-center justify-center bg-black/10 open:flex'>
+				<form action={validate} className='flex flex-col items-center gap-2 rounded border border-300 bg-white p-4'>
+					<input
+						type='text'
+						name='pin'
+						value={pin}
+						onChange={e => setPin(e.target.value)}
+						className='rounded border border-300 p-2 hover:bg-50'
+						placeholder='Enter the given pin'
+					/>
+					<div className='flex gap-2'>
+						<button autoFocus onClick={() => setOpen(false)} className='rounded border border-300 bg-stone-50 p-2 hover:bg-stone-100'>Cancel</button>
+						<button className='rounded border border-300 bg-stone-50 p-2 hover:bg-stone-100' type='submit'>Validate</button>
+					</div>
+				</form>
+			</dialog>
+		</div>
+	)
 }

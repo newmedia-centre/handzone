@@ -18,19 +18,16 @@
 import Docker from 'dockerode'
 import env from '../environment'
 import EventEmitter from 'events'
-import SemaphoreMod from 'semaphore-async-await'
+import { Sema } from 'async-sema'
 import { dockerLogger as logger } from '../logger'
 
 // import types
 import type { DockerEmitter } from './emitter'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Semaphore = (SemaphoreMod as any)['default']
-
 export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 	docker: Docker
 	containers: Map<string, Docker.Container>
-	_semaphore: SemaphoreMod
+	_semaphore: Sema
 	_slotMachine: Set<number>
 
 	constructor() {
@@ -41,11 +38,11 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		logger.info('Connecting to docker...')
 		this.docker = new Docker(env.DOCKER.OPTIONS)
 		this.containers = new Map()
-		this._semaphore = new Semaphore(env.DOCKER.MAX_VIRTUAL)
+		this._semaphore = new Sema(env.DOCKER.MAX_VIRTUAL)
 		this._slotMachine = new Set([...Array(env.DOCKER.MAX_VIRTUAL).keys()].map(x => x + 1))
 
 		// drain the semaphore until docker is available
-		this._semaphore.drainPermits()
+		this._semaphore.drain()
 
 		// ping docker to check connection
 		this.docker.ping(async (err) => {
@@ -71,7 +68,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		logger.info('Requesting virtual robot...')
 
 		// emit a capacity event if the semaphore is full
-		if (this._semaphore.getPermits() <= 0) {
+		if (this._semaphore['free'].length <= 0) {
 			logger.info('Virtual robot capacity reached')
 			this.emit('capacity')
 		}
@@ -79,7 +76,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 		// acquire a semaphore
 		logger.info('Waiting for virtual robot capacity...')
 		await this._semaphore.acquire()
-		logger.info('Virtual robot capacity acquired', this._semaphore.getPermits())
+		logger.info('Virtual robot capacity acquired', this._semaphore['free'].length)
 
 		// aquire next available slot from the slot machine
 		const slot = [...this._slotMachine.values()][0]
@@ -171,7 +168,7 @@ export class DockerManager extends (EventEmitter as new () => DockerEmitter) {
 
 	// get the current capacity of the semaphore
 	getCapacity = () => {
-		return this._semaphore.getPermits()
+		return this._semaphore['free'].length
 	}
 
 	_getName = async (container: Docker.Container) => {

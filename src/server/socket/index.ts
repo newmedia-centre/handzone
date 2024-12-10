@@ -19,7 +19,7 @@ import { Server } from 'socket.io'
 import { initNamespace } from './namespace'
 import { robots } from '@/server/robot'
 import { docker } from '@/server/docker'
-import { validatePin } from '@/server/db/pin'
+import { verifyPin } from '@/server/db/pin'
 import { generateAccessToken } from '@/server/db/jwt'
 import { socketLogger as logger } from '../logger'
 import { prisma } from '@/server/db'
@@ -56,11 +56,14 @@ export const init = () => {
 	server.use((socket, next) => {
 		logger.http(`Incoming connection from ${socket.handshake.address}`)
 
-		// get the pin number
-		const pin = socket.handshake.auth.pin as string
+		// get the otp pin and signature
+		const otp = socket.handshake.auth.pin as string
+		const signature = socket.handshake.auth.signature as string
 
 		// check if the pin is valid
-		validatePin(pin).then(user => {
+		verifyPin(otp, signature).then(user => {
+			if (!user) return next(new Error('Pin not claimed'))
+
 			// attach the user to the socket
 			socket.data.user = user
 			return next()
@@ -130,7 +133,7 @@ export const init = () => {
 			name: n.robot.info.name,
 			address: n.robot.info.address,
 			type: n.robot.virtual ?? 'sandbox',
-			users: Array.from(n.nsp.sockets.values()).map(s => s.data.user.name ?? '')
+			users: Array.from(n.nsp.sockets.values()).map(s => `${s.data.user.name} (${s.data.type})` ?? '')
 		}))
 
 		// send the capacity and sessions
@@ -236,10 +239,11 @@ export const init = () => {
 
 		// send joined namespace
 		socket.on('namespace', async (callback) => {
-			if (!socket.data.namespace) return callback(false, 'No namespace found for user')
+			const found = Array.from(server.sockets.sockets.values()).find(s => s.data.user.id === socket.data.user.id && !!s.data.namespace)
+			if (!found || !found.data.namespace) return callback(false, 'No namespace found for user')
 
-			const token = await generateAccessToken(socket.data.user, socket.data.namespace)
-			callback(true, { robot: socket.data.namespace, token })
+			const token = await generateAccessToken(socket.data.user, found.data.namespace)
+			callback(true, { robot: found.data.namespace, token })
 		})
 	})
 

@@ -121,15 +121,24 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 
 		const promise = new Promise<Buffer>((resolve, reject) => {
 			// set timeout to 5 seconds
-			const timeout = setTimeout(() => {
+			let timeout = setTimeout(() => {
 				server.close()
 				server.on('close', () => { robots._semaphore.release() })
 
-				reject('timeout')
+				reject(new Error('Timeout'))
 			}, 5000)
 
 			// create a tcp server receive values from the robot and listen on port 4000
 			const server = createServer(socket => {
+
+				// update timeout
+				clearTimeout(timeout)
+				timeout = setTimeout(() => {
+					server.close()
+					server.on('close', () => { robots._semaphore.release() })
+
+					reject(new Error('Timeout'))
+				}, 50)
 
 				socket.once('data', data => {
 					clearTimeout(timeout)
@@ -140,7 +149,9 @@ export class RobotConnection extends (EventEmitter as new () => RobotEmitter) {
 					resolve(data)
 				})
 
-				socket.on('error', () => { })
+				socket.on('error', () => {
+					this.logger.warn(`Received error for instruction: ${instruction}`, { instruction })
+				})
 			})
 			server.maxConnections = 1
 			server.listen(4000)

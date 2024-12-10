@@ -20,13 +20,15 @@ import type {
 	UnityMessageOut,
 	UnityPendantOut,
 	UnityPlayerIn,
-	UnityPlayersOut
+	UnityPlayersOut,
+	UnityRunIn
 } from '@/types/Socket/Unity'
 
 export interface UnityClientToServer {
 	'unity:message': (payload: UnityMessageIn) => void
 	'unity:player': (payload: UnityPlayerIn) => void
 	'unity:pendant': () => void
+	'unity:run': (payload: UnityRunIn) => void
 }
 
 export interface UnityServerToClient {
