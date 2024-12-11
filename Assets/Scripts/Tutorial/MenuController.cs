@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit.Inputs.Readers;
 
 #endregion
 
@@ -39,7 +41,8 @@ public enum MenuName
 /// </summary>
 public class MenuController : MonoBehaviour
 {
-    [Header("Object references")] public GameObject loginMenu;
+    [Header("Object references")] 
+    public GameObject loginMenu;
     public GameObject mainMenu;
     public GameObject virtualRobotMenu;
     public GameObject realRobotMenu;
@@ -52,9 +55,13 @@ public class MenuController : MonoBehaviour
     private MenuName _previousMenu;
     private MenuName _currentMenu;
     private Dictionary<MenuName, GameObject> _menuDictionary = new();
+    private bool _isMenuOpen = false;
 
     public Action<SectionData> OnSectionSelected;
     public Action<ChapterData> OnChapterSelected;
+    
+    [Header("Controller Action")] 
+    public InputActionReference ToggleMenuButton;
 
     private static MenuController _instance;
 
@@ -96,6 +103,7 @@ public class MenuController : MonoBehaviour
 
     private void Start()
     {
+        
         if (loginMenu) _menuDictionary.Add(MenuName.Login, loginMenu);
         if (mainMenu) _menuDictionary.Add(MenuName.Main, mainMenu);
         if (virtualRobotMenu) _menuDictionary.Add(MenuName.VirtualRobot, virtualRobotMenu);
@@ -106,6 +114,7 @@ public class MenuController : MonoBehaviour
 
         OnSectionSelected += OnSectionSelectedHandler;
         OnChapterSelected += OnChapterSelectedHandler;
+        ToggleMenuButton.action.performed += _ => ToggleMenu();
 
         if (GlobalClient.Instance)
         {
@@ -141,6 +150,7 @@ public class MenuController : MonoBehaviour
         _previousMenu = _currentMenu;
         _currentMenu = menuName;
         foreach (var menu in _menuDictionary) menu.Value.SetActive(menu.Key == _currentMenu);
+        _isMenuOpen = true;
     }
 
     /// <summary>
@@ -177,11 +187,39 @@ public class MenuController : MonoBehaviour
         currentSelectedChapter = obj;
     }
 
+    public void CompleteSection()
+    {
+        currentSelectedSection.completed = true;
+    }
+
     /// <summary>
-    /// Hides all menus.
+    /// Hides all menus. But remembers the previous menu.
     /// </summary>
     public void HideMenu()
     {
+        _previousMenu = _currentMenu;
         foreach (var menu in _menuDictionary) menu.Value.SetActive(false);
+        _isMenuOpen = false;
     }
+    
+    /// <summary>
+    /// Shows the previous menu.
+    /// </summary>
+    public void ShowMenu()
+    {
+        ChangeMenu(_previousMenu);
+    }
+    
+    public void ToggleMenu()
+    {
+        if (_isMenuOpen)
+        {
+            HideMenu();
+        }
+        else
+        {
+            ShowMenu();
+        }
+    }
+    
 }

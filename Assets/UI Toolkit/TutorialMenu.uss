@@ -143,9 +143,9 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
 }
 
 .button:disabled:hover {
-    background-color: rgb(228, 228, 228); /* Same as the disabled background color */
-    color: rgb(144, 144, 144); /* Same as the disabled text color */
-    cursor: default; /* Change the cursor to default */
+    background-color: rgb(228, 228, 228);
+    color: rgb(144, 144, 144);
+    cursor: default;
 }
 
 .playback-slider .unity-base-slider__tracker {
@@ -182,11 +182,11 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
 }
 
 .return-button:hover {
-    background-color: #CFCFCF;
+    background-color: rgb(207, 207, 207);
 }
 
 .return-button:active {
-    background-color: #B1B1B1;
+    background-color: rgb(177, 177, 177);
 }
 
 .play-button:checked .unity-toggle__checkmark {
@@ -247,4 +247,27 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
 
 .session-button:active {
     border-color: rgb(14, 88, 20);
+}
+
+.button-complete {
+    position: absolute;
+    right: 0;
+    background-color: rgb(228, 228, 228);
+    -unity-background-image-tint-color: rgb(228, 228, 228);
+    border-left-color: rgba(149, 149, 149, 0);
+    border-right-color: rgba(149, 149, 149, 0);
+    border-top-color: rgba(149, 149, 149, 0);
+    border-bottom-color: rgba(149, 149, 149, 0);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.button-complete:hover {
+    background-color: rgb(207, 207, 207);
+}
+
+.button-complete:active {
+    background-color: rgb(177, 177, 177);
 }

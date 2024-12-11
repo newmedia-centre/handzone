@@ -844,7 +844,7 @@ MonoBehaviour:
   m_Name: VideoControlClip(Clone)
   m_EditorClassIdentifier: 
   clip: {fileID: 32900000, guid: e75c51a056d522844947f9e1199b9a52, type: 3}
-  type: 0
+  type: 4
 --- !u!114 &1065966350608033519
 MonoBehaviour:
   m_ObjectHideFlags: 1

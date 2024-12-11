@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a18e7e5f71c6b4d81b5b39b8a4775d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  host: 172.19.14.251
+  host: localhost
   port: 3000
   scheme: http
 --- !u!4 &19092647
@@ -2863,7 +2863,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (XR Rig) XRZone Variant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6429816138099900506, guid: 7474d4560289953428d15488ca227e80, type: 3}
+    - {fileID: 8573478302563859100, guid: 7474d4560289953428d15488ca227e80, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -7304,7 +7306,7 @@ PrefabInstance:
     - target: {fileID: 389992736171822937, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.128
+      value: -0.292
       objectReference: {fileID: 0}
     - target: {fileID: 389992736171822937, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
@@ -7351,16 +7353,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1227764877927085341, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_CustomReticle
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1475980274930801232, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 1548291802688150497, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1613938009117333605, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 1833736096786321441, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: ToggleMenuButton
+      value: 
+      objectReference: {fileID: -6390888798515607886, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
+    - target: {fileID: 1833736096786321441, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: ToggleMenuButton.m_InputActionReferencePerformed
+      value: 
+      objectReference: {fileID: -6390888798515607886, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
     - target: {fileID: 2715267619782839167, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Name
@@ -7371,21 +7395,81 @@ PrefabInstance:
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 4413069707170479815, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413069707170479815, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.42319998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413069707170479815, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413069707170479815, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4426717277352685263, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_CustomReticle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556591164415926248, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_CustomReticle
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5069026187659715971, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 5665675203555376961, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5684084317520233494, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 6235455798228105357, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_CustomReticle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6784286079115304982, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_CustomReticle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7241996401525888102, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_CustomReticle
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8285019241823039567, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 9173174602298416186, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_CustomReticle
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

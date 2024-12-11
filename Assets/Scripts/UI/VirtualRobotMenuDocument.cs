@@ -14,6 +14,7 @@
 
 #region
 
+using System;
 using System.Collections.Generic;
 using Schema.Socket.Index;
 using UnityEditor;
@@ -31,6 +32,7 @@ public class VirtualRobotMenuDocument : MonoBehaviour
     private Button _joinButton;
     private Button _createButton;
     private Button _backButton;
+    private Button _returnButton;
     private List<VisualElement> _sessionButtons = new();
     private string _selectionSessionAddress;
 
@@ -44,6 +46,7 @@ public class VirtualRobotMenuDocument : MonoBehaviour
         _sessionsGroupScrollView = virtualRobotDocument.rootVisualElement.Q<ScrollView>("SessionsGroupScrollView");
         _joinButton = virtualRobotDocument.rootVisualElement.Q<Button>("JoinButton");
         _createButton = virtualRobotDocument.rootVisualElement.Q<Button>("CreateButton");
+        _returnButton = virtualRobotDocument.rootVisualElement.Q<Button>("ReturnButton");
         _backButton = virtualRobotDocument.rootVisualElement.Q<Button>("BackButton");
 
         _joinButton.SetEnabled(false);
@@ -52,8 +55,21 @@ public class VirtualRobotMenuDocument : MonoBehaviour
         _joinButton.clicked += OnJoinClicked;
         _createButton.clicked += OnCreateClicked;
         _backButton.clicked += OnBackClicked;
+        _returnButton.clicked += OnBackClicked;
 
         if (GlobalClient.Instance?.Sessions != null) UpdateMenu(GlobalClient.Instance.Sessions);
+    }
+
+    /// <summary>
+    /// Called when the object becomes disabled.
+    /// Unsubscribes from button click events.
+    /// </summary>
+    private void OnDisable()
+    {
+        _joinButton.clicked -= OnJoinClicked;
+        _createButton.clicked -= OnCreateClicked;
+        _backButton.clicked -= OnBackClicked;
+        _returnButton.clicked -= OnBackClicked;
     }
 
     private void Start()

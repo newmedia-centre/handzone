@@ -33,6 +33,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     private Label _chapterTitle;
     private Label _sectionTitle;
     private Button _returnButton;
+    private Button _completeButton;
 
     /// <summary>
     /// Called when the script instance is being loaded.
@@ -54,11 +55,12 @@ public class PlaybackMenuDocument : MonoBehaviour
         _chapterTitle = playbackMenuDocument.rootVisualElement.Q<Label>("ChapterTitle");
         _sectionTitle = playbackMenuDocument.rootVisualElement.Q<Label>("SectionTitle");
         _returnButton = playbackMenuDocument.rootVisualElement.Q<Button>("ReturnButton");
+        _completeButton = playbackMenuDocument.rootVisualElement.Q<Button>("CompleteButton");
 
         if (_playButton == null || _slider == null || _chapterTitle == null || _sectionTitle == null ||
             _returnButton == null)
         {
-            Debug.LogError("PlaybackMenuDocument: One or more UI elements are not found.");
+            Debug.LogWarning("PlaybackMenuDocument: One or more UI elements are not found.");
             return;
         }
 
@@ -66,7 +68,7 @@ public class PlaybackMenuDocument : MonoBehaviour
         playableDirector = FindObjectOfType<PlayableDirector>();
         if (playableDirector == null)
         {
-            Debug.LogError("PlaybackMenuDocument: PlayableDirector not found in the scene.");
+            Debug.LogWarning("PlaybackMenuDocument: PlayableDirector not found in the scene.");
             return;
         }
 
@@ -78,6 +80,7 @@ public class PlaybackMenuDocument : MonoBehaviour
         _slider.RegisterCallback<PointerDownEvent>(OnSliderPointerDown);
         _playButton.RegisterValueChangedCallback(OnPlayButtonValueChanged);
         playableDirector.stopped += HandleStop;
+        _completeButton.clicked += OnCompleteButtonClicked;
 
         if (MenuController.Instance.currentSelectedSection)
         {
@@ -85,6 +88,12 @@ public class PlaybackMenuDocument : MonoBehaviour
             playableDirector.Play();
             _playButton.value = true;
         }
+    }
+
+    private void OnCompleteButtonClicked()
+    {
+        MenuController.Instance.CompleteSection();
+        MenuController.Instance.ChangeMenu(MenuName.Main);
     }
 
     /// <summary>
@@ -106,6 +115,7 @@ public class PlaybackMenuDocument : MonoBehaviour
         _slider.UnregisterCallback<PointerDownEvent>(OnSliderPointerDown);
         _playButton.UnregisterValueChangedCallback(OnPlayButtonValueChanged);
         playableDirector.stopped -= HandleStop;
+        _completeButton.clicked -= OnCompleteButtonClicked;
 
         if (playableDirector)
             playableDirector.Stop();
@@ -145,6 +155,12 @@ public class PlaybackMenuDocument : MonoBehaviour
         _playButton.value = false;
         playableDirector.Pause();
     }
+    
+    private void OnSliderPointerUp(PointerUpEvent evt)
+    {
+        _playButton.value = true;
+        playableDirector.Play();
+    }
 
     /// <summary>
     /// Handles the value change event of the play button.
@@ -156,11 +172,15 @@ public class PlaybackMenuDocument : MonoBehaviour
         if (evt.newValue)
         {
             _slider.pickingMode = PickingMode.Position;
+            playableDirector.time = _slider.value * playableDirector.duration;
+            playableDirector.Evaluate();
             playableDirector.Play();
         }
         else
         {
             _slider.pickingMode = PickingMode.Ignore;
+            playableDirector.time = _slider.value * playableDirector.duration;
+            playableDirector.Evaluate();
             playableDirector.Pause();
         }
     }
@@ -171,7 +191,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     /// </summary>
     private void OnReturnButtonClicked()
     {
-        MenuController.Instance.ChangeMenu(MenuName.Tutorial);
+        MenuController.Instance.ChangeMenu(MenuName.Main);
         playableDirector.Stop();
     }
 

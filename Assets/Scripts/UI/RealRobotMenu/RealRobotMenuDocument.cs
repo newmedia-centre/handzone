@@ -53,7 +53,7 @@ public class RealRobotMenuDocument : MonoBehaviour
 
         _joinButton.clicked += OnJoinClicked;
         _backButton.clicked += OnBackClicked;
-        _returnButton.clicked += OnReturnButtonClicked;
+        _returnButton.clicked += OnBackClicked;
     }
 
     /// <summary>
@@ -64,16 +64,7 @@ public class RealRobotMenuDocument : MonoBehaviour
     {
         _joinButton.clicked -= OnJoinClicked;
         _backButton.clicked -= OnBackClicked;
-        _returnButton.clicked -= OnReturnButtonClicked;
-    }
-
-    /// <summary>
-    /// Called when the return button is clicked.
-    /// Changes the menu to the main menu.
-    /// </summary>
-    private void OnReturnButtonClicked()
-    {
-        MenuController.Instance.ChangeMenu(MenuName.Main);
+        _returnButton.clicked -= OnBackClicked;
     }
 
     /// <summary>

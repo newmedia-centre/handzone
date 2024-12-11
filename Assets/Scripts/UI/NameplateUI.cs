@@ -94,6 +94,8 @@ public class NameplateUI : MonoBehaviour
     /// </summary>
     public void Hide()
     {
+        if(gameObject.activeSelf == false) return;
+        
         if (visibilityCoroutine != null) StopCoroutine(visibilityCoroutine);
         visibilityCoroutine = StartCoroutine(LerpVisibility(false));
     }

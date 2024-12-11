@@ -114,7 +114,6 @@ public class TutorialMenuDocument : MonoBehaviour
     {
         if (MenuController.Instance.currentSelectedSection != null)
         {
-            Debug.Log($"Starting lesson for {MenuController.Instance.currentSelectedSection.title}");
             StartCoroutine(LoadTutorialSceneAndChangeMenu());
         }
     }
