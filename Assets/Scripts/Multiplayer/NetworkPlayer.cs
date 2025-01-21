@@ -119,7 +119,7 @@ public class NetworkPlayer : MonoBehaviour
         right.transform.position = Vector3.Lerp(right.transform.position, rightTargetPosition, lerpSpeed);
         right.transform.rotation = Quaternion.Lerp(right.transform.rotation, rightTargetRotation, rotationLerpSpeed);
 
-        if (_receivedPlayerData.Cursor.X > 0.001f)
+        if (_receivedPlayerData.Cursor.X > 0.001f || _receivedPlayerData.Cursor.Y > 0.001f)
         {
             var cursorPosition = new Vector2((float)_receivedPlayerData.Cursor.X, (float)_receivedPlayerData.Cursor.Y);
             cursor.transform.localPosition = Vector3.Lerp(cursor.transform.localPosition, cursorPosition, lerpSpeed);
