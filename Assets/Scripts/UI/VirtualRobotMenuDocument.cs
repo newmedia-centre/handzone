@@ -93,17 +93,16 @@ public class VirtualRobotMenuDocument : MonoBehaviour
 
         foreach (var receivedSession in receivedSessions.Sessions)
         {
-            var sessionButtonInstance = AssetDatabase
-                .LoadAssetAtPath<VisualTreeAsset>("Assets/UI Toolkit/VirtualRobotMenu/SessionButton.uxml").CloneTree();
+            var sessionButtonInstance = Resources.Load<VisualTreeAsset>("VirtualRobotMenu/SessionButton").CloneTree();
+            
             sessionButtonInstance.Q<Label>("SessionName").text = receivedSession.Name;
 
             var joinedPlayersGroup = sessionButtonInstance.Q<VisualElement>("JoinedPlayersGroup");
             if (receivedSession.Users != null)
                 foreach (var user in receivedSession.Users)
                 {
-                    var playerItem = AssetDatabase
-                        .LoadAssetAtPath<VisualTreeAsset>("Assets/UI Toolkit/VirtualRobotMenu/JoinedPlayerItem.uxml")
-                        .CloneTree();
+                    var playerItem = Resources.Load<VisualTreeAsset>("VirtualRobotMenu/JoinedPlayerItem").CloneTree();
+                    
                     playerItem.Q<Label>("PlayerLabel").text = user;
                     joinedPlayersGroup.Add(playerItem);
                 }
