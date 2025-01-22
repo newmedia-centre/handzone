@@ -42,6 +42,11 @@ public class GlobalClient : MonoBehaviour
     /// Signature.
     /// </summary>
     private static string _signature;
+    
+    /// <summary>
+    /// Status of the connection to the global server.
+    /// </summary>
+    public bool isConnected = false;
 
     /// <summary>
     /// Singleton instance of GlobalClient.
@@ -186,6 +191,7 @@ public class GlobalClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
+                isConnected = true;
                 Debug.Log("Connected to global server");
                 OnConnected?.Invoke();
             });
@@ -195,6 +201,7 @@ public class GlobalClient : MonoBehaviour
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
+                isConnected = false;
                 Debug.Log("Disconnected from global server");
                 OnDisconnected?.Invoke();
             });
