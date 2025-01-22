@@ -114,6 +114,8 @@ public class NameplateUIManager : MonoBehaviour
     /// </summary>
     public void ShowNameplates()
     {
+        if(_nameplateUIs == null) return;
+
         foreach (var nameplateUI in _nameplateUIs) nameplateUI.Show();
     }
 
@@ -122,6 +124,8 @@ public class NameplateUIManager : MonoBehaviour
     /// </summary>
     public void HideNameplates()
     {
+        if(_nameplateUIs == null) return;
+        
         foreach (var nameplateUI in _nameplateUIs) nameplateUI.Hide();
     }
 
@@ -132,7 +136,7 @@ public class NameplateUIManager : MonoBehaviour
     /// <returns>The corresponding NameplateUI, or null if not found.</returns>
     public NameplateUI GetNameplateByTarget(GameObject target)
     {
-        return _nameplateUIs.Find(ui => ui.Target == target);
+        return _nameplateUIs?.Find(ui => ui.Target == target);
     }
 
     /// <summary>
