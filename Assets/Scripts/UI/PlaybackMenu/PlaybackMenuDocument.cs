@@ -14,6 +14,7 @@
 
 #region
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UIElements;
@@ -34,6 +35,9 @@ public class PlaybackMenuDocument : MonoBehaviour
     private Label _sectionTitle;
     private Button _returnButton;
     private Button _completeButton;
+    private float _timeSinceLastUpdate;
+    private float _playableAssetDuration;
+    private bool _isUserInteracting;
 
     /// <summary>
     /// Called when the script instance is being loaded.
@@ -43,7 +47,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     {
         playbackMenuDocument = GetComponent<UIDocument>();
     }
-
+  
     /// <summary>
     /// Called when the object becomes enabled and active.
     /// Sets up button references and event listeners for playback controls.
@@ -78,8 +82,11 @@ public class PlaybackMenuDocument : MonoBehaviour
         _returnButton.clicked += OnReturnButtonClicked;
         _slider.RegisterValueChangedCallback(OnSliderValueChanged);
         _slider.RegisterCallback<PointerDownEvent>(OnSliderPointerDown);
+        _slider.RegisterCallback<PointerUpEvent>(OnSliderPointerUp);
         _playButton.RegisterValueChangedCallback(OnPlayButtonValueChanged);
+        playableDirector.played += HandlePlay;
         playableDirector.stopped += HandleStop;
+        playableDirector.paused += HandlePause;
         _completeButton.clicked += OnCompleteButtonClicked;
 
         if (MenuController.Instance.currentSelectedSection)
@@ -97,14 +104,6 @@ public class PlaybackMenuDocument : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates the slider value based on the current time of the playable director.
-    /// </summary>
-    private void Update()
-    {
-        _slider.value = (float)(playableDirector.time / playableDirector.duration);
-    }
-
-    /// <summary>
     /// Called when the object becomes disabled.
     /// Unregisters event listeners and stops the playable director.
     /// </summary>
@@ -115,10 +114,27 @@ public class PlaybackMenuDocument : MonoBehaviour
         _slider.UnregisterCallback<PointerDownEvent>(OnSliderPointerDown);
         _playButton.UnregisterValueChangedCallback(OnPlayButtonValueChanged);
         playableDirector.stopped -= HandleStop;
+        playableDirector.played -= HandlePlay;
+        playableDirector.paused -= HandlePause;
         _completeButton.clicked -= OnCompleteButtonClicked;
 
         if (playableDirector)
             playableDirector.Stop();
+    }
+    
+    private void Update()
+    {
+        UpdatePlaybackTime();
+    }
+    
+    /// <summary>
+    /// Because of the way Unity's PlayableDirector works, we need to manually update the playback time.
+    /// Otherwise, sound crackling issues occur.
+    /// </summary>
+    private void UpdatePlaybackTime()
+    {
+        _slider.value = (float)playableDirector.time / _playableAssetDuration;
+        _isUserInteracting = false;
     }
 
     /// <summary>
@@ -133,6 +149,16 @@ public class PlaybackMenuDocument : MonoBehaviour
         playableDirector.time = 0;
         playableDirector.Evaluate();
     }
+    
+    public void HandlePause(PlayableDirector director)
+    {
+        _playButton.value = false;
+    }
+    
+    public void HandlePlay(PlayableDirector director)
+    {
+        _playButton.value = true;
+    }
 
     /// <summary>
     /// Handles the value change event of the slider.
@@ -141,6 +167,9 @@ public class PlaybackMenuDocument : MonoBehaviour
     /// <param name="evt">The change event containing the new value.</param>
     private void OnSliderValueChanged(ChangeEvent<float> evt)
     {
+        // Check if the user has interacted with the slider before updating
+        if (!_isUserInteracting) return;
+        
         playableDirector.time = playableDirector.duration * evt.newValue;
         playableDirector.Evaluate();
     }
@@ -160,6 +189,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     {
         _playButton.value = true;
         playableDirector.Play();
+        _isUserInteracting = true;
     }
 
     /// <summary>
@@ -172,14 +202,14 @@ public class PlaybackMenuDocument : MonoBehaviour
         if (evt.newValue)
         {
             _slider.pickingMode = PickingMode.Position;
-            playableDirector.time = _slider.value * playableDirector.duration;
+            playableDirector.time = _slider.value * _playableAssetDuration;
             playableDirector.Evaluate();
             playableDirector.Play();
         }
         else
         {
             _slider.pickingMode = PickingMode.Ignore;
-            playableDirector.time = _slider.value * playableDirector.duration;
+            playableDirector.time = _slider.value * _playableAssetDuration;
             playableDirector.Evaluate();
             playableDirector.Pause();
         }
@@ -202,9 +232,10 @@ public class PlaybackMenuDocument : MonoBehaviour
     private void PrepareTutorial(SectionData data)
     {
         playableDirector.playableAsset = data.timelineAsset;
-        playableDirector.time = 0;
+        playableDirector.Stop();
 
         _slider.value = 0;
+        _playableAssetDuration = (float)playableDirector.playableAsset.duration;
 
         if (_slider.pickingMode == PickingMode.Ignore)
         {
