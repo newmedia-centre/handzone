@@ -44,8 +44,6 @@ public class PermissionFrame : MonoBehaviour
 
         if (SessionClient.Instance == null)
         {
-            Debug.LogWarning(
-                "SessionClient instance is null. Make sure to have a SessionClient instance in the scene.");
             return;
         }
 
