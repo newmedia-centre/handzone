@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# HANDZONe Project
+
+## Overview
+HANDZONe server is a web application designed to control and monitor robots for a virtual reality environment. It provides a user-friendly interface for managing and requesting robot sessions for both simulated and real robots, monitoring their status, and interacting with them in real-time.
+
+## Features
+- **Robot Control**: Start, stop, and manage robot sessions for simulated and real robots.
+- **Real-time Monitoring**: View the status and logs of robots in real-time.
+- **User Authentication**: Secure access to the application with user roles (admin and regular users).
+- **Virtual Reality Integration**: Control robots in a VR environment.
+- **Grasshopper Integration**: Run programs inside Grasshopper with [https://github.com/visose/Robots](Robots) plugin. Uploading meshes from Grasshopper to the Virtual Reality session.
+- **Logging**: Keep track of robot activities and errors through detailed logs.
+
+## Prerequisites
+Before you begin, ensure you have met the following requirements:
+- **Docker**: For containerized deployment.
+- **Docker Compose**: To manage multi-container Docker applications.
 
 ## Getting Started
 
-First, run the development server:
-
+### 1. Clone the Repository
+Clone the project repository to your local machine:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/newmedia-centre/handzone-server.git
+cd handzone-server
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Set Up Environment Variables
+Create a `.env` file from the root directory and configure the necessary environment variables. You can use the provided `.env_template` as a reference.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Start the HANDZONe server
+Use Docker Compose to start the application in development mode. Run the following command in the project directory:
+```bash
+# Run the Docker server and database in the background
+docker-compose -f docker-compose-dev.yml up -d
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 4. Start the Docker Proxy
+To set up the Docker socket proxy, run:
+```bash
+# Run the Docker socket proxy in the background
+docker-compose -f docker-compose-proxy.yml up -d
+```
 
-## Learn More
+### 5. Access the Application
+Once the containers are running, you can access the application at `http://localhost:3000`.
 
-To learn more about Next.js, take a look at the following resources:
+## Build for Production
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 1. Building the application
+To build the application for production, run:
+```bash
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### 2. Start the Production Server
+After building, you can start the production server with:
+```bash
+npm start
+```
 
-## Deploy on Vercel
+## Contributing
+We welcome contributions to the HANDZONe project! If you would like to contribute, please follow these steps:
+    1. Fork the repository.
+    2. Create a new branch for your feature or bug fix.
+    3. Make your changes and commit them.
+    4. Push your changes to your forked repository.
+    5. Submit a pull request.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Contact
+For any inquiries or feedback, please reach out to the project maintainers.
