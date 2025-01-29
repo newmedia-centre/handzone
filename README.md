@@ -13,20 +13,20 @@ This application features a digital twin of a robotic arm, providing users with 
 - **VR Support**: An immersive experience that allows users to engage with the content in a virtual reality environment.
 - **Grasshopper integration**: Allows users to create a Grasshopper session to import meshes directly from Grasshopper to the 3D environment and the possibility to upload programs that have been created with Grasshopper [Robots plugin](https://github.com/visose/Robots). 
 
-## Getting Started
-
-To get started with the HANDZONe project, install the prerequisites below to set up the development environment.
-
-1. Clone this Unity repository to your local machine.
-2. Make sure to run the configured [HANDZONe Server](https://github.com/newmedia-centre/handzone-server) docker instance.
-3. With the server running, you can load this Unity project and connect to the server to start using the application by configuring the Global Client component and changing the host and port to the address where the docker instance is running on.
-
-### Prerequisites
+## Prerequisites
 
 - Unity Editor (2022.3 or later)
 - [HANDZONe Server](https://github.com/newmedia-centre/handzone-server) to manage robots and devices to digital twin inside the VR application.
 - [HANDZONe Grasshopper plugin](https://github.com/newmedia-centre/handzone-grasshopper) when connecting Grasshopper to Unity.
-- Meta Quest 2 or 3. 
+- Meta Quest 2 or 3.
+
+## Getting Started
+
+To get started with the HANDZONe project, install the prerequisites first.
+
+1. Clone this Unity repository to your local machine.
+2. Make sure to run the configured [HANDZONe Server](https://github.com/newmedia-centre/handzone-server) docker instance.
+3. Load this Unity project and connect to the server by configuring the `GlobalClient` component inside the `Scenes/MainMenu` scene to the address where the docker instance is running on.
 
 ## Contributing
 
