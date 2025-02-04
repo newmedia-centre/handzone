@@ -82,6 +82,9 @@ MonoBehaviour:
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
     type: 3}
+  orientationReference:
+    exposedName: 
+    defaultValue: {fileID: 0}
 --- !u!114 &-6778492971758930911
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -658,6 +661,9 @@ MonoBehaviour:
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
     type: 3}
+  orientationReference:
+    exposedName: 
+    defaultValue: {fileID: 0}
 --- !u!114 &-1906503716674863246
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -748,6 +754,9 @@ MonoBehaviour:
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
     type: 3}
+  orientationReference:
+    exposedName: 
+    defaultValue: {fileID: 0}
 --- !u!114 &2194225432227783216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1621,6 +1630,9 @@ MonoBehaviour:
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
     type: 3}
+  orientationReference:
+    exposedName: 
+    defaultValue: {fileID: 0}
 --- !u!114 &7966315726085331591
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1638,6 +1650,9 @@ MonoBehaviour:
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
     type: 3}
+  orientationReference:
+    exposedName: 
+    defaultValue: {fileID: 0}
 --- !u!114 &8136137746048190372
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1655,6 +1670,9 @@ MonoBehaviour:
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 983588962955749714, guid: 1a4bca2438d76164280923aeae421ea8,
     type: 3}
+  orientationReference:
+    exposedName: 
+    defaultValue: {fileID: 0}
 --- !u!114 &8749073452576088588
 MonoBehaviour:
   m_ObjectHideFlags: 1

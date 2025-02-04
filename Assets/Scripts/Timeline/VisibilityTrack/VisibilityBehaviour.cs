@@ -26,6 +26,7 @@ public class VisibilityBehaviour : PlayableBehaviour
 {
     public GameObject targetObject;
     public GameObject transformGizmoPrefab;
+    public GameObject orientationReference; // The orientation reference for the transform gizmo to follow
 
     private GameObject _transformGizmo;
     private bool _isVisible = false;
@@ -63,6 +64,10 @@ public class VisibilityBehaviour : PlayableBehaviour
             if (_transformGizmo == null && transformGizmoPrefab != null)
                 // Instantiate the transform gizmo prefab and parent it to the target object
                 _transformGizmo = Object.Instantiate(transformGizmoPrefab, targetObject.transform);
+            
+            if(_transformGizmo != null && orientationReference != null)
+                // Set the transform gizmo's position and rotation to match the orientation reference
+                _transformGizmo.transform.rotation = orientationReference.transform.rotation;
 
             if (_transformGizmo)
             {

@@ -25,6 +25,7 @@ public class VisibilityClip : PlayableAsset
 {
     public ExposedReference<GameObject> targetObject;
     public GameObject transformGizmoPrefab;
+    public ExposedReference<GameObject> orientationReference; // The orientation reference for the transform gizmo to follow
 
     public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
     {
@@ -32,6 +33,7 @@ public class VisibilityClip : PlayableAsset
         var behaviour = playable.GetBehaviour();
         behaviour.transformGizmoPrefab = transformGizmoPrefab;
         behaviour.targetObject = targetObject.Resolve(graph.GetResolver());
+        behaviour.orientationReference = orientationReference.Resolve(graph.GetResolver());
         return playable;
     }
 }

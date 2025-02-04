@@ -837,10 +837,13 @@ MonoBehaviour:
   m_Name: VisibilityClip(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
   targetObject:
-    exposedName: d3bcaac2cee0403468a5a465533f75c5
+    exposedName: ebde0d6858f46754aba7ae6f72bab70a
     defaultValue: {fileID: 0}
-  transformGizmoPrefab: {fileID: 8990357432738337424, guid: 5e1fe30c4c0ddc64ab0b93f504aaba63,
+  transformGizmoPrefab: {fileID: 3064309616256260880, guid: f95680aee690e9a4a9a6f691ce8a940b,
     type: 3}
+  orientationReference:
+    exposedName: ff7dbda0c78bf9e45992825ed24219fb
+    defaultValue: {fileID: 0}
 --- !u!114 &917606426200427321
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1241,10 +1244,13 @@ MonoBehaviour:
   m_Name: VisibilityClip
   m_EditorClassIdentifier: 
   targetObject:
-    exposedName: 65983895991c2824786f5c70f02d857a
+    exposedName: 1ce0c3ed9e17ce0499e2af742b30e024
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 3064309616256260880, guid: f90120f0f68faba449233ae3be50179d,
     type: 3}
+  orientationReference:
+    exposedName: 78e77ef832f979945a461140309db5a3
+    defaultValue: {fileID: 0}
 --- !u!114 &2425728497845264051
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1262,6 +1268,9 @@ MonoBehaviour:
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 6411273485479038947, guid: b17a80c428f2a0b4c82d27dfd7e0dae5,
     type: 3}
+  orientationReference:
+    exposedName: 
+    defaultValue: {fileID: 0}
 --- !u!114 &2571286448079373206
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1279,6 +1288,9 @@ MonoBehaviour:
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 6411273485479038947, guid: b17a80c428f2a0b4c82d27dfd7e0dae5,
     type: 3}
+  orientationReference:
+    exposedName: 
+    defaultValue: {fileID: 0}
 --- !u!114 &2870205811761539553
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1313,6 +1325,9 @@ MonoBehaviour:
     defaultValue: {fileID: 0}
   transformGizmoPrefab: {fileID: 8730434172794178002, guid: 4cdccffe866f94d4faccaf08b5e57a5a,
     type: 3}
+  orientationReference:
+    exposedName: 
+    defaultValue: {fileID: 0}
 --- !u!114 &5254026015498044232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1879,10 +1894,13 @@ MonoBehaviour:
   m_Name: VisibilityClip(Clone)(Clone)
   m_EditorClassIdentifier: 
   targetObject:
-    exposedName: a5fa234a7a62bfa43b61859a38885142
+    exposedName: 1f00ff6b0d222f749afdfdd067bf70c2
     defaultValue: {fileID: 0}
-  transformGizmoPrefab: {fileID: 3064309616256260880, guid: f95680aee690e9a4a9a6f691ce8a940b,
+  transformGizmoPrefab: {fileID: 8990357432738337424, guid: 5e1fe30c4c0ddc64ab0b93f504aaba63,
     type: 3}
+  orientationReference:
+    exposedName: 925f7eb297515c848996dad7b8a889ac
+    defaultValue: {fileID: 0}
 --- !u!114 &7480984035119640368
 MonoBehaviour:
   m_ObjectHideFlags: 1
