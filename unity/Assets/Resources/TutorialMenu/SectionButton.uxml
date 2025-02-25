@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
+    <ui:Button text="Button" name="SectionButton" class="section-button text text-color" style="flex-direction: row-reverse; background-color: rgb(177, 177, 177);">
+        <ui:Toggle binding-path="sectionCompleted" picking-mode="Ignore" focusable="false" name="SectionToggle" value="true" class="text checkmark section-toggle" />
+    </ui:Button>
+</ui:UXML>

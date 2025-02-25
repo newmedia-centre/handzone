@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
+    <ui:VisualElement name="Background" class="background" style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement name="Navigation" class="navigation" style="flex-basis: 100%; flex-direction: row-reverse; align-self: stretch;">
+            <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="ReturnButton" class="return-button" style="position: absolute; width: 80px; height: 80px; overflow: visible; padding-top: 11px; padding-right: 11px; padding-bottom: 11px; padding-left: 11px; top: auto; left: auto; border-top-left-radius: 50px; border-top-right-radius: 50px; border-bottom-right-radius: 50px; border-bottom-left-radius: 50px; flex-direction: row-reverse; margin-top: 14px; margin-right: 14px; margin-bottom: 14px; margin-left: 14px; align-self: flex-start;" />
+            <ui:VisualElement name="NavContent" focusable="false" picking-mode="Ignore" class="container text header" style="flex-grow: 1; flex-shrink: 0; flex-direction: column; flex-basis: auto;">
+                <ui:Label tabindex="-1" text="Virtual Robot Session" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title" picking-mode="Ignore" class="text-header text-color" />
+                <ui:VisualElement name="Divider" style="flex-grow: 0; background-color: rgb(225, 225, 225); height: 2px; margin-top: 0; margin-bottom: 38px; margin-left: 8px; margin-right: 14px;" />
+                <ui:Label tabindex="-1" text="Create or join any available session" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ShortDescription" class="text-color text" style="font-size: 34px; white-space: normal; -unity-font: url(&quot;project://database/Assets/Fonts/Roboto/Roboto-Light.ttf?fileID=12800000&amp;guid=9c80a8fcde152064584fb7bc6ba9a8b0&amp;type=3#Roboto-Light&quot;); margin-left: 8px; margin-bottom: 8px;" />
+                <ui:VisualElement name="SessionsGroup" style="flex-grow: 1;">
+                    <ui:ScrollView name="SessionsGroupScrollView" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 0; flex-direction: row; align-items: auto; justify-content: space-between; align-self: auto;">
+                    <ui:Button text="Join" parse-escape-sequences="true" display-tooltip-when-elided="true" name="JoinButton" focusable="false" enable-rich-text="false" class="button" style="min-width: auto; flex-grow: 1;" />
+                    <ui:Button text="Create" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateButton" focusable="false" enable-rich-text="false" class="button" style="min-width: auto; flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:Button text="Back" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BackButton" class="button button-secondary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

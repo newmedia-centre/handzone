@@ -1,0 +1,273 @@
+.header {
+    font-size: 40px;
+    -unity-font: url("project://database/Assets/Fonts/Roboto/Roboto-Bold.ttf?fileID=12800000&guid=70321009e7426fc43ab9c561ebdc6165&type=3#Roboto-Bold");
+    -unity-font-definition: initial;
+    color: rgb(32, 33, 36);
+}
+
+.background {
+    border-radius: 24px;
+    background-color: rgb(225, 225, 225);
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.header {
+    margin: 32px;
+}
+
+.text {
+    -unity-font-definition: initial;
+    -unity-font: url("project://database/Assets/Fonts/Roboto/Roboto-Regular.ttf?fileID=12800000&guid=ce84a613b7a8c0d49b1cc626e02d8505&type=3#Roboto-Regular");
+    align-self: stretch;
+}
+
+.chapter-progress .unity-progress-bar__container {
+    min-height: 50px;
+    font-size: 30px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.chapter-progress .unity-progress-bar__progress {
+    background-color: rgb(85, 166, 48);
+    border-radius: 24px;
+    margin: 0;
+}
+
+.unity-progress-bar__background {
+    background-color: rgb(228, 228, 228);
+    border-color: transparent;
+    border-radius: 24px;
+}
+
+.checkmark .unity-toggle__checkmark {
+    background-color: transparent;
+    border-color: transparent;
+    -unity-background-image-tint-color: rgb(85, 166, 48);
+    min-width: 52px;
+    min-height: 52px;
+}
+
+.section-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-color: transparent;
+    margin-left: 0;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin-right: 80px;
+    padding: 0;
+    min-height: 62px;
+    font-size: 28px;
+}
+
+.section-toggle {
+    align-self: center;
+    display: flex;
+    padding: 8px;
+}
+
+.unity-foldout__toggle {
+    font-size: 32px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.unity-foldout__content {
+    margin: 0;
+    padding: 0;
+}
+
+.unity-foldout__input {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin: 0 8px 0 8px;
+}
+
+.unity-foldout__checkmark {
+    background-image: resource('chevron-up.png');
+    height: 32px;
+    width: 32px;
+    -unity-background-image-tint-color: rgb(144, 144, 144);
+}
+
+Foldout > Toggle:checked .unity-foldout__checkmark {
+    background-image: resource('chevron-down.png');
+}
+
+.navigation {
+    border-radius: 24px;
+    border-color: white;
+    background-color: rgb(247, 247, 247);
+    flex-basis: 40%;
+}
+
+.content {
+    background-color: rgb(228, 228, 228);
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    padding: 42px;
+}
+
+.text-header {
+    -unity-font: url("project://database/Assets/3rd%20Party/TextMesh%20Pro/Examples%20&%20Extras/Fonts/Roboto-Bold.ttf?fileID=12800000&guid=4beb055f07aaff244873dec698d0363e&type=3#Roboto-Bold");
+    font-size: 60px;
+    padding-bottom: 10px;
+    color: rgb(34, 34, 34);
+}
+
+.button {
+    background-color: rgb(63, 145, 66);
+    border-radius: 24px;
+    color: white;
+    border-color: transparent;
+    font-size: 30px;
+    padding: 16px;
+    min-width: 420px;
+    margin-top: 12px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    margin-left: 12px;
+}
+
+.button:hover {
+    background-color: rgb(47, 129, 50);
+}
+
+.button:active {
+    background-color: rgb(14, 88, 20);
+}
+
+.button:disabled:hover {
+    background-color: rgb(228, 228, 228);
+    color: rgb(144, 144, 144);
+    cursor: default;
+}
+
+.playback-slider .unity-base-slider__tracker {
+    background-color: rgb(228, 228, 228);
+    border-color: transparent;
+    height: 18px;
+    border-radius: 9px;
+}
+
+.playback-slider .unity-base-slider__dragger {
+    background-color: gray;
+    border-color: transparent;
+    height: 24px;
+    width: 24px;
+    border-radius: 12px;
+    margin-top: -6px;
+}
+
+.playback-slider .unity-base-slider__dragger:active {
+    -unity-background-image-tint-color: rgb(153, 33, 33);
+    background-color: rgba(255, 0, 0, 0);
+}
+
+.return-button {
+    background-color: rgb(228, 228, 228);
+    border-color: transparent;
+    border-radius: 32px;
+    margin: 8px;
+    background-size: 55%;
+    background-image: resource('return.png');
+    -unity-background-image-tint-color: gray;
+    width: 44px;
+    height: 44px;
+}
+
+.return-button:hover {
+    background-color: rgb(207, 207, 207);
+}
+
+.return-button:active {
+    background-color: rgb(177, 177, 177);
+}
+
+.play-button:checked .unity-toggle__checkmark {
+    background-image: resource('Pause');
+}
+
+.play-button .unity-toggle__checkmark {
+    background-color: transparent;
+    border-color: transparent;
+    width: 34px;
+    height: 34px;
+    background-image: resource('Play');
+}
+
+.button-secondary {
+    background-color: rgb(193, 234, 197);
+    color: rgb(63, 145, 66);
+}
+
+.button-secondary:hover {
+    background-color: rgb(87, 174, 91);
+    color: white;
+}
+
+.button-secondary:active {
+    background-color: rgb(63, 145, 66);
+    color: white;
+}
+
+.text-color {
+    color: rgb(34, 34, 34);
+}
+
+.session-button {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-left-color: rgb(207, 207, 207);
+    border-right-color: rgb(207, 207, 207);
+    border-top-color: rgb(207, 207, 207);
+    border-bottom-color: rgb(207, 207, 207);
+    background-color: rgb(225, 225, 225);
+    margin-top: 7px;
+    margin-right: 7px;
+    margin-bottom: 7px;
+    margin-left: 7px;
+}
+
+.session-button:hover {
+    border-color: rgb(47, 129, 50);
+}
+
+.selected-button {
+    border-color: rgb(47, 129, 50);
+    background-color: rgb(200, 255, 200);
+}
+
+.session-button:active {
+    border-color: rgb(14, 88, 20);
+}
+
+.button-complete {
+    position: absolute;
+    right: 0;
+    background-color: rgb(228, 228, 228);
+    -unity-background-image-tint-color: rgb(228, 228, 228);
+    border-left-color: rgba(149, 149, 149, 0);
+    border-right-color: rgba(149, 149, 149, 0);
+    border-top-color: rgba(149, 149, 149, 0);
+    border-bottom-color: rgba(149, 149, 149, 0);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.button-complete:hover {
+    background-color: rgb(207, 207, 207);
+}
+
+.button-complete:active {
+    background-color: rgb(177, 177, 177);
+}

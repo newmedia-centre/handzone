@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="JoinedPlayerItem" style="background-image: none; -unity-background-scale-mode: scale-to-fit; align-items: center; justify-content: flex-start; align-self: auto; flex-direction: row;">
+        <ui:VisualElement name="UserIcon" style="background-image: url(&quot;project://database/Assets/Textures/user.226x256.png?fileID=2800000&amp;guid=ec6a498caa14f374b8695dfbb9dfcd52&amp;type=3#user.226x256&quot;); -unity-background-scale-mode: scale-to-fit; flex-direction: column; -unity-background-image-tint-color: rgb(177, 177, 177); height: 20px; width: 20px; margin-top: 8px; margin-right: 8px; margin-bottom: 8px; margin-left: 8px;" />
+        <ui:Label tabindex="-1" text="Player 1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PlayerLabel" style="font-size: 20px; -unity-font: url(&quot;project://database/Assets/Fonts/Roboto/Roboto-BoldItalic.ttf?fileID=12800000&amp;guid=caa9a42aa10457f4cbd42dbb62fea202&amp;type=3#Roboto-BoldItalic&quot;); color: rgb(81, 81, 81);" />
+    </ui:VisualElement>
+</ui:UXML>
