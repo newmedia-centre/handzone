@@ -1,0 +1,27 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"module": "ESNext",
+		"outDir": "dist",
+		"target": "ESNext",
+		"isolatedModules": true,
+		"noEmit": false,
+		"moduleResolution": "Bundler",
+	},
+	"include": [
+		"src/types",
+	],
+	"exclude": [
+		"dist"
+	],
+	"ts-node": {
+		"files": true
+	},
+	"files": [
+		"./src/server/index.ts"
+	],
+	"tsc-alias": {
+		"verbose": true,
+		"resolveFullPaths": true,
+	}
+}

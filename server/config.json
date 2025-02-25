@@ -1,0 +1,34 @@
+{
+	"ROBOTS": [
+		{
+			"name": "robot-1",
+			"port": 30003,
+			"vnc": 5999,
+			"address": "172.19.14.251",
+			"camera": [
+				{
+					"name": "Static",
+					"address": "rtsp://172.19.14.226:8554/cam"
+				}
+			]
+		}
+	],
+	"DOCKER": {
+		"OPTIONS": {
+			"host": "172.19.14.251",
+			"port": 2375
+		},
+		"MAX_VIRTUAL": 5
+	},
+	"OAUTH": {
+		"name": "SURFconext",
+		"authorization_endpoint": "https://connect.test.surfconext.nl/oidc/authorize",
+		"token_endpoint": "https://connect.test.surfconext.nl/oidc/token",
+		"userinfo_endpoint": "https://connect.test.surfconext.nl/oidc/userinfo",
+		"claims": {
+			"id": "sub",
+			"name": "name",
+			"email": "email"
+		}
+	}
+}
