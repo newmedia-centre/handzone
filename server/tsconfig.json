@@ -29,7 +29,7 @@
         "./src/*"
       ],
       "@/types/*": [
-        "./schema/src/*"
+        "../schema/src/*"
       ],
     }
   },
