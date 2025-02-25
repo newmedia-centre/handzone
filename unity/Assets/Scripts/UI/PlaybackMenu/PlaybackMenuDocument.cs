@@ -1,16 +1,21 @@
-// Copyright 2024 NewMedia Centre - Delft University of Technology
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ *The MIT License (MIT)
+ * Copyright (c) 2025 NewMedia Centre - Delft University of Technology
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial
+ * portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #region
 
@@ -47,7 +52,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     {
         playbackMenuDocument = GetComponent<UIDocument>();
     }
-  
+
     /// <summary>
     /// Called when the object becomes enabled and active.
     /// Sets up button references and event listeners for playback controls.
@@ -121,12 +126,12 @@ public class PlaybackMenuDocument : MonoBehaviour
         if (playableDirector)
             playableDirector.Stop();
     }
-    
+
     private void Update()
     {
         UpdatePlaybackTime();
     }
-    
+
     /// <summary>
     /// Because of the way Unity's PlayableDirector works, we need to manually update the playback time.
     /// Otherwise, sound crackling issues occur.
@@ -149,12 +154,12 @@ public class PlaybackMenuDocument : MonoBehaviour
         playableDirector.time = 0;
         playableDirector.Evaluate();
     }
-    
+
     public void HandlePause(PlayableDirector director)
     {
         _playButton.value = false;
     }
-    
+
     public void HandlePlay(PlayableDirector director)
     {
         _playButton.value = true;
@@ -169,7 +174,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     {
         // Check if the user has interacted with the slider before updating
         if (!_isUserInteracting) return;
-        
+
         playableDirector.time = playableDirector.duration * evt.newValue;
         playableDirector.Evaluate();
     }
@@ -184,7 +189,7 @@ public class PlaybackMenuDocument : MonoBehaviour
         _playButton.value = false;
         playableDirector.Pause();
     }
-    
+
     private void OnSliderPointerUp(PointerUpEvent evt)
     {
         _playButton.value = true;
