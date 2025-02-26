@@ -1,8 +1,8 @@
-name: Docker Build & Publish
+name: Docker Build
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
@@ -31,7 +31,6 @@ jobs:
         with:
           file: ./server/dockerfile
           context: .
-          push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          push: false
 
 
