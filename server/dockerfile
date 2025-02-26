@@ -5,10 +5,10 @@ RUN apk update && apk add ffmpeg
 WORKDIR /app
 
 # Install Prisma Client
-COPY prisma ./
+COPY server/prisma ./
 
 # Install dependencies based on the preferred package manager
-COPY package.json package-lock.json ./
+COPY server/package.json server/package-lock.json ./
 RUN chmod -R a+rX /app
 RUN npm ci
 
@@ -16,9 +16,9 @@ RUN npm ci
 FROM deps AS builder
 LABEL stage=builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-COPY ../schema ../
+COPY --from=deps /app/node_modules ./server/node_modules
+COPY server server
+COPY schema schema
 RUN chmod -R a+rX /app
 
 # Next.js collects completely anonymous telemetry data about general usage.
@@ -31,6 +31,7 @@ ENV URL "build"
 ENV OAUTH_CLIENT_ID "build"
 ENV OAUTH_CLIENT_SECRET "build"
 
+WORKDIR /app/server
 RUN npm run build
 
 # Production image, copy all the files and run next
@@ -45,10 +46,10 @@ ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/next.config.mjs ./
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/server/next.config.mjs ./
+COPY --from=builder /app/server/public ./public
+COPY --from=builder /app/server/prisma ./prisma
+COPY --from=builder /app/server/package.json ./package.json
 
 RUN npm install --omit=dev
 
