@@ -5,10 +5,11 @@ RUN apk update && apk add ffmpeg
 WORKDIR /app
 
 # Install Prisma Client
-COPY prisma ./
+COPY server/prisma ./
 
 # Install dependencies based on the preferred package manager
-COPY package.json package-lock.json ./
+COPY server/package.json server/package-lock.json ./
+RUN chmod -R a+rX /app
 RUN npm ci
 
 # Rebuild the source code only when needed
@@ -16,7 +17,8 @@ FROM deps AS builder
 LABEL stage=builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY server .
+RUN chmod -R a+rX /app
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
