@@ -28,7 +28,7 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
         with:
-          file: dockerfile-ursim
-          context: .
+          file: ./server/dockerfile-ursim
+          context: ./server
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/ursim_cb3:3.15.8
