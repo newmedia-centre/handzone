@@ -1,0 +1,22 @@
+{
+    "name": "unity-socket-schema",
+    "version": "1.0.0",
+    "description": "Unity package for importing .cs files into Schema directory",
+    "unity": "2019.1",
+    "files": [
+        "Socket/*.cs",
+        "Socket/HANDZONe.Schema.asmdef",
+        "README.md",
+        "LICENSE"
+    ],
+    "author": {
+        "name": "XRZone - NewMedia Centre",
+        "email": "s.bayoumy@tudelft.nl"
+    },
+    "dependencies": {},
+    "keywords": [
+        "unity",
+        "schema",
+        "socket"
+    ]
+}
