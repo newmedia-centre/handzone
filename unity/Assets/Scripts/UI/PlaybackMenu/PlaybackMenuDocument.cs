@@ -105,7 +105,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     private void OnCompleteButtonClicked()
     {
         MenuController.Instance.CompleteSection();
-        MenuController.Instance.ChangeMenu(MenuName.Main);
+        MenuController.Instance.ChangeMenu(MenuName.Tutorial);
     }
 
     /// <summary>
@@ -226,7 +226,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     /// </summary>
     private void OnReturnButtonClicked()
     {
-        MenuController.Instance.ChangeMenu(MenuName.Main);
+        MenuController.Instance.ChangeMenu(MenuName.Tutorial);
         playableDirector.Stop();
     }
 
