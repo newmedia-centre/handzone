@@ -13,16 +13,15 @@ HANDZONe server is a web application designed to control and monitor robots for 
 
 ## Prerequisites
 Before you begin, ensure you have met the following requirements:
-- **Docker**: For containerized deployment.
-- **Docker Compose**: To manage multi-container Docker applications.
+- **[Docker](https://www.docker.com/)**: For containerized deployment.
 
 ## Getting Started
 
 ### 1. Clone the Repository
 Clone the project repository to your local machine:
 ```bash
-git clone https://github.com/newmedia-centre/handzone-server.git
-cd handzone-server
+git clone https://github.com/newmedia-centre/handzone.git
+cd server
 ```
 
 ### 2. Set Up Environment Variables
@@ -35,7 +34,9 @@ Use Docker Compose to start the application in development mode. Run the followi
 docker-compose -f docker-compose-dev.yml up -d
 ```
 
-### 4. Start the Docker Proxy
+### 4. Start the Docker Proxy (Optional)
+> This step is optional and needed whenever you want to run the server and the Unity application on same machine.
+
 To set up the Docker socket proxy, run:
 ```bash
 # Run the Docker socket proxy in the background
@@ -60,12 +61,12 @@ npm start
 ```
 
 ## Contributing
-We welcome contributions to the HANDZONe project! If you would like to contribute, please follow these steps:
-    1. Fork the repository.
-    2. Create a new branch for your feature or bug fix.
-    3. Make your changes and commit them.
-    4. Push your changes to your forked repository.
-    5. Submit a pull request.
+We welcome contributions to the HANDZONe project! If you would like to contribute, please follow these steps.
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your changes to your forked repository.
+5. Submit a pull request.
 
 ## Contact
 For any inquiries or feedback, please reach out to the project maintainers.
