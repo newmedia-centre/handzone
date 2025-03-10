@@ -1416,16 +1416,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (XR Rig) XRZone Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 8862361131812308440, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      propertyPath: m_RaycastMask.m_Bits
-      value: 2147484704
-      objectReference: {fileID: 0}
-    - target: {fileID: 8862361131812308440, guid: 7474d4560289953428d15488ca227e80,
-        type: 3}
-      propertyPath: m_InteractionLayers.m_Bits
-      value: 160
-      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8573478302563859100, guid: 7474d4560289953428d15488ca227e80, type: 3}
     - {fileID: 0}
@@ -2435,12 +2425,6 @@ PrefabInstance:
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
-    - target: {fileID: 1833736096786321441, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: ToggleMenuButton
-      value: 
-      objectReference: {fileID: -2731935222828003193, guid: 179b8880dc2883b4d9d2b1fc152e1bd5,
-        type: 3}
     - target: {fileID: 2715267619782839167, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Name
@@ -2456,16 +2440,6 @@ PrefabInstance:
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
-    - target: {fileID: 5509215214924448621, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Convex
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5509215214924448621, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5684084317520233494, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
@@ -2476,33 +2450,6 @@ PrefabInstance:
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
-    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: cursorPrefab
-      value: 
-      objectReference: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
-        type: 3}
-    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: showDebugInfo
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: m_CustomReticle
-      value: 
-      objectReference: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
-        type: 3}
-    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
-        type: 3}
-      propertyPath: showRaycastDebug
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8285019241823039567, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target

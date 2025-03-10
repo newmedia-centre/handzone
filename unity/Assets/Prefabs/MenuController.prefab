@@ -178,6 +178,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &3133947393730383421
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -431,6 +441,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &76813048418579634
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -686,6 +706,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &8930701317044954746
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -824,7 +854,7 @@ MonoBehaviour:
     type: 2}
   currentSelectedChapter: {fileID: 11400000, guid: 144550f435b103c40a5b0e4b4fe67c1c,
     type: 2}
-  ToggleMenuButton: {fileID: -6390888798515607886, guid: c348712bda248c246b8c49b3db54643f,
+  ToggleMenuButton: {fileID: -2731935222828003193, guid: 179b8880dc2883b4d9d2b1fc152e1bd5,
     type: 3}
 --- !u!1 &3197159919356386812
 GameObject:
@@ -1231,6 +1261,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!114 &3365762248851580988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1485,6 +1525,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &8623816617735509457
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1740,6 +1790,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &5455606201207425383
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1993,6 +2053,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &5509215214924448621
 MeshCollider:
   m_ObjectHideFlags: 0
