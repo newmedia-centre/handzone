@@ -1139,10 +1139,13 @@ MonoBehaviour:
   m_RepeatRate: 0.1
   m_TrackedDeviceDragThresholdMultiplier: 2
   m_TrackedScrollDeltaMultiplier: 5
+  m_BypassUIToolkitEvents: 0
   m_ActiveInputMode: 1
   m_EnableXRInput: 1
   m_EnableMouseInput: 1
   m_EnableTouchInput: 1
+  m_EnableGamepadInput: 1
+  m_EnableJoystickInput: 1
   m_PointAction: {fileID: 2869410428622933342, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
   m_LeftClickAction: {fileID: 1855836014308820768, guid: c348712bda248c246b8c49b3db54643f,
@@ -1160,8 +1163,6 @@ MonoBehaviour:
   m_CancelAction: {fileID: 2387711382375263438, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
   m_EnableBuiltinActionsAsFallback: 1
-  m_EnableGamepadInput: 1
-  m_EnableJoystickInput: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -1415,9 +1416,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (XR Rig) XRZone Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 8862361131812308440, guid: 7474d4560289953428d15488ca227e80,
+        type: 3}
+      propertyPath: m_RaycastMask.m_Bits
+      value: 2147484704
+      objectReference: {fileID: 0}
+    - target: {fileID: 8862361131812308440, guid: 7474d4560289953428d15488ca227e80,
+        type: 3}
+      propertyPath: m_InteractionLayers.m_Bits
+      value: 160
+      objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 6429816138099900506, guid: 7474d4560289953428d15488ca227e80, type: 3}
     - {fileID: 8573478302563859100, guid: 7474d4560289953428d15488ca227e80, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2404,6 +2420,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 634649192400198147, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1475980274930801232, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
@@ -2414,6 +2435,12 @@ PrefabInstance:
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 1833736096786321441, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: ToggleMenuButton
+      value: 
+      objectReference: {fileID: -2731935222828003193, guid: 179b8880dc2883b4d9d2b1fc152e1bd5,
+        type: 3}
     - target: {fileID: 2715267619782839167, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Name
@@ -2429,6 +2456,16 @@ PrefabInstance:
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 5509215214924448621, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5509215214924448621, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5684084317520233494, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
@@ -2439,11 +2476,48 @@ PrefabInstance:
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: cursorPrefab
+      value: 
+      objectReference: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+        type: 3}
+    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: showDebugInfo
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_CustomReticle
+      value: 
+      objectReference: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+        type: 3}
+    - target: {fileID: 8097808956243986548, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: showRaycastDebug
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8285019241823039567, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
         type: 3}
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 836359353}
+    - target: {fileID: 8931473592956288410, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9016415338607906496, guid: aef0bf9a9fa69c84e81b9eb336c9fd3a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
