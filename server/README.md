@@ -21,7 +21,7 @@ Before you begin, ensure you have met the following requirements:
 Clone the project repository to your local machine:
 ```bash
 git clone https://github.com/newmedia-centre/handzone.git
-cd server
+cd handzone/server
 ```
 
 ### 2. Set Up Environment Variables
