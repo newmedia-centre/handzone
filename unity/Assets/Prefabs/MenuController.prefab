@@ -178,6 +178,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &3133947393730383421
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -431,6 +441,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &76813048418579634
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -686,6 +706,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &8930701317044954746
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -824,7 +854,7 @@ MonoBehaviour:
     type: 2}
   currentSelectedChapter: {fileID: 11400000, guid: 144550f435b103c40a5b0e4b4fe67c1c,
     type: 2}
-  ToggleMenuButton: {fileID: -6390888798515607886, guid: c348712bda248c246b8c49b3db54643f,
+  ToggleMenuButton: {fileID: -2731935222828003193, guid: 179b8880dc2883b4d9d2b1fc152e1bd5,
     type: 3}
 --- !u!1 &3197159919356386812
 GameObject:
@@ -839,7 +869,10 @@ GameObject:
   - component: {fileID: 6794365437427822975}
   - component: {fileID: 3961784869344208107}
   - component: {fileID: 2916871935478139819}
-  m_Layer: 0
+  - component: {fileID: 5811010135392576310}
+  - component: {fileID: 907973039766395501}
+  - component: {fileID: 3633714081968264092}
+  m_Layer: 5
   m_Name: MenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -882,7 +915,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -982,6 +1015,74 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5811010135392576310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3197159919356386812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2d7d89889b4d94fa1f8d6fe49788e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Target: {fileID: 0}
+  m_TargetOffset: {x: 0, y: 0, z: 0.5}
+  m_FollowInLocalSpace: 0
+  m_ApplyTargetInLocalSpace: 0
+  m_MovementSpeed: 6
+  m_MovementSpeedVariancePercentage: 0.25
+  m_SnapOnEnable: 1
+  m_PositionFollowMode: 0
+  m_MinDistanceAllowed: 0.01
+  m_MaxDistanceAllowed: 0.3
+  m_TimeUntilThresholdReachesMaxDistance: 3
+  m_RotationFollowMode: 2
+  m_MinAngleAllowed: 1
+  m_MaxAngleAllowed: 20
+  m_TimeUntilThresholdReachesMaxAngle: 1
+--- !u!64 &907973039766395501
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3197159919356386812}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
+--- !u!114 &3633714081968264092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3197159919356386812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 0
+  m_CheckFor2DOcclusion: 0
+  m_CheckFor3DOcclusion: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 33
+  m_RaycastTriggerInteraction: 1
 --- !u!1 &5665675203555376961
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,6 +1261,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!114 &3365762248851580988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1414,6 +1525,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &8623816617735509457
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1669,6 +1790,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &5455606201207425383
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1922,6 +2053,16 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  cursorPrefab: {fileID: 3910889896633470184, guid: 0720042921556434798dab72332c3b6b,
+    type: 3}
+  normalCursorColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverCursorColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  pressCursorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  hapticIntensity: 0.5
+  hapticDuration: 0.1
+  positionSmoothTime: 0.05
+  controllerSwitchDelay: 0.5
+  showDebugInfo: 0
 --- !u!64 &5509215214924448621
 MeshCollider:
   m_ObjectHideFlags: 0

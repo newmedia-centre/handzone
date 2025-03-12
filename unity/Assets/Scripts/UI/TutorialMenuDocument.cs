@@ -61,9 +61,10 @@ public class TutorialMenuDocument : MonoBehaviour
             {  
                 var sectionButton = Resources.Load<VisualTreeAsset>("TutorialMenu/SectionButton").CloneTree();  
                 var sectionButtonElement = sectionButton.Q<Button>("SectionButton");  
+                var sectionButtonLabelElement = sectionButton.Q<Label>("SectionButtonLabel");
                 var sectionToggleElement = sectionButtonElement.Q<Toggle>("SectionToggle");  
   
-                sectionButtonElement.text = sectionData.title;  
+                sectionButtonLabelElement.text = sectionData.title;  
                 sectionToggleElement.value = sectionData.completed;  
   
                 sectionToggleElement.RegisterValueChangedCallback(evt =>  
