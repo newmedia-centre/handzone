@@ -18,12 +18,42 @@ These sessions can be used to interact with robots in real-time inside a virtual
 - **[HANDZONe Grasshopper plugin](grasshopper/README.md)**: The Grasshopper plugin for the HANDZONe project.
 
 ## Features
-- **Robot Control**: Start, stop, and manage robot sessions for simulated and real robots.
-- **Real-time Monitoring**: View the status and logs of robots in real-time.
-- **User Authentication**: Secure access to the application with user roles (admin and regular users).
-- **Virtual Reality Integration**: Control robots in a VR environment.
-- **Grasshopper Integration**: Run programs inside Grasshopper with [https://github.com/visose/Robots](Robots) plugin. Uploading meshes from Grasshopper to the Virtual Reality session.
-- **Logging**: Keep track of robot activities and errors through detailed logs.
+
+### VR Application  
+- **Immersive Login System** - Secure authentication in virtual environment  
+  ![VR Login](recordings/handzone-vr-login.gif)  
+  
+- **Multiplayer Collaboration** - Work together in shared virtual spaces  
+  [Watch Demo](recordings/handzone-vr-multiplayer.mp4)  
+  
+- **Physical Robot Control** - Operate real UR robots from within VR  
+  [Watch Demo](recordings/handzone-vr-real-robot.mp4)  
+  
+- **Interactive Tutorials** - Learn robot programming through guided lessons  
+  [Watch Demo](recordings/handzone-vr-tutorial.mp4)  
+  
+- **Virtual Robot Simulation** - Practice with virtualized robots before using physical hardware  
+  [Watch Demo](handzone-vr-virtual-robot.mp4)  
+  
+### Web Interface  
+- **Student Request System** - Request access to robot resources  
+  ![Student Request](recordings/student-request.gif)  
+  
+- **Teacher Dashboard** - Monitor student activity and robot usage  
+  ![Teacher Logs](recordings/teacher-logs.gif)  
+  
+- **Request Management** - Review and approve student access requests  
+  ![Request Approval](recordings/teacher-request-accepted.gif)  
+  
+- **Real-time Monitoring** - Track robot status and operations  
+  ![Robot Monitoring](recordings/teacher-robot-monitoring.gif)  
+  
+### Additional Features  
+- **Grasshopper Plugin** - Program robots using parametric design workflows  
+- **Docker Containerization** - Deploy virtualized robots on demand  
+- **Cross-Platform Compatibility** - Seamless experience across VR, desktop, and web  
+- **Role-Based Access Control** - Customized interfaces for students, teachers, and administrators
+  ![Teacher Logs](https://github.com/newmedia-centre/handzone/blob/main/recordings/teacher-logs.gif)
 
 ## Prerequisites
 Before you begin, ensure you have met the following requirements:
