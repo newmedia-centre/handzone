@@ -23,18 +23,22 @@ These sessions can be used to interact with robots in real-time inside a virtual
 - **Immersive Login System** - Secure authentication in virtual environment  
   ![VR Login](recordings/handzone-vr-login.gif)  
   
-- **Multiplayer Collaboration** - Work together in shared virtual spaces  
-  [Watch Demo](recordings/handzone-vr-multiplayer.mp4)  
+- **Multiplayer Collaboration** - Work together in shared virtual spaces
+  
+https://github.com/user-attachments/assets/0f91d174-672c-4f03-8a2c-706d82a56fa1
   
 - **Physical Robot Control** - Operate real UR robots from within VR  
-  [Watch Demo](recordings/handzone-vr-real-robot.mp4)  
+
+https://github.com/user-attachments/assets/e094eff1-8125-4c25-aae6-1baa6d5c1749
   
 - **Interactive Tutorials** - Learn robot programming through guided lessons  
-  [Watch Demo](recordings/handzone-vr-tutorial.mp4)  
-  
-- **Virtual Robot Simulation** - Practice with virtualized robots before using physical hardware  
-  [Watch Demo](handzone-vr-virtual-robot.mp4)  
-  
+
+https://github.com/user-attachments/assets/39c3267a-9358-431a-9df5-e4744de90e9f
+
+- **Virtual Robot Simulation** - Practice with virtualized robots before using physical hardware
+
+https://github.com/user-attachments/assets/c3ff9a0e-e38f-41bb-8241-057fa040d8e5
+
 ### Web Interface  
 - **Student Request System** - Request access to robot resources  
   ![Student Request](recordings/student-request.gif)  
