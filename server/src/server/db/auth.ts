@@ -130,8 +130,8 @@ export const validateApi = async (req: Request, res: Response) => {
 			const sessionCookie = lucia.createBlankSessionCookie()
 			res.appendHeader('Set-Cookie', serializeCookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes))
 		}
-	} catch {
-		logger.warn('Failed to set session cookie')
+	} catch (e) {
+		logger.warn('Failed to set session cookie', e)
 	}
 	return {
 		user: result.user as User,
