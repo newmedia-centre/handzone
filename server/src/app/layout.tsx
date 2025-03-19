@@ -34,6 +34,10 @@ export const metadata: Metadata = {
     description: "Control robots in VR",
 }
 
+// make the route dynamic
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 // export common layout for the entire website
 export default function RootLayout({
     children,

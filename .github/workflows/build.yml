@@ -1,11 +1,12 @@
-name: Build Polyscope for URSIM CB 3.15.8
+name: Docker Build
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
-    name: Build Docker Image and Push to Registry
+    name: Build Docker Image
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -25,10 +26,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker images
+      - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
-          file: ./server/dockerfile-ursim
-          context: ./server
-          push: true
-          tags: ghcr.io/${{ github.repository }}/ursim_cb3:3.15.8
+          file: ./server/dockerfile
+          context: .
+          push: false
+
+
