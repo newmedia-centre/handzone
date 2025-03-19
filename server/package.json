@@ -9,7 +9,7 @@
     "build:server": "tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
     "build:next": "next build",
     "build": "BUILDING=1 npm run build:next && npm run build:server",
-    "start": "NODE_ENV=production node dist/src/server/index.js",
+    "start": "NODE_ENV=production node dist/server/index.js",
     "deploy": "prisma migrate deploy && npm start",
     "lint": "next lint"
   },
