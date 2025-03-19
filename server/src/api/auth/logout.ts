@@ -27,8 +27,9 @@ import type { Request, Response } from 'express'
 // create the logout route
 export const logout = async (req: Request, res: Response) => {
 	const { session } = await validateApi(req, res)
-	console.log('logout attempt without session', session)
+
 	if (!session) {
+		console.log('logout attempt without session', session)
 		return res.redirect('/about')
 	}
 

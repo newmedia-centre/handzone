@@ -86,6 +86,7 @@ export const oauthCallback = async (req: Request, res: Response) => {
 		// redirect to the home page
 		return res.status(302).redirect('/')
 	} catch (e) {
+		console.error(e)
 		// the specific error message depends on the provider
 		if (e instanceof OAuth2RequestError) {
 			// invalid code
