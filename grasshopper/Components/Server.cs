@@ -23,6 +23,7 @@ namespace Handzone.Components
     public class ServerConnectComponent : GH_Component
     {
         private string _pin;
+        private string _url;
         private string _status = "Not Connected";
         private ComponentButton _button;
 
@@ -85,6 +86,8 @@ namespace Handzone.Components
         protected override void RegisterInputParams(GH_InputParamManager input)
         {
             input.AddTextParameter("PIN", "P", "The PIN code to entered on the HANDZONe website", GH_ParamAccess.item);
+            input.AddTextParameter("URL", "U", "The server URL (optional, defaults to https://handzone.tudelft.nl/)", GH_ParamAccess.item, "https://handzone.tudelft.nl/");
+            input[1].Optional = true;
         }
 
         /// <summary>
@@ -103,6 +106,19 @@ namespace Handzone.Components
         protected override void SolveInstance(IGH_DataAccess io)
         {
             io.GetData(0, ref _pin);
+            io.GetData(1, ref _url);
+            
+            // Set the URL in State if provided
+            if (!string.IsNullOrWhiteSpace(_url))
+            {
+                // Ensure URL ends with /
+                State.Url = _url.TrimEnd('/') + "/";
+            }
+            else
+            {
+                State.Url = State.DefaultUrl;
+            }
+            
             io.SetData(0, _status);
         }
 

@@ -25,13 +25,21 @@ namespace Handzone.Core
         private static string _signature;
         private static GlobalConnection _globalConnection;
         private static SessionConnection _sessionConnection;
+        private static string _url = "https://handzone.tudelft.nl/";
 
         // define constants
-        public const string Url = "https://handzone.tudelft.nl/";
+        public const string DefaultUrl = "https://handzone.tudelft.nl/";
 
         // Private constructor.
         private State()
         { }
+
+        // URL accessor that allows getting and setting the server URL
+        public static string Url
+        {
+            get => _url;
+            set => _url = value;
+        }
 
         // Signature accessor that allows only one instance.
         public static string Signature => _signature ?? NewSignature();

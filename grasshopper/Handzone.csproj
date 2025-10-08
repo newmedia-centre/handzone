@@ -25,5 +25,9 @@
         <EmbeddedResource Include="Resources\Icons\**\*" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Include="..\schema\src\Socket\Grasshopper.cs" Link="Schema\Socket\Grasshopper.cs" />
+        <Compile Include="..\schema\src\Socket\Index.cs" Link="Schema\Socket\Index.cs" />
+    </ItemGroup>
 
 </Project>

@@ -87,16 +87,33 @@ namespace Handzone.Components
                 return;
             }
 
-            if (_program == null || _program.Code == null)
+            if (_program == null)
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Program code is null");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Program is null");
+                return;
+            }
+
+            // Serialize the program to JSON
+            string programJson;
+            try
+            {
+                programJson = Newtonsoft.Json.JsonConvert.SerializeObject(_program, new Newtonsoft.Json.JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+                    NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                    Formatting = Newtonsoft.Json.Formatting.None
+                });
+            }
+            catch (Exception e)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, $"Failed to serialize program: {e.Message}");
                 return;
             }
 
             // convert the program
             GrasshopperProgramIn grasshopperProgramIn = new GrasshopperProgramIn()
             {
-                Program = string.Join("\n", _program.Code[0][0])
+                Program = programJson
             };
 
             // send the program

@@ -25,7 +25,10 @@ import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, Inte
 export const handleGrasshopperEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, logger: Logger) => {
 	// handle the grasshopper:program event
 	socket.on('grasshopper:program', (data) => {
-		logger.info('Received program from grasshopper', { data: data.program })
+		logger.info('Received program from grasshopper', { programLength: data.program?.length })
+		// Broadcast the program to other clients (e.g., Unity)
+		socket.broadcast.emit('grasshopper:program', { program: data.program })
+		// Also send to robot if it's a direct command (for backward compatibility)
 		socket.data.robot.send(data.program + '\n')
 	})
 
