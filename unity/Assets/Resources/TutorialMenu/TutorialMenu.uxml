@@ -1,13 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:Template name="ReturnButton" src="project://database/Assets/UI%20Toolkit/ReturnButton.uxml?fileID=9197481963319205126&amp;guid=7b9d1539de9cc414fa160ac05aef8eb9&amp;type=3#ReturnButton" />
-    <Style src="project://database/Assets/UI%20Toolkit/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
+    <ui:Template name="ReturnButton" src="project://database/Assets/Resources/ReturnButton.uxml?fileID=9197481963319205126&amp;guid=7b9d1539de9cc414fa160ac05aef8eb9&amp;type=3#ReturnButton" />
+    <Style src="project://database/Assets/Resources/TutorialMenu.uss?fileID=7433441132597879392&amp;guid=622090287a8d8034ca0a34064c430369&amp;type=3#TutorialMenu" />
     <ui:VisualElement name="Background" class="background" style="flex-grow: 1; flex-direction: row;">
-        <ui:VisualElement name="Navigation" class="navigation">
+        <ui:VisualElement name="Navigation" class="navigation" style="width: 2500px; font-size: 11px;">
             <ui:VisualElement name="Header" class="container text header" style="flex-grow: 0; flex-shrink: 0; flex-direction: column; flex-basis: auto;">
                 <ui:Label tabindex="-1" text="Content" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Tutorial" class="text-color" />
                 <ui:ProgressBar value="0" name="ChapterProgress" class="chapter-progress text" />
             </ui:VisualElement>
-            <ui:ScrollView name="ScrollView" style="flex-grow: 1;">
+            <ui:ScrollView name="ScrollView" style="flex-grow: 1; width: 602px; font-size: 10px; transform-origin: left top; border-left-width: 0; white-space: normal; margin-left: 0; padding-left: 0; align-self: center;">
                 <ui:VisualElement name="ChapterGroup" style="flex-grow: 1; flex-shrink: 0; justify-content: flex-start;" />
             </ui:ScrollView>
         </ui:VisualElement>

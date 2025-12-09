@@ -862,6 +862,24 @@ MonoBehaviour:
   sourceTransform:
     exposedName: c4f37d1260b3ea845b905ff8c2123aed
     defaultValue: {fileID: 0}
+--- !u!114 &1049824315534743241
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 932cda19f2f248f79fb609a580dcdd81, type: 3}
+  m_Name: TranslatableHighlightControlClip
+  m_EditorClassIdentifier: 
+  targetSpriteRenderer:
+    exposedName: 4b7fe7fa2644ea14eb3988139fe611aa
+    defaultValue: {fileID: 0}
+  sourceTransform:
+    exposedName: 59674d03f30b73d41b1fe2257b263925
+    defaultValue: {fileID: 0}
 --- !u!114 &2194225432227783216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1798,6 +1816,75 @@ MonoBehaviour:
     m_ClipIn: 0
     m_Asset: {fileID: 917606426200427321}
     m_Duration: 7.650000000000006
+    m_TimeScale: 1
+    m_ParentTrack: {fileID: 6267855171219231310}
+    m_EaseInDuration: 0
+    m_EaseOutDuration: 0
+    m_BlendInDuration: 0
+    m_BlendOutDuration: 0
+    m_MixInCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_MixOutCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_BlendInCurveMode: 0
+    m_BlendOutCurveMode: 0
+    m_ExposedParameterNames: []
+    m_AnimationCurves: {fileID: 0}
+    m_Recordable: 0
+    m_PostExtrapolationMode: 0
+    m_PreExtrapolationMode: 0
+    m_PostExtrapolationTime: 0
+    m_PreExtrapolationTime: 0
+    m_DisplayName: TranslatableHighlightControlClip
+  - m_Version: 1
+    m_Start: 114.1
+    m_ClipIn: 0
+    m_Asset: {fileID: 1049824315534743241}
+    m_Duration: 36.05000000000001
     m_TimeScale: 1
     m_ParentTrack: {fileID: 6267855171219231310}
     m_EaseInDuration: 0

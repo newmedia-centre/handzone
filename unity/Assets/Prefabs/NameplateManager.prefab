@@ -75,3 +75,7 @@ MonoBehaviour:
     label: Wrist 3
     offsetStart: {x: 0, y: 0, z: -0.12}
     offsetEnd: {x: 0, y: 0, z: 0.22}
+  - target: {fileID: 0}
+    label: Default Z axis
+    offsetStart: {x: 0, y: 0, z: -0.12}
+    offsetEnd: {x: 0, y: 0, z: 0.22}

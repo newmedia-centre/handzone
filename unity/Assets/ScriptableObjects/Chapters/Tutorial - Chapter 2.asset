@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d7b4224e9e1e542a0e88c5573bc3fa, type: 3}
   m_Name: Tutorial - Chapter 2
   m_EditorClassIdentifier: 
-  chapterName: Robot Anatomy and Movements
+  chapterName: Tool Setup
   description: 
   sections:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: bb360ec5d25dba046b0e066e4b605a7f, type: 2}
+  - {fileID: 11400000, guid: d9247d5a9a421e94b8280f6a931a64d5, type: 2}

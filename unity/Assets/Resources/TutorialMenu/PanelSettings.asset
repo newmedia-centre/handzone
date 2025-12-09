@@ -15,14 +15,14 @@ MonoBehaviour:
   themeUss: {fileID: -4733365628477956816, guid: 50b69a1587af408428fee59095893695,
     type: 3}
   m_TargetTexture: {fileID: 8400000, guid: b407c932793a9be4b8eea0e9113be648, type: 2}
-  m_ScaleMode: 0
+  m_ScaleMode: 2
   m_ReferenceSpritePixelsPerUnit: 100
   m_Scale: 1
   m_ReferenceDpi: 96
   m_FallbackDpi: 96
-  m_ReferenceResolution: {x: 653, y: 800}
+  m_ReferenceResolution: {x: 1200, y: 800}
   m_ScreenMatchMode: 0
-  m_Match: 0
+  m_Match: 1
   m_SortingOrder: 0
   m_TargetDisplay: 0
   m_ClearDepthStencil: 1

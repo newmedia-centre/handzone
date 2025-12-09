@@ -162,7 +162,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.NewMediaCentre.HANDZONe
-    Standalone: com.UnityTechnologies.com.unity.template-starter-kit
+    Standalone: com.NewMedia-Centre.HANDZONe
   buildNumber:
     Standalone: 0
     VisionOS: 0
