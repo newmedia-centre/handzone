@@ -182,7 +182,6 @@ namespace Handzone.Components
 
             // scale to meters unit
             var scale = RhinoMath.UnitScale(RhinoDoc.ActiveDoc.ModelUnitSystem, UnitSystem.Meters);
-            Console.WriteLine(scale);
 
             // convert to triangles
             if (!mesh.Faces.ConvertQuadsToTriangles())

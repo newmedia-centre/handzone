@@ -57,14 +57,10 @@ public class GlobalConnection
             }
         });
 
-        Console.WriteLine("Pass Init");
-
         _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
         });
-
-        Console.WriteLine("Pass Serializer");
 
         _client.OnConnected += (_, _) =>
         {
@@ -82,8 +78,6 @@ public class GlobalConnection
 
         _client.OnError += (_, s) =>
         {
-            Console.WriteLine(s);
-
             // check if more time is needed
             if (s == "Pin not claimed")
             {
@@ -98,11 +92,7 @@ public class GlobalConnection
             }
         };
 
-        Console.WriteLine("Pre Connect");
-
         await _client.ConnectAsync();
-
-        Console.WriteLine("Post Connect");
     }
 
     /// <summary>

@@ -247,4 +247,16 @@ namespace Schema.Socket.Realtime
         [JsonProperty("v_robot")]
         public double VRobot { get; set; }
     }
+
+    /// <summary>
+    /// Signal to pause/resume live realtime updates on clients
+    /// </summary>
+    public partial class RealtimePauseOut
+    {
+        /// <summary>
+        /// If true, pause live realtime data; if false, resume
+        /// </summary>
+        [JsonProperty("pause")]
+        public bool Pause { get; set; }
+    }
 }

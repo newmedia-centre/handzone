@@ -13,10 +13,54 @@ namespace Schema.Socket.Grasshopper
     public partial class GrasshopperProgramIn
     {
         /// <summary>
+        /// If true, program is base64(gzip(json))
+        /// </summary>
+        [JsonProperty("compressed", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Compressed { get; set; }
+
+        /// <summary>
         /// The string payload of the IProgram object to send to the server.
         /// </summary>
-        [JsonProperty("program")]
+        [JsonProperty("program", NullValueHandling = NullValueHandling.Ignore)]
         public string Program { get; set; }
+
+        /// <summary>
+        /// Minimal joint-space waypoints (radians). If provided, clients may ignore 'program'.
+        /// </summary>
+        [JsonProperty("joints", NullValueHandling = NullValueHandling.Ignore)]
+        public List<List<double>> Joints { get; set; }
+
+    /// <summary>
+    /// Optional per-waypoint durations in seconds. If length == joints.Length-1, each value applies between i->i+1.
+    /// If length == joints.Length, values apply per frame; last value may be ignored.
+    /// </summary>
+    [JsonProperty("times", NullValueHandling = NullValueHandling.Ignore)]
+    public List<double> Times { get; set; }
+
+        /// <summary>
+        /// Optional timestep between joint waypoints in seconds.
+        /// </summary>
+        [JsonProperty("dt", NullValueHandling = NullValueHandling.Ignore)]
+        public double? Dt { get; set; }
+
+        /// <summary>
+        /// Units for joints (default 'rad').
+        /// </summary>
+        [JsonProperty("units", NullValueHandling = NullValueHandling.Ignore)]
+        public string Units { get; set; }
+
+        /// <summary>
+        /// If true, consumers should treat this as a hard reload of the current program
+        /// </summary>
+        [JsonProperty("reload", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Reload { get; set; }
+
+        /// <summary>
+        /// A monotonically changing identifier to force cache invalidation on consumers (e.g., ISO
+        /// timestamp or GUID)
+        /// </summary>
+        [JsonProperty("revision", NullValueHandling = NullValueHandling.Ignore)]
+        public string Revision { get; set; }
     }
 
     /// <summary>
@@ -27,8 +71,45 @@ namespace Schema.Socket.Grasshopper
         /// <summary>
         /// The string payload of the IProgram object received from the server.
         /// </summary>
-        [JsonProperty("program")]
+        [JsonProperty("program", NullValueHandling = NullValueHandling.Ignore)]
         public string Program { get; set; }
+
+        /// <summary>
+        /// Minimal joint-space waypoints (radians) broadcast to clients.
+        /// </summary>
+        [JsonProperty("joints", NullValueHandling = NullValueHandling.Ignore)]
+        public List<List<double>> Joints { get; set; }
+
+    /// <summary>
+    /// Optional per-waypoint durations in seconds. If length == joints.Length-1, each value applies between i->i+1.
+    /// If length == joints.Length, values apply per frame; last value may be ignored.
+    /// </summary>
+    [JsonProperty("times", NullValueHandling = NullValueHandling.Ignore)]
+    public List<double> Times { get; set; }
+
+        /// <summary>
+        /// Optional timestep between joint waypoints in seconds.
+        /// </summary>
+        [JsonProperty("dt", NullValueHandling = NullValueHandling.Ignore)]
+        public double? Dt { get; set; }
+
+        /// <summary>
+        /// Units for joints (default 'rad').
+        /// </summary>
+        [JsonProperty("units", NullValueHandling = NullValueHandling.Ignore)]
+        public string Units { get; set; }
+
+        /// <summary>
+        /// If true, consumers should treat this as a hard reload of the current program
+        /// </summary>
+        [JsonProperty("reload", NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Reload { get; set; }
+
+        /// <summary>
+        /// A monotonically changing identifier to force cache invalidation on consumers
+        /// </summary>
+        [JsonProperty("revision", NullValueHandling = NullValueHandling.Ignore)]
+        public string Revision { get; set; }
     }
 
     /// <summary>

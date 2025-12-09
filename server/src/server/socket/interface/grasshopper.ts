@@ -33,5 +33,6 @@ export interface GrasshopperClientToServer {
 
 export interface GrasshopperServerToClient {
 	'grasshopper:program': (payload: GrasshopperProgramOut) => void
+	'grasshopper:run': (payload: GrasshopperRunIn) => void
 	'grasshopper:meshes': (payload: GrasshopperMeshesIn) => void
 }

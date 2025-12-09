@@ -41,7 +41,6 @@ namespace Handzone.Components
             State.SessionConnection.OnStatus += message =>
             {
                 _status = message;
-                Console.WriteLine(message);
 
                 ExpireSolution(true);
                 Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
@@ -50,7 +49,6 @@ namespace Handzone.Components
             State.SessionConnection.OnError += message =>
             {
                 _status = message;
-                Console.WriteLine(message);
 
                 ExpireSolution(true);
 
@@ -133,7 +131,7 @@ namespace Handzone.Components
                 Rhino.RhinoApp.InvokeOnUiThread((Action)delegate { OnDisplayExpired(true); });
 
                 // connect to the robot session
-                State.SessionConnection.TryConnectToSession(session);
+                await State.SessionConnection.TryConnectToSession(session);
             }
             catch (Exception e)
             {
@@ -145,9 +143,9 @@ namespace Handzone.Components
             }
         }
 
-        void Disconnect()
+        async void Disconnect()
         {
-            State.SessionConnection.Disconnect();
+            await State.SessionConnection.Disconnect();
         }
 
         /// <summary>

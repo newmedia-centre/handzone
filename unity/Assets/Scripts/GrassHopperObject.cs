@@ -80,7 +80,7 @@ public class GrassHopperObject : MonoBehaviour
 
     private void EnablePhysics()
     {
-        _meshRigidbody.velocity = Vector3.zero;
+        _meshRigidbody.linearVelocity = Vector3.zero;
         _meshRigidbody.ResetInertiaTensor();
         _meshRigidbody.isKinematic = false;
         _meshRigidbody.useGravity = true;

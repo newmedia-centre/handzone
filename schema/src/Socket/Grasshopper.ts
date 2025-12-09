@@ -6,6 +6,20 @@ import type { Vector3D } from './Unity'
 export type GrasshopperProgramIn = {
 	/** The string payload of the IProgram object to send to the server. */
 	program: string
+	/** If true, program is base64(gzip(json)) */
+	compressed?: boolean
+	/** Minimal joint-space waypoints (radians) to play on the client. If provided, clients may ignore 'program'. */
+	joints?: number[][]
+	/** Optional per-waypoint durations in seconds (between consecutive waypoints). If provided, takes precedence over dt. */
+	times?: number[]
+	/** Optional timestep between joint waypoints in seconds. */
+	dt?: number
+	/** Units for joints (default 'rad'). */
+	units?: 'rad' | 'deg'
+	/** If true, consumers should treat this as a hard reload of the current program */
+	reload?: boolean
+	/** A monotonically changing identifier to force cache invalidation on consumers (e.g., ISO timestamp or GUID) */
+	revision?: string
 }
 
 /**
@@ -14,6 +28,18 @@ export type GrasshopperProgramIn = {
 export type GrasshopperProgramOut = {
 	/** The string payload of the IProgram object received from the server. */
 	program: string
+	/** Minimal joint-space waypoints (radians) broadcast to clients. */
+	joints?: number[][]
+	/** Optional per-waypoint durations in seconds (between consecutive waypoints). If provided, takes precedence over dt. */
+	times?: number[]
+	/** Optional timestep between joint waypoints in seconds. */
+	dt?: number
+	/** Units for joints (default 'rad'). */
+	units?: 'rad' | 'deg'
+	/** If true, consumers should treat this as a hard reload of the current program */
+	reload?: boolean
+	/** A monotonically changing identifier to force cache invalidation on consumers */
+	revision?: string
 }
 
 /**

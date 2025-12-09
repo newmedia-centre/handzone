@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using Schema.Socket.Internals;
+using Schema.Socket.Grasshopper;
 using Schema.Socket.Realtime;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -49,6 +50,18 @@ public class RobotManager : MonoBehaviour
     private List<BoxCollider> _colliders = new();
     private List<GameObject> _transformGizmos = new();
 
+    // Playback state
+    private List<List<double>> _playbackJoints; // radians
+    private List<double> _playbackTimes; // seconds between waypoints
+    private double _playbackDt; // fallback seconds between waypoints
+    private string _playbackUnits = "rad"; // rad|deg
+    private bool _isPlaying;
+    private bool _hasProgram;
+    private Coroutine _playbackRoutine;
+    private bool _acceptRealtime = true;
+    [Header("Playback")]
+    public bool interpolatePlayback = true; // enable smooth interpolation between waypoints
+
     /// <summary>
     /// Initializes the robot's joints and sets up event listeners for real-time data updates.
     /// This method is called when the script instance is being loaded.
@@ -71,8 +84,25 @@ public class RobotManager : MonoBehaviour
             return;
         }
 
-        SessionClient.Instance.OnRealtimeData += UpdateJointsFromPolyscope;
+        SessionClient.Instance.OnRealtimeData += RealtimeDataHandler;
         SessionClient.Instance.OnKinematicCallback += UpdateJointsFromGrabbing;
+        SessionClient.Instance.OnGHProgram += OnGrasshopperProgram;
+        SessionClient.Instance.OnGHRun += OnGrasshopperRun;
+
+        // Ensure qActualJoints is initialized to the correct size to avoid index errors on first update
+        var n = robotJoints != null ? robotJoints.Length : 0;
+        if (n > 0)
+        {
+            if (qActualJoints == null)
+            {
+                qActualJoints = new List<double>(new double[n]);
+            }
+            else if (qActualJoints.Count != n)
+            {
+                qActualJoints.Clear();
+                for (int i = 0; i < n; i++) qActualJoints.Add(0);
+            }
+        }
     }
 
     /// <summary>
@@ -115,6 +145,12 @@ public class RobotManager : MonoBehaviour
         UpdateJoints(data.QActual);
     }
 
+    private void RealtimeDataHandler(RealtimeDataOut data)
+    {
+        if (!_acceptRealtime) return; // ignore live data during playback
+        UpdateJointsFromPolyscope(data);
+    }
+
     /// <summary>
     /// Updates the robot's joints based on the provided inverse kinematics data
     /// from a grabbing action.
@@ -130,8 +166,8 @@ public class RobotManager : MonoBehaviour
     private void UpdateJoints(List<double> data)
     {
         if (data == null) return;
-
-        for (var i = 0; i < data.Count; i++)
+        var n = Mathf.Min(robotJoints.Length, data.Count);
+        for (var i = 0; i < n; i++)
         {
             qActualJoints[i] = data[i];
             var angle = (float)(qActualJoints[i] * Mathf.Rad2Deg);
@@ -140,6 +176,193 @@ public class RobotManager : MonoBehaviour
 
             robotJoints[i].localRotation = Quaternion.Euler(_initialRotations[i] + rotationDirection[i] * angle);
         }
+    }
+
+    private void OnGrasshopperProgram(GrasshopperProgramOut data)
+    {
+        // Cache compact program. Do not auto-start; wait for run=true to keep behavior deterministic.
+        _playbackJoints = data.Joints;
+        _playbackTimes = data.Times;
+        _playbackDt = data.Dt ?? 0.02;
+        _playbackUnits = string.IsNullOrEmpty(data.Units) ? "rad" : data.Units;
+        _hasProgram = _playbackJoints != null && _playbackJoints.Count > 0;
+
+        // If times are provided as absolute timestamps (same count as joints), convert to per-segment durations
+        if (_playbackJoints != null && _playbackTimes != null && _playbackTimes.Count == _playbackJoints.Count)
+        {
+            var count = _playbackJoints.Count;
+            if (count >= 2)
+            {
+                var durations = new List<double>(count - 1);
+                for (int i = 0; i < count - 1; i++)
+                {
+                    var delta = _playbackTimes[i + 1] - _playbackTimes[i];
+                    if (delta <= 0) delta = _playbackDt > 0 ? _playbackDt : 0.02;
+                    durations.Add(delta);
+                }
+                _playbackTimes = durations;
+            }
+        }
+
+        if (!_hasProgram)
+        {
+            Debug.LogWarning("Grasshopper program received without compact joints; pausing live briefly to avoid conflicts.");
+            if (SessionClient.Instance != null)
+            {
+                // Briefly disable realtime to avoid fighting live updates while program propagates
+                SessionClient.Instance.SetRealtimeEnabled(false);
+                SessionClient.Instance.ClearRealtimeQueue();
+                // Re-enable after a short delay
+                StartCoroutine(ReenableRealtimeSoon());
+            }
+            return;
+        }
+
+        // Auto-start playback immediately on upload for instant feedback
+        StopPlayback();
+
+        // Snap to the first waypoint immediately to avoid perceivable delay
+        if (_playbackJoints != null && _playbackJoints.Count > 0)
+        {
+            var first = new List<double>(_playbackJoints[0]);
+            var toDeg = _playbackUnits == "deg";
+            if (toDeg)
+            {
+                for (int i = 0; i < first.Count; i++) first[i] = first[i] * Mathf.Deg2Rad;
+            }
+            UpdateJoints(first);
+        }
+
+        // Clear any accumulated realtime frames and start playback loop
+        if (SessionClient.Instance != null)
+        {
+            SessionClient.Instance.ClearRealtimeQueue();
+        }
+
+        StartPlayback();
+    }
+
+    private System.Collections.IEnumerator ReenableRealtimeSoon()
+    {
+        yield return new WaitForSeconds(0.25f);
+        if (SessionClient.Instance != null)
+        {
+            SessionClient.Instance.SetRealtimeEnabled(true);
+        }
+    }
+
+    private void OnGrasshopperRun(bool run)
+    {
+        if (!_hasProgram)
+        {
+            Debug.Log("Run signal received but no compact program cached; staying in live mode.");
+            return;
+        }
+
+        if (run)
+        {
+            StartPlayback();
+        }
+        else
+        {
+            StopPlayback();
+        }
+    }
+
+    private void StartPlayback()
+    {
+        if (_isPlaying || !_hasProgram) return;
+        _isPlaying = true;
+        _acceptRealtime = false; // pause live session updates
+        if (SessionClient.Instance != null)
+        {
+            SessionClient.Instance.SetRealtimeEnabled(false);
+        }
+        _playbackRoutine = StartCoroutine(PlaybackLoop());
+    }
+
+    private void StopPlayback()
+    {
+        if (!_isPlaying) return;
+        _isPlaying = false;
+        if (_playbackRoutine != null)
+        {
+            StopCoroutine(_playbackRoutine);
+            _playbackRoutine = null;
+        }
+        _acceptRealtime = true; // resume live session updates
+        if (SessionClient.Instance != null)
+        {
+            SessionClient.Instance.SetRealtimeEnabled(true);
+        }
+    }
+
+    private System.Collections.IEnumerator PlaybackLoop()
+    {
+        if (_playbackJoints == null || _playbackJoints.Count == 0) yield break;
+
+        int count = _playbackJoints.Count;
+        bool useTimes = _playbackTimes != null && _playbackTimes.Count == count - 1;
+        float defaultDt = (float)(_playbackDt > 0 ? _playbackDt : 0.02f);
+        bool inDeg = _playbackUnits == "deg";
+
+        int index = 0;
+        while (_isPlaying)
+        {
+            int next = (index + 1) % count;
+
+            // Prepare endpoints
+            var q0 = new List<double>(_playbackJoints[index]);
+            var q1 = new List<double>(_playbackJoints[next]);
+            if (inDeg)
+            {
+                for (int i = 0; i < q0.Count; i++) q0[i] = q0[i] * Mathf.Deg2Rad;
+                for (int i = 0; i < q1.Count; i++) q1[i] = q1[i] * Mathf.Deg2Rad;
+            }
+
+            float segDur = defaultDt;
+            if (useTimes)
+            {
+                var seg = _playbackTimes[index % (count - 1)];
+                if (seg > 0) segDur = (float)seg;
+            }
+            if (segDur < 0.005f) segDur = 0.005f; // tiny clamp
+
+            if (interpolatePlayback && segDur > 0)
+            {
+                float t = 0f;
+                while (t < segDur && _isPlaying)
+                {
+                    float alpha = segDur > 0 ? t / segDur : 1f;
+                    var qi = LerpJoints(q0, q1, alpha);
+                    UpdateJoints(qi);
+                    yield return null; // next frame
+                    t += Time.deltaTime;
+                }
+            }
+            else
+            {
+                UpdateJoints(q0);
+                yield return new WaitForSeconds(segDur);
+            }
+
+            // Commit final of the segment to avoid drift
+            UpdateJoints(q1);
+
+            index = next;
+        }
+    }
+
+    private List<double> LerpJoints(List<double> a, List<double> b, float t)
+    {
+        int n = Mathf.Min(robotJoints.Length, a.Count);
+        n = Mathf.Min(n, b.Count);
+        var r = new List<double>(n);
+        for (int i = 0; i < n; i++)
+        {
+            r.Add(a[i] * (1.0f - t) + b[i] * t);
+        }
+        return r;
     }
 
     /// <summary>

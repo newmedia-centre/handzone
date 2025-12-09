@@ -15,7 +15,6 @@
  */
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Schema.Socket.Grasshopper;
@@ -51,8 +50,6 @@ public class SessionConnection
         Session = session;
         OnStatus?.Invoke($"Connecting to robot session: {Session.Robot.Name}...");
 
-        Console.WriteLine($"Connecting with token: {session.Token}");
-
         _client = new SocketIOClient.SocketIO(State.Url + session.Robot.Name, new SocketIOOptions
         {
             Auth = new
@@ -61,14 +58,10 @@ public class SessionConnection
             }
         });
 
-        Console.WriteLine("Pass Init");
-
         _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects
         });
-
-        Console.WriteLine("Pass Serializer");
 
         _client.OnConnected += (_, _) =>
         {
@@ -86,17 +79,11 @@ public class SessionConnection
 
         _client.OnError += (_, s) =>
         {
-            Console.WriteLine(s);
-
             OnError?.Invoke(s);
             OnConnectionChange?.Invoke(false);
         };
 
-        Console.WriteLine("Pre Connect");
-
         await _client.ConnectAsync();
-
-        Console.WriteLine("Post Connect");
     }
 
     /// <summary>

@@ -20,22 +20,56 @@
 // import types
 import type { Socket } from 'socket.io'
 import type { Logger } from 'winston'
+import { gunzipSync } from 'zlib'
+import type { GrasshopperProgramIn, GrasshopperRunIn, GrasshopperMeshesIn } from '@/types/Socket/Grasshopper'
 import type { NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData } from './interface'
 
 export const handleGrasshopperEvents = (socket: Socket<NamespaceClientToServerEvents, NamespaceServerToClientEvents, InterServerEvents, NamespaceSocketData>, logger: Logger) => {
 	// handle the grasshopper:program event
-	socket.on('grasshopper:program', (data) => {
-		logger.info('Received program from grasshopper', { data: data.program })
-		socket.data.robot.send(data.program + '\n')
+	socket.on('grasshopper:program', (data: GrasshopperProgramIn) => {
+		try {
+			let program = data.program ?? ''
+			if (data.compressed) {
+				// decode base64 and gunzip
+				const buf = new Uint8Array(Buffer.from(program, 'base64'))
+				program = gunzipSync(buf as unknown as Parameters<typeof gunzipSync>[0]).toString('utf8')
+			}
+
+			logger.info('Received program from grasshopper', {
+				programLength: program.length,
+				compressed: !!data.compressed,
+				jointsCount: Array.isArray(data.joints) ? data.joints.length : 0,
+				revision: data.revision,
+				reload: data.reload,
+			})
+
+			// Broadcast the program to other clients (e.g., Unity)
+			socket.broadcast.emit('grasshopper:program', {
+				program,
+				joints: data.joints,
+				times: data.times,
+				dt: data.dt,
+				units: data.units,
+				revision: data.revision,
+				reload: data.reload,
+			})
+
+			// Also send to robot if it's a direct command (for backward compatibility)
+			socket.data.robot.send(program + '\n')
+		} catch (err) {
+			logger.error('Failed to process grasshopper:program', { error: (err as Error)?.message })
+		}
 	})
 
 	// handle the grasshopper:simulate event
-	socket.on('grasshopper:run', (data) => {
+	socket.on('grasshopper:run', (data: GrasshopperRunIn) => {
 		data.run ? socket.data.robot.send('resume program\n') : socket.data.robot.send('pause program\n')
+		// Broadcast run state to all Unity clients so they can start/stop local playback
+		socket.nsp.emit('grasshopper:run', data)
 	})
 
 	// handle the grasshopper:simulate event
-	socket.on('grasshopper:meshes', (data) => {
+	socket.on('grasshopper:meshes', (data: GrasshopperMeshesIn) => {
 		socket.broadcast.emit('grasshopper:meshes', data)
 	})
 }
