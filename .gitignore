@@ -60,3 +60,5 @@ lerna-debug.log*
 *.sw?
 server/values.rar
 /AGENTS.md
+/unity/Assets/Samples
+/unity/Assets/Samples/XR Interaction Toolkit

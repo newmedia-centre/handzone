@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08d7b4224e9e1e542a0e88c5573bc3fa, type: 3}
+  m_Name: Tutorial - Chapter 5
+  m_EditorClassIdentifier: 
+  chapterName: Frames
+  description: 
+  sections:
+  - {fileID: 11400000, guid: 36556c5869b993743a0de52cbaea5543, type: 2}
+  - {fileID: 11400000, guid: e5974e97dcc5687459a2a819df83cc2d, type: 2}
+  - {fileID: 11400000, guid: e1f83883202a6094db348d72067a46d5, type: 2}
+  - {fileID: 11400000, guid: 2e4882f2136ac9c4fbe09e3dcc7dad90, type: 2}

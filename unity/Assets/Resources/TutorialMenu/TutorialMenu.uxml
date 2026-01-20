@@ -11,15 +11,15 @@
                 <ui:VisualElement name="ChapterGroup" style="flex-grow: 1; flex-shrink: 0; justify-content: flex-start;" />
             </ui:ScrollView>
         </ui:VisualElement>
-        <ui:VisualElement name="Content" class="content text" style="flex-grow: 1; justify-content: space-around; align-self: flex-end;">
-            <ui:Label tabindex="-1" text="Section Title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionTitle" class="text-header text-color" style="align-items: stretch;" />
-            <ui:Label tabindex="-1" text="Description" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionDescription" class="text-color" style="font-size: 28px; white-space: normal;" />
-            <ui:VisualElement style="flex-grow: 1; flex-direction: column-reverse;">
-                <ui:Button text="Start Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartLessonButton" class="button" />
-            </ui:VisualElement>
-        </ui:VisualElement>
         <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: center; align-items: flex-start; position: absolute; align-self: flex-start; flex-shrink: 0; height: 50px; width: 50px; scale: 2.5 2.5; top: 40px; left: auto; right: 40px;">
             <ui:Instance template="ReturnButton" name="ReturnButton" style="align-self: stretch; justify-content: center; align-items: center;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Content" class="content text" style="flex-grow: 1; justify-content: flex-start; align-self: flex-end; align-items: flex-start; flex-direction: column; top: auto; height: 729px; flex-wrap: wrap; max-width: 800px; bottom: 40px; left: 50px;">
+            <ui:Label tabindex="-1" text="Section Title" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionTitle" class="text-header text-color" style="align-items: stretch; -unity-text-align: lower-left; white-space: normal;" />
+            <ui:Label tabindex="-1" text="Description" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SectionDescription" class="text-color" style="font-size: 28px; white-space: normal;" />
+            <ui:VisualElement style="flex-grow: 1; flex-direction: column-reverse;">
+                <ui:Button text="Start Tutorial" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StartLessonButton" class="button" style="width: 758px;" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

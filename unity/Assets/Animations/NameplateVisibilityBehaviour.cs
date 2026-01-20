@@ -31,7 +31,7 @@ public class NameplateVisibilityBehaviour : PlayableBehaviour
 
     public override void OnBehaviourPause(Playable playable, FrameData info)
     {
-        if (nameplateObject != null)
+        if (nameplateObject != null) 
         {
             var nameplateUIManager = GameObject.FindObjectOfType<NameplateUIManager>();
             if (nameplateUIManager != null)
