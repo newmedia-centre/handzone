@@ -118,13 +118,15 @@ public class PlaybackMenuDocument : MonoBehaviour
         _slider.UnregisterValueChangedCallback(OnSliderValueChanged);
         _slider.UnregisterCallback<PointerDownEvent>(OnSliderPointerDown);
         _playButton.UnregisterValueChangedCallback(OnPlayButtonValueChanged);
+        _completeButton.clicked -= OnCompleteButtonClicked;
+
+        if(playableDirector == null)
+        return;
+
         playableDirector.stopped -= HandleStop;
         playableDirector.played -= HandlePlay;
         playableDirector.paused -= HandlePause;
-        _completeButton.clicked -= OnCompleteButtonClicked;
-
-        if (playableDirector)
-            playableDirector.Stop();
+        playableDirector.Stop();
     }
 
     private void Update()
@@ -138,6 +140,9 @@ public class PlaybackMenuDocument : MonoBehaviour
     /// </summary>
     private void UpdatePlaybackTime()
     {
+        if (_slider == null || playableDirector == null || playableDirector.playableAsset == null)
+            return;
+
         _slider.value = (float)playableDirector.time / _playableAssetDuration;
         _isUserInteracting = false;
     }
