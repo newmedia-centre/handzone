@@ -72,7 +72,7 @@ public class NameplateUI : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (_isShowing == false)
+        if (_isShowing == false && Target == null && lineRenderer == null && tmp == null)
             return;
 
         var localPosition = Target.transform.TransformPoint(OffsetEnd);

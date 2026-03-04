@@ -22,7 +22,9 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Video;
 using UnityEngine.UIElements;
+using VNCScreen;
 
 #endregion
 
@@ -43,6 +45,12 @@ public class PlaybackMenuDocument : MonoBehaviour
     private float _timeSinceLastUpdate;
     private float _playableAssetDuration;
     private bool _isUserInteracting;
+    private bool _isUpdatingSliderFromPlayback;
+    private VideoPlayer _boundVideoPlayer;
+    private Renderer _boundVideoRenderer;
+    private VNCScreen.VNCScreen _boundVncScreen;
+    private Material _cachedScreenMaterial;
+    private bool _cachedVncScreenEnabled;
 
     /// <summary>
     /// Called when the script instance is being loaded.
@@ -117,6 +125,7 @@ public class PlaybackMenuDocument : MonoBehaviour
         _returnButton.clicked -= OnReturnButtonClicked;
         _slider.UnregisterValueChangedCallback(OnSliderValueChanged);
         _slider.UnregisterCallback<PointerDownEvent>(OnSliderPointerDown);
+        _slider.UnregisterCallback<PointerUpEvent>(OnSliderPointerUp);
         _playButton.UnregisterValueChangedCallback(OnPlayButtonValueChanged);
         _completeButton.clicked -= OnCompleteButtonClicked;
 
@@ -126,6 +135,7 @@ public class PlaybackMenuDocument : MonoBehaviour
         playableDirector.stopped -= HandleStop;
         playableDirector.played -= HandlePlay;
         playableDirector.paused -= HandlePause;
+        RestoreVideoScreenState();
         playableDirector.Stop();
     }
 
@@ -140,11 +150,13 @@ public class PlaybackMenuDocument : MonoBehaviour
     /// </summary>
     private void UpdatePlaybackTime()
     {
-        if (_slider == null || playableDirector == null || playableDirector.playableAsset == null)
+        if (_slider == null || playableDirector == null || playableDirector.playableAsset == null || _isUserInteracting ||
+            _playableAssetDuration <= 0f)
             return;
 
-        _slider.value = (float)playableDirector.time / _playableAssetDuration;
-        _isUserInteracting = false;
+        _isUpdatingSliderFromPlayback = true;
+        _slider.SetValueWithoutNotify((float)playableDirector.time / _playableAssetDuration);
+        _isUpdatingSliderFromPlayback = false;
     }
 
     /// <summary>
@@ -154,7 +166,7 @@ public class PlaybackMenuDocument : MonoBehaviour
     /// <param name="director">The playable director that stopped.</param>
     public void HandleStop(PlayableDirector director)
     {
-        _playButton.value = false;
+        _playButton.SetValueWithoutNotify(false);
         // Reset the timeline to the beginning
         playableDirector.time = 0;
         playableDirector.Evaluate();
@@ -162,12 +174,13 @@ public class PlaybackMenuDocument : MonoBehaviour
 
     public void HandlePause(PlayableDirector director)
     {
-        _playButton.value = false;
+        _playButton.SetValueWithoutNotify(false);
+        playableDirector.Evaluate();
     }
 
     public void HandlePlay(PlayableDirector director)
     {
-        _playButton.value = true;
+        _playButton.SetValueWithoutNotify(true);
     }
 
     /// <summary>
@@ -177,10 +190,10 @@ public class PlaybackMenuDocument : MonoBehaviour
     /// <param name="evt">The change event containing the new value.</param>
     private void OnSliderValueChanged(ChangeEvent<float> evt)
     {
-        // Check if the user has interacted with the slider before updating
-        if (!_isUserInteracting) return;
+        if (_isUpdatingSliderFromPlayback || playableDirector == null || _playableAssetDuration <= 0f)
+            return;
 
-        playableDirector.time = playableDirector.duration * evt.newValue;
+        playableDirector.time = evt.newValue * _playableAssetDuration;
         playableDirector.Evaluate();
     }
 
@@ -191,15 +204,18 @@ public class PlaybackMenuDocument : MonoBehaviour
     /// <param name="evt">The pointer down event.</param>
     private void OnSliderPointerDown(PointerDownEvent evt)
     {
-        _playButton.value = false;
+        _isUserInteracting = true;
         playableDirector.Pause();
+        playableDirector.Evaluate();
     }
 
     private void OnSliderPointerUp(PointerUpEvent evt)
     {
-        _playButton.value = true;
+        _isUserInteracting = false;
+
+        playableDirector.time = _slider.value * _playableAssetDuration;
+        playableDirector.Evaluate();
         playableDirector.Play();
-        _isUserInteracting = true;
     }
 
     /// <summary>
@@ -211,17 +227,15 @@ public class PlaybackMenuDocument : MonoBehaviour
     {
         if (evt.newValue)
         {
-            _slider.pickingMode = PickingMode.Position;
             playableDirector.time = _slider.value * _playableAssetDuration;
             playableDirector.Evaluate();
             playableDirector.Play();
         }
         else
         {
-            _slider.pickingMode = PickingMode.Ignore;
+            playableDirector.Pause();
             playableDirector.time = _slider.value * _playableAssetDuration;
             playableDirector.Evaluate();
-            playableDirector.Pause();
         }
     }
 
@@ -243,14 +257,80 @@ public class PlaybackMenuDocument : MonoBehaviour
     {
         playableDirector.playableAsset = data.timelineAsset;
         playableDirector.Stop();
+        BindTutorialVideoScreen();
 
-        _slider.value = 0;
+        _slider.SetValueWithoutNotify(0);
         _playableAssetDuration = (float)playableDirector.playableAsset.duration;
+    }
 
-        if (_slider.pickingMode == PickingMode.Ignore)
+    private void BindTutorialVideoScreen()
+    {
+        RestoreVideoScreenState();
+
+        _boundVideoPlayer = FindBoundVideoPlayer();
+        if (_boundVideoPlayer == null)
+            return;
+
+        _boundVideoRenderer = _boundVideoPlayer.GetComponent<Renderer>();
+        _boundVncScreen = _boundVideoPlayer.GetComponent<VNCScreen.VNCScreen>();
+
+        if (_boundVideoRenderer != null)
         {
-            _slider.pickingMode = PickingMode.Position;
-            _playButton.pickingMode = PickingMode.Position;
+            _cachedScreenMaterial = _boundVideoRenderer.sharedMaterial;
+
+            var screenMaterial = _boundVideoRenderer.material;
+            if (_boundVideoPlayer.targetTexture != null)
+            {
+                if (screenMaterial.HasProperty("_BaseMap"))
+                    screenMaterial.SetTexture("_BaseMap", _boundVideoPlayer.targetTexture);
+
+                if (screenMaterial.HasProperty("_MainTex"))
+                    screenMaterial.SetTexture("_MainTex", _boundVideoPlayer.targetTexture);
+            }
+
+            if (screenMaterial.HasProperty("_BaseColor"))
+                screenMaterial.SetColor("_BaseColor", Color.white);
+
+            if (screenMaterial.HasProperty("_Color"))
+                screenMaterial.color = Color.white;
         }
+
+        if (_boundVncScreen != null)
+        {
+            _cachedVncScreenEnabled = _boundVncScreen.enabled;
+            _boundVncScreen.enabled = false;
+        }
+    }
+
+    private void RestoreVideoScreenState()
+    {
+        if (_boundVideoRenderer != null && _cachedScreenMaterial != null)
+            _boundVideoRenderer.sharedMaterial = _cachedScreenMaterial;
+
+        if (_boundVncScreen != null)
+            _boundVncScreen.enabled = _cachedVncScreenEnabled;
+
+        _boundVideoPlayer = null;
+        _boundVideoRenderer = null;
+        _boundVncScreen = null;
+        _cachedScreenMaterial = null;
+        _cachedVncScreenEnabled = false;
+    }
+
+    private VideoPlayer FindBoundVideoPlayer()
+    {
+        if (playableDirector?.playableAsset == null)
+            return null;
+
+        foreach (var output in playableDirector.playableAsset.outputs)
+        {
+            if (output.outputTargetType != typeof(VideoPlayer))
+                continue;
+
+            if (playableDirector.GetGenericBinding(output.sourceObject) is VideoPlayer videoPlayer)
+                return videoPlayer;
+        }
+
+        return null;
     }
 }

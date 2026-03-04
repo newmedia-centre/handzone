@@ -19,6 +19,7 @@
 
 #region
 
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -33,11 +34,10 @@ public class VideoControlTrack : TrackAsset
 {
     public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
     {
-        foreach (var clip in GetClips())
-        {
-            var vcClip = clip.asset as VideoControlClip;
-        }
+        var playable = ScriptPlayable<VideoControlMixerBehaviour>.Create(graph, inputCount);
+        var behaviour = playable.GetBehaviour();
+        behaviour.clips = GetClips().ToArray();
 
-        return base.CreateTrackMixer(graph, go, inputCount);
+        return playable;
     }
 }
