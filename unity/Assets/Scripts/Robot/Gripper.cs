@@ -45,6 +45,8 @@ public class Gripper : MonoBehaviour
     {
         _attachAnchor = new GameObject(name + "Attach Anchor");
         _attachAnchor.transform.SetParent(transform);
+        _attachAnchor.transform.localPosition = Vector3.zero;
+        _attachAnchor.transform.localRotation = Quaternion.identity;
     }
 
     /// <summary>

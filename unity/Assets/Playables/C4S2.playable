@@ -1573,8 +1573,8 @@ MonoBehaviour:
     m_Duration: 66.75
     m_TimeScale: 1
     m_ParentTrack: {fileID: -1468179352025922244}
-    m_EaseInDuration: 4.3833329999999995
-    m_EaseOutDuration: 62.366667
+    m_EaseInDuration: 0
+    m_EaseOutDuration: 0
     m_BlendInDuration: -1
     m_BlendOutDuration: -1
     m_MixInCurve:
@@ -1671,6 +1671,98 @@ MonoBehaviour:
   m_Loop: 0
   m_Version: 1
   m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+--- !u!114 &-47973766851238345
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d696b3a0caaebb549a04765a9d96193a, type: 3}
+  m_Name: Nameplate Visibility Track (5)
+  m_EditorClassIdentifier: Assembly-CSharp::NameplateVisibilityTrack
+  m_Version: 3
+  m_AnimClip: {fileID: 0}
+  m_Locked: 0
+  m_Muted: 0
+  m_CustomPlayableFullTypename: 
+  m_Curves: {fileID: 0}
+  m_Parent: {fileID: 11400000}
+  m_Children: []
+  m_Clips:
+  - m_Version: 1
+    m_Start: 126.23009131196886
+    m_ClipIn: 0
+    m_Asset: {fileID: 9011309031239795915}
+    m_Duration: 7.660092897270573
+    m_TimeScale: 1
+    m_ParentTrack: {fileID: -47973766851238345}
+    m_EaseInDuration: 0
+    m_EaseOutDuration: 0
+    m_BlendInDuration: -1
+    m_BlendOutDuration: -1
+    m_MixInCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_MixOutCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_BlendInCurveMode: 0
+    m_BlendOutCurveMode: 0
+    m_ExposedParameterNames: []
+    m_AnimationCurves: {fileID: 0}
+    m_Recordable: 0
+    m_PostExtrapolationMode: 0
+    m_PreExtrapolationMode: 0
+    m_PostExtrapolationTime: 0
+    m_PreExtrapolationTime: 0
+    m_DisplayName: NameplateVisibilityAsset
+  m_Markers:
+    m_Objects: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1707,6 +1799,7 @@ MonoBehaviour:
   - {fileID: -7076248111403460893}
   - {fileID: -1554052560141168590}
   - {fileID: 6915155932926258646}
+  - {fileID: -47973766851238345}
   m_FixedDuration: 17.7
   m_EditorSettings:
     m_Framerate: 60
@@ -2823,6 +2916,22 @@ MonoBehaviour:
   isVisible: 1
   nameplateObject:
     exposedName: 00703e022a80608418cba751b9abedb6
+    defaultValue: {fileID: 0}
+--- !u!114 &9011309031239795915
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9b294cf8e08a9a43b58da0d4683e716, type: 3}
+  m_Name: NameplateVisibilityAsset(Clone)(Clone)(Clone)(Clone)
+  m_EditorClassIdentifier: Assembly-CSharp::NameplateVisibilityAsset
+  isVisible: 1
+  nameplateObject:
+    exposedName: 48246370b92ee7745be04ed37f92e6d0
     defaultValue: {fileID: 0}
 --- !u!114 &9121403695001267830
 MonoBehaviour:

@@ -96,14 +96,14 @@
 }
 
 .unity-foldout__checkmark {
-    background-image: resource('chevron-up.png');
+    background-image: resource("chevron-up.png");
     height: 32px;
     width: 32px;
     -unity-background-image-tint-color: rgb(144, 144, 144);
 }
 
 Foldout > Toggle:checked .unity-foldout__checkmark {
-    background-image: resource('chevron-down.png');
+    background-image: resource("chevron-down.png");
 }
 
 .navigation {
@@ -182,7 +182,7 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     border-radius: 32px;
     margin: 8px;
     background-size: 55%;
-    background-image: resource('return.png');
+    background-image: resource("return.png");
     -unity-background-image-tint-color: gray;
     width: 44px;
     height: 44px;
@@ -197,7 +197,7 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
 }
 
 .play-button:checked .unity-toggle__checkmark {
-    background-image: resource('Pause');
+    background-image: resource("Pause");
 }
 
 .play-button .unity-toggle__checkmark {
@@ -205,7 +205,7 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
     border-color: transparent;
     width: 34px;
     height: 34px;
-    background-image: resource('Play');
+    background-image: resource("Play");
 }
 
 .button-secondary {
@@ -277,4 +277,20 @@ Foldout > Toggle:checked .unity-foldout__checkmark {
 
 .button-complete:active {
     background-color: rgb(177, 177, 177);
+}
+
+.menu-button:hover {
+    background-color: rgb(63, 145, 66);
+    transition-property: all;
+    transition-duration: 0s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+    -unity-background-image-tint-color: rgb(96, 255, 59);
+}
+
+.menu-button {
+    transition-property: all, background-color;
+    transition-duration: 0s, 0.2s;
+    transition-timing-function: ease, ease;
+    transition-delay: 0s, 0s;
 }
