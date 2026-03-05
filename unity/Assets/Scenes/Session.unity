@@ -30872,17 +30872,17 @@ PrefabInstance:
     - target: {fileID: 3480456648821273981, guid: 7474d4560289953428d15488ca227e80,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.72022796
+      value: -0.969
       objectReference: {fileID: 0}
     - target: {fileID: 3480456648821273981, guid: 7474d4560289953428d15488ca227e80,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.7874777
+      value: -0.8
       objectReference: {fileID: 0}
     - target: {fileID: 3480456648821273981, guid: 7474d4560289953428d15488ca227e80,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.794183
+      value: -1.82
       objectReference: {fileID: 0}
     - target: {fileID: 3480456648821273981, guid: 7474d4560289953428d15488ca227e80,
         type: 3}
@@ -72827,6 +72827,7 @@ MonoBehaviour:
   m_RepeatRate: 0.1
   m_TrackedDeviceDragThresholdMultiplier: 2
   m_TrackedScrollDeltaMultiplier: 5
+  m_NonTrackedScrollDeltaMultiplier: 6
   m_BypassUIToolkitEvents: 0
   m_ActiveInputMode: 2
   m_EnableXRInput: 1

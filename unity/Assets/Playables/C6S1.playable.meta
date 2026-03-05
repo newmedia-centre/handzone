@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:unity/Assets/Playables/C6S1.playable.meta
 guid: adb634bfa3409d343a3de97118f27ee9
+========
+guid: 3d05cfb10afae3e4682e695c38785622
+>>>>>>>> 401804e6d5ded9f3f1c8bb0bb430c671e29c3c1f:unity/Assets/XR/Settings/OculusSettings.asset.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

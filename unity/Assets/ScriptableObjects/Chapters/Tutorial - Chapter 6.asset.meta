@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:unity/Assets/ScriptableObjects/Chapters/Tutorial - Chapter 6.asset.meta
 guid: ad8b2c4fe62eeb44083e85acda1b6cdc
+========
+guid: fdf8a3e35e4856a40be26b28e1a56d94
+>>>>>>>> 401804e6d5ded9f3f1c8bb0bb430c671e29c3c1f:unity/Assets/XR/Loaders/OculusLoader.asset.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

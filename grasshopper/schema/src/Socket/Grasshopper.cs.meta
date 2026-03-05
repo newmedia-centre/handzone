@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:grasshopper/schema/src/Socket/Grasshopper.cs.meta
 guid: aa6b88a4d14af8a89f1d004006e79be0
+========
+guid: bbe7347a1ace416684b3b419e984e1ae
+>>>>>>>> 401804e6d5ded9f3f1c8bb0bb430c671e29c3c1f:unity/Assets/Scripts/Timeline/VideoTrack/VideoControlMixerBehaviour.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

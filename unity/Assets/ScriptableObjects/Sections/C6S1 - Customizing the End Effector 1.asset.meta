@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:unity/Assets/ScriptableObjects/Sections/C6S1 - Customizing the End Effector 1.asset.meta
 guid: 6f8b6be6eb886c74aa2c743d7514db4c
+========
+guid: 369d3be7e93abca45ab2184fef65d19e
+>>>>>>>> 401804e6d5ded9f3f1c8bb0bb430c671e29c3c1f:unity/Assets/XRI/Settings/Resources/XRInteractionRuntimeSettings.asset.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

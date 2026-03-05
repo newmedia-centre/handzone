@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: dada7218f04df3a4eb8aec1573638c53
+<<<<<<<< HEAD:unity/Assets/Recordings/C4S3_RobotArm_003.anim.meta
+guid: d7a25f0dfde479f469eca4835caccdfa
+========
+guid: 38df58ef349aa6b43ae1ffd4abd4cc45
+>>>>>>>> 401804e6d5ded9f3f1c8bb0bb430c671e29c3c1f:unity/Assets/Recordings/C4S4_RobotArm_002.anim.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 0
