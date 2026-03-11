@@ -111,7 +111,7 @@ MonoBehaviour:
   targetObject:
     exposedName: 7bed8754a78183041bf10d3068d15a13
     defaultValue: {fileID: 0}
-  transformGizmoPrefab: {fileID: 6411273485479038947, guid: b17a80c428f2a0b4c82d27dfd7e0dae5,
+  transformGizmoPrefab: {fileID: 6411273485479038947, guid: 94d6164ae31e31c4eba2fb6c86298625,
     type: 3}
   orientationReference:
     exposedName: d0ab7433bf396ca458399b1b66fed060

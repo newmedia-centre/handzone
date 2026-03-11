@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Name: VideoControlClip
   m_EditorClassIdentifier: Assembly-CSharp::VideoControlClip
   clip: {fileID: 32900000, guid: 788af6750fa1925408ee1023e24f34c8, type: 3}
-  type: 2
+  type: 0
 --- !u!114 &-6204765437069987224
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -928,7 +928,7 @@ MonoBehaviour:
     m_ClipIn: 0
     m_Asset: {fileID: -6404834260762751836}
     m_Duration: 142.97877044593915
-    m_TimeScale: 0.03497022658962169
+    m_TimeScale: 1
     m_ParentTrack: {fileID: 163548616708716754}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0

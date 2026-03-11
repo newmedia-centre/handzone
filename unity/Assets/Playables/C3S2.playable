@@ -1665,20 +1665,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde0d25a170598d46a0b9dc16b4527a5, type: 3}
   m_Name: ActivationPlayableAsset
   m_EditorClassIdentifier: 
---- !u!114 &-2465399858333156629
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26f453f91d4f7644a9bc25e47e120809, type: 3}
-  m_Name: VideoControlClip
-  m_EditorClassIdentifier: 
-  clip: {fileID: 32900000, guid: 02b78355f4299d449a9b1086f7ce15b0, type: 3}
-  type: 0
 --- !u!114 &-2252959698457779415
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1977,8 +1963,8 @@ MonoBehaviour:
     m_Start: 28.052949216930816
     m_ClipIn: 0
     m_Asset: {fileID: 1262537302275706287}
-    m_Duration: 15.602786113259693
-    m_TimeScale: 0.3204555881049256
+    m_Duration: 15.06371744973585
+    m_TimeScale: 0.1325998
     m_ParentTrack: {fileID: 163548616708716754}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
@@ -2039,153 +2025,15 @@ MonoBehaviour:
     m_Recordable: 0
     m_PostExtrapolationMode: 0
     m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 8.829470905351144
+    m_PostExtrapolationTime: 12.649999999999999
     m_PreExtrapolationTime: 11.26544984737411
     m_DisplayName: C3S2_Polyscope_002
-  - m_Version: 1
-    m_Start: 52.48520623554165
-    m_ClipIn: 0
-    m_Asset: {fileID: 2156123020114416987}
-    m_Duration: 16.393630345662416
-    m_TimeScale: 0.3049965074589441
-    m_ParentTrack: {fileID: 163548616708716754}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 9.094781396569076
-    m_PreExtrapolationTime: 8.829470905351144
-    m_DisplayName: C3S2_Polyscope_003
-  - m_Version: 1
-    m_Start: 77.97361797777315
-    m_ClipIn: 0
-    m_Asset: {fileID: -2465399858333156629}
-    m_Duration: 12.609715355560184
-    m_TimeScale: 0.3965196563929794
-    m_ParentTrack: {fileID: 163548616708716754}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 10.400000000000006
-    m_PreExtrapolationTime: 9.094781396569076
-    m_DisplayName: C3S2_Polyscope_004
   - m_Version: 1
     m_Start: 4.2
     m_ClipIn: 0
     m_Asset: {fileID: 2974644568019694823}
     m_Duration: 12.587499369556706
-    m_TimeScale: 0.39721948364840987
+    m_TimeScale: 1
     m_ParentTrack: {fileID: 163548616708716754}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
@@ -2254,7 +2102,7 @@ MonoBehaviour:
     m_ClipIn: 0
     m_Asset: {fileID: 1382441947667803061}
     m_Duration: 13.302380952380958
-    m_TimeScale: 0.3758725613030247
+    m_TimeScale: 1
     m_ParentTrack: {fileID: 163548616708716754}
     m_EaseInDuration: 0
     m_EaseOutDuration: 0
@@ -2262,25 +2110,73 @@ MonoBehaviour:
     m_BlendOutDuration: -1
     m_MixInCurve:
       serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_MixOutCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_BlendInCurveMode: 0
+    m_BlendOutCurveMode: 0
+    m_ExposedParameterNames: []
+    m_AnimationCurves: {fileID: 0}
+    m_Recordable: 0
+    m_PostExtrapolationMode: 0
+    m_PreExtrapolationMode: 0
+    m_PostExtrapolationTime: Infinity
+    m_PreExtrapolationTime: 15.00331221117328
+    m_DisplayName: C3S2_Polyscope_006
+  - m_Version: 1
+    m_Start: 81.56666666666666
+    m_ClipIn: 0
+    m_Asset: {fileID: 1741159709386768561}
+    m_Duration: 4.413354455493391
+    m_TimeScale: 0.9000000000000002
+    m_ParentTrack: {fileID: 163548616708716754}
+    m_EaseInDuration: 0
+    m_EaseOutDuration: 0
+    m_BlendInDuration: -1
+    m_BlendOutDuration: -1
+    m_MixInCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_MixOutCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_BlendInCurveMode: 0
+    m_BlendOutCurveMode: 0
+    m_ExposedParameterNames: []
+    m_AnimationCurves: {fileID: 0}
+    m_Recordable: 0
+    m_PostExtrapolationMode: 0
+    m_PreExtrapolationMode: 0
+    m_PostExtrapolationTime: 15.00331221117328
+    m_PreExtrapolationTime: 3.2333333333333343
+    m_DisplayName: C3S2_Polyscope_004
+  - m_Version: 1
+    m_Start: 55.766666666666666
+    m_ClipIn: 0
+    m_Asset: {fileID: 5160376551111497762}
+    m_Duration: 22.566666666666663
+    m_TimeScale: 0.2215657311669129
+    m_ParentTrack: {fileID: 163548616708716754}
+    m_EaseInDuration: 0
+    m_EaseOutDuration: 0
+    m_BlendInDuration: -1
+    m_BlendOutDuration: -1
+    m_MixInCurve:
+      serializedVersion: 2
+      m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -2315,9 +2211,9 @@ MonoBehaviour:
     m_Recordable: 0
     m_PostExtrapolationMode: 0
     m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: Infinity
-    m_PreExtrapolationTime: 10.400000000000006
-    m_DisplayName: C3S2_Polyscope_006
+    m_PostExtrapolationTime: 3.2333333333333343
+    m_PreExtrapolationTime: 12.649999999999999
+    m_DisplayName: C3S2_Polyscope_003
   m_Markers:
     m_Objects: []
 --- !u!114 &331160844887793830
@@ -2503,6 +2399,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clip: {fileID: 32900000, guid: 7779496ccf2b31b4b95541866722d4fa, type: 3}
   type: 0
+--- !u!114 &1741159709386768561
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26f453f91d4f7644a9bc25e47e120809, type: 3}
+  m_Name: VideoControlClip
+  m_EditorClassIdentifier: Assembly-CSharp::VideoControlClip
+  clip: {fileID: 32900000, guid: 02b78355f4299d449a9b1086f7ce15b0, type: 3}
+  type: 0
 --- !u!114 &1919004083303613469
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2515,20 +2425,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde0d25a170598d46a0b9dc16b4527a5, type: 3}
   m_Name: ActivationPlayableAsset
   m_EditorClassIdentifier: 
---- !u!114 &2156123020114416987
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26f453f91d4f7644a9bc25e47e120809, type: 3}
-  m_Name: VideoControlClip
-  m_EditorClassIdentifier: 
-  clip: {fileID: 32900000, guid: c75890f3f2598de4c996add6da3287c3, type: 3}
-  type: 0
 --- !u!114 &2361634348402771344
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3276,6 +3172,20 @@ MonoBehaviour:
   nameplateObject:
     exposedName: dfd9395f580a4014fbe59a5fa0149d55
     defaultValue: {fileID: 0}
+--- !u!114 &5160376551111497762
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26f453f91d4f7644a9bc25e47e120809, type: 3}
+  m_Name: VideoControlClip
+  m_EditorClassIdentifier: Assembly-CSharp::VideoControlClip
+  clip: {fileID: 32900000, guid: c75890f3f2598de4c996add6da3287c3, type: 3}
+  type: 0
 --- !u!114 &5305973519916005783
 MonoBehaviour:
   m_ObjectHideFlags: 1
