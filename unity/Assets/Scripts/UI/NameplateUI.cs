@@ -59,11 +59,11 @@ public class NameplateUI : MonoBehaviour
         lineRenderer = GetComponentInChildren<LineRenderer>();
 
         // Set initial alpha to 0
-        tmp.color = new Color(tmp.color.r, tmp.color.g, tmp.color.b, 0.0f);
-        lineRenderer.startColor = new Color(lineRenderer.startColor.r, lineRenderer.startColor.g,
-            lineRenderer.startColor.b, 0.0f);
-        lineRenderer.endColor =
-            new Color(lineRenderer.endColor.r, lineRenderer.endColor.g, lineRenderer.endColor.b, 0.0f);
+        // tmp.color = new Color(tmp.color.r, tmp.color.g, tmp.color.b, 0.0f);
+        // lineRenderer.startColor = new Color(lineRenderer.startColor.r, lineRenderer.startColor.g,
+        //    lineRenderer.startColor.b, 0.0f);
+        //lineRenderer.endColor =
+        //    new Color(lineRenderer.endColor.r, lineRenderer.endColor.g, lineRenderer.endColor.b, 0.0f);
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public class NameplateUI : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (_isShowing == false)
+        if (_isShowing == false && Target == null && lineRenderer == null && tmp == null)
             return;
 
         var localPosition = Target.transform.TransformPoint(OffsetEnd);

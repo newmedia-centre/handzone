@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit.Inputs.Readers;
 
 #endregion
@@ -47,20 +48,21 @@ public enum MenuName
 public class MenuController : MonoBehaviour
 {
     [Header("Object references")]
-    public GameObject loginMenu;
-    public GameObject mainMenu;
-    public GameObject virtualRobotMenu;
-    public GameObject realRobotMenu;
-    public GameObject tutorialMenu;
-    public GameObject exercisesMenu;
-    public GameObject playbackMenu;
+    public UIDocument loginMenu;
+    public UIDocument mainMenu;
+    public UIDocument virtualRobotMenu;
+    public UIDocument realRobotMenu;
+    public UIDocument tutorialMenu;
+    public UIDocument exercisesMenu;
+    public UIDocument playbackMenu;
     public SectionData currentSelectedSection;
     public ChapterData currentSelectedChapter;
 
     private MenuName _previousMenu;
     private MenuName _currentMenu;
     private readonly Stack<MenuName> _menuHistory = new();
-    private Dictionary<MenuName, GameObject> _menuDictionary = new();
+    private Dictionary<MenuName, UIDocument> _menuDictionary = new();
+
     private bool _isMenuOpen = false;
     private bool _initialized = false;
 
@@ -136,6 +138,11 @@ public class MenuController : MonoBehaviour
             };
         }
 
+        foreach (var menu in _menuDictionary)
+        {
+            SetMenuVisibility(menu.Value, false);
+        }
+
         ChangeMenu(MenuName.Login);
     }
 
@@ -179,7 +186,7 @@ public class MenuController : MonoBehaviour
 
         foreach (var menu in _menuDictionary)
         {
-            menu.Value.SetActive(menu.Key == _currentMenu);
+            SetMenuVisibility(menu.Value, menu.Key == _currentMenu);
         }
 
         _isMenuOpen = true;
@@ -230,6 +237,34 @@ public class MenuController : MonoBehaviour
         currentSelectedSection.completed = true;
     }
 
+    private void SetMenuVisibility(UIDocument menuDocument, bool isVisible)
+    {
+        if (!menuDocument)
+        {
+            return;
+        }
+
+        var root = menuDocument.rootVisualElement;
+        if (root == null)
+        {
+            return;
+        }
+
+        root.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
+        root.pickingMode = isVisible ? PickingMode.Position : PickingMode.Ignore;
+
+        var behaviours = menuDocument.GetComponents<MonoBehaviour>();
+        foreach (var behaviour in behaviours)
+        {
+            if (!behaviour || behaviour == this || behaviour == menuDocument)
+            {
+                continue;
+            }
+
+            behaviour.enabled = isVisible;
+        }
+    }
+
     /// <summary>
     /// Hides all menus. But remembers the previous menu.
     /// </summary>
@@ -238,7 +273,7 @@ public class MenuController : MonoBehaviour
         _previousMenu = _currentMenu;
         foreach (var menu in _menuDictionary)
         {
-            menu.Value.SetActive(false);
+            SetMenuVisibility(menu.Value, false);
         }
         _isMenuOpen = false;
     }
